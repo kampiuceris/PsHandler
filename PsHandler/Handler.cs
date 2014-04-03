@@ -42,9 +42,12 @@ namespace PsHandler
                                         {
                                             var rect = GetWindowRectangle(buttonOkToClick);
                                             //Debug.WriteLine(string.Format("{0},{1} {2}x{3}", rect.X, rect.Y, rect.Width, rect.Height));
+
                                             // 85x28 = "OK" button decorated
                                             // 77x24 = "OK" button undecorated
                                             // 133x28 = "Show Lobby" button decorated
+                                            // 98x28 = "Close" button decorated
+
                                             if ((rect.Width == 85 && rect.Height == 28) || (rect.Width == 77 && rect.Height == 24)) // "OK" (decorated) || "OK" (undecorated)
                                             {
                                                 MouseClick(buttonOkToClick);
@@ -55,7 +58,11 @@ namespace PsHandler
                                                 buttonOkToClick = FindChildWindow(handle, childAfter, "PokerStarsButtonClass", "");
                                                 if (buttonOkToClick != IntPtr.Zero)
                                                 {
-                                                    MouseClick(buttonOkToClick);
+                                                    rect = GetWindowRectangle(buttonOkToClick);
+                                                    if (rect.Width == 98 && rect.Height == 28) // "Close"
+                                                    {
+                                                        MouseClick(buttonOkToClick);
+                                                    }
                                                 }
                                             }
                                         }
