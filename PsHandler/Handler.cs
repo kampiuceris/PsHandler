@@ -38,7 +38,7 @@ namespace PsHandler
                                     if (className.Equals("PokerStarsTableFrameClass"))
                                     {
                                         Bmp bmp = new Bmp(ScreenCapture.GetBitmapWindowClient(handle));
-                                        PokerStarsTheme theme = App.GetPokerStarsTheme;
+                                        PokerStarsTheme theme = App.PokerStarsTheme;
                                         System.Drawing.Rectangle rect = new System.Drawing.Rectangle((int)Math.Round(theme.ButtonImBackX * bmp.Width),
                                             (int)Math.Round(theme.ButtonImBackY * bmp.Height),
                                             (int)Math.Round(theme.ButtonImBackWidth * bmp.Width),

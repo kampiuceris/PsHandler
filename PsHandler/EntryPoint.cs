@@ -50,7 +50,7 @@ namespace PsHandler
                                     if (matchSitOut.Success || matchSitOutTimedOut.Success)
                                     {
                                         IntPtr handle = new IntPtr(int.Parse((matchSitOut.Success ? matchSitOut : matchSitOutTimedOut).Groups["handle"].Value, NumberStyles.HexNumber));
-                                        LeftMouseClickRelative(handle, App.GetPokerStarsTheme.ButtonImBack);
+                                        LeftMouseClickRelative(handle, App.PokerStarsTheme.ButtonImBack);
                                     }
                                 }
                                 if (App.AutoclickTimebank)
@@ -59,7 +59,7 @@ namespace PsHandler
                                     if (matchTimeBank.Success)
                                     {
                                         IntPtr handle = new IntPtr(int.Parse(matchTimeBank.Groups["handle"].Value, NumberStyles.HexNumber));
-                                        LeftMouseClickRelative(handle, App.GetPokerStarsTheme.ButtonTimer);
+                                        LeftMouseClickRelative(handle, App.PokerStarsTheme.ButtonTimer);
                                     }
                                 }
                             }
