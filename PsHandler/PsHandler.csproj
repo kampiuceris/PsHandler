@@ -55,8 +55,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="Diff.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Handler.cs" />
+    <Compile Include="NotifyIconWpf\BalloonIcon.cs" />
+    <Compile Include="NotifyIconWpf\Interop\BalloonFlags.cs" />
+    <Compile Include="NotifyIconWpf\Interop\IconDataMembers.cs" />
+    <Compile Include="NotifyIconWpf\Interop\IconState.cs" />
+    <Compile Include="NotifyIconWpf\Interop\MouseEvent.cs" />
+    <Compile Include="NotifyIconWpf\Interop\NotifyCommand.cs" />
+    <Compile Include="NotifyIconWpf\Interop\NotifyIconData.cs" />
+    <Compile Include="NotifyIconWpf\Interop\NotifyIconVersion.cs" />
+    <Compile Include="NotifyIconWpf\Interop\Point.cs" />
+    <Compile Include="NotifyIconWpf\Interop\TrayInfo.cs" />
+    <Compile Include="NotifyIconWpf\Interop\WinApi.cs" />
+    <Compile Include="NotifyIconWpf\Interop\WindowClass.cs" />
+    <Compile Include="NotifyIconWpf\Interop\WindowMessageSink.cs" />
+    <Compile Include="NotifyIconWpf\PopupActivationMode.cs" />
+    <Compile Include="NotifyIconWpf\RoutedEventHelper.cs" />
+    <Compile Include="NotifyIconWpf\TaskbarIcon.cs" />
+    <Compile Include="NotifyIconWpf\Util.cs" />
+    <Compile Include="PokerStarsThemes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -70,6 +89,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="WinApi.cs" />
     <Compile Include="WindowMain.xaml.cs">
       <DependentUpon>WindowMain.xaml</DependentUpon>
     </Compile>
@@ -77,6 +97,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Compile Include="NotifyIconWpf\TaskbarIcon.Declarations.cs" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -95,6 +116,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

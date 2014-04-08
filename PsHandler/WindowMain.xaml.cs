@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Shell;
 
 namespace PsHandler
 {
@@ -12,6 +14,13 @@ namespace PsHandler
         public WindowMain()
         {
             InitializeComponent();
+            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Unknown());
+            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Nova());
+            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Classic());
+            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Black());
+            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Slick());
+            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.HyperSimple());
+            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Stars());
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
