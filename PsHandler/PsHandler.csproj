@@ -57,7 +57,6 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Bmp.cs" />
-    <Compile Include="Diff.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="NotifyIconWpf\BalloonIcon.cs" />
@@ -77,7 +76,6 @@
     <Compile Include="NotifyIconWpf\RoutedEventHelper.cs" />
     <Compile Include="NotifyIconWpf\TaskbarIcon.cs" />
     <Compile Include="NotifyIconWpf\Util.cs" />
-    <Compile Include="ObsoleteTableControl.cs" />
     <Compile Include="PokerStarsThemes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
