@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Shapes;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace PsHandler
 {
@@ -75,6 +78,19 @@ namespace PsHandler
                 Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
                 {
                     value = Gui.CheckBox_AutocloseTournamentRegistrationPopups.IsChecked == true;
+                }));
+                return value;
+            }
+        }
+
+        public static bool MinimizeToSystemTray
+        {
+            get
+            {
+                bool value = false;
+                Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                {
+                    value = Gui.CheckBox_MinimizeToSystemTray.IsChecked == true;
                 }));
                 return value;
             }

@@ -2,28 +2,30 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:tb="clr-namespace:Hardcodet.Wpf.TaskbarNotification"
-        Title="PokerStars Handler v1.2" Icon="ps.ico" 
-        Closing="Window_Closing" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight">
-    <Grid >
+        Title="PokerStars Handler v1.2" Icon="Images\ps.ico" 
+        Closing="Window_Closing" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight"
+        UseLayoutRounding="True">
+    <Grid x:Name="Grid_Main">
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="WhiteSmoke" Offset="0"/>
                 <GradientStop Color="Lavender" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <!--<tb:TaskbarIcon x:Name="MyNotifyIcon" IconSource="ps.ico" ToolTipText="hello world" />-->
+        <tb:TaskbarIcon x:Name="TaskbarIcon_NotifyIcon" IconSource="Images\ps.ico" ToolTipText="PS Handler" />
         <StackPanel Margin="10">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Visibility="Collapsed">
                 <Label Content="PokerStars AppData:" Height="16" Padding="0"/>
-                <TextBox x:Name="TextBox_PokerStarsAppDataPath" Margin="5,0,0,0" Width="150" Text="C:\Users\Martin\AppData\Local\PokerStars.EU"/>
+                <TextBox x:Name="TextBox_PokerStarsAppDataPath" Margin="5,0,0,0" Width="150" Text="C:\Users\Martin\AppData\Local\PokerStars.EU" ToolTip="Path to your PokerStars AppData Folder (eg.: 'C:\Users\MyUser\AppData\Local\PokerStars.EU')"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Label Content="PokerStars Theme:" Height="16" Padding="0"/>
                 <ComboBox x:Name="ComboBox_PokerStarsTheme" Width="100" Margin="5,2,2,2"/>
             </StackPanel>
             <CheckBox x:Name="CheckBox_AutoclickImBack" Margin="2" Content="Autoclick ''I'm Back'' Button" Height="16" />
-            <CheckBox x:Name="CheckBox_AutoclickTimebank" Margin="2" Content="Autoclick ''Timebank'' Button" Height="16" />
+            <CheckBox x:Name="CheckBox_AutoclickTimebank" Margin="2" Content="Autoclick ''Timebank'' Button" Height="16" Visibility="Collapsed"/>
             <CheckBox x:Name="CheckBox_AutocloseTournamentRegistrationPopups" Margin="2" Content="Autoclose Tournament Registration Popups" Height="16" />
+            <CheckBox x:Name="CheckBox_MinimizeToSystemTray" Margin="2" Content="Minimize to System Tray" Height="16" />
         </StackPanel>
     </Grid>
 </Window>

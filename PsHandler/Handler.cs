@@ -1,24 +1,74 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Windows;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using Point = System.Windows.Point;
 
 namespace PsHandler
 {
     public class Handler
     {
         private const int DELAY_AUTOCLOSE_TOURNAMENT_REGISTRATION_POPUPS = 250;
-        private const int DELAY_TABLE_HANDLE = 1000;
+        private const int DELAY_TABLE_CONTROL = 2000;
         private static Thread _threadAutocloseTournamentRegistrationPopups;
         private static Thread _threadTableControl;
         private const string LOG_COPY_PATH = "log";
 
         public static void Start()
         {
+            _threadTableControl = new Thread(() =>
+            {
+                try
+                {
+                    while (true)
+                    {
+                        if (App.AutoclickImBack)
+                        {
+                            foreach (var process in Process.GetProcessesByName("PokerStars"))
+                            {
+                                foreach (IntPtr handle in WinApi.EnumerateProcessWindowHandles(process.Id).Where(WinApi.IsWindowVisible))
+                                {
+                                    string className = WinApi.GetClassName(handle);
+                                    if (className.Equals("PokerStarsTableFrameClass"))
+                                    {
+                                        Bmp bmp = new Bmp(ScreenCapture.GetBitmapWindowClient(handle));
+                                        PokerStarsTheme theme = App.GetPokerStarsTheme;
+                                        System.Drawing.Rectangle rect = new System.Drawing.Rectangle((int)Math.Round(theme.ButtonImBackX * bmp.Width),
+                                            (int)Math.Round(theme.ButtonImBackY * bmp.Height),
+                                            (int)Math.Round(theme.ButtonImBackWidth * bmp.Width),
+                                            (int)Math.Round(theme.ButtonImBackHeight * bmp.Height));
+                                        double r, g, b;
+                                        AverageColor(bmp, rect, out r, out g, out b);
+                                        Debug.WriteLine(string.Format("{0:0.000} {1:0.000} {2:0.000}", r - theme.BmpButtonImBackRed, g - theme.BmpButtonImBackGreen, b - theme.BmpButtonImBackBlue));
+                                        if (CompareColors(r, g, b, theme.BmpButtonImBackRed, theme.BmpButtonImBackGreen, theme.BmpButtonImBackBlue, theme.MaxDifferenceR, theme.MaxDifferenceG, theme.MaxDifferenceB))
+                                        {
+                                            Debug.WriteLine("NEED!");
+                                            LeftMouseClickRelative(handle, theme.ButtonImBack);
+                                        }
+                                        else
+                                        {
+                                            Debug.WriteLine("nop.");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        Thread.Sleep(1000);
+                    }
+                }
+                catch (ThreadInterruptedException)
+                {
+                }
+            });
+            _threadTableControl.Start();
+
             #region AutocloseTournamentRegistrationPopups
 
             _threadAutocloseTournamentRegistrationPopups = new Thread(() =>
@@ -89,75 +139,8 @@ namespace PsHandler
                         Stop();
                     }
                 }
-
-
             });
             _threadAutocloseTournamentRegistrationPopups.Start();
-            #endregion
-
-            #region TableControl
-
-            _threadTableControl = new Thread(() =>
-            {
-                try
-                {
-                    while (true)
-                    {
-                        string pathPokerStarsLog0 = null;
-                        DirectoryInfo di = new DirectoryInfo(App.PokerStarsAppDataPath);
-                        if (di.Exists)
-                        {
-                            pathPokerStarsLog0 = (from fi in di.GetFiles() where fi.Name.Equals("PokerStars.log.0") select fi.FullName).FirstOrDefault();
-                        }
-                        if (pathPokerStarsLog0 != null)
-                        {
-                            FileInfo fi = new FileInfo(LOG_COPY_PATH);
-                            long seek = 0;
-                            if (fi.Exists)
-                            {
-                                seek = fi.Length;
-                            }
-                            File.Copy(pathPokerStarsLog0, LOG_COPY_PATH, true);
-                            string[] lines = ReadSeek(LOG_COPY_PATH, seek).Split(new string[] { Environment.NewLine, "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
-
-                            foreach (var line in lines)
-                            {
-                                if (App.AutoclickImBack)
-                                {
-                                    Match matchSitOut = new Regex(@"<- MSG_0x000F-T\s\w{8}\s(?<handle>\w{8})").Match(line);
-                                    Match matchSitOutTimedOut = new Regex(@"-> MSG_0x0036-T\s\w{8}\s(?<handle>\w{8})").Match(line);
-                                    if (matchSitOut.Success || matchSitOutTimedOut.Success)
-                                    {
-                                        IntPtr handle = new IntPtr(int.Parse((matchSitOut.Success ? matchSitOut : matchSitOutTimedOut).Groups["handle"].Value, NumberStyles.HexNumber));
-                                        LeftMouseClickRelative(handle, App.GetPokerStarsTheme.ButtonImBack);
-                                    }
-                                }
-                                if (App.AutoclickTimebank)
-                                {
-                                    Match matchTimeBank = new Regex(@"-> MSG_0x0021-T\s\w{8}\s(?<handle>\w{8})").Match(line);
-                                    if (matchTimeBank.Success)
-                                    {
-                                        IntPtr handle = new IntPtr(int.Parse(matchTimeBank.Groups["handle"].Value, NumberStyles.HexNumber));
-                                        LeftMouseClickRelative(handle, App.GetPokerStarsTheme.ButtonTimer);
-                                    }
-                                }
-                            }
-                        }
-                        Thread.Sleep(DELAY_TABLE_HANDLE);
-                    }
-                }
-                catch (Exception e)
-                {
-                    if (!(e is ThreadInterruptedException))
-                    {
-                        System.Windows.MessageBox.Show(e.Message, "Error");
-                        System.IO.File.WriteAllText(DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
-                        Stop();
-                    }
-                }
-            });
-            _threadTableControl.Start();
-
             #endregion
         }
 
@@ -193,7 +176,6 @@ namespace PsHandler
             WinApi.PostMessage(handle, WinApi.WM_LBUTTONUP, IntPtr.Zero, lParam);
         }
 
-
         public static void Stop()
         {
             if (_threadAutocloseTournamentRegistrationPopups != null)
@@ -209,6 +191,28 @@ namespace PsHandler
             {
                 fi.Delete();
             }
+        }
+
+        public static void AverageColor(Bmp bmp, System.Drawing.Rectangle r, out double redAvg, out double greenAvg, out double blueAvg)
+        {
+            long redSum = 0, greenSum = 0, blueSum = 0;
+            for (int y = r.Y; y < r.Y + r.Height; y++)
+            {
+                for (int x = r.X; x < r.X + r.Width; x++)
+                {
+                    redSum += bmp.GetPixelR(x, y);
+                    greenSum += bmp.GetPixelG(x, y);
+                    blueSum += bmp.GetPixelB(x, y);
+                }
+            }
+            redAvg = (double)redSum / (r.Width * r.Height);
+            greenAvg = (double)greenSum / (r.Width * r.Height);
+            blueAvg = (double)blueSum / (r.Width * r.Height);
+        }
+
+        public static bool CompareColors(double r0, double g0, double b0, double r1, double g1, double b1, double maxDifferenceR, double maxDifferenceG, double maxDifferenceB)
+        {
+            return Math.Abs(r0 - r1) < maxDifferenceR && Math.Abs(g0 - g1) < maxDifferenceG && Math.Abs(b0 - b1) < maxDifferenceB;
         }
     }
 }
