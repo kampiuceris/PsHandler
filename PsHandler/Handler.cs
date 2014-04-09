@@ -7,7 +7,7 @@ namespace PsHandler
     public class Handler
     {
         private const int DELAY_AUTOCLOSE_TOURNAMENT_REGISTRATION_POPUPS = 250;
-        private const int DELAY_TABLE_CONTROL = 1000; //TODO 2000
+        private const int DELAY_TABLE_CONTROL = 2000;
         private static Thread _threadAutocloseTournamentRegistrationPopups;
         private static Thread _threadTableControl;
 
