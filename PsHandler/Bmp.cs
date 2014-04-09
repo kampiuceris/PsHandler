@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Media.Imaging;
 
 namespace PsHandler
@@ -20,6 +17,26 @@ namespace PsHandler
             Width = width;
             Height = height;
             _rbga = new byte[width * height * 4];
+        }
+
+        public Bmp(int width, int height, Color initColor)
+            : this(width, height)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    SetPixelA(x, y, initColor.A);
+                    SetPixelR(x, y, initColor.R);
+                    SetPixelG(x, y, initColor.G);
+                    SetPixelB(x, y, initColor.B);
+                }
+            }
+        }
+
+        public Bmp(int width, int height, System.Windows.Media.Color initColor)
+            : this(width, height, Color.FromArgb(initColor.A, initColor.R, initColor.G, initColor.B))
+        {
         }
 
         public Bmp(Bitmap bmp)

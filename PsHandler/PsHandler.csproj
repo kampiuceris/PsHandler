@@ -59,6 +59,8 @@
     <Compile Include="Bmp.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Handler.cs" />
+    <Compile Include="Hooks\KeyboardHook.cs" />
+    <Compile Include="Methods.cs" />
     <Compile Include="NotifyIconWpf\BalloonIcon.cs" />
     <Compile Include="NotifyIconWpf\Interop\BalloonFlags.cs" />
     <Compile Include="NotifyIconWpf\Interop\IconDataMembers.cs" />
@@ -135,6 +137,33 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\Themes\Slick\imback.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Themes\Azure\imback.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Themes\Azure\timebank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Themes\Black\timebank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Themes\Classic\timebank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Themes\HyperSimple\timebank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Themes\Stars\timebank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Themes\Nova\timebank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Themes\Slick\timebank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Themes\Slick\imback2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

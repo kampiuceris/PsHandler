@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Shell;
 
 namespace PsHandler
@@ -15,13 +16,20 @@ namespace PsHandler
         {
             InitializeComponent();
             ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Unknown());
+            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Azure());
             ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Black());
             ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Classic());
             ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.HyperSimple());
-            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Nova());           
-            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Slick());            
+            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Nova());
+            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Slick());
             ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Stars());
             ComboBox_PokerStarsTheme.SelectedIndex = 0;
+
+            foreach (var keyName in Enum.GetValues(typeof(Key)))
+            {
+                ComboBox_HandReplayHotkey.Items.Add(keyName);
+            }
+            ComboBox_HandReplayHotkey.SelectedIndex = 0;
 
             TaskbarIcon_NotifyIcon.TrayMouseDoubleClick += (sender, args) =>
             {
