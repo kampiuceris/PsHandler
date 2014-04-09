@@ -186,11 +186,6 @@ namespace PsHandler
             {
                 _threadTableControl.Interrupt();
             }
-            FileInfo fi = new FileInfo(LOG_COPY_PATH);
-            if (fi.Exists)
-            {
-                fi.Delete();
-            }
         }
 
         public static void AverageColor(Bmp bmp, System.Drawing.Rectangle r, out double redAvg, out double greenAvg, out double blueAvg)
