@@ -45,15 +45,10 @@ namespace PsHandler
                                             (int)Math.Round(theme.ButtonImBackHeight * bmp.Height));
                                         double r, g, b;
                                         AverageColor(bmp, rect, out r, out g, out b);
-                                        Debug.WriteLine(string.Format("{0:0.000} {1:0.000} {2:0.000}", r - theme.BmpButtonImBackRed, g - theme.BmpButtonImBackGreen, b - theme.BmpButtonImBackBlue));
+                                        //Debug.WriteLine(string.Format("{0:0.000} {1:0.000} {2:0.000}", r - theme.BmpButtonImBackRed, g - theme.BmpButtonImBackGreen, b - theme.BmpButtonImBackBlue));
                                         if (CompareColors(r, g, b, theme.BmpButtonImBackRed, theme.BmpButtonImBackGreen, theme.BmpButtonImBackBlue, theme.MaxDifferenceR, theme.MaxDifferenceG, theme.MaxDifferenceB))
                                         {
-                                            Debug.WriteLine("NEED!");
                                             LeftMouseClickRelative(handle, theme.ButtonImBack);
-                                        }
-                                        else
-                                        {
-                                            Debug.WriteLine("nop.");
                                         }
                                     }
                                 }
@@ -63,8 +58,14 @@ namespace PsHandler
                         Thread.Sleep(1000);
                     }
                 }
-                catch (ThreadInterruptedException)
+                catch (Exception e)
                 {
+                    if (!(e is ThreadInterruptedException))
+                    {
+                        System.Windows.MessageBox.Show(e.Message, "Error");
+                        System.IO.File.WriteAllText(DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
+                        Stop();
+                    }
                 }
             });
             _threadTableControl.Start();
