@@ -173,9 +173,9 @@ namespace PsHandler
             public double ButtonImBackY { get { return 442 / HEIGHT; } }
             public double ButtonImBackWidth { get { return _bmpButtonImBack.Width / WIDTH; } }
             public double ButtonImBackHeight { get { return _bmpButtonImBack.Height / HEIGHT; } }
-            public double MaxDifferenceR { get { return 5; } }
-            public double MaxDifferenceG { get { return 5; } }
-            public double MaxDifferenceB { get { return 5; } }
+            public double MaxDifferenceR { get { return 7; } }
+            public double MaxDifferenceG { get { return 7; } }
+            public double MaxDifferenceB { get { return 7; } }
 
             public Slick()
             {

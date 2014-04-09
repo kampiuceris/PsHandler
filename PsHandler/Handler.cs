@@ -55,7 +55,7 @@ namespace PsHandler
                             }
                         }
 
-                        Thread.Sleep(1000);
+                        Thread.Sleep(DELAY_TABLE_CONTROL);
                     }
                 }
                 catch (Exception e)
