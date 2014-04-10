@@ -11,6 +11,7 @@ namespace PsHandler
     {
         private static WindowMain Gui;
         private static KeyboardHook KeyboardHook;
+        private static Thread ThreadUpdate;
 
         public static PokerStarsTheme PokerStarsTheme
         {
@@ -96,7 +97,10 @@ namespace PsHandler
             Gui.Show();
             RegisterKeyboardHook();
             LoadRegistry();
+
             Handler.Start();
+
+            Autoupdate.CheckForUpdates(out ThreadUpdate, "PsHandler", "http://chainer.puslapiai.lt/Apps/PsHandler/update.xml", "PsHandler.exe", Gui, Quit);
         }
 
         public static void RegisterKeyboardHook()
@@ -118,7 +122,6 @@ namespace PsHandler
             SaveRegistry();
             Gui.IsClosing = true;
             new Thread(() => Gui.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() => Gui.Close()))).Start();
-            //Current.Shutdown();
         }
 
         public static void LoadRegistry()

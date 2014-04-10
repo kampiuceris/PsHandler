@@ -28,7 +28,6 @@ namespace PsHandler
                 catch (Exception)
                 {
                     // This will be thrown if the user cancels the prompt
-                    Application.Current.Shutdown();
                 }
             }
             else
