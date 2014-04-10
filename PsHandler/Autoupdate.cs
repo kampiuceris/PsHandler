@@ -63,6 +63,8 @@ namespace PsHandler
                 autoupdateHref = root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("href").Value;
                 autoupdateFileName = root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("name").Value;
 
+                var exeDir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+
                 // delete files
                 foreach (var file in root.Elements().Where(e => e.Name.LocalName.Equals("delete")).Select(xElement => xElement.Attribute("name").Value).Where(File.Exists))
                 {
@@ -70,9 +72,10 @@ namespace PsHandler
                 }
 
                 // delete update file
-                if (File.Exists(autoupdateFileName))
+                string _autoupdateFileName = autoupdateFileName;
+                if (exeDir.GetFiles().Any(o => o.Name.Equals(_autoupdateFileName)))
                 {
-                    File.Delete(autoupdateFileName);
+                    File.Delete(_autoupdateFileName);
                 }
 
                 // check files
