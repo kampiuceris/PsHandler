@@ -100,7 +100,7 @@ namespace PsHandler
 
             Handler.Start();
 
-            Autoupdate.CheckForUpdates(out ThreadUpdate, "PsHandler", "http://chainer.puslapiai.lt/Apps/PsHandler/update.xml", "PsHandler.exe", Gui, Quit);
+            Autoupdate.CheckForUpdates(out ThreadUpdate, "PsHandler", "http://chainer.puslapiai.lt/PsHandler/update.xml", "PsHandler.exe", Gui, Quit);
         }
 
         public static void RegisterKeyboardHook()
