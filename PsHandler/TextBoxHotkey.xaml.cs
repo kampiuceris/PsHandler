@@ -21,6 +21,7 @@ namespace PsHandler
             {
                 _keyCombination = value;
                 TextBox_Hotkey.Text = GetString();
+                TextBox_Hotkey.Foreground = TextBox_Hotkey.Text.Equals("None") ? Brushes.DarkGray : Brushes.Black;
             }
             get
             {
@@ -37,8 +38,8 @@ namespace PsHandler
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            TextBox_Hotkey.BorderBrush = new SolidColorBrush(Colors.Blue);
-            TextBox_Hotkey.BorderThickness = new Thickness(2);
+            TextBox_Hotkey.BorderBrush = new SolidColorBrush(Colors.Red);
+            TextBox_Hotkey.BorderThickness = new Thickness(1.5);
             App.KeyboardHook.KeyCombinationDownMethods.Add(TextBoxKeyDown);
         }
 
