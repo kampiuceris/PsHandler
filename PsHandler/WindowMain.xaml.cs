@@ -28,6 +28,7 @@ namespace PsHandler
             ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Stars());
             ComboBox_PokerStarsTheme.SelectedIndex = 0;
 
+            TaskbarIcon_NotifyIcon.ContextMenu = GetNotifyIconContextMenu();
             TaskbarIcon_NotifyIcon.TrayMouseDoubleClick += (sender, args) =>
             {
                 Show();
@@ -35,8 +36,20 @@ namespace PsHandler
                 //MyNotifyIcon.Visibility = Visibility.Hidden;
             };
 
+
             Deactivated += (sender, args) => LoseFocus();
             MouseDown += (sender, args) => LoseFocus();
+        }
+
+        private ContextMenu GetNotifyIconContextMenu()
+        {
+            MenuItem miExit = new MenuItem { Header = "Exit" };
+            miExit.Click += (sender, args) => Close();
+
+            ContextMenu cm = new ContextMenu();
+            cm.Items.Add(miExit);
+
+            return cm;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -70,6 +83,11 @@ namespace PsHandler
         {
             TaskbarIcon_NotifyIcon.Dispose();
             base.OnClosing(e);
+        }
+
+        private void MenuItem_Exit_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
 
         private void LoseFocus()
