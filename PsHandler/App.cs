@@ -3,15 +3,16 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
-using PsHandler.Hooks;
 
 namespace PsHandler
 {
     public class App : Application
     {
-        private static WindowMain Gui;
-        private static KeyboardHook KeyboardHook;
-        private static Thread ThreadUpdate;
+        public const string UPDATE_PATH = "http://chainer.puslapiai.lt/PsHandler/update.xml";
+        public const string VERSION = "1.5";
+        public static WindowMain Gui;
+        public static KeyboardHook KeyboardHook;
+        public static Thread ThreadUpdate;
 
         public static PokerStarsTheme PokerStarsTheme
         {
@@ -26,16 +27,16 @@ namespace PsHandler
             }
         }
 
-        public static Key HandReplayHotkey
+        public static KeyCombination HandReplayHotkey
         {
             get
             {
-                Key? value = Key.None;
+                KeyCombination keyCombination = new KeyCombination(Key.None, false, false, false);
                 Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
                 {
-                    value = Gui.ComboBox_HandReplayHotkey.SelectedItem as Key?;
+                    keyCombination = Gui.HandReplayHotkey.KeyCombination;
                 }));
-                return value == null ? Key.None : (Key)value;
+                return keyCombination;
             }
         }
 
@@ -100,15 +101,15 @@ namespace PsHandler
 
             Handler.Start();
 
-            Autoupdate.CheckForUpdates(out ThreadUpdate, "PsHandler", "http://chainer.puslapiai.lt/PsHandler/update.xml", "PsHandler.exe", Gui, Quit);
+            Autoupdate.CheckForUpdates(out ThreadUpdate, UPDATE_PATH, "PsHandler", "PsHandler.exe", Gui, Quit);
         }
 
         public static void RegisterKeyboardHook()
         {
             KeyboardHook = new KeyboardHook();
-            KeyboardHook.CallbacksKeyDown.Add(keyDown =>
+            KeyboardHook.KeyCombinationDownMethods.Add(kc =>
             {
-                if (keyDown == App.HandReplayHotkey)
+                if (kc.Key == App.HandReplayHotkey.Key && kc.Ctrl == App.HandReplayHotkey.Ctrl && kc.Alt == App.HandReplayHotkey.Alt && kc.Shift == App.HandReplayHotkey.Shift)
                 {
                     Handler.ClickReplayHandButton();
                 }
@@ -148,14 +149,8 @@ namespace PsHandler
                 }
 
                 string handReplayHotkey = (string)keyPsHandler.GetValue("HandReplayHotkey");
-                foreach (var item in Gui.ComboBox_HandReplayHotkey.Items)
-                {
-                    if (item.ToString().Equals(handReplayHotkey))
-                    {
-                        Gui.ComboBox_HandReplayHotkey.SelectedItem = item;
-                        break;
-                    }
-                }
+                if (!handReplayHotkey.Contains(" ")) handReplayHotkey = "False False False " + handReplayHotkey; // v1.4 hotkey (only key without modifiers)
+                Gui.HandReplayHotkey.KeyCombination = KeyCombination.Parse(handReplayHotkey);
 
                 keyPsHandler.Dispose();
             }
@@ -228,7 +223,12 @@ namespace PsHandler
 
                 if (keyPsHandler.GetValue("HandReplayHotkey") == null)
                 {
-                    keyPsHandler.SetValue("HandReplayHotkey", "");
+                    keyPsHandler.SetValue("HandReplayHotkey", new KeyCombination(Key.None, false, false, false).ToString());
+                }
+
+                if (keyPsHandler.GetValue("Version") == null)
+                {
+                    keyPsHandler.SetValue("Version", VERSION);
                 }
 
                 keyPsHandler.Close();

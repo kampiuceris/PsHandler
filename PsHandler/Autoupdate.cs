@@ -14,7 +14,7 @@ namespace PsHandler
 {
     public class Autoupdate
     {
-        public static void CheckForUpdates(out Thread thread, string applicationName, string href, string exeName, Window owner, Action quitAction)
+        public static void CheckForUpdates(out Thread thread, string href, string applicationName, string exeName, Window owner, Action quitAction)
         {
             thread = new Thread(() =>
             {
@@ -30,7 +30,7 @@ namespace PsHandler
                         }));
                         if (messageBoxResult == MessageBoxResult.Yes)
                         {
-                            // get update.exe
+                            // get update
                             using (WebClient Client = new WebClient())
                             {
                                 Client.DownloadFile(updateFileHref, updateFileName);

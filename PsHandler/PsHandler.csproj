@@ -38,9 +38,14 @@
     <ApplicationIcon>Images\ps.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="PresentationUI, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="ReachFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Printing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,6 +55,8 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -59,8 +66,9 @@
     <Compile Include="Autoupdate.cs" />
     <Compile Include="Bmp.cs" />
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Handler.cs" />
-    <Compile Include="Hooks\KeyboardHook.cs" />
+    <Compile Include="KeyboardHook.cs" />
     <Compile Include="Methods.cs" />
     <Compile Include="NotifyIconWpf\BalloonIcon.cs" />
     <Compile Include="NotifyIconWpf\Interop\BalloonFlags.cs" />
@@ -94,6 +102,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ScreenCapture.cs" />
+    <Compile Include="TextBoxHotkey.xaml.cs">
+      <DependentUpon>TextBoxHotkey.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WinApi.cs" />
     <Compile Include="WindowMain.xaml.cs">
       <DependentUpon>WindowMain.xaml</DependentUpon>
@@ -116,6 +127,10 @@
     <Resource Include="Images\ps.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="TextBoxHotkey.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WindowMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.Windows;
+
 namespace PsHandler
 {
     public class Handler
@@ -13,6 +16,8 @@ namespace PsHandler
 
         public static void Start()
         {
+            #region TableControl
+
             _threadTableControl = new Thread(() =>
             {
                 try
@@ -43,13 +48,15 @@ namespace PsHandler
                 {
                     if (!(e is ThreadInterruptedException))
                     {
-                        System.Windows.MessageBox.Show(e.Message, "Error");
+                        MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         System.IO.File.WriteAllText(DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
                         Stop();
                     }
                 }
             });
             _threadTableControl.Start();
+
+            #endregion
 
             #region AutocloseTournamentRegistrationPopups
 
@@ -116,7 +123,7 @@ namespace PsHandler
                 {
                     if (!(e is ThreadInterruptedException))
                     {
-                        System.Windows.MessageBox.Show(e.Message, "Error");
+                        MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         System.IO.File.WriteAllText(DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
                         Stop();
                     }

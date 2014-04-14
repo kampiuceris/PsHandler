@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shell;
 
@@ -15,6 +16,8 @@ namespace PsHandler
         public WindowMain()
         {
             InitializeComponent();
+            Title = "PokerStars Handler v" + App.VERSION;
+
             ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Unknown());
             ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Azure());
             ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Black());
@@ -25,18 +28,15 @@ namespace PsHandler
             ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Stars());
             ComboBox_PokerStarsTheme.SelectedIndex = 0;
 
-            foreach (var keyName in Enum.GetValues(typeof(Key)))
-            {
-                ComboBox_HandReplayHotkey.Items.Add(keyName);
-            }
-            ComboBox_HandReplayHotkey.SelectedIndex = 0;
-
             TaskbarIcon_NotifyIcon.TrayMouseDoubleClick += (sender, args) =>
             {
                 Show();
                 WindowState = WindowState.Normal;
                 //MyNotifyIcon.Visibility = Visibility.Hidden;
             };
+
+            Deactivated += (sender, args) => LoseFocus();
+            MouseDown += (sender, args) => LoseFocus();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -70,6 +70,18 @@ namespace PsHandler
         {
             TaskbarIcon_NotifyIcon.Dispose();
             base.OnClosing(e);
+        }
+
+        private void LoseFocus()
+        {
+            // Move to a parent that can take focus
+            FrameworkElement parent = (FrameworkElement)Grid_Main.Parent;
+            while (parent != null && !((IInputElement)parent).Focusable)
+            {
+                parent = (FrameworkElement)parent.Parent;
+            }
+            DependencyObject scope = FocusManager.GetFocusScope(Grid_Main);
+            FocusManager.SetFocusedElement(scope, parent);
         }
     }
 }
