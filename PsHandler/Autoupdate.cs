@@ -48,7 +48,7 @@ namespace PsHandler
             thread.Start();
         }
 
-        public static bool CheckForUpdatesAndDeleteFiles(string href, out string autoupdateHref, out string autoupdateFileName)
+        private static bool CheckForUpdatesAndDeleteFiles(string href, out string autoupdateHref, out string autoupdateFileName)
         {
             using (WebClient webClient = new WebClient())
             {
@@ -66,9 +66,12 @@ namespace PsHandler
                 var exeDir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
 
                 // delete files
-                foreach (var file in root.Elements().Where(e => e.Name.LocalName.Equals("delete")).Select(xElement => xElement.Attribute("name").Value).Where(File.Exists))
+                foreach (var file in root.Elements().Where(e => e.Name.LocalName.Equals("delete")).Select(xElement => xElement.Attribute("name").Value))
                 {
-                    File.Delete(file);
+                    if (exeDir.GetFiles().Any(o => o.Name.Equals(file)))
+                    {
+                        File.Delete(file);
+                    }
                 }
 
                 // delete update file
