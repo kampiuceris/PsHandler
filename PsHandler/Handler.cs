@@ -116,6 +116,22 @@ namespace PsHandler
                                 }
                             }
                         }
+
+                        if (App.AutocloseHM2ApplyToSimilarTablesPopups)
+                        {
+                            foreach (var process in Process.GetProcessesByName("HoldemManager"))
+                            {
+                                foreach (IntPtr handle in WinApi.EnumerateProcessWindowHandles(process.Id))
+                                {
+                                    string windowTitle = WinApi.GetWindowTitle(handle);
+                                    if (windowTitle.Equals("Apply to similar tables?"))
+                                    {
+                                        WinApi.SendMessage(handle, WinApi.WM_SYSCOMMAND, new IntPtr(WinApi.SC_CLOSE), IntPtr.Zero);
+                                    }
+                                }
+                            }
+                        }
+
                         Thread.Sleep(DELAY_AUTOCLOSE_TOURNAMENT_REGISTRATION_POPUPS);
                     }
                 }

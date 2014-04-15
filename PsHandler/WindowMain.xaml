@@ -19,6 +19,7 @@
             <CheckBox x:Name="CheckBox_AutoclickImBack" Margin="2" Content="Autoclick ''I'm Back'' Button" Height="16" />
             <CheckBox x:Name="CheckBox_AutoclickTimebank" Margin="2" Content="Autoclick ''Timebank'' Button" Height="16" />
             <CheckBox x:Name="CheckBox_AutocloseTournamentRegistrationPopups" Margin="2" Content="Autoclose Tournament Registration Popups" Height="16" />
+            <CheckBox x:Name="CheckBox_AutocloseHM2ApplyToSimilarTablesPopups" Margin="2" Content="Autoclose HM2 'Apply to similar tables?' Popups" Height="16" />
             <CheckBox x:Name="CheckBox_MinimizeToSystemTray" Margin="2" Content="Minimize to System Tray" Height="16" />
             <StackPanel Orientation="Horizontal">
                 <Label Content="Hand Replay Hotkey:" Height="16" Padding="0" Width="120" />

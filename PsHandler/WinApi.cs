@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -19,6 +18,8 @@ namespace PsHandler
         public const int GWL_STYLE = -16;
         public const long WS_MINIMIZE = 0x20000000L;
         public const int SW_RESTORE = 9;
+        public const int WM_SYSCOMMAND = 0x0112;
+        public const int SC_CLOSE = 0xF060;
 
         public delegate bool EnumThreadDelegate(IntPtr hWnd, IntPtr lParam);
 
@@ -36,7 +37,7 @@ namespace PsHandler
                 this.Y = y;
             }
 
-            public POINT(System.Drawing.Point pt) : this(pt.X, pt.Y) { }
+            public POINT(Point pt) : this(pt.X, pt.Y) { }
 
             public static implicit operator System.Drawing.Point(POINT p)
             {

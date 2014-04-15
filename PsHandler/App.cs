@@ -93,6 +93,19 @@ namespace PsHandler
             }
         }
 
+        public static bool AutocloseHM2ApplyToSimilarTablesPopups
+        {
+            get
+            {
+                bool value = true;
+                Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                {
+                    value = Gui.CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.IsChecked == true;
+                }));
+                return value;
+            }
+        }
+
         public static bool MinimizeToSystemTray
         {
             get
@@ -154,6 +167,7 @@ namespace PsHandler
                 Gui.CheckBox_AutoclickImBack.IsChecked = (int)keyPsHandler.GetValue("AutoclickImBack") != 0;
                 Gui.CheckBox_AutoclickTimebank.IsChecked = (int)keyPsHandler.GetValue("AutoclickTimebank") != 0;
                 Gui.CheckBox_AutocloseTournamentRegistrationPopups.IsChecked = (int)keyPsHandler.GetValue("AutocloseTournamentRegistrationPopups") != 0;
+                Gui.CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.IsChecked = (int)keyPsHandler.GetValue("AutocloseHM2ApplyToSimilarTablesPopups") != 0;
                 Gui.CheckBox_MinimizeToSystemTray.IsChecked = (int)keyPsHandler.GetValue("MinimizeToSystemTray") != 0;
 
                 string pokerStarsTheme = (string)keyPsHandler.GetValue("PokerStarsTheme");
@@ -198,6 +212,7 @@ namespace PsHandler
                 keyPsHandler.SetValue("AutoclickImBack", AutoclickImBack ? 1 : 0);
                 keyPsHandler.SetValue("AutoclickTimebank", AutoclickTimebank ? 1 : 0);
                 keyPsHandler.SetValue("AutocloseTournamentRegistrationPopups", AutocloseTournamentRegistrationPopups ? 1 : 0);
+                keyPsHandler.SetValue("AutocloseHM2ApplyToSimilarTablesPopups", AutocloseHM2ApplyToSimilarTablesPopups ? 1 : 0);
                 keyPsHandler.SetValue("MinimizeToSystemTray", MinimizeToSystemTray ? 1 : 0);
                 keyPsHandler.SetValue("PokerStarsTheme", PokerStarsTheme.ToString());
                 keyPsHandler.SetValue("HotkeyHandReplay", HotkeyHandReplay.ToString());
@@ -242,6 +257,11 @@ namespace PsHandler
                 if (keyPsHandler.GetValue("AutocloseTournamentRegistrationPopups") == null)
                 {
                     keyPsHandler.SetValue("AutocloseTournamentRegistrationPopups", 0);
+                }
+
+                if (keyPsHandler.GetValue("AutocloseHM2ApplyToSimilarTablesPopups") == null)
+                {
+                    keyPsHandler.SetValue("AutocloseHM2ApplyToSimilarTablesPopups", 0);
                 }
 
                 if (keyPsHandler.GetValue("MinimizeToSystemTray") == null)

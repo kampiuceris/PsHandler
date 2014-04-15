@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shell;
+using Image = System.Windows.Controls.Image;
 
 namespace PsHandler
 {
@@ -37,9 +39,25 @@ namespace PsHandler
                 //MyNotifyIcon.Visibility = Visibility.Hidden;
             };
 
-
             Deactivated += (sender, args) => LoseFocus();
             MouseDown += (sender, args) => LoseFocus();
+
+            CheckBox_AutocloseTournamentRegistrationPopups.ToolTip = GetImage("PsHandler.Images.tournamentregistrationpopups.png");
+            CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.ToolTip = GetImage("PsHandler.Images.hm2applytosimilartables.png");
+        }
+
+        private Canvas GetImage(string pathToImage)
+        {
+            Bitmap bitmap = Methods.GetEmbeddedResourceBitmap(pathToImage);
+
+            Canvas canvas = new Canvas();
+            Image img = new Image { Source = bitmap.ToBitmapSource(), Margin = new Thickness(0) };
+
+            canvas.Children.Add(img);
+            canvas.Width = bitmap.Width;
+            canvas.Height = bitmap.Height;
+
+            return canvas;
         }
 
         private ContextMenu GetNotifyIconContextMenu()
@@ -84,11 +102,6 @@ namespace PsHandler
         {
             TaskbarIcon_NotifyIcon.Dispose();
             base.OnClosing(e);
-        }
-
-        private void MenuItem_Exit_OnClick(object sender, RoutedEventArgs e)
-        {
-            Close();
         }
 
         private void LoseFocus()
