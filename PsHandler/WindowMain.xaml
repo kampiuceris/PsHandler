@@ -34,12 +34,12 @@
             <Grid Height="24">
                 <CheckBox x:Name="CheckBox_AutocloseHM2ApplyToSimilarTablesPopups" Content="Autoclose HM2 'Apply to similar tables?' Popups " HorizontalAlignment="Left"  VerticalAlignment="Center" />
             </Grid>
-            <Separator />
-            <Grid Height="24">
+            <Separator Visibility="Collapsed"/>
+            <Grid Height="24" Visibility="Collapsed">
                 <Label Content="PokerStars Lobby Theme:" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" />
                 <ComboBox x:Name="ComboBox_PokerStarsThemeLobby" VerticalAlignment="Center" HorizontalAlignment="Right" Width="130" />
             </Grid>
-            <Grid Height="24">
+            <Grid Height="24" Visibility="Collapsed">
                 <CheckBox x:Name="CheckBox_TimerHUD" Content="Enable Timer HUD" HorizontalAlignment="Left" VerticalAlignment="Center" />
                 <Button x:Name="Button_TimerHUD" Content="Configure" HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" />
             </Grid>

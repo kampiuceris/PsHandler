@@ -18,7 +18,7 @@ namespace PsHandler
         public WindowMain()
         {
             InitializeComponent();
-            Title = App.NAME + " v" + App.VERSION;
+            Title = App.NAME + " v1." + App.VERSION;
 
             ComboBox_PokerStarsThemeLobby.Items.Add(new PokerStarsThemesLobby.Unknown());
             ComboBox_PokerStarsThemeLobby.Items.Add(new PokerStarsThemesLobby.Black());
@@ -36,7 +36,7 @@ namespace PsHandler
             ComboBox_PokerStarsThemeTable.SelectedIndex = 0;
 
             TaskbarIcon_NotifyIcon.ContextMenu = GetNotifyIconContextMenu();
-            TaskbarIcon_NotifyIcon.ToolTipText = App.NAME + " v" + App.VERSION;
+            TaskbarIcon_NotifyIcon.ToolTipText = App.NAME + " v1." + App.VERSION;
             TaskbarIcon_NotifyIcon.TrayMouseDoubleClick += (sender, args) =>
             {
                 Show();

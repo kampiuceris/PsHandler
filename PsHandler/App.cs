@@ -12,8 +12,9 @@ namespace PsHandler
     public class App : Application
     {
         public const string NAME = "PsHandler";
-        public const string VERSION = "1.5";
-        public const string UPDATE_PATH = "http://chainer.puslapiai.lt/PsHandler/update.xml";
+        public const int VERSION = 5;
+        public static string MACHINE_GUID = GetMachineGuid();
+        public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static WindowMain Gui;
         public static KeyboardHook KeyboardHook;
         public static Thread ThreadUpdate;
@@ -144,7 +145,7 @@ namespace PsHandler
             LoadRegistry();
             LobbyTime = new LobbyTime();
             Handler.Start();
-            Autoupdate.CheckForUpdates(out ThreadUpdate, UPDATE_PATH, "PsHandler", "PsHandler.exe", Gui, Quit);
+            Autoupdate.CheckForUpdates(out ThreadUpdate, UPDATE_HREF + "?v=" + VERSION + "&id=" + (string.IsNullOrEmpty(MACHINE_GUID) ? "" : MACHINE_GUID), UPDATE_HREF, "PsHandler", "PsHandler.exe", Gui, Quit);
         }
 
         public static void RegisterKeyboardHook()
@@ -239,6 +240,7 @@ namespace PsHandler
                 // check if registry is okay
                 RegistryKey keyPsHandler = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler", true);
 
+                keyPsHandler.SetValue("Version", VERSION);
                 keyPsHandler.SetValue("AutoclickImBack", AutoclickImBack ? 1 : 0);
                 keyPsHandler.SetValue("AutoclickTimebank", AutoclickTimebank ? 1 : 0);
                 keyPsHandler.SetValue("AutocloseTournamentRegistrationPopups", AutocloseTournamentRegistrationPopups ? 1 : 0);
@@ -325,6 +327,21 @@ namespace PsHandler
             }
             catch (Exception)
             {
+            }
+        }
+
+        public static string GetMachineGuid()
+        {
+            try
+            {
+                using (RegistryKey keyCryptography = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Cryptography"))
+                {
+                    return keyCryptography.GetValue("MachineGuid") as string;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
     }

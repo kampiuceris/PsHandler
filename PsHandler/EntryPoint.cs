@@ -43,6 +43,8 @@ namespace PsHandler
 
         public static void Test()
         {
+            return;
+
             LobbyTime LobbyTime = new LobbyTime();
 
             //Bmp bmp = new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.test.png"));

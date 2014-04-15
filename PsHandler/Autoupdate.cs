@@ -14,14 +14,14 @@ namespace PsHandler
 {
     public class Autoupdate
     {
-        public static void CheckForUpdates(out Thread thread, string href, string applicationName, string exeName, Window owner, Action quitAction)
+        public static void CheckForUpdates(out Thread thread, string hrefPhp, string hrefXml, string applicationName, string exeName, Window owner, Action quitAction)
         {
             thread = new Thread(() =>
             {
                 try
                 {
                     string updateFileHref, updateFileName;
-                    if (CheckForUpdatesAndDeleteFiles(href, out updateFileHref, out updateFileName))
+                    if (CheckForUpdatesAndDeleteFiles(hrefPhp, out updateFileHref, out updateFileName))
                     {
                         MessageBoxResult messageBoxResult = MessageBoxResult.Cancel;
                         Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
@@ -35,7 +35,7 @@ namespace PsHandler
                             {
                                 Client.DownloadFile(updateFileHref, updateFileName);
                             }
-                            string args = "\"" + applicationName + "\" \"" + href + "\" \"" + exeName + "\"";
+                            string args = "\"" + applicationName + "\" \"" + hrefXml + "\" \"" + exeName + "\"";
                             Process.Start(updateFileName, args);
                             quitAction.Invoke();
                         }
