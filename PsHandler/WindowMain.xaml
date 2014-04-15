@@ -2,11 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:tb="clr-namespace:Hardcodet.Wpf.TaskbarNotification"
-        Title="PokerStars Handler" Icon="Images\ps.ico" 
+        Title="" Icon="Images\ps.ico" 
         Closing="Window_Closing" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight"
         UseLayoutRounding="True">
     <Grid x:Name="Grid_Main" Background="#FFF0F0F0">
-        <tb:TaskbarIcon x:Name="TaskbarIcon_NotifyIcon" IconSource="Images\ps.ico" ToolTipText="PS Handler" />
+        <tb:TaskbarIcon x:Name="TaskbarIcon_NotifyIcon" IconSource="Images\ps.ico" />
         <StackPanel Margin="10">
             <StackPanel Orientation="Horizontal" Visibility="Collapsed">
                 <Label Content="PokerStars AppData:" Height="16" Padding="0" />

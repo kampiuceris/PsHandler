@@ -26,7 +26,7 @@ namespace PsHandler
                         MessageBoxResult messageBoxResult = MessageBoxResult.Cancel;
                         Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
                         {
-                            messageBoxResult = MessageBox.Show(owner, "New updates for '" + applicationName + "' available. Do you want to close application and download updates?", "Updates for '" + applicationName + "'", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                            messageBoxResult = MessageBox.Show(owner, "New updates for '" + applicationName + "' available. Do you want to close application and download updates?", "Update", MessageBoxButton.YesNo, MessageBoxImage.Question);
                         }));
                         if (messageBoxResult == MessageBoxResult.Yes)
                         {

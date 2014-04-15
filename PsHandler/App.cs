@@ -8,8 +8,9 @@ namespace PsHandler
 {
     public class App : Application
     {
-        public const string UPDATE_PATH = "http://chainer.puslapiai.lt/PsHandler/update.xml";
+        public const string NAME = "PsHandler";
         public const string VERSION = "1.5";
+        public const string UPDATE_PATH = "http://chainer.puslapiai.lt/PsHandler/update.xml";
         public static WindowMain Gui;
         public static KeyboardHook KeyboardHook;
         public static Thread ThreadUpdate;
