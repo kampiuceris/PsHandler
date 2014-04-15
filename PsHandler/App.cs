@@ -27,14 +27,27 @@ namespace PsHandler
             }
         }
 
-        public static KeyCombination HandReplayHotkey
+        public static KeyCombination HotkeyHandReplay
         {
             get
             {
                 KeyCombination keyCombination = new KeyCombination(Key.None, false, false, false);
                 Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
                 {
-                    keyCombination = Gui.HandReplayHotkey.KeyCombination;
+                    keyCombination = Gui.TextBoxHotkey_HandReplay.KeyCombination;
+                }));
+                return keyCombination;
+            }
+        }
+
+        public static KeyCombination HotkeyExit
+        {
+            get
+            {
+                KeyCombination keyCombination = new KeyCombination(Key.None, false, false, false);
+                Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                {
+                    keyCombination = Gui.TextBoxHotkey_Exit.KeyCombination;
                 }));
                 return keyCombination;
             }
@@ -109,9 +122,13 @@ namespace PsHandler
             KeyboardHook = new KeyboardHook();
             KeyboardHook.KeyCombinationDownMethods.Add(kc =>
             {
-                if (kc.Key == App.HandReplayHotkey.Key && kc.Ctrl == App.HandReplayHotkey.Ctrl && kc.Alt == App.HandReplayHotkey.Alt && kc.Shift == App.HandReplayHotkey.Shift)
+                if (kc.Equals(App.HotkeyHandReplay))
                 {
                     Handler.ClickReplayHandButton();
+                }
+                if (kc.Equals(App.HotkeyExit))
+                {
+                    App.Quit();
                 }
             });
         }
@@ -149,8 +166,17 @@ namespace PsHandler
                 }
 
                 string handReplayHotkey = (string)keyPsHandler.GetValue("HandReplayHotkey");
-                if (!handReplayHotkey.Contains(" ")) handReplayHotkey = "False False False " + handReplayHotkey; // v1.4 hotkey (only key without modifiers)
-                Gui.HandReplayHotkey.KeyCombination = KeyCombination.Parse(handReplayHotkey);
+                if (handReplayHotkey != null)
+                {
+                    Gui.TextBoxHotkey_HandReplay.KeyCombination = KeyCombination.Parse("False False False " + handReplayHotkey);
+                    using (RegistryKey keyPsHandlerDelete = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler", true)) keyPsHandlerDelete.DeleteValue("HandReplayHotkey"); //delete v1.4 version hotkey
+                }
+                else
+                {
+                    Gui.TextBoxHotkey_HandReplay.KeyCombination = KeyCombination.Parse((string)keyPsHandler.GetValue("HotkeyHandReplay"));
+                }
+
+                Gui.TextBoxHotkey_Exit.KeyCombination = KeyCombination.Parse((string)keyPsHandler.GetValue("HotkeyExit"));
 
                 keyPsHandler.Dispose();
             }
@@ -173,7 +199,8 @@ namespace PsHandler
                 keyPsHandler.SetValue("AutocloseTournamentRegistrationPopups", AutocloseTournamentRegistrationPopups ? 1 : 0);
                 keyPsHandler.SetValue("MinimizeToSystemTray", MinimizeToSystemTray ? 1 : 0);
                 keyPsHandler.SetValue("PokerStarsTheme", PokerStarsTheme.ToString());
-                keyPsHandler.SetValue("HandReplayHotkey", HandReplayHotkey.ToString());
+                keyPsHandler.SetValue("HotkeyHandReplay", HotkeyHandReplay.ToString());
+                keyPsHandler.SetValue("HotkeyExit", HotkeyExit.ToString());
 
                 keyPsHandler.Dispose();
             }
@@ -194,6 +221,11 @@ namespace PsHandler
                     {
                         keyPsHandler = keySoftware.CreateSubKey("PsHandler");
                     }
+                }
+
+                if (keyPsHandler.GetValue("Version") == null)
+                {
+                    keyPsHandler.SetValue("Version", VERSION);
                 }
 
                 if (keyPsHandler.GetValue("AutoclickImBack") == null)
@@ -221,14 +253,14 @@ namespace PsHandler
                     keyPsHandler.SetValue("PokerStarsTheme", "Unknown");
                 }
 
-                if (keyPsHandler.GetValue("HandReplayHotkey") == null)
+                if (keyPsHandler.GetValue("HotkeyHandReplay") == null)
                 {
-                    keyPsHandler.SetValue("HandReplayHotkey", new KeyCombination(Key.None, false, false, false).ToString());
+                    keyPsHandler.SetValue("HotkeyHandReplay", new KeyCombination(Key.None, false, false, false).ToString());
                 }
 
-                if (keyPsHandler.GetValue("Version") == null)
+                if (keyPsHandler.GetValue("HotkeyExit") == null)
                 {
-                    keyPsHandler.SetValue("Version", VERSION);
+                    keyPsHandler.SetValue("HotkeyExit", new KeyCombination(Key.None, false, false, false).ToString());
                 }
 
                 keyPsHandler.Close();

@@ -9,20 +9,24 @@
         <tb:TaskbarIcon x:Name="TaskbarIcon_NotifyIcon" IconSource="Images\ps.ico" ToolTipText="PS Handler" />
         <StackPanel Margin="10">
             <StackPanel Orientation="Horizontal" Visibility="Collapsed">
-                <Label Content="PokerStars AppData:" Height="16" Padding="0"/>
-                <TextBox x:Name="TextBox_PokerStarsAppDataPath" Margin="5,0,0,0" Width="150" Text="C:\Users\Martin\AppData\Local\PokerStars.EU" ToolTip="Path to your PokerStars AppData Folder (eg.: 'C:\Users\MyUser\AppData\Local\PokerStars.EU')"/>
+                <Label Content="PokerStars AppData:" Height="16" Padding="0" />
+                <TextBox x:Name="TextBox_PokerStarsAppDataPath" Margin="5,0,0,0" Width="150" Text="C:\Users\Martin\AppData\Local\PokerStars.EU" ToolTip="Path to your PokerStars AppData Folder (eg.: 'C:\Users\MyUser\AppData\Local\PokerStars.EU')" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Label Content="PokerStars Theme:" Height="16" Padding="0"/>
-                <ComboBox x:Name="ComboBox_PokerStarsTheme" Width="145" Margin="5,2,2,2"/>
+                <Label Content="PokerStars Theme:" Height="16" Padding="0" Width="120" />
+                <ComboBox x:Name="ComboBox_PokerStarsTheme" Width="150" Margin="5,2,0,2" />
             </StackPanel>
             <CheckBox x:Name="CheckBox_AutoclickImBack" Margin="2" Content="Autoclick ''I'm Back'' Button" Height="16" />
-            <CheckBox x:Name="CheckBox_AutoclickTimebank" Margin="2" Content="Autoclick ''Timebank'' Button" Height="16"/>
+            <CheckBox x:Name="CheckBox_AutoclickTimebank" Margin="2" Content="Autoclick ''Timebank'' Button" Height="16" />
             <CheckBox x:Name="CheckBox_AutocloseTournamentRegistrationPopups" Margin="2" Content="Autoclose Tournament Registration Popups" Height="16" />
             <CheckBox x:Name="CheckBox_MinimizeToSystemTray" Margin="2" Content="Minimize to System Tray" Height="16" />
             <StackPanel Orientation="Horizontal">
-                <Label Content="Hand Replay Hotkey:" Height="16" Padding="0"/>
-                <PsHandler:TextBoxHotkey x:Name="HandReplayHotkey" Margin="5,0" Width="130" Height="22"/>
+                <Label Content="Hand Replay Hotkey:" Height="16" Padding="0" Width="120" />
+                <PsHandler:TextBoxHotkey x:Name="TextBoxHotkey_HandReplay" Width="150" Height="22" Margin="5,2,0,2" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" ToolTip="Rare occasions may cause application to misbehave. You can setup a hotkey for an emergency exit.">
+                <Label Content="Exit Hotkey:" Height="16" Padding="0" Width="120" />
+                <PsHandler:TextBoxHotkey x:Name="TextBoxHotkey_Exit" Width="150" Height="22" Margin="5,2,0,2" />
             </StackPanel>
         </StackPanel>
     </Grid>

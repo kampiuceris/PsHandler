@@ -176,5 +176,10 @@ namespace PsHandler
         {
             return string.Format("{0} {1} {2} {3}", Ctrl, Alt, Shift, Key);
         }
+
+        public bool Equals(KeyCombination kc)
+        {
+            return kc.Key == Key && kc.Ctrl == Ctrl && kc.Alt == Alt && kc.Shift == Shift;
+        }
     }
 }
