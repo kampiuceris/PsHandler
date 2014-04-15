@@ -69,6 +69,7 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="KeyboardHook.cs" />
+    <Compile Include="LobbyTime.cs" />
     <Compile Include="Methods.cs" />
     <Compile Include="NotifyIconWpf\BalloonIcon.cs" />
     <Compile Include="NotifyIconWpf\Interop\BalloonFlags.cs" />
@@ -87,7 +88,7 @@
     <Compile Include="NotifyIconWpf\RoutedEventHelper.cs" />
     <Compile Include="NotifyIconWpf\TaskbarIcon.cs" />
     <Compile Include="NotifyIconWpf\Util.cs" />
-    <Compile Include="PokerStarsThemes.cs" />
+    <Compile Include="PokerStarsThemesTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -186,6 +187,32 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\tournamentregistrationpopups.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Lobby\Black\0.png" />
+    <EmbeddedResource Include="Images\Lobby\Black\1.png" />
+    <EmbeddedResource Include="Images\Lobby\Black\2.png" />
+    <EmbeddedResource Include="Images\Lobby\Black\3.png" />
+    <EmbeddedResource Include="Images\Lobby\Black\4.png" />
+    <EmbeddedResource Include="Images\Lobby\Black\5.png" />
+    <EmbeddedResource Include="Images\Lobby\Black\6.png" />
+    <EmbeddedResource Include="Images\Lobby\Black\7.png" />
+    <EmbeddedResource Include="Images\Lobby\Black\8.png" />
+    <EmbeddedResource Include="Images\Lobby\Black\9.png" />
+    <EmbeddedResource Include="Images\Lobby\Black\separator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Lobby\Classic\0.png" />
+    <EmbeddedResource Include="Images\Lobby\Classic\1.png" />
+    <EmbeddedResource Include="Images\Lobby\Classic\2.png" />
+    <EmbeddedResource Include="Images\Lobby\Classic\3.png" />
+    <EmbeddedResource Include="Images\Lobby\Classic\4.png" />
+    <EmbeddedResource Include="Images\Lobby\Classic\5.png" />
+    <EmbeddedResource Include="Images\Lobby\Classic\6.png" />
+    <EmbeddedResource Include="Images\Lobby\Classic\7.png" />
+    <EmbeddedResource Include="Images\Lobby\Classic\8.png" />
+    <EmbeddedResource Include="Images\Lobby\Classic\9.png" />
+    <EmbeddedResource Include="Images\Lobby\Classic\separator.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

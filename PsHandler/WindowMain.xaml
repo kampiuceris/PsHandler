@@ -12,23 +12,45 @@
                 <Label Content="PokerStars AppData:" Height="16" Padding="0" />
                 <TextBox x:Name="TextBox_PokerStarsAppDataPath" Margin="5,0,0,0" Width="150" Text="C:\Users\Martin\AppData\Local\PokerStars.EU" ToolTip="Path to your PokerStars AppData Folder (eg.: 'C:\Users\MyUser\AppData\Local\PokerStars.EU')" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <Label Content="PokerStars Theme:" Height="16" Padding="0" Width="120" />
-                <ComboBox x:Name="ComboBox_PokerStarsTheme" Width="150" Margin="5,2,0,2" />
-            </StackPanel>
-            <CheckBox x:Name="CheckBox_AutoclickImBack" Margin="2" Content="Autoclick ''I'm Back'' Button" Height="16" />
-            <CheckBox x:Name="CheckBox_AutoclickTimebank" Margin="2" Content="Autoclick ''Timebank'' Button" Height="16" />
-            <CheckBox x:Name="CheckBox_AutocloseTournamentRegistrationPopups" Margin="2" Content="Autoclose Tournament Registration Popups" Height="16" />
-            <CheckBox x:Name="CheckBox_AutocloseHM2ApplyToSimilarTablesPopups" Margin="2" Content="Autoclose HM2 'Apply to similar tables?' Popups" Height="16" />
-            <CheckBox x:Name="CheckBox_MinimizeToSystemTray" Margin="2" Content="Minimize to System Tray" Height="16" />
-            <StackPanel Orientation="Horizontal">
-                <Label Content="Hand Replay Hotkey:" Height="16" Padding="0" Width="120" />
-                <PsHandler:TextBoxHotkey x:Name="TextBoxHotkey_HandReplay" Width="150" Height="22" Margin="5,2,0,2" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" ToolTip="Rare occasions may cause application to misbehave. You can setup a hotkey for an emergency exit.">
-                <Label Content="Exit Hotkey:" Height="16" Padding="0" Width="120" />
-                <PsHandler:TextBoxHotkey x:Name="TextBoxHotkey_Exit" Width="150" Height="22" Margin="5,2,0,2" />
-            </StackPanel>
+
+            <Grid Height="24" >
+                <Label Content="PokerStars Table Theme:" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" />
+                <ComboBox x:Name="ComboBox_PokerStarsThemeTable" VerticalAlignment="Center" HorizontalAlignment="Right" Width="130" />
+            </Grid>
+            <Grid Height="24">
+                <CheckBox x:Name="CheckBox_AutoclickImBack" Content="Autoclick ''I'm Back'' Button" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Height="24">
+                <CheckBox x:Name="CheckBox_AutoclickTimebank" Content="Autoclick ''Timebank'' Button" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+            </Grid>
+            <Grid>
+                <Label Content="Hand Replay Hotkey:" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" />
+                <PsHandler:TextBoxHotkey x:Name="TextBoxHotkey_HandReplay" VerticalAlignment="Center" HorizontalAlignment="Right" Width="130" />
+            </Grid>
+            <Separator />
+            <Grid Height="24">
+                <CheckBox x:Name="CheckBox_AutocloseTournamentRegistrationPopups" Content="Autoclose Tournament Registration Popups" HorizontalAlignment="Left"  VerticalAlignment="Center" />
+            </Grid>
+            <Grid Height="24">
+                <CheckBox x:Name="CheckBox_AutocloseHM2ApplyToSimilarTablesPopups" Content="Autoclose HM2 'Apply to similar tables?' Popups " HorizontalAlignment="Left"  VerticalAlignment="Center" />
+            </Grid>
+            <Separator />
+            <Grid Height="24">
+                <Label Content="PokerStars Lobby Theme:" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" />
+                <ComboBox x:Name="ComboBox_PokerStarsThemeLobby" VerticalAlignment="Center" HorizontalAlignment="Right" Width="130" />
+            </Grid>
+            <Grid Height="24">
+                <CheckBox x:Name="CheckBox_TimerHUD" Content="Enable Timer HUD" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                <Button x:Name="Button_TimerHUD" Content="Configure" HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" />
+            </Grid>
+            <Separator />
+            <Grid Height="24">
+                <CheckBox x:Name="CheckBox_MinimizeToSystemTray" Content="Minimize to System Tray" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            </Grid>
+            <Grid Height="24" ToolTip="Rare occasions may cause application to misbehave. You can setup a hotkey for an emergency exit.">
+                <Label Content="Exit Hotkey:" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" />
+                <PsHandler:TextBoxHotkey x:Name="TextBoxHotkey_Exit" HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" />
+            </Grid>
         </StackPanel>
     </Grid>
 </Window>

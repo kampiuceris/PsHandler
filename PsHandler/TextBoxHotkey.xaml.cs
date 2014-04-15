@@ -39,7 +39,7 @@ namespace PsHandler
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             TextBox_Hotkey.BorderBrush = new SolidColorBrush(Colors.Red);
-            TextBox_Hotkey.BorderThickness = new Thickness(1.5);
+            TextBox_Hotkey.BorderThickness = new Thickness(1.2);
             App.KeyboardHook.KeyCombinationDownMethods.Add(TextBoxKeyDown);
         }
 

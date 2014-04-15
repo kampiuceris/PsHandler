@@ -20,15 +20,20 @@ namespace PsHandler
             InitializeComponent();
             Title = App.NAME + " v" + App.VERSION;
 
-            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Unknown());
-            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Azure());
-            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Black());
-            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Classic());
-            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.HyperSimple());
-            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Nova());
-            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Slick());
-            ComboBox_PokerStarsTheme.Items.Add(new PokerStarsThemes.Stars());
-            ComboBox_PokerStarsTheme.SelectedIndex = 0;
+            ComboBox_PokerStarsThemeLobby.Items.Add(new PokerStarsThemesLobby.Unknown());
+            ComboBox_PokerStarsThemeLobby.Items.Add(new PokerStarsThemesLobby.Black());
+            ComboBox_PokerStarsThemeLobby.Items.Add(new PokerStarsThemesLobby.Classic());
+            ComboBox_PokerStarsThemeLobby.SelectedIndex = 0;
+
+            ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Unknown());
+            ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Azure());
+            ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Black());
+            ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Classic());
+            ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.HyperSimple());
+            ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Nova());
+            ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Slick());
+            ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Stars());
+            ComboBox_PokerStarsThemeTable.SelectedIndex = 0;
 
             TaskbarIcon_NotifyIcon.ContextMenu = GetNotifyIconContextMenu();
             TaskbarIcon_NotifyIcon.ToolTipText = App.NAME + " v" + App.VERSION;

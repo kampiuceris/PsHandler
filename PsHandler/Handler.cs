@@ -34,8 +34,8 @@ namespace PsHandler
                                     if (className.Equals("PokerStarsTableFrameClass"))
                                     {
                                         Bmp bmp = new Bmp(ScreenCapture.GetBitmapWindowClient(handle));
-                                        if (App.AutoclickImBack) Methods.CheckButtonAndClick(bmp, App.PokerStarsTheme.ButtonImBack, handle);
-                                        if (App.AutoclickTimebank) Methods.CheckButtonAndClick(bmp, App.PokerStarsTheme.ButtonTimebank, handle);
+                                        if (App.AutoclickImBack) Methods.CheckButtonAndClick(bmp, App.PokerStarsThemeTable.ButtonImBack, handle);
+                                        if (App.AutoclickTimebank) Methods.CheckButtonAndClick(bmp, App.PokerStarsThemeTable.ButtonTimebank, handle);
                                     }
                                 }
                             }
@@ -167,7 +167,7 @@ namespace PsHandler
             string className = WinApi.GetClassName(handle);
             if (className.Equals("PokerStarsTableFrameClass"))
             {
-                Methods.LeftMouseClickRelative(handle, App.PokerStarsTheme.ButtonHandReplayX, App.PokerStarsTheme.ButtonHandReplayY, false);
+                Methods.LeftMouseClickRelative(handle, App.PokerStarsThemeTable.ButtonHandReplayX, App.PokerStarsThemeTable.ButtonHandReplayY, false);
             }
         }
     }

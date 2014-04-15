@@ -2,7 +2,7 @@
 
 namespace PsHandler
 {
-    public abstract class PokerStarsTheme
+    public abstract class PokerStarsThemeTable
     {
         public const double WIDTH = 792;
         public const double HEIGHT = 546;
@@ -38,21 +38,21 @@ namespace PsHandler
             AvgRed = r;
             AvgGreen = g;
             AvgBlue = b;
-            ClickX = clickX / PokerStarsTheme.WIDTH;
-            ClickY = clickY / PokerStarsTheme.HEIGHT;
-            X = x / PokerStarsTheme.WIDTH;
-            Y = y / PokerStarsTheme.HEIGHT;
-            Width = bmp.Width / PokerStarsTheme.WIDTH;
-            Height = bmp.Height / PokerStarsTheme.HEIGHT;
+            ClickX = clickX / PokerStarsThemeTable.WIDTH;
+            ClickY = clickY / PokerStarsThemeTable.HEIGHT;
+            X = x / PokerStarsThemeTable.WIDTH;
+            Y = y / PokerStarsThemeTable.HEIGHT;
+            Width = bmp.Width / PokerStarsThemeTable.WIDTH;
+            Height = bmp.Height / PokerStarsThemeTable.HEIGHT;
             MaxDiffR = maxDiffR;
             MaxDiffG = maxDiffG;
             MaxDiffB = maxDiffB;
         }
     }
 
-    public class PokerStarsThemes
+    public class PokerStarsThemesTable
     {
-        public class Unknown : PokerStarsTheme
+        public class Unknown : PokerStarsThemeTable
         {
             public Unknown()
             {
@@ -65,7 +65,7 @@ namespace PsHandler
             public override string ToString() { return "Unknown"; }
         }
 
-        public class Azure : PokerStarsTheme
+        public class Azure : PokerStarsThemeTable
         {
             public Azure()
             {
@@ -78,7 +78,7 @@ namespace PsHandler
             public override string ToString() { return "Azure"; }
         }
 
-        public class Black : PokerStarsTheme
+        public class Black : PokerStarsThemeTable
         {
             public Black()
             {
@@ -91,7 +91,7 @@ namespace PsHandler
             public override string ToString() { return "Black"; }
         }
 
-        public class Classic : PokerStarsTheme
+        public class Classic : PokerStarsThemeTable
         {
             public Classic()
             {
@@ -104,7 +104,7 @@ namespace PsHandler
             public override string ToString() { return "Classic"; }
         }
 
-        public class HyperSimple : PokerStarsTheme
+        public class HyperSimple : PokerStarsThemeTable
         {
             public HyperSimple()
             {
@@ -117,7 +117,7 @@ namespace PsHandler
             public override string ToString() { return "HyperSimple"; }
         }
 
-        public class Nova : PokerStarsTheme
+        public class Nova : PokerStarsThemeTable
         {
             public Nova()
             {
@@ -130,7 +130,7 @@ namespace PsHandler
             public override string ToString() { return "Nova"; }
         }
 
-        public class Slick : PokerStarsTheme
+        public class Slick : PokerStarsThemeTable
         {
             public Slick()
             {
@@ -144,7 +144,7 @@ namespace PsHandler
             public override string ToString() { return "Slick"; }
         }
 
-        public class Stars : PokerStarsTheme
+        public class Stars : PokerStarsThemeTable
         {
             public Stars()
             {
@@ -155,6 +155,29 @@ namespace PsHandler
             }
 
             public override string ToString() { return "Stars"; }
+        }
+    }
+
+    public abstract class PokerStarsThemeLobby
+    {
+
+    }
+
+    public class PokerStarsThemesLobby
+    {
+        public class Unknown : PokerStarsThemeLobby
+        {
+            public override string ToString() { return "Unknown"; }
+        }
+
+        public class Black : PokerStarsThemeLobby
+        {
+            public override string ToString() { return "Black"; }
+        }
+
+        public class Classic : PokerStarsThemeLobby
+        {
+            public override string ToString() { return "Classic"; }
         }
     }
 }

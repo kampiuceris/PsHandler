@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Drawing;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
+using Image = System.Drawing.Image;
 
 namespace PsHandler
 {
@@ -14,15 +17,29 @@ namespace PsHandler
         public static WindowMain Gui;
         public static KeyboardHook KeyboardHook;
         public static Thread ThreadUpdate;
+        public static LobbyTime LobbyTime;
 
-        public static PokerStarsTheme PokerStarsTheme
+        public static PokerStarsThemeLobby PokerStarsThemeLobby
         {
             get
             {
-                PokerStarsTheme value = null;
+                PokerStarsThemeLobby value = null;
                 Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
                 {
-                    value = Gui.ComboBox_PokerStarsTheme.SelectedItem as PokerStarsTheme ?? new PokerStarsThemes.Unknown();
+                    value = Gui.ComboBox_PokerStarsThemeLobby.SelectedItem as PokerStarsThemeLobby ?? new PokerStarsThemesLobby.Unknown();
+                }));
+                return value;
+            }
+        }
+
+        public static PokerStarsThemeTable PokerStarsThemeTable
+        {
+            get
+            {
+                PokerStarsThemeTable value = null;
+                Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                {
+                    value = Gui.ComboBox_PokerStarsThemeTable.SelectedItem as PokerStarsThemeTable ?? new PokerStarsThemesTable.Unknown();
                 }));
                 return value;
             }
@@ -125,9 +142,8 @@ namespace PsHandler
             Gui.Show();
             RegisterKeyboardHook();
             LoadRegistry();
-
+            LobbyTime = new LobbyTime();
             Handler.Start();
-
             Autoupdate.CheckForUpdates(out ThreadUpdate, UPDATE_PATH, "PsHandler", "PsHandler.exe", Gui, Quit);
         }
 
@@ -170,12 +186,26 @@ namespace PsHandler
                 Gui.CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.IsChecked = (int)keyPsHandler.GetValue("AutocloseHM2ApplyToSimilarTablesPopups") != 0;
                 Gui.CheckBox_MinimizeToSystemTray.IsChecked = (int)keyPsHandler.GetValue("MinimizeToSystemTray") != 0;
 
-                string pokerStarsTheme = (string)keyPsHandler.GetValue("PokerStarsTheme");
-                foreach (var item in Gui.ComboBox_PokerStarsTheme.Items)
+                string pokerStarsThemeLobby = (string)keyPsHandler.GetValue("PokerStarsThemeLobby");
+                foreach (var item in Gui.ComboBox_PokerStarsThemeLobby.Items)
                 {
-                    if (item.ToString().Equals(pokerStarsTheme))
+                    if (item.ToString().Equals(pokerStarsThemeLobby))
                     {
-                        Gui.ComboBox_PokerStarsTheme.SelectedItem = item;
+                        Gui.ComboBox_PokerStarsThemeLobby.SelectedItem = item;
+                        break;
+                    }
+                }
+
+                string pokerStarsThemeTable = (string)keyPsHandler.GetValue("PokerStarsTheme");
+                if (pokerStarsThemeTable == null)
+                    pokerStarsThemeTable = (string)keyPsHandler.GetValue("PokerStarsThemeTable");
+                else
+                    using (RegistryKey keyPsHandlerDelete = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler", true)) keyPsHandlerDelete.DeleteValue("PokerStarsTheme"); //delete v1.4 tabletheme
+                foreach (var item in Gui.ComboBox_PokerStarsThemeTable.Items)
+                {
+                    if (item.ToString().Equals(pokerStarsThemeTable))
+                    {
+                        Gui.ComboBox_PokerStarsThemeTable.SelectedItem = item;
                         break;
                     }
                 }
@@ -214,7 +244,8 @@ namespace PsHandler
                 keyPsHandler.SetValue("AutocloseTournamentRegistrationPopups", AutocloseTournamentRegistrationPopups ? 1 : 0);
                 keyPsHandler.SetValue("AutocloseHM2ApplyToSimilarTablesPopups", AutocloseHM2ApplyToSimilarTablesPopups ? 1 : 0);
                 keyPsHandler.SetValue("MinimizeToSystemTray", MinimizeToSystemTray ? 1 : 0);
-                keyPsHandler.SetValue("PokerStarsTheme", PokerStarsTheme.ToString());
+                keyPsHandler.SetValue("PokerStarsThemeLobby", PokerStarsThemeLobby.ToString());
+                keyPsHandler.SetValue("PokerStarsThemeTable", PokerStarsThemeTable.ToString());
                 keyPsHandler.SetValue("HotkeyHandReplay", HotkeyHandReplay.ToString());
                 keyPsHandler.SetValue("HotkeyExit", HotkeyExit.ToString());
 
@@ -269,9 +300,14 @@ namespace PsHandler
                     keyPsHandler.SetValue("MinimizeToSystemTray", 0);
                 }
 
-                if (keyPsHandler.GetValue("PokerStarsTheme") == null)
+                if (keyPsHandler.GetValue("PokerStarsThemeLobby") == null)
                 {
-                    keyPsHandler.SetValue("PokerStarsTheme", "Unknown");
+                    keyPsHandler.SetValue("PokerStarsThemeLobby", "Unknown");
+                }
+
+                if (keyPsHandler.GetValue("PokerStarsThemeTable") == null)
+                {
+                    keyPsHandler.SetValue("PokerStarsThemeTable", "Unknown");
                 }
 
                 if (keyPsHandler.GetValue("HotkeyHandReplay") == null)

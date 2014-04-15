@@ -8,7 +8,7 @@ namespace PsHandler
 {
     public class Bmp
     {
-        private readonly byte[] _rbga;
+        private readonly byte[] _bgra;
         public int Width { private set; get; }
         public int Height { private set; get; }
 
@@ -16,7 +16,7 @@ namespace PsHandler
         {
             Width = width;
             Height = height;
-            _rbga = new byte[width * height * 4];
+            _bgra = new byte[width * height * 4];
         }
 
         public Bmp(int width, int height, Color initColor)
@@ -45,81 +45,81 @@ namespace PsHandler
             {
                 Width = bmp.Width;
                 Height = bmp.Height;
-                _rbga = BitmapToBytes_Unsafe(bmp);
+                _bgra = BitmapToBytes_Unsafe(bmp);
             }
         }
 
-        public byte[] GetBytes()
+        public byte[] GetBytesARGB()
         {
-            return _rbga;
+            return _bgra;
         }
 
         /// <summary>
-        /// Slower way to set/get pixels. Faster GetPixels R/G/B/A(int x, int y).
+        /// Slower way to set/get pixels. Faster GetPixels A/R/G/B(int x, int y).
         /// </summary>
-        /// <returns>byte[] { R, G, B, A }</returns>
+        /// <returns>byte[] { A, R, G, B }</returns>
         public byte[] this[int x, int y]
         {
             set
             {
                 int i = x * 4 + (Width * 4) * y;
-                _rbga[i] = value[0];
-                _rbga[i + 1] = value[1];
-                _rbga[i + 2] = value[2];
-                _rbga[i + 3] = value[3];
+                _bgra[i + 3] = value[0];
+                _bgra[i + 2] = value[1];
+                _bgra[i + 1] = value[2];
+                _bgra[i] = value[3];
             }
             get
             {
                 int i = x * 4 + (Width * 4) * y;
-                return new byte[] { _rbga[i], _rbga[i + 1], _rbga[i + 2], _rbga[i + 3] };
+                return new[] { _bgra[i + 3], _bgra[i + 2], _bgra[i + 1], _bgra[i] };
             }
-        }
-
-        public byte GetPixelR(int x, int y)
-        {
-            return _rbga[x * 4 + (Width * 4) * y];
-        }
-
-        public byte GetPixelG(int x, int y)
-        {
-            return _rbga[x * 4 + (Width * 4) * y + 1];
-        }
-
-        public byte GetPixelB(int x, int y)
-        {
-            return _rbga[x * 4 + (Width * 4) * y + 2];
         }
 
         public byte GetPixelA(int x, int y)
         {
-            return _rbga[x * 4 + (Width * 4) * y + 3];
+            return _bgra[x * 4 + (Width * 4) * y + 3];
         }
 
-        public void SetPixelR(int x, int y, byte value)
+        public byte GetPixelR(int x, int y)
         {
-            _rbga[x * 4 + (Width * 4) * y] = value;
+            return _bgra[x * 4 + (Width * 4) * y + 2];
         }
 
-        public void SetPixelG(int x, int y, byte value)
+        public byte GetPixelG(int x, int y)
         {
-            _rbga[x * 4 + (Width * 4) * y + 1] = value;
+            return _bgra[x * 4 + (Width * 4) * y + 1];
         }
 
-        public void SetPixelB(int x, int y, byte value)
+        public byte GetPixelB(int x, int y)
         {
-            _rbga[x * 4 + (Width * 4) * y + 2] = value;
+            return _bgra[x * 4 + (Width * 4) * y];
         }
 
         public void SetPixelA(int x, int y, byte value)
         {
-            _rbga[x * 4 + (Width * 4) * y + 3] = value;
+            _bgra[x * 4 + (Width * 4) * y + 3] = value;
+        }
+
+        public void SetPixelR(int x, int y, byte value)
+        {
+            _bgra[x * 4 + (Width * 4) * y + 2] = value;
+        }
+
+        public void SetPixelG(int x, int y, byte value)
+        {
+            _bgra[x * 4 + (Width * 4) * y + 1] = value;
+        }
+
+        public void SetPixelB(int x, int y, byte value)
+        {
+            _bgra[x * 4 + (Width * 4) * y] = value;
         }
 
         // static
 
         public static Bitmap CutBitmap(Bitmap source, Rectangle rect)
         {
-            System.Diagnostics.Debug.WriteLine(rect.X + " " + rect.Y + " " + rect.Width + " " + rect.Height);
+            //System.Diagnostics.Debug.WriteLine(rect.X + " " + rect.Y + " " + rect.Width + " " + rect.Height);
             Bitmap bitmapCut = new Bitmap(rect.Right - rect.Left, rect.Bottom - rect.Top);
             using (Graphics g = Graphics.FromImage(bitmapCut))
             {
@@ -157,18 +157,18 @@ namespace PsHandler
             return bmpBytes;
         }
 
-        public static Bitmap BytesToBitmap_Unsafe(byte[] rbga, int width, int height)
+        public static Bitmap BytesToBitmap_Unsafe(byte[] argb, int width, int height)
         {
             Bitmap bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, bmp.PixelFormat);
-            Marshal.Copy(rbga, 0, bmpData.Scan0, rbga.Length);
+            Marshal.Copy(argb, 0, bmpData.Scan0, argb.Length);
             bmp.UnlockBits(bmpData);
             return bmp;
         }
 
         public static Bitmap BmpToBitmap(Bmp bmp)
         {
-            return BytesToBitmap_Unsafe(bmp.GetBytes(), bmp.Width, bmp.Height);
+            return BytesToBitmap_Unsafe(bmp.GetBytesARGB(), bmp.Width, bmp.Height);
         }
 
         public static Bmp BitmapToBmp(Bitmap bitmap)
