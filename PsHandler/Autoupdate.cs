@@ -35,7 +35,7 @@ namespace PsHandler
                             if (messageBoxResult == MessageBoxResult.Yes)
                             {
                                 // get update
-                                using (WebClient Client = new WebClient())
+                                using (WebClient Client = new WebClient { Proxy = null })
                                 {
                                     Client.DownloadFile(updateFileHref, updateFileName);
                                 }
@@ -58,7 +58,7 @@ namespace PsHandler
 
         private static bool CheckForUpdatesAndDeleteFiles(string href, out string autoupdateHref, out string autoupdateFileName)
         {
-            using (WebClient webClient = new WebClient())
+            using (WebClient webClient = new WebClient { Proxy = null })
             {
                 // download xml file
                 string xml = webClient.DownloadString(href);

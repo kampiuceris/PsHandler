@@ -172,7 +172,7 @@ namespace PsHandler
             Handler.Stop();
             SaveRegistry();
             Gui.IsClosing = true;
-            new Thread(() => Gui.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() => Gui.Close()))).Start();
+            new Thread(() => Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() => Gui.Close()))).Start();
         }
 
         public static void LoadRegistry()
