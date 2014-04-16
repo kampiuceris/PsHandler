@@ -14,34 +14,46 @@ namespace PsHandler
 {
     public class Autoupdate
     {
+        private static Thread _threadUpdate;
+
         public static void CheckForUpdates(string hrefPhp, string hrefXml, string applicationName, string exeName, Window owner, Action quitAction)
         {
-            try
+            _threadUpdate = new Thread(() =>
             {
-                string updateFileHref, updateFileName;
-                if (CheckForUpdatesAndDeleteFiles(hrefPhp, out updateFileHref, out updateFileName))
+                try
                 {
-                    MessageBoxResult messageBoxResult = MessageBoxResult.Cancel;
-                    Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                    while (true)
                     {
-                        messageBoxResult = MessageBox.Show(owner, "New updates for '" + applicationName + "' available. Do you want to close application and download updates?", "Update", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    }));
-                    if (messageBoxResult == MessageBoxResult.Yes)
-                    {
-                        // get update
-                        using (WebClient Client = new WebClient())
+                        string updateFileHref, updateFileName;
+                        if (CheckForUpdatesAndDeleteFiles(hrefPhp, out updateFileHref, out updateFileName))
                         {
-                            Client.DownloadFile(updateFileHref, updateFileName);
+                            MessageBoxResult messageBoxResult = MessageBoxResult.Cancel;
+                            Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                            {
+                                messageBoxResult = MessageBox.Show(owner, "New updates for '" + applicationName + "' available. Do you want to close application and download updates?", "Update", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                            }));
+                            if (messageBoxResult == MessageBoxResult.Yes)
+                            {
+                                // get update
+                                using (WebClient Client = new WebClient())
+                                {
+                                    Client.DownloadFile(updateFileHref, updateFileName);
+                                }
+                                string args = "\"" + applicationName + "\" \"" + hrefXml + "\" \"" + exeName + "\"";
+                                Process.Start(updateFileName, args);
+                                new Thread(quitAction.Invoke).Start();
+                            }
                         }
-                        string args = "\"" + applicationName + "\" \"" + hrefXml + "\" \"" + exeName + "\"";
-                        Process.Start(updateFileName, args);
-                        quitAction.Invoke();
+
+                        Thread.Sleep(7200000); // 2 hours
+                        //Thread.Sleep(5000);
                     }
                 }
-            }
-            catch (Exception)
-            {
-            }
+                catch (Exception e)
+                {
+                }
+            });
+            _threadUpdate.Start();
         }
 
         private static bool CheckForUpdatesAndDeleteFiles(string href, out string autoupdateHref, out string autoupdateFileName)
@@ -99,6 +111,11 @@ namespace PsHandler
                     return result.ToString();
                 }
             }
+        }
+
+        public static void Quit()
+        {
+            if (_threadUpdate != null) _threadUpdate.Abort();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace PsHandler
         public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static WindowMain Gui;
         public static KeyboardHook KeyboardHook;
-        public static Thread ThreadUpdate;
+
         public static LobbyTime LobbyTime;
 
         public static PokerStarsThemeLobby PokerStarsThemeLobby
@@ -146,15 +146,7 @@ namespace PsHandler
             LobbyTime = new LobbyTime();
             Handler.Start();
 
-            ThreadUpdate = new Thread(() =>
-            {
-                while (true)
-                {
-                    Autoupdate.CheckForUpdates(UPDATE_HREF + "?v=" + VERSION + "&id=" + (string.IsNullOrEmpty(MACHINE_GUID) ? "" : MACHINE_GUID), UPDATE_HREF, "PsHandler", "PsHandler.exe", Gui, Quit);
-                    Thread.Sleep(7200000); // 2 hours
-                }
-            });
-            ThreadUpdate.Start();
+            Autoupdate.CheckForUpdates(UPDATE_HREF + "?v=" + VERSION + "&id=" + (string.IsNullOrEmpty(MACHINE_GUID) ? "" : MACHINE_GUID), UPDATE_HREF, "PsHandler", "PsHandler.exe", Gui, Quit);
         }
 
         public static void RegisterKeyboardHook()
@@ -175,7 +167,7 @@ namespace PsHandler
 
         public static void Quit()
         {
-            if (ThreadUpdate != null) ThreadUpdate.Abort();
+            Autoupdate.Quit();
             KeyboardHook.Dispose();
             Handler.Stop();
             SaveRegistry();

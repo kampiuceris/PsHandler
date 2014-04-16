@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Net;
 using System.Reflection;
 using System.Security.Principal;
 using System.Threading;
@@ -14,6 +15,8 @@ namespace PsHandler
         [STAThreadAttribute]
         public static void Main()
         {
+            IPAddress x = new IPAddress(1490555351);
+
             //Test(); return;
 
             WindowsPrincipal pricipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
@@ -43,8 +46,6 @@ namespace PsHandler
 
         public static void Test()
         {
-            return;
-
             LobbyTime LobbyTime = new LobbyTime();
 
             //Bmp bmp = new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.test.png"));
