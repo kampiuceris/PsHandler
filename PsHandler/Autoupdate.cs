@@ -14,38 +14,34 @@ namespace PsHandler
 {
     public class Autoupdate
     {
-        public static void CheckForUpdates(out Thread thread, string hrefPhp, string hrefXml, string applicationName, string exeName, Window owner, Action quitAction)
+        public static void CheckForUpdates(string hrefPhp, string hrefXml, string applicationName, string exeName, Window owner, Action quitAction)
         {
-            thread = new Thread(() =>
+            try
             {
-                try
+                string updateFileHref, updateFileName;
+                if (CheckForUpdatesAndDeleteFiles(hrefPhp, out updateFileHref, out updateFileName))
                 {
-                    string updateFileHref, updateFileName;
-                    if (CheckForUpdatesAndDeleteFiles(hrefPhp, out updateFileHref, out updateFileName))
+                    MessageBoxResult messageBoxResult = MessageBoxResult.Cancel;
+                    Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
                     {
-                        MessageBoxResult messageBoxResult = MessageBoxResult.Cancel;
-                        Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                        messageBoxResult = MessageBox.Show(owner, "New updates for '" + applicationName + "' available. Do you want to close application and download updates?", "Update", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    }));
+                    if (messageBoxResult == MessageBoxResult.Yes)
+                    {
+                        // get update
+                        using (WebClient Client = new WebClient())
                         {
-                            messageBoxResult = MessageBox.Show(owner, "New updates for '" + applicationName + "' available. Do you want to close application and download updates?", "Update", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                        }));
-                        if (messageBoxResult == MessageBoxResult.Yes)
-                        {
-                            // get update
-                            using (WebClient Client = new WebClient())
-                            {
-                                Client.DownloadFile(updateFileHref, updateFileName);
-                            }
-                            string args = "\"" + applicationName + "\" \"" + hrefXml + "\" \"" + exeName + "\"";
-                            Process.Start(updateFileName, args);
-                            quitAction.Invoke();
+                            Client.DownloadFile(updateFileHref, updateFileName);
                         }
+                        string args = "\"" + applicationName + "\" \"" + hrefXml + "\" \"" + exeName + "\"";
+                        Process.Start(updateFileName, args);
+                        quitAction.Invoke();
                     }
                 }
-                catch (Exception)
-                {
-                }
-            });
-            thread.Start();
+            }
+            catch (Exception)
+            {
+            }
         }
 
         private static bool CheckForUpdatesAndDeleteFiles(string href, out string autoupdateHref, out string autoupdateFileName)

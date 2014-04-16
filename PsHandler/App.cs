@@ -145,7 +145,16 @@ namespace PsHandler
             LoadRegistry();
             LobbyTime = new LobbyTime();
             Handler.Start();
-            Autoupdate.CheckForUpdates(out ThreadUpdate, UPDATE_HREF + "?v=" + VERSION + "&id=" + (string.IsNullOrEmpty(MACHINE_GUID) ? "" : MACHINE_GUID), UPDATE_HREF, "PsHandler", "PsHandler.exe", Gui, Quit);
+
+            ThreadUpdate = new Thread(() =>
+            {
+                while (true)
+                {
+                    Autoupdate.CheckForUpdates(UPDATE_HREF + "?v=" + VERSION + "&id=" + (string.IsNullOrEmpty(MACHINE_GUID) ? "" : MACHINE_GUID), UPDATE_HREF, "PsHandler", "PsHandler.exe", Gui, Quit);
+                    Thread.Sleep(7200000); // 2 hours
+                }
+            });
+            ThreadUpdate.Start();
         }
 
         public static void RegisterKeyboardHook()
@@ -166,6 +175,7 @@ namespace PsHandler
 
         public static void Quit()
         {
+            if (ThreadUpdate != null) ThreadUpdate.Abort();
             KeyboardHook.Dispose();
             Handler.Stop();
             SaveRegistry();
