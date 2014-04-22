@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PsHandler.Hud;
+using System;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
@@ -49,6 +50,11 @@ namespace PsHandler
 
             CheckBox_AutocloseTournamentRegistrationPopups.ToolTip = GetImage("PsHandler.Images.tournamentregistrationpopups.png");
             CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.ToolTip = GetImage("PsHandler.Images.hm2applytosimilartables.png");
+            StackPanel sp = new StackPanel { Orientation = Orientation.Vertical, Margin = new Thickness(10) };
+            sp.Children.Add(new Label { Content = "Path to your PokerStars AppData Folder", Margin = new Thickness(5, 0, 5, 0) });
+            sp.Children.Add(new Label { Content = @"(eg.: 'C:\Users\*****\AppData\Local\PokerStars.EU')", Margin = new Thickness(5, 0, 5, 10) });
+            sp.Children.Add(GetImage("PsHandler.Images.appdatafolder.png"));
+            TextBox_AppDataPath.ToolTip = sp;
         }
 
         private Canvas GetImage(string pathToImage)
@@ -119,6 +125,28 @@ namespace PsHandler
             }
             DependencyObject scope = FocusManager.GetFocusScope(Grid_Main);
             FocusManager.SetFocusedElement(scope, parent);
+        }
+
+        private void Button_SyncTime_Click(object sender, RoutedEventArgs e)
+        {
+            if (!App.LobbyTime.SyncInWork)
+            {
+                App.LobbyTime.StartSync();
+            }
+            else
+            {
+                App.LobbyTime.StopSync();
+            }
+        }
+
+        private void CheckBox_TimerHud_Checked(object sender, RoutedEventArgs e)
+        {
+            HudManager.Start();
+        }
+
+        private void CheckBox_TimerHud_UnChecked(object sender, RoutedEventArgs e)
+        {
+            HudManager.Stop();
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
+using PsHandler.Hud;
 using Image = System.Drawing.Image;
 
 namespace PsHandler
@@ -12,12 +14,11 @@ namespace PsHandler
     public class App : Application
     {
         public const string NAME = "PsHandler";
-        public const int VERSION = 5;
-        public static string MACHINE_GUID = GetMachineGuid();
+        public const int VERSION = 6;
+        public static string MACHINE_GUID = ConfigManager.GetMachineGuid();
         public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static WindowMain Gui;
         public static KeyboardHook KeyboardHook;
-
         public static LobbyTime LobbyTime;
 
         public static PokerStarsThemeLobby PokerStarsThemeLobby
@@ -137,16 +138,71 @@ namespace PsHandler
             }
         }
 
+        public static bool StartMinimized
+        {
+            get
+            {
+                bool value = false;
+                Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                {
+                    value = Gui.CheckBox_StartMinimized.IsChecked == true;
+                }));
+                return value;
+            }
+        }
+
+        public static string AppDataPath
+        {
+            get
+            {
+                string value = "";
+                Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                {
+                    value = Gui.TextBox_AppDataPath.Text;
+                }));
+                return value;
+            }
+        }
+
+        public static int TimeDiff
+        {
+            get
+            {
+                int value = 0;
+                Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                {
+                    int.TryParse(Gui.TextBox_TimeDiff.Text, out value);
+                }));
+                return value;
+            }
+        }
+
+        public static bool TimerHud
+        {
+            get
+            {
+                bool value = true;
+                Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                {
+                    value = Gui.CheckBox_TimerHud.IsChecked == true;
+                }));
+                return value;
+            }
+        }
+
+        // --------------------------------------
+
         public App()
         {
             Gui = new WindowMain();
             Gui.Show();
             RegisterKeyboardHook();
-            LoadRegistry();
+            ConfigManager.LoadRegistry();
+            if (StartMinimized) Gui.WindowState = WindowState.Minimized;
             LobbyTime = new LobbyTime();
             Handler.Start();
 
-            Autoupdate.CheckForUpdates(UPDATE_HREF + "?v=" + VERSION + "&id=" + (string.IsNullOrEmpty(MACHINE_GUID) ? "" : MACHINE_GUID), UPDATE_HREF, "PsHandler", "PsHandler.exe", Gui, Quit);
+            //Autoupdate.CheckForUpdates(UPDATE_HREF + "?v=" + VERSION + "&id=" + (string.IsNullOrEmpty(MACHINE_GUID) ? "" : MACHINE_GUID), UPDATE_HREF, "PsHandler", "PsHandler.exe", Gui, Quit);
         }
 
         public static void RegisterKeyboardHook()
@@ -168,183 +224,12 @@ namespace PsHandler
         public static void Quit()
         {
             Autoupdate.Quit();
+            HudManager.Stop();
             KeyboardHook.Dispose();
             Handler.Stop();
-            SaveRegistry();
+            ConfigManager.SaveRegistry();
             Gui.IsClosing = true;
             new Thread(() => Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() => Gui.Close()))).Start();
-        }
-
-        public static void LoadRegistry()
-        {
-            CheckRegistry();
-
-            try
-            {
-                RegistryKey keyPsHandler = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler");
-
-                Gui.CheckBox_AutoclickImBack.IsChecked = (int)keyPsHandler.GetValue("AutoclickImBack") != 0;
-                Gui.CheckBox_AutoclickTimebank.IsChecked = (int)keyPsHandler.GetValue("AutoclickTimebank") != 0;
-                Gui.CheckBox_AutocloseTournamentRegistrationPopups.IsChecked = (int)keyPsHandler.GetValue("AutocloseTournamentRegistrationPopups") != 0;
-                Gui.CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.IsChecked = (int)keyPsHandler.GetValue("AutocloseHM2ApplyToSimilarTablesPopups") != 0;
-                Gui.CheckBox_MinimizeToSystemTray.IsChecked = (int)keyPsHandler.GetValue("MinimizeToSystemTray") != 0;
-
-                string pokerStarsThemeLobby = (string)keyPsHandler.GetValue("PokerStarsThemeLobby");
-                foreach (var item in Gui.ComboBox_PokerStarsThemeLobby.Items)
-                {
-                    if (item.ToString().Equals(pokerStarsThemeLobby))
-                    {
-                        Gui.ComboBox_PokerStarsThemeLobby.SelectedItem = item;
-                        break;
-                    }
-                }
-
-                string pokerStarsThemeTable = (string)keyPsHandler.GetValue("PokerStarsTheme");
-                if (pokerStarsThemeTable == null)
-                    pokerStarsThemeTable = (string)keyPsHandler.GetValue("PokerStarsThemeTable");
-                else
-                    using (RegistryKey keyPsHandlerDelete = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler", true)) keyPsHandlerDelete.DeleteValue("PokerStarsTheme"); //delete v1.4 tabletheme
-                foreach (var item in Gui.ComboBox_PokerStarsThemeTable.Items)
-                {
-                    if (item.ToString().Equals(pokerStarsThemeTable))
-                    {
-                        Gui.ComboBox_PokerStarsThemeTable.SelectedItem = item;
-                        break;
-                    }
-                }
-
-                string handReplayHotkey = (string)keyPsHandler.GetValue("HandReplayHotkey");
-                if (handReplayHotkey != null)
-                {
-                    Gui.TextBoxHotkey_HandReplay.KeyCombination = KeyCombination.Parse("False False False " + handReplayHotkey);
-                    using (RegistryKey keyPsHandlerDelete = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler", true)) keyPsHandlerDelete.DeleteValue("HandReplayHotkey"); //delete v1.4 version hotkey
-                }
-                else
-                {
-                    Gui.TextBoxHotkey_HandReplay.KeyCombination = KeyCombination.Parse((string)keyPsHandler.GetValue("HotkeyHandReplay"));
-                }
-
-                Gui.TextBoxHotkey_Exit.KeyCombination = KeyCombination.Parse((string)keyPsHandler.GetValue("HotkeyExit"));
-
-                keyPsHandler.Dispose();
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        public static void SaveRegistry()
-        {
-            CheckRegistry();
-
-            try
-            {
-                // check if registry is okay
-                RegistryKey keyPsHandler = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler", true);
-
-                keyPsHandler.SetValue("Version", VERSION);
-                keyPsHandler.SetValue("AutoclickImBack", AutoclickImBack ? 1 : 0);
-                keyPsHandler.SetValue("AutoclickTimebank", AutoclickTimebank ? 1 : 0);
-                keyPsHandler.SetValue("AutocloseTournamentRegistrationPopups", AutocloseTournamentRegistrationPopups ? 1 : 0);
-                keyPsHandler.SetValue("AutocloseHM2ApplyToSimilarTablesPopups", AutocloseHM2ApplyToSimilarTablesPopups ? 1 : 0);
-                keyPsHandler.SetValue("MinimizeToSystemTray", MinimizeToSystemTray ? 1 : 0);
-                keyPsHandler.SetValue("PokerStarsThemeLobby", PokerStarsThemeLobby.ToString());
-                keyPsHandler.SetValue("PokerStarsThemeTable", PokerStarsThemeTable.ToString());
-                keyPsHandler.SetValue("HotkeyHandReplay", HotkeyHandReplay.ToString());
-                keyPsHandler.SetValue("HotkeyExit", HotkeyExit.ToString());
-
-                keyPsHandler.Dispose();
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        public static void CheckRegistry()
-        {
-            try
-            {
-                // check if registry is okay
-                RegistryKey keyPsHandler = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler", true);
-                if (keyPsHandler == null)
-                {
-                    using (RegistryKey keySoftware = Registry.CurrentUser.OpenSubKey(@"Software", true))
-                    {
-                        keyPsHandler = keySoftware.CreateSubKey("PsHandler");
-                    }
-                }
-
-                if (keyPsHandler.GetValue("Version") == null)
-                {
-                    keyPsHandler.SetValue("Version", VERSION);
-                }
-
-                if (keyPsHandler.GetValue("AutoclickImBack") == null)
-                {
-                    keyPsHandler.SetValue("AutoclickImBack", 0);
-                }
-
-                if (keyPsHandler.GetValue("AutoclickTimebank") == null)
-                {
-                    keyPsHandler.SetValue("AutoclickTimebank", 0);
-                }
-
-                if (keyPsHandler.GetValue("AutocloseTournamentRegistrationPopups") == null)
-                {
-                    keyPsHandler.SetValue("AutocloseTournamentRegistrationPopups", 0);
-                }
-
-                if (keyPsHandler.GetValue("AutocloseHM2ApplyToSimilarTablesPopups") == null)
-                {
-                    keyPsHandler.SetValue("AutocloseHM2ApplyToSimilarTablesPopups", 0);
-                }
-
-                if (keyPsHandler.GetValue("MinimizeToSystemTray") == null)
-                {
-                    keyPsHandler.SetValue("MinimizeToSystemTray", 0);
-                }
-
-                if (keyPsHandler.GetValue("PokerStarsThemeLobby") == null)
-                {
-                    keyPsHandler.SetValue("PokerStarsThemeLobby", "Unknown");
-                }
-
-                if (keyPsHandler.GetValue("PokerStarsThemeTable") == null)
-                {
-                    keyPsHandler.SetValue("PokerStarsThemeTable", "Unknown");
-                }
-
-                if (keyPsHandler.GetValue("HotkeyHandReplay") == null)
-                {
-                    keyPsHandler.SetValue("HotkeyHandReplay", new KeyCombination(Key.None, false, false, false).ToString());
-                }
-
-                if (keyPsHandler.GetValue("HotkeyExit") == null)
-                {
-                    keyPsHandler.SetValue("HotkeyExit", new KeyCombination(Key.None, false, false, false).ToString());
-                }
-
-                keyPsHandler.Close();
-                keyPsHandler.Dispose();
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        public static string GetMachineGuid()
-        {
-            try
-            {
-                using (RegistryKey keyCryptography = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Cryptography"))
-                {
-                    return keyCryptography.GetValue("MachineGuid") as string;
-                }
-            }
-            catch (Exception)
-            {
-                return null;
-            }
         }
     }
 }

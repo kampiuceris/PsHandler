@@ -207,6 +207,9 @@ namespace PsHandler
         public extern static IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
 
         [DllImport("user32.dll")]
+        public static extern bool IsWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
         public static extern bool IsWindowVisible(IntPtr hwnd);
 
         [DllImport("user32.dll")]
@@ -226,6 +229,9 @@ namespace PsHandler
 
         [DllImport("user32.dll")]
         public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        [DllImport("user32.dll")]
+        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
         //
 

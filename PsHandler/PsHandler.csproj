@@ -67,11 +67,16 @@
     <Compile Include="App.cs" />
     <Compile Include="Autoupdate.cs" />
     <Compile Include="Bmp.cs" />
+    <Compile Include="ConfigManager.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Handler.cs" />
+    <Compile Include="Hud\HudManager.cs" />
+    <Compile Include="Hud\WindowTimer.xaml.cs">
+      <DependentUpon>WindowTimer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="KeyboardHook.cs" />
-    <Compile Include="LobbyTime.cs" />
+    <Compile Include="Hud\LobbyTime.cs" />
     <Compile Include="Methods.cs" />
     <Compile Include="NotifyIconWpf\BalloonIcon.cs" />
     <Compile Include="NotifyIconWpf\Interop\BalloonFlags.cs" />
@@ -130,6 +135,10 @@
     <Resource Include="Images\ps.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Hud\WindowTimer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TextBoxHotkey.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -215,6 +224,9 @@
     <EmbeddedResource Include="Images\Lobby\Classic\8.png" />
     <EmbeddedResource Include="Images\Lobby\Classic\9.png" />
     <EmbeddedResource Include="Images\Lobby\Classic\separator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\appdatafolder.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

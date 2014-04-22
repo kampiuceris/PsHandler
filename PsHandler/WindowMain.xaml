@@ -8,11 +8,6 @@
     <Grid x:Name="Grid_Main" Background="#FFF0F0F0">
         <tb:TaskbarIcon x:Name="TaskbarIcon_NotifyIcon" IconSource="Images\ps.ico" />
         <StackPanel Margin="10">
-            <StackPanel Orientation="Horizontal" Visibility="Collapsed">
-                <Label Content="PokerStars AppData:" Height="16" Padding="0" />
-                <TextBox x:Name="TextBox_PokerStarsAppDataPath" Margin="5,0,0,0" Width="150" Text="C:\Users\Martin\AppData\Local\PokerStars.EU" ToolTip="Path to your PokerStars AppData Folder (eg.: 'C:\Users\MyUser\AppData\Local\PokerStars.EU')" />
-            </StackPanel>
-
             <Grid Height="24" >
                 <Label Content="PokerStars Table Theme:" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" />
                 <ComboBox x:Name="ComboBox_PokerStarsThemeTable" VerticalAlignment="Center" HorizontalAlignment="Right" Width="130" />
@@ -36,16 +31,27 @@
             </Grid>
             <Separator />
             <Grid Height="24">
+                <Label Content="PS AppData Path:" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" Margin="0,4" />
+                <TextBox x:Name="TextBox_AppDataPath" HorizontalAlignment="Right" VerticalAlignment="Center" Width="175" Text="" Grid.ColumnSpan="2" Margin="0,1" />
+            </Grid>
+            <Grid Height="24">
+                <CheckBox x:Name="CheckBox_TimerHud" Content="Enable Timer HUD" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="CheckBox_TimerHud_Checked" Unchecked="CheckBox_TimerHud_UnChecked"/>
+                <Button x:Name="Button_TimerConfigure" Content="Configure Levels" HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" />
+            </Grid>
+            <Grid Height="24">
                 <Label Content="PokerStars Lobby Theme:" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" />
                 <ComboBox x:Name="ComboBox_PokerStarsThemeLobby" VerticalAlignment="Center" HorizontalAlignment="Right" Width="130" />
             </Grid>
             <Grid Height="24">
-                <CheckBox x:Name="CheckBox_TimerHUD" Content="Enable Timer HUD" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                <Button x:Name="Button_TimerHUD" Content="Configure" HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" />
+                <Label x:Name="Label_TimeDiff" Content="Time Diff:" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" />
+                <TextBox Text="0" x:Name="TextBox_TimeDiff" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" Margin="56,2,0,2" Width="85" ToolTip="Difference between your PC system time and PokerStars server time (in seconds)" />
+                <Button x:Name="Button_SyncTime" Content="Synchronize (beta)" HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" ToolTip="Automatically get time difference (scans PokerStars lobby image, do not minimize!)" Click="Button_SyncTime_Click" />
+                <ProgressBar x:Name="ProgressBar_TimeSync" Width="141" Height="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,4" Visibility="Hidden" />
             </Grid>
             <Separator />
             <Grid Height="24">
                 <CheckBox x:Name="CheckBox_MinimizeToSystemTray" Content="Minimize to System Tray" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                <CheckBox x:Name="CheckBox_StartMinimized" Content="Start Minimized" HorizontalAlignment="Right" VerticalAlignment="Center" />
             </Grid>
             <Grid Height="24" ToolTip="Rare occasions may cause application to misbehave. You can setup a hotkey for an emergency exit.">
                 <Label Content="Exit Hotkey:" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" />

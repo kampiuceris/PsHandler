@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PsHandler.Hud;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Net;
@@ -15,8 +16,6 @@ namespace PsHandler
         [STAThreadAttribute]
         public static void Main()
         {
-            IPAddress x = new IPAddress(1490555351);
-
             //Test(); return;
 
             WindowsPrincipal pricipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
@@ -48,6 +47,7 @@ namespace PsHandler
         {
             LobbyTime LobbyTime = new LobbyTime();
 
+
             //Bmp bmp = new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.test.png"));
             //LobbyTime.MakeBlackWhite(ref bmp, LobbyTime.BLACK_WHITE_DIFF);
             //Debug.WriteLine(lt.GetText(bmp));
@@ -66,7 +66,7 @@ namespace PsHandler
                 new Window { Content = stackPanel, SizeToContent = SizeToContent.WidthAndHeight, UseLayoutRounding = true }.ShowDialog();
             }
 
-            while (true)
+            while (false)
             {
                 foreach (var process in Process.GetProcessesByName("PokerStars"))
                 {
@@ -93,7 +93,7 @@ namespace PsHandler
                         }
                     }
                 }
-                Thread.Sleep(2000);
+                Thread.Sleep(500);
             }
         }
     }
