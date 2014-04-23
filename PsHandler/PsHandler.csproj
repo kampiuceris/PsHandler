@@ -76,7 +76,6 @@
       <DependentUpon>WindowTimer.xaml</DependentUpon>
     </Compile>
     <Compile Include="KeyboardHook.cs" />
-    <Compile Include="Hud\LobbyTime.cs" />
     <Compile Include="Methods.cs" />
     <Compile Include="NotifyIconWpf\BalloonIcon.cs" />
     <Compile Include="NotifyIconWpf\Interop\BalloonFlags.cs" />
@@ -96,6 +95,10 @@
     <Compile Include="NotifyIconWpf\TaskbarIcon.cs" />
     <Compile Include="NotifyIconWpf\Util.cs" />
     <Compile Include="PokerStarsThemesTable.cs" />
+    <Compile Include="Types\PokerType.cs" />
+    <Compile Include="Types\WindowPokerTypeEdit.xaml.cs">
+      <DependentUpon>WindowPokerTypeEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -112,6 +115,9 @@
     <Compile Include="ScreenCapture.cs" />
     <Compile Include="TextBoxHotkey.xaml.cs">
       <DependentUpon>TextBoxHotkey.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Types\WindowPokerTypesEdit.xaml.cs">
+      <DependentUpon>WindowPokerTypesEdit.xaml</DependentUpon>
     </Compile>
     <Compile Include="WinApi.cs" />
     <Compile Include="WindowMain.xaml.cs">
@@ -139,7 +145,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Types\WindowPokerTypeEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TextBoxHotkey.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Types\WindowPokerTypesEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -227,6 +241,24 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\appdatafolder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\information.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\accept.png" />
+    <Resource Include="Images\cancel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\table_row_delete.png" />
+    <Resource Include="Images\table_row_insert.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\add.png" />
+    <Resource Include="Images\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\edit.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

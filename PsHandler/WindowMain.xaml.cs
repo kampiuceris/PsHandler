@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shell;
+using PsHandler.Types;
 using Image = System.Windows.Controls.Image;
 
 namespace PsHandler
@@ -20,11 +21,6 @@ namespace PsHandler
         {
             InitializeComponent();
             Title = App.NAME + " v1." + App.VERSION;
-
-            ComboBox_PokerStarsThemeLobby.Items.Add(new PokerStarsThemesLobby.Unknown());
-            ComboBox_PokerStarsThemeLobby.Items.Add(new PokerStarsThemesLobby.Black());
-            ComboBox_PokerStarsThemeLobby.Items.Add(new PokerStarsThemesLobby.Classic());
-            ComboBox_PokerStarsThemeLobby.SelectedIndex = 0;
 
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Unknown());
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Azure());
@@ -127,26 +123,22 @@ namespace PsHandler
             FocusManager.SetFocusedElement(scope, parent);
         }
 
-        private void Button_SyncTime_Click(object sender, RoutedEventArgs e)
-        {
-            if (!App.LobbyTime.SyncInWork)
-            {
-                App.LobbyTime.StartSync();
-            }
-            else
-            {
-                App.LobbyTime.StopSync();
-            }
-        }
-
         private void CheckBox_TimerHud_Checked(object sender, RoutedEventArgs e)
         {
+            Button_ConfigurePokerTypes.IsEnabled = false;
             HudManager.Start();
         }
 
         private void CheckBox_TimerHud_UnChecked(object sender, RoutedEventArgs e)
         {
             HudManager.Stop();
+            Button_ConfigurePokerTypes.IsEnabled = true;
+        }
+
+        private void Button_ConfigurePokerTypes_Click(object sender, RoutedEventArgs e)
+        {
+            WindowPokerTypesEdit windowPokerTypesEdit = new WindowPokerTypesEdit();
+            windowPokerTypesEdit.ShowDialog();
         }
     }
 }

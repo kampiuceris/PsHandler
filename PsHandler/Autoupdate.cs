@@ -16,7 +16,7 @@ namespace PsHandler
     {
         private static Thread _threadUpdate;
 
-        public static void CheckForUpdates(string hrefPhp, string hrefXml, string applicationName, string exeName, Window owner, Action quitAction)
+        public static void CheckForUpdates(string hrefPhp, string hrefXml, string applicationName, string exeName, string exeDir, Window owner, Action quitAction)
         {
             _threadUpdate = new Thread(() =>
             {
@@ -39,7 +39,7 @@ namespace PsHandler
                                 {
                                     Client.DownloadFile(updateFileHref, updateFileName);
                                 }
-                                string args = "\"" + applicationName + "\" \"" + hrefXml + "\" \"" + exeName + "\"";
+                                string args = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"", applicationName, hrefXml, exeName, exeDir.Replace(@"\", "/"));
                                 Process.Start(updateFileName, args);
                                 new Thread(quitAction.Invoke).Start();
                             }
@@ -67,11 +67,14 @@ namespace PsHandler
                 XElement root = XDocument.Parse(xml).Root;
                 if (root == null) throw new Exception(string.Format("Invalid '{0}' xml file.", href));
 
+                var exeDir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+                var tempDir = new DirectoryInfo(Path.GetTempPath());
+
+
                 // update file
                 autoupdateHref = root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("href").Value;
-                autoupdateFileName = root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("name").Value;
+                autoupdateFileName = tempDir.FullName + root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("name").Value;
 
-                var exeDir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
 
                 // delete files
                 foreach (var file in root.Elements().Where(e => e.Name.LocalName.Equals("delete")).Select(xElement => xElement.Attribute("name").Value))
@@ -84,10 +87,10 @@ namespace PsHandler
 
                 // delete update file
                 string _autoupdateFileName = autoupdateFileName;
-                if (exeDir.GetFiles().Any(o => o.Name.Equals(_autoupdateFileName)))
-                {
-                    File.Delete(_autoupdateFileName);
-                }
+                var exeDirUpdateFile = exeDir.GetFiles().FirstOrDefault(o => o.Name.Equals(_autoupdateFileName));
+                if (exeDirUpdateFile != null) exeDirUpdateFile.Delete();
+                var tempDirUpdateFile = tempDir.GetFiles().FirstOrDefault(o => o.Name.Equals(_autoupdateFileName));
+                if (tempDirUpdateFile != null) tempDirUpdateFile.Delete();
 
                 // check files
                 if (root.Elements().Where(e => e.Name.LocalName.Equals("file")).Select(e => new[] { e.Attribute("name").Value, e.Attribute("md5").Value }).Any(file => !GetMd5(file[0]).Equals(file[1])))

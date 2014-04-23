@@ -14,6 +14,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using PsHandler.Types;
 using Rectangle = System.Drawing.Rectangle;
 
 namespace PsHandler.Hud
@@ -25,6 +26,7 @@ namespace PsHandler.Hud
     {
         public IntPtr HandleOwner;
         private Thread _thread;
+        private PokerType _pokerType;
 
         public IntPtr Handle
         {
@@ -58,24 +60,36 @@ namespace PsHandler.Hud
                         {
                             Rectangle rect = WinApi.GetClientRectangle(HandleOwner);
                             string title = WinApi.GetWindowTitle(handleOwner);
-                            Regex regex = new Regex(@".+- Tournament (?<tn>\d+)");
+                            Regex regex = new Regex(@".+- Tournament (?<tn>\d+).+Logged In as.+");
                             Match match = regex.Match(title);
 
-                            string textboxContent = "--:--";
+                            string textboxContent = "";
                             if (match.Success)
                             {
                                 long toutnamentNumber = long.Parse(match.Groups["tn"].Value);
                                 TournamentInfo tournamentInfo = HudManager.GetTournamentInfo(toutnamentNumber);
                                 if (tournamentInfo != null)
                                 {
-                                    TimeSpan timeSpan = DateTime.Now.AddSeconds(-App.TimeDiff) - tournamentInfo.TimestampStarted;
-                                    int levelMinutes = 3;
-
-                                    double min = (levelMinutes - 1) - (int)timeSpan.TotalMinutes % levelMinutes;
-                                    double s = 59 - (int)timeSpan.TotalSeconds % 60;
-                                    textboxContent = string.Format("{0:00}:{1:00}", min, s);
-
-                                    //Debug.WriteLine(timeSpan.TotalMinutes + " " + timeSpan.TotalSeconds + " " + textboxContent);
+                                    if (_pokerType == null)
+                                    {
+                                        _pokerType = HudManager.FindPokerType(title, tournamentInfo.FileInfo.Name);
+                                    }
+                                    if (_pokerType != null)
+                                    {
+                                        DateTime dateTimeNow = DateTime.Now.AddSeconds(-App.TimeDiff);
+                                        DateTime dateTimeNextLevel = tournamentInfo.TimestampStarted;
+                                        while (dateTimeNextLevel < dateTimeNow) dateTimeNextLevel = dateTimeNextLevel.AddSeconds(_pokerType.LevelLengthInSeconds);
+                                        TimeSpan timeSpan = dateTimeNextLevel - dateTimeNow;
+                                        textboxContent = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
+                                    }
+                                    else
+                                    {
+                                        textboxContent = string.Format("Unknown PokerType");
+                                    }
+                                }
+                                else
+                                {
+                                    textboxContent = string.Format("HH not found");
                                 }
                             }
 

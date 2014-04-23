@@ -1,13 +1,9 @@
-﻿using PsHandler.Hud;
-using System;
+﻿using System;
 using System.Diagnostics;
-using System.Drawing;
-using System.Net;
 using System.Reflection;
 using System.Security.Principal;
-using System.Threading;
-using System.Windows;
-using System.Windows.Controls;
+using PsHandler.Hud;
+using PsHandler.Types;
 
 namespace PsHandler
 {
@@ -45,56 +41,20 @@ namespace PsHandler
 
         public static void Test()
         {
-            LobbyTime LobbyTime = new LobbyTime();
-
-
-            //Bmp bmp = new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.test.png"));
-            //LobbyTime.MakeBlackWhite(ref bmp, LobbyTime.BLACK_WHITE_DIFF);
-            //Debug.WriteLine(lt.GetText(bmp));
-
-            if (false)
+            PokerType pt = new PokerType
             {
-                StackPanel stackPanel = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+                Name = "Fifty50 Turbo",
+                LevelLengthInSeconds = 180,
+                IncludeAnd = new[] { "Tournament", "Logged In", "Fifty50", "Turbo" },
+                IncludeOr = new string[0],
+                ExcludeAnd = new string[0],
+                ExcludeOr = new string[0],
+                BuyInAndRake = new[] { "$1.39 + $0.04", "$3.30 + $0.20", "$6.68 + $0.32", "$14.31 + $0.69", "$28.63 + $1.37", "$57.25 + $2.75", "$95.86 + $4.14", "$193.05 + $6.95", "$291.60 + $8.40", "$487.20 + $12.80" }
+            };
 
-                Bmp bmp = new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.test.png"));
-                stackPanel.Children.Add(new System.Windows.Controls.Image { Source = Bmp.BmpToBitmap(bmp).ToBitmapSource(), Margin = new Thickness(0), Width = bmp.Width, Height = bmp.Height });
+            PokerType.FromXml(pt.ToXml());
 
-                bmp = new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.test.png"));
-                LobbyTime.MakeBlackWhite(ref bmp, 231, 201, 106, 75, 75, 75);
-                stackPanel.Children.Add(new System.Windows.Controls.Image { Source = Bmp.BmpToBitmap(bmp).ToBitmapSource(), Margin = new Thickness(0), Width = bmp.Width, Height = bmp.Height });
-
-                new Window { Content = stackPanel, SizeToContent = SizeToContent.WidthAndHeight, UseLayoutRounding = true }.ShowDialog();
-            }
-
-            while (false)
-            {
-                foreach (var process in Process.GetProcessesByName("PokerStars"))
-                {
-                    foreach (IntPtr handle in WinApi.EnumerateProcessWindowHandles(process.Id))
-                    {
-                        string className = WinApi.GetClassName(handle);
-                        if (className.Equals("#32770"))
-                        {
-                            string windowTitle = WinApi.GetWindowTitle(handle);
-                            if (windowTitle.StartsWith("PokerStars Lobby"))
-                            {
-                                Bmp bmp = new Bmp(ScreenCapture.GetBitmapWindowClient(handle));
-                                bmp = Bmp.CutBmp(bmp, new Rectangle((int)(bmp.Width * 0.70328), bmp.Height - 56, (int)(bmp.Width * 0.82071 - bmp.Width * 0.70328), 25));
-                                LobbyTime.MakeBlackWhite(ref bmp, 255, 255, 255, 50, 50, 50);
-                                //bmp = Bmp.CutBmp(bmp, new Rectangle(0, bmp.Height - 34, 80, 20));
-                                //LobbyTime.MakeBlackWhite(ref bmp, 231, 201, 106, 100, 100, 100);
-
-                                Debug.WriteLine(LobbyTime.GetText(bmp, false) + " " + DateTime.Now);
-
-                                //StackPanel stackPanel = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
-                                //stackPanel.Children.Add(new System.Windows.Controls.Image { Source = Bmp.BmpToBitmap(bmp).ToBitmapSource(), Margin = new Thickness(0), Width = bmp.Width, Height = bmp.Height });
-                                //new Window { Content = stackPanel, SizeToContent = SizeToContent.WidthAndHeight, UseLayoutRounding = true }.ShowDialog();
-                            }
-                        }
-                    }
-                }
-                Thread.Sleep(500);
-            }
+            //new WindowPokerTypeEdit(pt).ShowDialog();
         }
     }
 }

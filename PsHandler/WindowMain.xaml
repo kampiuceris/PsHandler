@@ -2,10 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:tb="clr-namespace:Hardcodet.Wpf.TaskbarNotification"
-        Title="" Icon="Images\ps.ico" 
-        Closing="Window_Closing" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight"
-        UseLayoutRounding="True">
-    <Grid x:Name="Grid_Main" Background="#FFF0F0F0">
+        Title="" Icon="Images\ps.ico" Closing="Window_Closing" 
+        ResizeMode="CanMinimize" SizeToContent="WidthAndHeight" 
+        UseLayoutRounding="True" Background="#FFF0F0F0">
+    <Grid x:Name="Grid_Main">
         <tb:TaskbarIcon x:Name="TaskbarIcon_NotifyIcon" IconSource="Images\ps.ico" />
         <StackPanel Margin="10">
             <Grid Height="24" >
@@ -35,18 +35,12 @@
                 <TextBox x:Name="TextBox_AppDataPath" HorizontalAlignment="Right" VerticalAlignment="Center" Width="175" Text="" Grid.ColumnSpan="2" Margin="0,1" />
             </Grid>
             <Grid Height="24">
-                <CheckBox x:Name="CheckBox_TimerHud" Content="Enable Timer HUD" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="CheckBox_TimerHud_Checked" Unchecked="CheckBox_TimerHud_UnChecked"/>
-                <Button x:Name="Button_TimerConfigure" Content="Configure Levels" HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" />
-            </Grid>
-            <Grid Height="24">
-                <Label Content="PokerStars Lobby Theme:" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" />
-                <ComboBox x:Name="ComboBox_PokerStarsThemeLobby" VerticalAlignment="Center" HorizontalAlignment="Right" Width="130" />
-            </Grid>
-            <Grid Height="24">
                 <Label x:Name="Label_TimeDiff" Content="Time Diff:" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" />
-                <TextBox Text="0" x:Name="TextBox_TimeDiff" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" Margin="56,2,0,2" Width="85" ToolTip="Difference between your PC system time and PokerStars server time (in seconds)" />
-                <Button x:Name="Button_SyncTime" Content="Synchronize (beta)" HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" ToolTip="Automatically get time difference (scans PokerStars lobby image, do not minimize!)" Click="Button_SyncTime_Click" />
-                <ProgressBar x:Name="ProgressBar_TimeSync" Width="141" Height="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,4" Visibility="Hidden" />
+                <TextBox x:Name="TextBox_TimeDiff" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" Margin="56,2,0,2" Width="46" ToolTip="Difference between your PC system time and PokerStars server time (in seconds)" />
+                <Button x:Name="Button_ConfigurePokerTypes" Content="Configure Poker Types" HorizontalAlignment="Right" VerticalAlignment="Center" Width="169" Margin="0,1" Click="Button_ConfigurePokerTypes_Click" />
+            </Grid>
+            <Grid Height="24">
+                <CheckBox x:Name="CheckBox_TimerHud" Content="Enable Timer HUD" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="CheckBox_TimerHud_Checked" Unchecked="CheckBox_TimerHud_UnChecked"/>
             </Grid>
             <Separator />
             <Grid Height="24">
