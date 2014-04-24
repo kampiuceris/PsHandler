@@ -24,8 +24,8 @@ namespace PsHandler
                 {
                     while (true)
                     {
-                        string updateFileHref, updateFileName;
-                        if (CheckForUpdatesAndDeleteFiles(hrefPhp, out updateFileHref, out updateFileName))
+                        string updateFileHref, updateFileNameFullPath;
+                        if (CheckForUpdatesAndDeleteFiles(hrefPhp, out updateFileHref, out updateFileNameFullPath))
                         {
                             MessageBoxResult messageBoxResult = MessageBoxResult.Cancel;
                             Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
@@ -37,10 +37,10 @@ namespace PsHandler
                                 // get update
                                 using (WebClient Client = new WebClient { Proxy = null })
                                 {
-                                    Client.DownloadFile(updateFileHref, updateFileName);
+                                    Client.DownloadFile(updateFileHref, updateFileNameFullPath);
                                 }
                                 string args = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"", applicationName, hrefXml, exeName, exeDir.Replace(@"\", "/"));
-                                Process.Start(updateFileName, args);
+                                Process.Start(updateFileNameFullPath, args);
                                 new Thread(quitAction.Invoke).Start();
                             }
                         }
@@ -56,7 +56,7 @@ namespace PsHandler
             _threadUpdate.Start();
         }
 
-        private static bool CheckForUpdatesAndDeleteFiles(string href, out string autoupdateHref, out string autoupdateFileName)
+        private static bool CheckForUpdatesAndDeleteFiles(string href, out string autoupdateHref, out string autoupdateFileNameFullPath)
         {
             using (WebClient webClient = new WebClient { Proxy = null })
             {
@@ -70,12 +70,6 @@ namespace PsHandler
                 var exeDir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
                 var tempDir = new DirectoryInfo(Path.GetTempPath());
 
-
-                // update file
-                autoupdateHref = root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("href").Value;
-                autoupdateFileName = tempDir.FullName + root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("name").Value;
-
-
                 // delete files
                 foreach (var file in root.Elements().Where(e => e.Name.LocalName.Equals("delete")).Select(xElement => xElement.Attribute("name").Value))
                 {
@@ -85,11 +79,15 @@ namespace PsHandler
                     }
                 }
 
+                // update file
+                autoupdateHref = root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("href").Value;
+                autoupdateFileNameFullPath = tempDir.FullName + root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("name").Value;
+                string autoupdateFileName = root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("name").Value;
+
                 // delete update file
-                string _autoupdateFileName = autoupdateFileName;
-                var exeDirUpdateFile = exeDir.GetFiles().FirstOrDefault(o => o.Name.Equals(_autoupdateFileName));
+                var exeDirUpdateFile = exeDir.GetFiles().FirstOrDefault(o => o.Name.Equals(autoupdateFileName));
                 if (exeDirUpdateFile != null) exeDirUpdateFile.Delete();
-                var tempDirUpdateFile = tempDir.GetFiles().FirstOrDefault(o => o.Name.Equals(_autoupdateFileName));
+                var tempDirUpdateFile = tempDir.GetFiles().FirstOrDefault(o => o.Name.Equals(autoupdateFileName));
                 if (tempDirUpdateFile != null) tempDirUpdateFile.Delete();
 
                 // check files
