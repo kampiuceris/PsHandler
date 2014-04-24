@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
+using System.Windows.Media;
 using Microsoft.Win32;
 using PsHandler.Types;
+using PsHandler.Hud;
+using System.Windows;
 
 namespace PsHandler
 {
@@ -54,6 +58,15 @@ namespace PsHandler
                 App.Gui.TextBox_TimeDiff.Text = keyPsHandler.GetValue("TimeDiff").ToString();
                 App.Gui.CheckBox_TimerHud.IsChecked = (int)keyPsHandler.GetValue("TimerHud") != 0;
                 App.Gui.TextBox_AppDataPath.Text = (string)keyPsHandler.GetValue("AppDataPath");
+                HudManager.TimerHudLocationLocked = (int)keyPsHandler.GetValue("TimerHudLocationLocked") != 0;
+                HudManager.TimerHudLocationX = float.Parse((string)keyPsHandler.GetValue("TimerHudLocationX"));
+                HudManager.TimerHudLocationY = float.Parse((string)keyPsHandler.GetValue("TimerHudLocationY"));
+                HudManager.TimerHudBackground = (Color)ColorConverter.ConvertFromString((string)keyPsHandler.GetValue("TimerHudBackground"));
+                HudManager.TimerHudForeground = (Color)ColorConverter.ConvertFromString((string)keyPsHandler.GetValue("TimerHudForeground"));
+                HudManager.TimerHudFontFamily = new FontFamily((string)keyPsHandler.GetValue("TimerHudFontFamily"));
+                HudManager.TimerHudFontWeight = (FontWeight)new FontWeightConverter().ConvertFrom(keyPsHandler.GetValue("TimerHudFontWeight"));
+                HudManager.TimerHudFontStyle = (FontStyle)new FontStyleConverter().ConvertFrom(keyPsHandler.GetValue("TimerHudFontStyle"));
+                HudManager.TimerHudFontSize = double.Parse((string)keyPsHandler.GetValue("TimerHudFontSize"));
 
                 keyPsHandler.Dispose();
             }
@@ -84,6 +97,15 @@ namespace PsHandler
                 keyPsHandler.SetValue("TimeDiff", App.TimeDiff);
                 keyPsHandler.SetValue("TimerHud", App.TimerHud ? 1 : 0);
                 keyPsHandler.SetValue("AppDataPath", App.AppDataPath);
+                keyPsHandler.SetValue("TimerHudLocationLocked", HudManager.TimerHudLocationLocked ? 1 : 0);
+                keyPsHandler.SetValue("TimerHudLocationX", HudManager.TimerHudLocationX.ToString(CultureInfo.InvariantCulture));
+                keyPsHandler.SetValue("TimerHudLocationY", HudManager.TimerHudLocationY.ToString(CultureInfo.InvariantCulture));
+                keyPsHandler.SetValue("TimerHudBackground", HudManager.TimerHudBackground.ToString(CultureInfo.InvariantCulture));
+                keyPsHandler.SetValue("TimerHudForeground", HudManager.TimerHudForeground.ToString(CultureInfo.InvariantCulture));
+                keyPsHandler.SetValue("TimerHudFontFamily", HudManager.TimerHudFontFamily.ToString());
+                keyPsHandler.SetValue("TimerHudFontWeight", HudManager.TimerHudFontWeight.ToString());
+                keyPsHandler.SetValue("TimerHudFontStyle", HudManager.TimerHudFontStyle.ToString());
+                keyPsHandler.SetValue("TimerHudFontSize", HudManager.TimerHudFontSize.ToString(CultureInfo.InvariantCulture));
 
                 keyPsHandler.Dispose();
             }
@@ -351,6 +373,51 @@ namespace PsHandler
 
                         #endregion
                     }
+                }
+
+                if (keyPsHandler.GetValue("TimerHudLocationLocked") == null)
+                {
+                    keyPsHandler.SetValue("TimerHudLocationLocked", 0);
+                }
+
+                if (keyPsHandler.GetValue("TimerHudLocationX") == null)
+                {
+                    keyPsHandler.SetValue("TimerHudLocationX", "0");
+                }
+
+                if (keyPsHandler.GetValue("TimerHudLocationY") == null)
+                {
+                    keyPsHandler.SetValue("TimerHudLocationY", "0");
+                }
+
+                if (keyPsHandler.GetValue("TimerHudBackground") == null)
+                {
+                    keyPsHandler.SetValue("TimerHudBackground", HudManager.TimerHudBackground);
+                }
+
+                if (keyPsHandler.GetValue("TimerHudForeground") == null)
+                {
+                    keyPsHandler.SetValue("TimerHudForeground", HudManager.TimerHudForeground);
+                }
+
+                if (keyPsHandler.GetValue("TimerHudFontFamily") == null)
+                {
+                    keyPsHandler.SetValue("TimerHudFontFamily", HudManager.TimerHudFontFamily);
+                }
+
+                if (keyPsHandler.GetValue("TimerHudFontWeight") == null)
+                {
+                    keyPsHandler.SetValue("TimerHudFontWeight", HudManager.TimerHudFontWeight);
+                }
+
+                if (keyPsHandler.GetValue("TimerHudFontStyle") == null)
+                {
+                    keyPsHandler.SetValue("TimerHudFontStyle", HudManager.TimerHudFontStyle);
+                }
+
+                if (keyPsHandler.GetValue("TimerHudFontSize") == null)
+                {
+                    keyPsHandler.SetValue("TimerHudFontSize", HudManager.TimerHudFontSize);
                 }
 
                 keyPsHandler.Close();

@@ -14,7 +14,7 @@ namespace PsHandler
     public class App : Application
     {
         public const string NAME = "PsHandler";
-        public const int VERSION = 6;
+        public const int VERSION = 7;
         public static string MACHINE_GUID = ConfigManager.GetMachineGuid();
         public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static WindowMain Gui;

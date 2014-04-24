@@ -36,11 +36,13 @@
             </Grid>
             <Grid Height="24">
                 <Label x:Name="Label_TimeDiff" Content="Time Diff:" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" />
-                <TextBox x:Name="TextBox_TimeDiff" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" Margin="56,2,0,2" Width="46" ToolTip="Difference between your PC system time and PokerStars server time (in seconds)" />
-                <Button x:Name="Button_ConfigurePokerTypes" Content="Configure Poker Types" HorizontalAlignment="Right" VerticalAlignment="Center" Width="169" Margin="0,1" Click="Button_ConfigurePokerTypes_Click" />
+                <TextBox x:Name="TextBox_TimeDiff" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" Margin="56,2,0,2" Width="85" ToolTip="Difference between your PC system time and PokerStars server time (in seconds)" />
+                <Button x:Name="Button_ConfigurePokerTypes" Content="Configure Poker Types" HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" Margin="0,1" Click="Button_ConfigurePokerTypes_Click" />
             </Grid>
             <Grid Height="24">
-                <CheckBox x:Name="CheckBox_TimerHud" Content="Enable Timer HUD" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="CheckBox_TimerHud_Checked" Unchecked="CheckBox_TimerHud_UnChecked"/>
+                <CheckBox x:Name="CheckBox_TimerHud" Content="Enable Timer HUD" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="CheckBox_TimerHud_Checked" Unchecked="CheckBox_TimerHud_UnChecked"
+                          ToolTip="Timer HUD properly works only on One Table SNGs (Or any other tournament without breaks. Once the first break appears in a tournament, timer will become invalid)" />
+                <Button x:Name="Button_CustomizeHUD" Content="Customize HUD" HorizontalAlignment="Right" VerticalAlignment="Center" Width="130" Margin="0,1" Click="Button_CustomizeHUD_Click" />
             </Grid>
             <Separator />
             <Grid Height="24">

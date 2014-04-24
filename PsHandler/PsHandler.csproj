@@ -70,8 +70,15 @@
     <Compile Include="ConfigManager.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="GlassEffect.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Hud\HudManager.cs" />
+    <Compile Include="Hud\Timer.xaml.cs">
+      <DependentUpon>Timer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Hud\WindowCustomizeHud.xaml.cs">
+      <DependentUpon>WindowCustomizeHud.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Hud\WindowTimer.xaml.cs">
       <DependentUpon>WindowTimer.xaml</DependentUpon>
     </Compile>
@@ -141,6 +148,14 @@
     <Resource Include="Images\ps.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Hud\Timer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Hud\WindowCustomizeHud.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Hud\WindowTimer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

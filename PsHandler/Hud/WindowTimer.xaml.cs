@@ -41,6 +41,12 @@ namespace PsHandler.Hud
         public WindowTimer()
         {
             InitializeComponent();
+            Timer_Main.SetBackground(HudManager.TimerHudBackground);
+            Timer_Main.SetForeground(HudManager.TimerHudForeground);
+            Timer_Main.SetFontFamily(HudManager.TimerHudFontFamily);
+            Timer_Main.SetFontWeight(HudManager.TimerHudFontWeight);
+            Timer_Main.SetFontStyle(HudManager.TimerHudFontStyle);
+            Timer_Main.SetFontSize(HudManager.TimerHudFontSize);
         }
 
         public void SetOwner(IntPtr handleOwner)
@@ -95,10 +101,13 @@ namespace PsHandler.Hud
 
                             Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
                             {
-                                Left = rect.X;
-                                Top = rect.Top;
-                                LabelTimer.Content = textboxContent;
+                                if (!_mouseDown)
+                                {
+                                    Left = rect.X + rect.Width * HudManager.TimerHudLocationX;
+                                    Top = rect.Y + rect.Height * HudManager.TimerHudLocationY;
+                                }
                             }));
+                            Timer_Main.SetText(textboxContent);
                         }
                         else
                         {
@@ -122,6 +131,50 @@ namespace PsHandler.Hud
         {
             if (_thread != null) _thread.Interrupt();
             base.OnClosing(e);
+        }
+
+        // move
+
+        private bool _mouseDown;
+        private Point _startPosition;
+
+        private void WindowMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _mouseDown = true;
+        }
+
+        private void WindowMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            _mouseDown = false;
+        }
+
+        private void WindowLocationChanged(object sender, EventArgs e)
+        {
+            if (_mouseDown)
+            {
+                Rectangle r = WinApi.GetClientRectangle(HandleOwner);
+                HudManager.TimerHudLocationX = (float)((Left - r.Left) / r.Width);
+                HudManager.TimerHudLocationY = (float)((Top - r.Top) / r.Height);
+            }
+        }
+
+        private void Window_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _startPosition = e.GetPosition(this);
+        }
+
+        private void Window_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (!HudManager.TimerHudLocationLocked)
+            {
+                if (e.RightButton == MouseButtonState.Pressed)
+                {
+                    Point endPosition = e.GetPosition(this);
+                    Vector vector = endPosition - _startPosition;
+                    Left = (int)(Left + vector.X);
+                    Top = (int)(Top + vector.Y);
+                }
+            }
         }
     }
 }

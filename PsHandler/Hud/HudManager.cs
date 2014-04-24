@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media;
 
 namespace PsHandler.Hud
 {
@@ -20,6 +21,16 @@ namespace PsHandler.Hud
         private static readonly Regex _RegexFileName = new Regex(@"HH\d{8} T(?<tn>\d{9,10})");
         private static readonly Regex _RegexTimestamp = new Regex(@".+ - (?<timestamp>\d{4}.\d{2}.\d{2} \d{1,2}:\d{2}:\d{2})");
         public static readonly List<PokerType> PokerTypes = new List<PokerType>();
+        //
+        public static bool TimerHudLocationLocked = false;
+        public static float TimerHudLocationX = 0;
+        public static float TimerHudLocationY = 0;
+        public static Color TimerHudBackground = Colors.Black;
+        public static Color TimerHudForeground = Colors.White;
+        public static FontFamily TimerHudFontFamily = new FontFamily("Consolas");
+        public static FontWeight TimerHudFontWeight = FontWeights.Bold;
+        public static FontStyle TimerHudFontStyle = FontStyles.Normal;
+        public static double TimerHudFontSize = 10;
 
         public static void Start()
         {

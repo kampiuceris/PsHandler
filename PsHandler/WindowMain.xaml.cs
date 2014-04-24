@@ -126,6 +126,7 @@ namespace PsHandler
         private void CheckBox_TimerHud_Checked(object sender, RoutedEventArgs e)
         {
             Button_ConfigurePokerTypes.IsEnabled = false;
+            Button_CustomizeHUD.IsEnabled = false;
             HudManager.Start();
         }
 
@@ -133,12 +134,18 @@ namespace PsHandler
         {
             HudManager.Stop();
             Button_ConfigurePokerTypes.IsEnabled = true;
+            Button_CustomizeHUD.IsEnabled = true;
         }
 
         private void Button_ConfigurePokerTypes_Click(object sender, RoutedEventArgs e)
         {
             WindowPokerTypesEdit windowPokerTypesEdit = new WindowPokerTypesEdit();
             windowPokerTypesEdit.ShowDialog();
+        }
+
+        private void Button_CustomizeHUD_Click(object sender, RoutedEventArgs e)
+        {
+            new WindowCustomizeHud().ShowDialog();
         }
     }
 }
