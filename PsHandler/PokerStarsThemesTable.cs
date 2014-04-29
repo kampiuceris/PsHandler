@@ -11,6 +11,22 @@ namespace PsHandler
         public PokerStarsButton ButtonTimebank { get; set; }
         public double ButtonHandReplayX;
         public double ButtonHandReplayY;
+
+        public static PokerStarsThemeTable Parse(string value)
+        {
+            PokerStarsThemeTable o;
+
+            o = new PokerStarsThemesTable.Azure(); if (value.Equals(o.ToString())) return o;
+            o = new PokerStarsThemesTable.Black(); if (value.Equals(o.ToString())) return o;
+            o = new PokerStarsThemesTable.Classic(); if (value.Equals(o.ToString())) return o;
+            o = new PokerStarsThemesTable.HyperSimple(); if (value.Equals(o.ToString())) return o;
+            o = new PokerStarsThemesTable.Nova(); if (value.Equals(o.ToString())) return o;
+            o = new PokerStarsThemesTable.Slick(); if (value.Equals(o.ToString())) return o;
+            o = new PokerStarsThemesTable.Stars(); if (value.Equals(o.ToString())) return o;
+            o = new PokerStarsThemesTable.Unknown(); if (value.Equals(o.ToString())) return o;
+
+            return new PokerStarsThemesTable.Unknown();
+        }
     }
 
     public class PokerStarsButton
@@ -160,7 +176,15 @@ namespace PsHandler
 
     public abstract class PokerStarsThemeLobby
     {
+        public static PokerStarsThemeLobby Parse(string value)
+        {
+            PokerStarsThemeLobby o;
 
+            o = new PokerStarsThemesLobby.Black(); if (value.Equals(o.ToString())) return o;
+            o = new PokerStarsThemesLobby.Classic(); if (value.Equals(o.ToString())) return o;
+
+            return new PokerStarsThemesLobby.Unknown();
+        }
     }
 
     public class PokerStarsThemesLobby

@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using PsHandler.Types;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -83,7 +73,7 @@ namespace PsHandler.Hud
                                     }
                                     if (_pokerType != null)
                                     {
-                                        DateTime dateTimeNow = DateTime.Now.AddSeconds(-App.TimeDiff);
+                                        DateTime dateTimeNow = DateTime.Now.AddSeconds(-Config.TimeDiff);
                                         DateTime dateTimeNextLevel = tournamentInfo.TimestampStarted;
                                         while (dateTimeNextLevel < dateTimeNow) dateTimeNextLevel = dateTimeNextLevel.AddSeconds(_pokerType.LevelLengthInSeconds);
                                         TimeSpan timeSpan = dateTimeNextLevel - dateTimeNow;

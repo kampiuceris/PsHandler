@@ -1,0 +1,44 @@
+﻿using System.Windows.Controls;
+
+namespace PsHandler.UI
+{
+    /// <summary>
+    /// Interaction logic for UCController.xaml
+    /// </summary>
+    public partial class UCController : UserControl
+    {
+        public UCController()
+        {
+            InitializeComponent();
+
+            // Init values
+
+            CheckBox_AutoclickImBack.IsChecked = Config.AutoclickImBack;
+
+            CheckBox_AutoclickTimebank.IsChecked = Config.AutoclickTimebank;
+
+            CheckBox_AutocloseTournamentRegistrationPopups.IsChecked = Config.AutocloseTournamentRegistrationPopups;
+
+            CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.IsChecked = Config.AutocloseHM2ApplyToSimilarTablesPopups;
+
+            TextBoxHotkey_HandReplay.KeyCombination = Config.HotkeyHandReplay;
+
+            // Hook values
+
+            CheckBox_AutoclickImBack.Checked += (sender, args) => { Config.AutoclickImBack = true; };
+            CheckBox_AutoclickImBack.Unchecked += (sender, args) => { Config.AutoclickImBack = false; };
+
+            CheckBox_AutoclickTimebank.Checked += (sender, args) => { Config.AutoclickTimebank = true; };
+            CheckBox_AutoclickTimebank.Unchecked += (sender, args) => { Config.AutoclickTimebank = false; };
+
+            CheckBox_AutocloseTournamentRegistrationPopups.Checked += (sender, args) => { Config.AutocloseTournamentRegistrationPopups = true; };
+            CheckBox_AutocloseTournamentRegistrationPopups.Unchecked += (sender, args) => { Config.AutocloseTournamentRegistrationPopups = false; };
+
+            CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.Checked += (sender, args) => { Config.AutocloseHM2ApplyToSimilarTablesPopups = true; };
+            CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.Unchecked += (sender, args) => { Config.AutocloseHM2ApplyToSimilarTablesPopups = false; };
+
+            TextBoxHotkey_HandReplay.TextChanged += (sender, args) => { Config.HotkeyHandReplay = TextBoxHotkey_HandReplay.KeyCombination; };
+
+        }
+    }
+}

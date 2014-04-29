@@ -115,7 +115,7 @@ namespace PsHandler.Hud
 
         private static void UpdateTournamentInfos()
         {
-            DirectoryInfo dirPs = new DirectoryInfo(App.AppDataPath);
+            DirectoryInfo dirPs = new DirectoryInfo(Config.AppDataPath);
             if (!dirPs.Exists) return;
             DirectoryInfo dirHH = dirPs.GetDirectories().FirstOrDefault(di => di.Name.Equals("HandHistory"));
             if (dirHH == null || !dirHH.Exists) return;

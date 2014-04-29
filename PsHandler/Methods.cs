@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Windows;
 
 namespace PsHandler
 {
@@ -73,6 +74,20 @@ namespace PsHandler
         public static bool CompareColors(double r0, double g0, double b0, double r1, double g1, double b1, double maxDifferenceR, double maxDifferenceG, double maxDifferenceB)
         {
             return Math.Abs(r0 - r1) < maxDifferenceR && Math.Abs(g0 - g1) < maxDifferenceG && Math.Abs(b0 - b1) < maxDifferenceB;
+        }
+
+        public static System.Windows.Controls.Canvas GetImage(string pathToImage)
+        {
+            Bitmap bitmap = GetEmbeddedResourceBitmap(pathToImage);
+
+            System.Windows.Controls.Canvas canvas = new System.Windows.Controls.Canvas();
+            System.Windows.Controls.Image img = new System.Windows.Controls.Image { Source = bitmap.ToBitmapSource(), Margin = new Thickness(0) };
+
+            canvas.Children.Add(img);
+            canvas.Width = bitmap.Width;
+            canvas.Height = bitmap.Height;
+
+            return canvas;
         }
     }
 }

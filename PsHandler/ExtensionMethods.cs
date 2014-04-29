@@ -98,5 +98,15 @@ namespace PsHandler
 
             return bitSrc;
         }
+
+        public static int ToInt(this bool source)
+        {
+            return source ? 1 : 0;
+        }
+
+        public static bool ToBool(this int source)
+        {
+            return source != 0;
+        }
     }
 }

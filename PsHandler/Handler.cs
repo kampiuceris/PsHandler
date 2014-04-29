@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -24,7 +23,7 @@ namespace PsHandler
                 {
                     while (true)
                     {
-                        if (App.AutoclickImBack || App.AutoclickTimebank)
+                        if (Config.AutoclickImBack || Config.AutoclickTimebank)
                         {
                             foreach (var process in Process.GetProcessesByName("PokerStars"))
                             {
@@ -34,8 +33,8 @@ namespace PsHandler
                                     if (className.Equals("PokerStarsTableFrameClass"))
                                     {
                                         Bmp bmp = new Bmp(ScreenCapture.GetBitmapWindowClient(handle));
-                                        if (App.AutoclickImBack) Methods.CheckButtonAndClick(bmp, App.PokerStarsThemeTable.ButtonImBack, handle);
-                                        if (App.AutoclickTimebank) Methods.CheckButtonAndClick(bmp, App.PokerStarsThemeTable.ButtonTimebank, handle);
+                                        if (Config.AutoclickImBack) Methods.CheckButtonAndClick(bmp, Config.PokerStarsThemeTable.ButtonImBack, handle);
+                                        if (Config.AutoclickTimebank) Methods.CheckButtonAndClick(bmp, Config.PokerStarsThemeTable.ButtonTimebank, handle);
                                     }
                                 }
                             }
@@ -66,7 +65,7 @@ namespace PsHandler
                 {
                     while (true)
                     {
-                        if (App.AutocloseTournamentRegistrationPopups)
+                        if (Config.AutocloseTournamentRegistrationPopups)
                         {
                             foreach (var process in Process.GetProcessesByName("PokerStars"))
                             {
@@ -117,7 +116,7 @@ namespace PsHandler
                             }
                         }
 
-                        if (App.AutocloseHM2ApplyToSimilarTablesPopups)
+                        if (Config.AutocloseHM2ApplyToSimilarTablesPopups)
                         {
                             foreach (var process in Process.GetProcessesByName("HoldemManager"))
                             {
@@ -167,7 +166,7 @@ namespace PsHandler
             string className = WinApi.GetClassName(handle);
             if (className.Equals("PokerStarsTableFrameClass"))
             {
-                Methods.LeftMouseClickRelative(handle, App.PokerStarsThemeTable.ButtonHandReplayX, App.PokerStarsThemeTable.ButtonHandReplayY, false);
+                Methods.LeftMouseClickRelative(handle, Config.PokerStarsThemeTable.ButtonHandReplayX, Config.PokerStarsThemeTable.ButtonHandReplayY, false);
             }
         }
     }

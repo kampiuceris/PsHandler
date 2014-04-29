@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="PsHandler.UI.UCSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:PsHandler.UI"
+             mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="600" UseLayoutRounding="True">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="26"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Image Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" />
+        <Image Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" />
+        <Image Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" />
+        <Image Grid.Column="0" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" />
+        <Image Grid.Column="0" Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" />
+        <Image Grid.Column="0" Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" />
+
+        <Label Grid.Column="1" Grid.Row="0" Content="PokerStars AppData Folder Path:" />
+        <Label Grid.Column="1" Grid.Row="1" Content="PokerStars Table Theme:" />
+        <Label Grid.Column="1" Grid.Row="2" Content="PokerStars Lobby Theme:" />
+        <CheckBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" Content="Minimize to System Tray" x:Name="CheckBox_MinimizeToSystemTray" />
+        <CheckBox Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" Content="Start Minimized" x:Name="CheckBox_StartMinimized" />
+
+        <Label Grid.Column="1" Grid.Row="5" Content="Exit Hotkey:" />
+        <TextBox Grid.Column="2" Grid.Row="0" Margin="2" x:Name="TextBox_PokerStarsAppDataFolderPath" />
+        <ComboBox Grid.Column="2" Grid.Row="1" Margin="2" x:Name="ComboBox_PokerStarsThemeTable" />
+        <ComboBox Grid.Column="2" Grid.Row="2" Margin="2" x:Name="ComboBox_PokerStarsThemeLobby" />
+        <ui:TextBoxHotkey Grid.Column="2" Grid.Row="5" Margin="2" x:Name="TextBoxHotkey_Exit" />
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="PsHandler.UI.UCController"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:PsHandler.UI"
+             mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="600" UseLayoutRounding="True">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="26"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Image Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" Margin="5" />
+        <Image Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" Margin="5" />
+        <Image Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" Margin="5" />
+        <Image Grid.Column="0" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" Margin="5" />
+        <Image Grid.Column="0" Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" Margin="5" />
+
+        <CheckBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" Content="Autoclick ''I'm Back'' Button" x:Name="CheckBox_AutoclickImBack" />
+        <CheckBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" Content="Autoclick ''Timebank'' Button" x:Name="CheckBox_AutoclickTimebank" />
+        <CheckBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" Content="Autoclose Tournament Registration Popups" x:Name="CheckBox_AutocloseTournamentRegistrationPopups" />
+        <CheckBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" Content="Autoclose HM2 'Apply to similar tables?' Popups" x:Name="CheckBox_AutocloseHM2ApplyToSimilarTablesPopups" />
+        <StackPanel Grid.Column="1" Grid.Row="4" Orientation="Horizontal">
+            <Label Content="Hand Replay Hotkey:" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <ui:TextBoxHotkey x:Name="TextBoxHotkey_HandReplay" Margin="2" Width="150"/>
+        </StackPanel>
+        
+    </Grid>
+</UserControl>

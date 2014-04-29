@@ -1,0 +1,94 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+
+namespace PsHandler.UI
+{
+    public class TextBoxHotkey : TextBox
+    {
+        private KeyCombination _keyCombination = new KeyCombination(Key.None, false, false, false);
+        
+        public KeyCombination KeyCombination
+        {
+            set
+            {
+                if (value == null) return;
+                _keyCombination = value;
+                Text = GetString();
+                Foreground = Text.Equals("None") ? Brushes.DarkGray : Brushes.Black;
+            }
+            get
+            {
+                return _keyCombination;
+            }
+        }
+
+        public TextBoxHotkey()
+        {
+            //KeyCombination = new KeyCombination(Key.None, false, false, false);
+
+            BorderThickness = new Thickness(1.2);
+            BorderBrush = Brushes.DarkGray;
+            IsReadOnly = true;
+            Background = Brushes.AliceBlue;
+            SelectionBrush = Brushes.Transparent;
+            VerticalContentAlignment = VerticalAlignment.Center;
+            ToolTip = "Double click mouse to remove hotkey";
+
+            GotFocus += (sender, args) =>
+            {
+                BorderBrush = Brushes.Red;
+                App.KeyboardHook.KeyCombinationDownMethods.Add(TextBoxKeyDown);
+            };
+
+            LostFocus += (sender, args) =>
+            {
+                BorderBrush = Brushes.DarkGray;
+                App.KeyboardHook.KeyCombinationDownMethods.Remove(TextBoxKeyDown);
+            };
+
+            MouseDoubleClick += (sender, args) =>
+            {
+                KeyCombination = new KeyCombination(Key.None, false, false, false);
+            };
+        }
+
+        private void TextBoxKeyDown(KeyCombination keyCombination)
+        {
+            KeyCombination = keyCombination;
+        }
+
+        private string GetString()
+        {
+            List<string> modifiers = new List<string>();
+            if (KeyCombination.Ctrl)
+            {
+                modifiers.Add("Ctrl");
+                modifiers.Add(" + ");
+            }
+            if (KeyCombination.Alt)
+            {
+                modifiers.Add("Alt");
+                modifiers.Add(" + ");
+            }
+            if (KeyCombination.Shift)
+            {
+                modifiers.Add("Shift");
+                modifiers.Add(" + ");
+            }
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (string s in modifiers)
+                sb.Append(s);
+            sb.Append(KeyCombination.Key);
+
+            return sb.ToString();
+        }
+    }
+}

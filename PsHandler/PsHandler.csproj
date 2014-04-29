@@ -67,7 +67,7 @@
     <Compile Include="App.cs" />
     <Compile Include="Autoupdate.cs" />
     <Compile Include="Bmp.cs" />
-    <Compile Include="ConfigManager.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GlassEffect.cs" />
@@ -121,16 +121,23 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ScreenCapture.cs" />
-    <Compile Include="TextBoxHotkey.xaml.cs">
-      <DependentUpon>TextBoxHotkey.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Types\WindowPokerTypesEdit.xaml.cs">
       <DependentUpon>WindowPokerTypesEdit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WinApi.cs" />
-    <Compile Include="WindowMain.xaml.cs">
+    <Compile Include="UI\TextBoxHotkey.cs" />
+    <Compile Include="UI\UCController.xaml.cs">
+      <DependentUpon>UCController.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UCHud.xaml.cs">
+      <DependentUpon>UCHud.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UCSettings.xaml.cs">
+      <DependentUpon>UCSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\WindowMain.xaml.cs">
       <DependentUpon>WindowMain.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WinApi.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -165,15 +172,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TextBoxHotkey.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Types\WindowPokerTypesEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WindowMain.xaml">
+    <Page Include="UI\UCController.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UCHud.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UCSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\WindowMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -275,6 +290,27 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cog.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\small_tiles.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\house.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\controller.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\update.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\large_tiles.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\timer.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
