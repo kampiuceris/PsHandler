@@ -73,6 +73,7 @@
     <Compile Include="GlassEffect.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Hud\HudManager.cs" />
+    <Compile Include="Hud\LobbyTime.cs" />
     <Compile Include="Hud\Timer.xaml.cs">
       <DependentUpon>Timer.xaml</DependentUpon>
     </Compile>

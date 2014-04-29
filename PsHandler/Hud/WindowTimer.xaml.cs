@@ -66,7 +66,8 @@ namespace PsHandler.Hud
                         {
                             Rectangle rect = WinApi.GetClientRectangle(HandleOwner);
                             string title = WinApi.GetWindowTitle(handleOwner);
-                            Regex regex = new Regex(@".+- Tournament (?<tn>\d+).+Logged In as.+");
+                            Regex regex = new Regex(@".+- Tournament (?<tn>\d+).+");
+                            //Regex regex = new Regex(@".+- Tournament (?<tn>\d+).+Logged In as.+");
                             Match match = regex.Match(title);
 
                             string textboxContent = "";

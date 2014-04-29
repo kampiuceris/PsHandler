@@ -20,6 +20,8 @@ namespace PsHandler.Hud
 
             // init values
 
+            Timer_Main.SetText("01:23");
+
             foreach (var item in typeof(System.Drawing.Color).GetProperties(BindingFlags.Public | BindingFlags.Static))
             {
                 ComboBox_Background.Items.Add(new ComboBoxItemColor(item.Name));

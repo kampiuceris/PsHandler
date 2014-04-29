@@ -97,8 +97,8 @@ namespace PsHandler.Hud
         {
             Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
             {
-                Width = Label_Timer.Width + Label_Timer.Margin.Left + +Label_Timer.Margin.Right;
-                Height = Label_Timer.Height + Label_Timer.Margin.Top + +Label_Timer.Margin.Bottom;
+                Width = Label_Timer.Width + Label_Timer.Margin.Left + Label_Timer.Margin.Right;
+                Height = Label_Timer.Height + Label_Timer.Margin.Top + Label_Timer.Margin.Bottom;
             }));
         }
     }
