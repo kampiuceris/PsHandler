@@ -41,6 +41,7 @@ namespace PsHandler
                         }
 
                         Thread.Sleep(DELAY_TABLE_CONTROL);
+                        //Thread.Sleep(500);
                     }
                 }
                 catch (Exception e)
@@ -57,7 +58,7 @@ namespace PsHandler
 
             #endregion
 
-            #region AutocloseTournamentRegistrationPopups
+            #region AutoclosePopups
 
             _threadAutocloseTournamentRegistrationPopups = new Thread(() =>
             {
@@ -65,7 +66,7 @@ namespace PsHandler
                 {
                     while (true)
                     {
-                        if (Config.AutocloseTournamentRegistrationPopups)
+                        if (Config.AutocloseTournamentRegistrationPopups || Config.AutoclickYesSeatAvailable)
                         {
                             foreach (var process in Process.GetProcessesByName("PokerStars"))
                             {
@@ -75,39 +76,53 @@ namespace PsHandler
                                     if (className.Equals("#32770"))
                                     {
                                         string windowTitle = WinApi.GetWindowTitle(handle);
-                                        if (windowTitle.Equals("Tournament Registration"))
+                                        if (Config.AutocloseTournamentRegistrationPopups)
                                         {
-                                            IntPtr buttonOkToClick = WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "");
-                                            if (buttonOkToClick.Equals(IntPtr.Zero))
+                                            if (windowTitle.Equals("Tournament Registration"))
                                             {
-                                                buttonOkToClick = WinApi.FindChildWindow(handle, "Button", "OK");
-                                            }
-                                            if (!buttonOkToClick.Equals(IntPtr.Zero))
-                                            {
-                                                var rect = WinApi.GetWindowRectangle(buttonOkToClick);
-                                                //Debug.WriteLine(string.Format("{0},{1} {2}x{3}", rect.X, rect.Y, rect.Width, rect.Height));
-
-                                                // 85x28 = "OK" button decorated
-                                                // 77x24 = "OK" button undecorated
-                                                // 133x28 = "Show Lobby" button decorated
-                                                // 98x28 = "Close" button decorated
-
-                                                if ((rect.Width == 85 && rect.Height == 28) || (rect.Width == 77 && rect.Height == 24)) // "OK" (decorated) || "OK" (undecorated)
+                                                IntPtr buttonOkToClick = WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "");
+                                                if (buttonOkToClick.Equals(IntPtr.Zero))
                                                 {
-                                                    Methods.LeftMouseClick(buttonOkToClick, 5, 5);
+                                                    buttonOkToClick = WinApi.FindChildWindow(handle, "Button", "OK");
                                                 }
-                                                else if (rect.Width == 133 && rect.Height == 28) // "Show Lobby"
+                                                if (!buttonOkToClick.Equals(IntPtr.Zero))
                                                 {
-                                                    IntPtr childAfter = buttonOkToClick;
-                                                    buttonOkToClick = WinApi.FindChildWindow(handle, childAfter, "PokerStarsButtonClass", "");
-                                                    if (buttonOkToClick != IntPtr.Zero)
+                                                    var rect = WinApi.GetWindowRectangle(buttonOkToClick);
+                                                    //Debug.WriteLine(string.Format("{0},{1} {2}x{3}", rect.LocationX, rect.LocationY, rect.Width, rect.Height));
+
+                                                    // 85x28 = "OK" button decorated
+                                                    // 77x24 = "OK" button undecorated
+                                                    // 133x28 = "Show Lobby" button decorated
+                                                    // 98x28 = "Close" button decorated
+
+                                                    if ((rect.Width == 85 && rect.Height == 28) || (rect.Width == 77 && rect.Height == 24)) // "OK" (decorated) || "OK" (undecorated)
                                                     {
-                                                        rect = WinApi.GetWindowRectangle(buttonOkToClick);
-                                                        if (rect.Width == 98 && rect.Height == 28) // "Close"
+                                                        Methods.LeftMouseClick(buttonOkToClick, 5, 5);
+                                                    }
+                                                    else if (rect.Width == 133 && rect.Height == 28) // "Show Lobby"
+                                                    {
+                                                        IntPtr childAfter = buttonOkToClick;
+                                                        buttonOkToClick = WinApi.FindChildWindow(handle, childAfter, "PokerStarsButtonClass", "");
+                                                        if (buttonOkToClick != IntPtr.Zero)
                                                         {
-                                                            Methods.LeftMouseClick(buttonOkToClick, 5, 5);
+                                                            rect = WinApi.GetWindowRectangle(buttonOkToClick);
+                                                            if (rect.Width == 98 && rect.Height == 28) // "Close"
+                                                            {
+                                                                Methods.LeftMouseClick(buttonOkToClick, 5, 5);
+                                                            }
                                                         }
                                                     }
+                                                }
+                                            }
+                                        }
+                                        if (Config.AutoclickYesSeatAvailable)
+                                        {
+                                            if (windowTitle.Equals("Seat Available"))
+                                            {
+                                                IntPtr buttonYes = WinApi.FindChildWindow(handle, "Button", "Yes");
+                                                if (!buttonYes.Equals(IntPtr.Zero))
+                                                {
+                                                    Methods.LeftMouseClick(buttonYes, 5, 5);
                                                 }
                                             }
                                         }

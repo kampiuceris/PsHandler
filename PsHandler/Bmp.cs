@@ -119,7 +119,7 @@ namespace PsHandler
 
         public static Bitmap CutBitmap(Bitmap source, Rectangle rect)
         {
-            //System.Diagnostics.Debug.WriteLine(rect.X + " " + rect.Y + " " + rect.Width + " " + rect.Height);
+            //System.Diagnostics.Debug.WriteLine(rect.LocationX + " " + rect.LocationY + " " + rect.Width + " " + rect.Height);
             Bitmap bitmapCut = new Bitmap(rect.Right - rect.Left, rect.Bottom - rect.Top);
             using (Graphics g = Graphics.FromImage(bitmapCut))
             {

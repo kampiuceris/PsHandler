@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Windows;
+using Hardcodet.Wpf.TaskbarNotification;
 using PsHandler.Hud;
 using PsHandler.UI;
 
@@ -9,6 +10,7 @@ namespace PsHandler
     public class App : Application
     {
         public static WindowMain WindowMain;
+        public static TaskbarIcon TaskbarIcon { get { return WindowMain.TaskbarIcon_NotifyIcon; } }
         public static KeyboardHook KeyboardHook;
         public static LobbyTime LobbyTime;
 
@@ -16,15 +18,11 @@ namespace PsHandler
         {
             Config.Load();
             LobbyTime = new LobbyTime();
-            RegisterKeyboardHook();
+            //RegisterKeyboardHook();
             WindowMain = new WindowMain();
             WindowMain.Show();
             Handler.Start();
-
-#if DEBUG
-#else
-            Autoupdate.CheckForUpdates(Config.UPDATE_HREF + "?v=" + Config.VERSION + "&id=" + (string.IsNullOrEmpty(Config.MACHINE_GUID) ? "" : Config.MACHINE_GUID), Config.UPDATE_HREF, "PsHandler", "PsHandler.exe", AppDomain.CurrentDomain.BaseDirectory, WindowMain, Quit);
-#endif
+            ReleaseOnly();
         }
 
         public static void RegisterKeyboardHook()
@@ -47,7 +45,7 @@ namespace PsHandler
         {
             Autoupdate.Quit();
             HudManager.Stop();
-            KeyboardHook.Dispose();
+            //KeyboardHook.Dispose();
             LobbyTime.StopSync();
             Handler.Stop();
             Config.Save();
@@ -55,6 +53,14 @@ namespace PsHandler
             //close gui
             WindowMain.IsClosing = true;
             new Thread(() => Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() => WindowMain.Close()))).Start();
+        }
+
+        private static void ReleaseOnly()
+        {
+#if DEBUG
+#else
+            Autoupdate.CheckForUpdates(Config.UPDATE_HREF + "?v=" + Config.VERSION + "&id=" + (string.IsNullOrEmpty(Config.MACHINE_GUID) ? "" : Config.MACHINE_GUID), Config.UPDATE_HREF, "PsHandler", "PsHandler.exe", AppDomain.CurrentDomain.BaseDirectory, WindowMain, Quit);
+#endif
         }
     }
 }

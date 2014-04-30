@@ -17,6 +17,8 @@ namespace PsHandler.UI
 
             CheckBox_AutoclickTimebank.IsChecked = Config.AutoclickTimebank;
 
+            CheckBox_AutoclickYesSeatAvailable.IsChecked = Config.AutoclickYesSeatAvailable;
+
             CheckBox_AutocloseTournamentRegistrationPopups.IsChecked = Config.AutocloseTournamentRegistrationPopups;
 
             CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.IsChecked = Config.AutocloseHM2ApplyToSimilarTablesPopups;
@@ -31,6 +33,9 @@ namespace PsHandler.UI
             CheckBox_AutoclickTimebank.Checked += (sender, args) => { Config.AutoclickTimebank = true; };
             CheckBox_AutoclickTimebank.Unchecked += (sender, args) => { Config.AutoclickTimebank = false; };
 
+            CheckBox_AutoclickYesSeatAvailable.Checked += (sender, args) => { Config.AutoclickYesSeatAvailable = true; };
+            CheckBox_AutoclickYesSeatAvailable.Unchecked += (sender, args) => { Config.AutoclickYesSeatAvailable = false; };
+
             CheckBox_AutocloseTournamentRegistrationPopups.Checked += (sender, args) => { Config.AutocloseTournamentRegistrationPopups = true; };
             CheckBox_AutocloseTournamentRegistrationPopups.Unchecked += (sender, args) => { Config.AutocloseTournamentRegistrationPopups = false; };
 
@@ -38,7 +43,6 @@ namespace PsHandler.UI
             CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.Unchecked += (sender, args) => { Config.AutocloseHM2ApplyToSimilarTablesPopups = false; };
 
             TextBoxHotkey_HandReplay.TextChanged += (sender, args) => { Config.HotkeyHandReplay = TextBoxHotkey_HandReplay.KeyCombination; };
-
         }
     }
 }

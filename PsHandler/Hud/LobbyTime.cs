@@ -7,10 +7,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
+using Hardcodet.Wpf.TaskbarNotification;
 
 namespace PsHandler.Hud
 {
-    public class Symbol
+    class Symbol
     {
         public string SymbolText;
         public Bmp Bmp;
@@ -129,6 +130,7 @@ namespace PsHandler.Hud
             {
                 try
                 {
+                    Thread.Sleep(100);
                     DateTime dateTimeStarted = DateTime.Now;
                     Regex regex = new Regex(@"\d\d\d\d");
                     int hours = -1;
@@ -142,7 +144,7 @@ namespace PsHandler.Hud
                         if (theme is PokerStarsThemesLobby.Unknown) throw new Exception("Unknown PokerStars Lobby theme.");
 
                         Process[] processesByName = Process.GetProcessesByName("PokerStars");
-                        if (processesByName.Length == 0) throw new Exception("No 'Pokerstars' process.");
+                        if (processesByName.Length == 0) throw new Exception("No PokerStars process.");
 
                         foreach (var process in processesByName)
                         {
@@ -154,7 +156,7 @@ namespace PsHandler.Hud
                                     string windowTitle = WinApi.GetWindowTitle(handle);
                                     if (windowTitle.StartsWith("PokerStars Lobby"))
                                     {
-                                        if (Methods.IsMinimized(handle)) throw new Exception("PokerStars Lobby minimized");
+                                        if (Methods.IsMinimized(handle)) throw new Exception("PokerStars Lobby minimized.");
 
                                         Bmp bmp = new Bmp(ScreenCapture.GetBitmapWindowClient(handle));
                                         DateTime dateTimeNow = DateTime.Now;
@@ -171,7 +173,7 @@ namespace PsHandler.Hud
                                         }
                                         else
                                         {
-                                            throw new Exception("PokerStars Lobby minimized");
+                                            throw new Exception("PokerStars Lobby minimized.");
                                         }
 
                                         string text = GetText(bmp, theme);
@@ -199,7 +201,7 @@ namespace PsHandler.Hud
                                                         App.WindowMain.UCHud.TextBox_TimerDiffLobby.Text = Math.Round((dateTimeNow - dt).TotalSeconds).ToString(CultureInfo.InvariantCulture);
                                                     }));
 
-                                                    throw new Exception("Done!");
+                                                    throw new ThreadInterruptedException("Done!");
                                                 }
                                             }
                                         }
@@ -213,14 +215,16 @@ namespace PsHandler.Hud
                         Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate { App.WindowMain.UCHud.ProgressBar_Sync.Value = (DateTime.Now - dateTimeStarted).TotalSeconds; }));
                         if ((DateTime.Now - dateTimeStarted).TotalSeconds > 70)
                         {
-                            MessageBox.Show("Cannot scan time PokerStars Lobby window. Check if your lobby theme is set correctly.", "Sync Time Out", MessageBoxButton.OK, MessageBoxImage.Warning);
-                            throw new Exception("Time out.");
+                            throw new Exception("PokerStars Lobby scan time out. Check if your lobby theme is set correctly.");
                         }
                     }
                 }
-                catch
+                catch (Exception e)
                 {
-
+                    if (!(e is ThreadInterruptedException) && !(e is ThreadAbortException))
+                    {
+                        App.TaskbarIcon.ShowBalloonTip("Lobby Time Sync Error", e.Message, BalloonIcon.Error);
+                    }
                 }
                 finally
                 {

@@ -70,12 +70,12 @@ namespace PsHandler.UI
 
         private void Button_PokerTypes_Click(object sender, RoutedEventArgs e)
         {
-            new WindowPokerTypesEdit().ShowDialog();
+            new WindowPokerTypesEdit(App.WindowMain).ShowDialog();
         }
 
         private void Button_CustomizeTimer_Click(object sender, RoutedEventArgs e)
         {
-            new WindowCustomizeHud().ShowDialog();
+            new WindowCustomizeHud(App.WindowMain).ShowDialog();
         }
     }
 }

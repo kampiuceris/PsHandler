@@ -35,6 +35,7 @@ namespace PsHandler
 
         public static bool AutoclickImBack;
         public static bool AutoclickTimebank;
+        public static bool AutoclickYesSeatAvailable;
         public static bool AutocloseTournamentRegistrationPopups;
         public static bool AutocloseHM2ApplyToSimilarTablesPopups;
         public static KeyCombination HotkeyHandReplay;
@@ -183,6 +184,7 @@ namespace PsHandler
 
             AutoclickImBack = GetBool("AutoclickImBack", 0);
             AutoclickTimebank = GetBool("AutoclickTimebank", 0);
+            AutoclickYesSeatAvailable = GetBool("AutoclickYesSeatAvailable", 0);
             AutocloseTournamentRegistrationPopups = GetBool("AutocloseTournamentRegistrationPopups", 0);
             AutocloseHM2ApplyToSimilarTablesPopups = GetBool("AutocloseHM2ApplyToSimilarTablesPopups", 0);
             HotkeyHandReplay = KeyCombination.Parse(GetString("HotkeyHandReplay", new KeyCombination(Key.None, false, false, false).ToString()));
@@ -252,9 +254,9 @@ namespace PsHandler
 
                     pt = new PokerType
                     {
-                        Name = "2-max 2 Players Regular",
+                        Name = "2-max 2 _players Regular",
                         LevelLengthInSeconds = 360,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 Players" },
+                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 _players" },
                         IncludeOr = new string[0],
                         ExcludeAnd = new string[0],
                         ExcludeOr = new[] { "Turbo", "Hyper", "6-Max" },
@@ -264,9 +266,9 @@ namespace PsHandler
 
                     pt = new PokerType
                     {
-                        Name = "2-max 2 Players Turbo",
+                        Name = "2-max 2 _players Turbo",
                         LevelLengthInSeconds = 180,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 Players", "Turbo" },
+                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 _players", "Turbo" },
                         IncludeOr = new string[0],
                         ExcludeAnd = new string[0],
                         ExcludeOr = new[] { "Hyper", "6-Max" },
@@ -276,9 +278,9 @@ namespace PsHandler
 
                     pt = new PokerType
                     {
-                        Name = "2-max 2 Players Hyper-Turbo",
+                        Name = "2-max 2 _players Hyper-Turbo",
                         LevelLengthInSeconds = 120,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 Players", "Hyper-Turbo" },
+                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 _players", "Hyper-Turbo" },
                         IncludeOr = new string[0],
                         ExcludeAnd = new string[0],
                         ExcludeOr = new[] { "6-Max" },
@@ -410,6 +412,7 @@ namespace PsHandler
 
             SetValue("AutoclickImBack", AutoclickImBack.ToInt());
             SetValue("AutoclickTimebank", AutoclickTimebank.ToInt());
+            SetValue("AutoclickYesSeatAvailable", AutoclickYesSeatAvailable.ToInt());
             SetValue("AutocloseTournamentRegistrationPopups", AutocloseTournamentRegistrationPopups.ToInt());
             SetValue("AutocloseHM2ApplyToSimilarTablesPopups", AutocloseHM2ApplyToSimilarTablesPopups.ToInt());
             SetValue("HotkeyHandReplay", HotkeyHandReplay.ToString());

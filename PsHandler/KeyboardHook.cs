@@ -47,7 +47,7 @@ namespace PsHandler
 
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            //Trace.WriteLine(nCode + " " + wParam.ToString("X") + " " + lParam);
+            //Trace.WriteLine(nCode + " " + wParam.ToString("LocationX") + " " + lParam);
             if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN))
             {
                 int vkCode = Marshal.ReadInt32(lParam);

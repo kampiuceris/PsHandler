@@ -5,7 +5,7 @@
     <Grid>
         <Label x:Name="Label_Name" Content="Name:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TextBox_Name" Height="23" Margin="59,12,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="" />
-        <Label x:Name="Label_LevelLengthInMinutes" Content="X minutes" HorizontalAlignment="Left" Margin="263,41,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
+        <Label x:Name="Label_LevelLengthInMinutes" Content="LocationX minutes" HorizontalAlignment="Left" Margin="263,41,0,0" VerticalAlignment="Top" FontStyle="Italic"/>
         <Label x:Name="Label_LevelLengthInSeconds" Content="Level Length (in seconds)" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TextBox_LevelLengthInSeconds" HorizontalAlignment="Left" Height="23" Margin="158,43,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="100" TextChanged="TextBox_LevelLengthInSeconds_TextChanged"/>
         <Grid Margin="10,72,10,41">

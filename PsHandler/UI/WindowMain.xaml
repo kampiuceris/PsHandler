@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:PsHandler.UI" xmlns:tb="clr-namespace:Hardcodet.Wpf.TaskbarNotification"
         x:Class="PsHandler.UI.WindowMain"
         UseLayoutRounding="True" Background="#FFF0F0F0"
-        Title="PsHandler" Height="400" Width="600" Icon="../Images/ps.ico">
+        Title="PsHandler" Height="400" Width="600" MinHeight="250" MinWidth="500" Icon="../Images/ps.ico">
     <Window.Resources>
         <Style TargetType="{x:Type Image}">
             <Style.Triggers>
@@ -24,6 +24,9 @@
                         <TextBlock Text="Home" Margin="5,0,0,0" VerticalAlignment="Center" />
                     </StackPanel>
                 </TabItem.Header>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <local:UCHome x:Name="UCHome" />
+                </ScrollViewer>
             </TabItem>
             <TabItem>
                 <TabItem.Header>

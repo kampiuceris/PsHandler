@@ -9,11 +9,11 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     public struct Point
     {
         /// <summary>
-        /// X coordinate.
+        /// LocationX coordinate.
         /// </summary>
         public int X;
         /// <summary>
-        /// Y coordinate.
+        /// LocationY coordinate.
         /// </summary>
         public int Y;
     }

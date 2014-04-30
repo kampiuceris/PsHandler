@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
@@ -6,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using PsHandler.Types;
 using Rectangle = System.Drawing.Rectangle;
+using System.Diagnostics;
 
 namespace PsHandler.Hud
 {
@@ -17,6 +19,8 @@ namespace PsHandler.Hud
         public IntPtr HandleOwner;
         private Thread _thread;
         private PokerType _pokerType;
+        private static readonly Regex _regexTournament = new Regex(@".+- Tournament (?<tn>\d+).+");
+        private static readonly Regex _regexTournamentLoggedIn = new Regex(@".+- Tournament (?<tn>\d+).+Logged In as (?<hero>.+)");
 
         public IntPtr Handle
         {
@@ -54,34 +58,58 @@ namespace PsHandler.Hud
                     {
                         if (WinApi.IsWindow(HandleOwner))
                         {
-                            Rectangle rect = WinApi.GetClientRectangle(HandleOwner);
                             string title = WinApi.GetWindowTitle(handleOwner);
-                            Regex regex = new Regex(@".+- Tournament (?<tn>\d+).+");
-                            //Regex regex = new Regex(@".+- Tournament (?<tn>\d+).+Logged In as.+");
-                            Match match = regex.Match(title);
-
                             string textboxContent = "";
+                            Match match = _regexTournament.Match(title);
                             if (match.Success)
                             {
                                 long toutnamentNumber = long.Parse(match.Groups["tn"].Value);
+
+                                string hero = null;
+                                match = _regexTournamentLoggedIn.Match(title);
+                                if (match.Success) hero = match.Groups["hero"].Value;
+
                                 TournamentInfo tournamentInfo = HudManager.GetTournamentInfo(toutnamentNumber);
                                 if (tournamentInfo != null)
                                 {
+                                    int pokerTypeErrors = -1;
                                     if (_pokerType == null)
                                     {
-                                        _pokerType = HudManager.FindPokerType(title, tournamentInfo.FileInfo.Name);
+                                        _pokerType = HudManager.FindPokerType(title, tournamentInfo.FileInfo.Name, out pokerTypeErrors);
+                                        if (pokerTypeErrors != 0)
+                                        {
+                                            _pokerType = null;
+                                        }
                                     }
                                     if (_pokerType != null)
                                     {
                                         DateTime dateTimeNow = DateTime.Now.AddSeconds(-Config.TimeDiff);
-                                        DateTime dateTimeNextLevel = tournamentInfo.TimestampStarted;
+
+                                        DateTime dateTimeNextLevel = tournamentInfo.FirstHandTimestamp();
                                         while (dateTimeNextLevel < dateTimeNow) dateTimeNextLevel = dateTimeNextLevel.AddSeconds(_pokerType.LevelLengthInSeconds);
                                         TimeSpan timeSpan = dateTimeNextLevel - dateTimeNow;
                                         textboxContent = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
+
+                                        decimal latestStack = tournamentInfo.LatestStack(hero);
+                                        if (latestStack != decimal.MinValue)
+                                        {
+                                            textboxContent += " " + latestStack;
+                                        }
                                     }
                                     else
                                     {
-                                        textboxContent = string.Format("Unknown PokerType");
+                                        if (pokerTypeErrors == 1)
+                                        {
+                                            textboxContent = string.Format("PokerType not found");
+                                        }
+                                        else if (pokerTypeErrors == 2)
+                                        {
+                                            textboxContent = string.Format("Multiple PokerTypes");
+                                        }
+                                        else
+                                        {
+                                            textboxContent = string.Format("Unknown Error");
+                                        }
                                     }
                                 }
                                 else
@@ -94,6 +122,7 @@ namespace PsHandler.Hud
                             {
                                 if (!_mouseDown)
                                 {
+                                    Rectangle rect = WinApi.GetClientRectangle(HandleOwner);
                                     Left = rect.X + rect.Width * HudManager.TimerHudLocationX;
                                     Top = rect.Y + rect.Height * HudManager.TimerHudLocationY;
                                 }

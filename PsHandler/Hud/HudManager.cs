@@ -18,6 +18,7 @@ namespace PsHandler.Hud
         private static readonly object _lock = new object();
         private static readonly List<TournamentInfo> _tournamentInfos = new List<TournamentInfo>();
         private static Thread _thread;
+
         private static readonly Regex _RegexFileName = new Regex(@"HH\d{8} T(?<tn>\d{9,10})");
         private static readonly Regex _RegexTimestamp = new Regex(@".+ - (?<timestamp>\d{4}.\d{2}.\d{2} \d{1,2}:\d{2}:\d{2})");
         public static readonly List<PokerType> PokerTypes = new List<PokerType>();
@@ -35,28 +36,18 @@ namespace PsHandler.Hud
         public static void Start()
         {
             Stop();
+
             _thread = new Thread(() =>
             {
                 try
                 {
-                    // load Poker Types from registry
-                    using (RegistryKey keyPokerTypes = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\PokerTypes", true))
-                    {
-                        foreach (string valueName in keyPokerTypes.GetValueNames())
-                        {
-                            PokerType pokerType = PokerType.FromXml(keyPokerTypes.GetValue(valueName) as string);
-                            if (pokerType != null)
-                            {
-                                PokerTypes.Add(pokerType);
-                            }
-                        }
-                    }
+                    // load poker types
+                    LoadPokerTypesFromRegistry();
 
-                    // start hud
-
+                    // search for new pokerstars table windows
                     while (true)
                     {
-                        // update tournament infos list
+                        // update tournament info list
                         UpdateTournamentInfos();
 
                         foreach (var process in Process.GetProcessesByName("PokerStars"))
@@ -86,7 +77,7 @@ namespace PsHandler.Hud
                         // clean closed windows
                         foreach (WindowTimer tw in _timerWindows.Where(tw => !WinApi.IsWindow(tw.Handle)).ToList()) _timerWindows.Remove(tw);
 
-                        Thread.Sleep(3000);
+                        Thread.Sleep(2000);
                     }
                 }
                 catch (Exception e)
@@ -113,6 +104,24 @@ namespace PsHandler.Hud
             }
         }
 
+        private static void LoadPokerTypesFromRegistry()
+        {
+            PokerTypes.Clear();
+
+            // load Poker Types from registry
+            using (RegistryKey keyPokerTypes = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\PokerTypes", true))
+            {
+                foreach (string valueName in keyPokerTypes.GetValueNames())
+                {
+                    PokerType pokerType = PokerType.FromXml(keyPokerTypes.GetValue(valueName) as string);
+                    if (pokerType != null)
+                    {
+                        PokerTypes.Add(pokerType);
+                    }
+                }
+            }
+        }
+
         private static void UpdateTournamentInfos()
         {
             DirectoryInfo dirPs = new DirectoryInfo(Config.AppDataPath);
@@ -130,22 +139,21 @@ namespace PsHandler.Hud
                     {
                         long tournamentNumber = long.Parse(matchFileName.Groups["tn"].Value);
 
-                        bool any;
-                        lock (_lock) any = _tournamentInfos.Any(ti => ti.TournamentNumber.Equals(tournamentNumber));
-                        if (!any)
+                        TournamentInfo ti;
+                        lock (_lock)
                         {
-                            // get date
-                            string line;
-                            using (StreamReader reader = new StreamReader(fi.FullName)) line = reader.ReadLine(); // read first line
-                            Match matchTimestamp = _RegexTimestamp.Match(line);
-                            if (matchTimestamp.Success)
+                            ti = _tournamentInfos.FirstOrDefault(o => o.TournamentNumber.Equals(tournamentNumber));
+                        }
+                        if (ti == null)
+                        {
+                            lock (_lock)
                             {
-                                DateTime timestamp = DateTime.Parse(matchTimestamp.Groups["timestamp"].Value);
-                                lock (_lock)
-                                {
-                                    _tournamentInfos.Add(new TournamentInfo { TournamentNumber = tournamentNumber, TimestampStarted = timestamp, FileInfo = fi });
-                                }
+                                _tournamentInfos.Add(new TournamentInfo { TournamentNumber = tournamentNumber, FileInfo = fi, Hands = Hand.Parse(File.ReadAllText(fi.FullName)), LastLength = fi.Length });
                             }
+                        }
+                        else
+                        {
+                            ti.UpdateHands();
                         }
                     }
                 }
@@ -160,9 +168,9 @@ namespace PsHandler.Hud
             }
         }
 
-        public static PokerType FindPokerType(string title, string fileName)
+        public static PokerType FindPokerType(string title, string fileName, out int errorFlags)
         {
-            ///*
+            List<PokerType> possiblePokerTypes = new List<PokerType>();
             foreach (PokerType pokerType in PokerTypes)
             {
                 var IncludeAnd = pokerType.IncludeAnd.Length == 0 || pokerType.IncludeAnd.All(title.Contains);
@@ -172,18 +180,26 @@ namespace PsHandler.Hud
                 var BuyInAndRake = pokerType.BuyInAndRake.Length == 0 || pokerType.BuyInAndRake.Any(fileName.Contains);
                 if (IncludeAnd && IncludeOr && ExcludeAnd && ExcludeOr && BuyInAndRake)
                 {
-                    return pokerType;
+                    possiblePokerTypes.Add(pokerType);
                 }
             }
+            if (possiblePokerTypes.Count == 1)
+            {
+                errorFlags = 0; // OK
+                return possiblePokerTypes[0];
+            }
+            if (possiblePokerTypes.Count == 0)
+            {
+                errorFlags = 1; // Not found
+                return null;
+            }
+            if (possiblePokerTypes.Count > 1)
+            {
+                errorFlags = 2; // More than one PokerType found
+                return null;
+            }
+            errorFlags = 3; // Unknown error
             return null;
-            //*/
         }
-    }
-
-    public class TournamentInfo
-    {
-        public long TournamentNumber;
-        public DateTime TimestampStarted;
-        public FileInfo FileInfo;
     }
 }

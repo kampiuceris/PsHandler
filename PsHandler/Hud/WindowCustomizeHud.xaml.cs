@@ -14,9 +14,11 @@ namespace PsHandler.Hud
     /// </summary>
     public partial class WindowCustomizeHud : Window
     {
-        public WindowCustomizeHud()
+        public WindowCustomizeHud(Window owner)
         {
             InitializeComponent();
+            Owner = owner;
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             // init values
 

@@ -14,9 +14,11 @@ namespace PsHandler.Types
     {
         public List<PokerType> PokerTypes = new List<PokerType>();
 
-        public WindowPokerTypesEdit()
+        public WindowPokerTypesEdit(Window owner)
         {
             InitializeComponent();
+            Owner = owner;
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             try
             {

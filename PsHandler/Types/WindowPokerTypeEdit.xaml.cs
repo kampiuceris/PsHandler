@@ -74,7 +74,7 @@ namespace PsHandler.Types
             }
             else
             {
-                Label_LevelLengthInMinutes.Content = "X minutes";
+                Label_LevelLengthInMinutes.Content = "LocationX minutes";
             }
         }
     }

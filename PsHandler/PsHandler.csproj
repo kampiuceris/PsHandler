@@ -77,6 +77,7 @@
     <Compile Include="Hud\Timer.xaml.cs">
       <DependentUpon>Timer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Hud\TournamentInfo.cs" />
     <Compile Include="Hud\WindowCustomizeHud.xaml.cs">
       <DependentUpon>WindowCustomizeHud.xaml</DependentUpon>
     </Compile>
@@ -102,6 +103,7 @@
     <Compile Include="NotifyIconWpf\RoutedEventHelper.cs" />
     <Compile Include="NotifyIconWpf\TaskbarIcon.cs" />
     <Compile Include="NotifyIconWpf\Util.cs" />
+    <Compile Include="PokerStarsThemesLobby.cs" />
     <Compile Include="PokerStarsThemesTable.cs" />
     <Compile Include="Types\PokerType.cs" />
     <Compile Include="Types\WindowPokerTypeEdit.xaml.cs">
@@ -127,6 +129,9 @@
     <Compile Include="UI\TextBoxHotkey.cs" />
     <Compile Include="UI\UCController.xaml.cs">
       <DependentUpon>UCController.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UCHome.xaml.cs">
+      <DependentUpon>UCHome.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\UCHud.xaml.cs">
       <DependentUpon>UCHud.xaml</DependentUpon>
@@ -177,6 +182,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\UCController.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UCHome.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -311,6 +320,27 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\timer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Themes\Slick\checked.png" />
+    <EmbeddedResource Include="Images\Themes\Slick\unchecked.png" />
+    <EmbeddedResource Include="Images\Themes\Slick\uncheckedfold.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Themes\Stars\checked.png" />
+    <EmbeddedResource Include="Images\Themes\Stars\checkedfold.png" />
+    <EmbeddedResource Include="Images\Themes\Stars\unchecked.png" />
+    <EmbeddedResource Include="Images\Themes\Stars\uncheckedfold.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Themes\Nova\checked.png" />
+    <EmbeddedResource Include="Images\Themes\Nova\unchecked.png" />
+    <EmbeddedResource Include="Images\Themes\Nova\uncheckedfold.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Themes\Nova\checkedsmall.png" />
+    <EmbeddedResource Include="Images\Themes\Nova\uncheckedfoldsmall.png" />
+    <EmbeddedResource Include="Images\Themes\Nova\uncheckedsmall.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

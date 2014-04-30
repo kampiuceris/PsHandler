@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows;
 
@@ -14,13 +15,13 @@ namespace PsHandler
         public static void CheckButtonAndClick(Bmp bmp, PokerStarsButton button, IntPtr handle)
         {
             Rectangle rect = new Rectangle(
-                (int)Math.Round(button.X * bmp.Width),
-                (int)Math.Round(button.Y * bmp.Height),
+                (int)Math.Round(button.LocationX * bmp.Width),
+                (int)Math.Round(button.LocationY * bmp.Height),
                 (int)Math.Round(button.Width * bmp.Width),
                 (int)Math.Round(button.Height * bmp.Height));
             double r, g, b;
             AverageColor(bmp, rect, out r, out g, out b);
-            if (CompareColors(r, g, b, button.AvgRed, button.AvgGreen, button.AvgBlue, button.MaxDiffR, button.MaxDiffG, button.MaxDiffB))
+            if (CompareColors(r, g, b, button.AvgR, button.AvgG, button.AvgB, button.MaxDiffR, button.MaxDiffG, button.MaxDiffB))
             {
                 if (button.ButtonSecondaryCheck != null)// secondary check for some buggy themes
                 {
@@ -32,7 +33,39 @@ namespace PsHandler
                     LeftMouseClickRelative(handle, button.ClickX, button.ClickY, true);
                 }
             }
-            //Debug.WriteLine(string.Format("{0:0.000} {1:0.000} {2:0.000}", r - button.AvgRed, g - button.AvgGreen, b - button.AvgBlue));
+            //Debug.WriteLine(string.Format("{0:0.000} {1:0.000} {2:0.000}", r - button.AvgR, g - button.AvgG, b - button.AvgB));
+        }
+
+        private static void ___CheckCheckBoxAndClick(Bmp bmp, ___PokerStarsCheckBox checkBox0, ___PokerStarsCheckBox checkBox1, ___PokerStarsCheckBox checkBox2, bool needToBeChecked, IntPtr handle)
+        {
+            if (false)
+            {
+                Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                {
+                    //App.WindowMain.UCHome.StackPanel_Main.Children.Clear();
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Bitmap bitmap = Bmp.CutBitmap(Bmp.BmpToBitmap(bmp), new Rectangle());
+                        System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                        bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                        ms.Position = 0;
+                        System.Windows.Media.Imaging.BitmapImage bi = new System.Windows.Media.Imaging.BitmapImage();
+                        bi.BeginInit();
+                        bi.StreamSource = ms;
+                        bi.EndInit();
+
+                        System.Windows.Controls.Canvas canvas = new System.Windows.Controls.Canvas();
+                        System.Windows.Controls.Image img = new System.Windows.Controls.Image();
+                        img.Source = bi;
+                        img.Margin = new Thickness(0);
+                        canvas.Children.Add(img);
+                        canvas.Width = bitmap.Width;
+                        canvas.Height = bitmap.Height;
+                        canvas.Margin = new Thickness(5);
+                        //App.WindowMain.UCHome.StackPanel_Main.Children.Add(canvas);
+                    }
+                }));
+            }
         }
 
         public static bool IsMinimized(IntPtr handle)
