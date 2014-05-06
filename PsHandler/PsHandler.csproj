@@ -69,15 +69,16 @@
     <Compile Include="Bmp.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EntryPoint.cs" />
-    <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="GlassEffect.cs" />
+    <Compile Include="UI\GlassEffect.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Hud\HudManager.cs" />
+    <Compile Include="Hud\Import\Hand.cs" />
+    <Compile Include="Hud\Import\Import.cs" />
     <Compile Include="Hud\LobbyTime.cs" />
     <Compile Include="Hud\Timer.xaml.cs">
       <DependentUpon>Timer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Hud\TournamentInfo.cs" />
+    <Compile Include="Hud\Import\Tournament.cs" />
     <Compile Include="Hud\WindowCustomizeHud.xaml.cs">
       <DependentUpon>WindowCustomizeHud.xaml</DependentUpon>
     </Compile>
@@ -105,8 +106,13 @@
     <Compile Include="NotifyIconWpf\Util.cs" />
     <Compile Include="PokerStarsThemesLobby.cs" />
     <Compile Include="PokerStarsThemesTable.cs" />
-    <Compile Include="Types\PokerType.cs" />
-    <Compile Include="Types\WindowPokerTypeEdit.xaml.cs">
+    <Compile Include="TableTiler\TableTile.cs" />
+    <Compile Include="TableTiler\TableTileManager.cs" />
+    <Compile Include="TableTiler\WindowTableTileEdit.xaml.cs">
+      <DependentUpon>WindowTableTileEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PokerTypes\PokerType.cs" />
+    <Compile Include="PokerTypes\WindowPokerTypeEdit.xaml.cs">
       <DependentUpon>WindowPokerTypeEdit.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -123,7 +129,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ScreenCapture.cs" />
-    <Compile Include="Types\WindowPokerTypesEdit.xaml.cs">
+    <Compile Include="PokerTypes\WindowPokerTypesEdit.xaml.cs">
       <DependentUpon>WindowPokerTypesEdit.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\TextBoxHotkey.cs" />
@@ -136,8 +142,14 @@
     <Compile Include="UI\UCHud.xaml.cs">
       <DependentUpon>UCHud.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TableTiler\UCScreenPreview.xaml.cs">
+      <DependentUpon>UCScreenPreview.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\UCSettings.xaml.cs">
       <DependentUpon>UCSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UCTableTiler.xaml.cs">
+      <DependentUpon>UCTableTiler.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\WindowMain.xaml.cs">
       <DependentUpon>WindowMain.xaml</DependentUpon>
@@ -173,11 +185,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Types\WindowPokerTypeEdit.xaml">
+    <Page Include="TableTiler\WindowTableTileEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Types\WindowPokerTypesEdit.xaml">
+    <Page Include="PokerTypes\WindowPokerTypeEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PokerTypes\WindowPokerTypesEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -193,7 +209,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="TableTiler\UCScreenPreview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\UCSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UCTableTiler.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -341,6 +365,17 @@
     <EmbeddedResource Include="Images\Themes\Nova\checkedsmall.png" />
     <EmbeddedResource Include="Images\Themes\Nova\uncheckedfoldsmall.png" />
     <EmbeddedResource Include="Images\Themes\Nova\uncheckedsmall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\monitor_window_3d.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\tile_add.png" />
+    <Resource Include="Images\tile_delete.png" />
+    <Resource Include="Images\tile_edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\application_cascade.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

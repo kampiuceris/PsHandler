@@ -2,14 +2,12 @@
 using System.Windows.Input;
 using Microsoft.Win32;
 using PsHandler.Hud;
-using PsHandler.Types;
-using PsHandler.UI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Media;
+using PsHandler.PokerTypes;
+using PsHandler.TableTiler;
 
 namespace PsHandler
 {
@@ -26,7 +24,6 @@ namespace PsHandler
 
         public static string AppDataPath;
         public static PokerStarsThemeTable PokerStarsThemeTable;
-        public static PokerStarsThemeLobby PokerStarsThemeLobby;
         public static bool MinimizeToSystemTray;
         public static bool StartMinimized;
         public static KeyCombination HotkeyExit;
@@ -44,7 +41,6 @@ namespace PsHandler
 
         public static bool TimerHud;
         public static int TimeDiff;
-        public static int TimeDiffLobby;
 
         // Registry
 
@@ -175,7 +171,6 @@ namespace PsHandler
 
             AppDataPath = GetString("AppDataPath", "");
             PokerStarsThemeTable = PokerStarsThemeTable.Parse(GetString("PokerStarsThemeTable", "Unknown"));
-            PokerStarsThemeLobby = PokerStarsThemeLobby.Parse(GetString("PokerStarsThemeLobby", "Unknown"));
             MinimizeToSystemTray = GetBool("MinimizeToSystemTray", 0);
             StartMinimized = GetBool("StartMinimized", 0);
             HotkeyExit = KeyCombination.Parse(GetString("HotkeyExit", new KeyCombination(Key.None, false, false, false).ToString()));
@@ -193,7 +188,6 @@ namespace PsHandler
 
             TimerHud = GetBool("TimerHud", 0);
             TimeDiff = GetInt("TimeDiff", 0);
-            TimeDiffLobby = GetInt("TimeDiffLobby", 0);
 
             HudManager.TimerHudLocationLocked = GetBool("TimerHudLocationLocked", 0);
             HudManager.TimerHudLocationX = GetFloat("TimerHudLocationX", HudManager.TimerHudLocationX.ToString(CultureInfo.InvariantCulture));
@@ -393,6 +387,10 @@ namespace PsHandler
             }
 
             #endregion
+
+            // TableTiler
+
+            TableTileManager.Load();
         }
 
         public static void Save()
@@ -403,7 +401,6 @@ namespace PsHandler
 
             SetValue("AppDataPath", AppDataPath);
             SetValue("PokerStarsThemeTable", PokerStarsThemeTable.ToString());
-            SetValue("PokerStarsThemeLobby", PokerStarsThemeLobby.ToString());
             SetValue("MinimizeToSystemTray", MinimizeToSystemTray.ToInt());
             SetValue("StartMinimized", StartMinimized.ToInt());
             SetValue("HotkeyExit", HotkeyExit.ToString());
@@ -421,7 +418,6 @@ namespace PsHandler
 
             SetValue("TimerHud", TimerHud.ToInt());
             SetValue("TimeDiff", TimeDiff);
-            SetValue("TimeDiffLobby", TimeDiffLobby);
 
             SetValue("TimerHudLocationLocked", HudManager.TimerHudLocationLocked.ToInt());
             SetValue("TimerHudLocationX", HudManager.TimerHudLocationX.ToString(CultureInfo.InvariantCulture));
@@ -432,6 +428,10 @@ namespace PsHandler
             SetValue("TimerHudFontWeight", HudManager.TimerHudFontWeight.ToString());
             SetValue("TimerHudFontStyle", HudManager.TimerHudFontStyle.ToString());
             SetValue("TimerHudFontSize", HudManager.TimerHudFontSize.ToString(CultureInfo.InvariantCulture));
+
+            // TableTiler
+
+            TableTileManager.Save();
         }
     }
 }

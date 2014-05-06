@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace PsHandler.Types
+namespace PsHandler.PokerTypes
 {
     /// <summary>
     /// Interaction logic for WindowPokerTypeEdit.xaml
@@ -22,9 +22,11 @@ namespace PsHandler.Types
         public PokerType PokerType;
         public bool Saved = false;
 
-        public WindowPokerTypeEdit(PokerType pokerType = null)
+        public WindowPokerTypeEdit(Window owner, PokerType pokerType = null)
         {
             InitializeComponent();
+            Owner = owner;
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
             PokerType = pokerType ?? new PokerType();
 
             TextBox_Name.Text = PokerType.Name;
@@ -70,7 +72,7 @@ namespace PsHandler.Types
             int seconds;
             if (int.TryParse(TextBox_LevelLengthInSeconds.Text, out seconds))
             {
-                Label_LevelLengthInMinutes.Content = string.Format("{0:0.#} minutes", (double) seconds/60);
+                Label_LevelLengthInMinutes.Content = string.Format("{0:0.#} minutes", (double)seconds / 60);
             }
             else
             {

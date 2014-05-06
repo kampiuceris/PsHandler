@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Xml.Linq;
 
-namespace PsHandler.Types
+namespace PsHandler.PokerTypes
 {
     public class PokerType
     {

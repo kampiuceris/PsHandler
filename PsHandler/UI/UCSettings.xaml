@@ -27,19 +27,17 @@
         <Image Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" />
         <Image Grid.Column="0" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" />
         <Image Grid.Column="0" Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" />
-        <Image Grid.Column="0" Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" />
+
 
         <Label Grid.Column="1" Grid.Row="0" Content="PokerStars AppData Folder Path:" />
         <Label Grid.Column="1" Grid.Row="1" Content="PokerStars Table Theme:" />
-        <Label Grid.Column="1" Grid.Row="2" Content="PokerStars Lobby Theme:" />
-        <CheckBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" Content="Minimize to System Tray" x:Name="CheckBox_MinimizeToSystemTray" />
-        <CheckBox Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" Content="Start Minimized" x:Name="CheckBox_StartMinimized" />
+        <CheckBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" Content="Minimize to System Tray" x:Name="CheckBox_MinimizeToSystemTray" />
+        <CheckBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" Content="Start Minimized" x:Name="CheckBox_StartMinimized" />
 
-        <Label Grid.Column="1" Grid.Row="5" Content="Exit Hotkey:" />
+        <Label Grid.Column="1" Grid.Row="4" Content="Exit Hotkey:" />
         <TextBox Grid.Column="2" Grid.Row="0" Margin="2" x:Name="TextBox_PokerStarsAppDataFolderPath" />
         <ComboBox Grid.Column="2" Grid.Row="1" Margin="2" x:Name="ComboBox_PokerStarsThemeTable" />
-        <ComboBox Grid.Column="2" Grid.Row="2" Margin="2" x:Name="ComboBox_PokerStarsThemeLobby" />
-        <ui:TextBoxHotkey Grid.Column="2" Grid.Row="5" Margin="2" x:Name="TextBoxHotkey_Exit" />
+        <ui:TextBoxHotkey Grid.Column="2" Grid.Row="4" Margin="2" x:Name="TextBoxHotkey_Exit" />
 
     </Grid>
 </UserControl>

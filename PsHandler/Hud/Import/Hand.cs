@@ -1,84 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
-namespace PsHandler.Hud
+namespace PsHandler.Hud.Import
 {
-    public class TournamentInfo
+    // Player
+
+    public class Player
     {
-        public long TournamentNumber;
-        public FileInfo FileInfo;
-        public long LastLength;
-        public List<Hand> Hands = new List<Hand>();
-        private readonly object _lock = new object();
+        public string Name;
+        public decimal Stack;
+        public decimal Bet;
 
-        public void AddHands(IEnumerable<Hand> hands)
+        public override string ToString()
         {
-            lock (_lock)
-            {
-                Hands.AddRange(hands);
-            }
-        }
-
-        public DateTime FirstHandTimestamp()
-        {
-            lock (_lock)
-            {
-                return Hands[0].Timestamp;
-            }
-        }
-
-        public DateTime LastHandTimestamp()
-        {
-            lock (_lock)
-            {
-                return Hands[Hands.Count - 1].Timestamp;
-            }
-        }
-
-        public decimal LatestStack(string name)
-        {
-            if (string.IsNullOrEmpty(name)) return decimal.MinValue;
-
-            lock (_lock)
-            {
-                Player firstOrDefault = Hands[Hands.Count - 1].Players.FirstOrDefault(o => o.Name.Equals(name));
-                if (firstOrDefault != null)
-                {
-                    return firstOrDefault.Stack;
-                }
-                return decimal.MinValue;
-            }
-        }
-
-        public void UpdateHands()
-        {
-            FileInfo = new FileInfo(FileInfo.FullName);
-            if (FileInfo.Length > LastLength)
-            {
-                string text = ReadSeek(FileInfo.FullName, LastLength);
-                LastLength = FileInfo.Length;
-                AddHands(Hand.Parse(text));
-            }
-        }
-
-        private static string ReadSeek(string path, long seek)
-        {
-            string text = "";
-            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
-            {
-                fs.Seek(seek, SeekOrigin.Begin);
-                byte[] b = new byte[fs.Length - seek];
-                fs.Read(b, 0, (int)(fs.Length - seek));
-                text = System.Text.Encoding.UTF8.GetString(b);
-            }
-            return text;
+            return string.Format("{0} {1} ({2})", Name, Stack, Bet);
         }
     }
+
+    // Hand
 
     public class Hand
     {
@@ -127,6 +68,11 @@ namespace PsHandler.Hud
             }
 
             return hands;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Hand: {0}, [{1}], Players: {2}", HandNumber, Timestamp, Players.Length);
         }
 
         //
@@ -283,18 +229,6 @@ namespace PsHandler.Hud
         {
             foreach (var player in _players)
                 player.Bet = 0;
-        }
-    }
-
-    public class Player
-    {
-        public string Name;
-        public decimal Stack;
-        public decimal Bet;
-
-        public override string ToString()
-        {
-            return string.Format("{0} {1} ({2})", Name, Stack, Bet);
         }
     }
 }

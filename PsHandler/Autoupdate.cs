@@ -49,7 +49,7 @@ namespace PsHandler
                         //Thread.Sleep(5000);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                 }
             });

@@ -355,7 +355,7 @@ namespace PsHandler
                 ButtonHandReplayX = 16 / WIDTH;
                 ButtonHandReplayY = 11 / HEIGHT;
 
-                if (false) //TODO later
+                if (false) //TODO later someday
                 {
                     CheckBoxFoldToAnyBet = new ___PokerStarsCheckBox(
                     new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.Themes.Nova.uncheckedfold.png")),

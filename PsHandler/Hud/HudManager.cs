@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
-using PsHandler.Types;
+using PsHandler.Hud.Import;
+using PsHandler.PokerTypes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,14 +15,9 @@ namespace PsHandler.Hud
 {
     public class HudManager
     {
-        private static readonly List<WindowTimer> _timerWindows = new List<WindowTimer>();
-        private static readonly object _lock = new object();
-        private static readonly List<TournamentInfo> _tournamentInfos = new List<TournamentInfo>();
-        private static Thread _thread;
-
-        private static readonly Regex _RegexFileName = new Regex(@"HH\d{8} T(?<tn>\d{9,10})");
-        private static readonly Regex _RegexTimestamp = new Regex(@".+ - (?<timestamp>\d{4}.\d{2}.\d{2} \d{1,2}:\d{2}:\d{2})");
         public static readonly List<PokerType> PokerTypes = new List<PokerType>();
+        private static readonly List<WindowTimer> _timerWindows = new List<WindowTimer>();
+        private static Thread _thread;
         //
         public static bool TimerHudLocationLocked = false;
         public static float TimerHudLocationX = 0;
@@ -47,9 +43,6 @@ namespace PsHandler.Hud
                     // search for new pokerstars table windows
                     while (true)
                     {
-                        // update tournament info list
-                        UpdateTournamentInfos();
-
                         foreach (var process in Process.GetProcessesByName("PokerStars"))
                         {
                             foreach (IntPtr handle in WinApi.EnumerateProcessWindowHandles(process.Id))
@@ -119,52 +112,6 @@ namespace PsHandler.Hud
                         PokerTypes.Add(pokerType);
                     }
                 }
-            }
-        }
-
-        private static void UpdateTournamentInfos()
-        {
-            DirectoryInfo dirPs = new DirectoryInfo(Config.AppDataPath);
-            if (!dirPs.Exists) return;
-            DirectoryInfo dirHH = dirPs.GetDirectories().FirstOrDefault(di => di.Name.Equals("HandHistory"));
-            if (dirHH == null || !dirHH.Exists) return;
-
-            foreach (var dirPlayers in dirHH.GetDirectories())
-            {
-                FileInfo[] fis = dirPlayers.GetFiles();
-                foreach (FileInfo fi in fis)
-                {
-                    Match matchFileName = _RegexFileName.Match(fi.Name);
-                    if (matchFileName.Success)
-                    {
-                        long tournamentNumber = long.Parse(matchFileName.Groups["tn"].Value);
-
-                        TournamentInfo ti;
-                        lock (_lock)
-                        {
-                            ti = _tournamentInfos.FirstOrDefault(o => o.TournamentNumber.Equals(tournamentNumber));
-                        }
-                        if (ti == null)
-                        {
-                            lock (_lock)
-                            {
-                                _tournamentInfos.Add(new TournamentInfo { TournamentNumber = tournamentNumber, FileInfo = fi, Hands = Hand.Parse(File.ReadAllText(fi.FullName)), LastLength = fi.Length });
-                            }
-                        }
-                        else
-                        {
-                            ti.UpdateHands();
-                        }
-                    }
-                }
-            }
-        }
-
-        public static TournamentInfo GetTournamentInfo(long tournamentNumber)
-        {
-            lock (_lock)
-            {
-                return _tournamentInfos.FirstOrDefault(ti => ti.TournamentNumber == tournamentNumber);
             }
         }
 

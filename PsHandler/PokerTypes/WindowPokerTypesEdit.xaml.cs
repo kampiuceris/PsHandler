@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
 
-namespace PsHandler.Types
+namespace PsHandler.PokerTypes
 {
     /// <summary>
     /// Interaction logic for WindowPokerTypesEdit.xaml
@@ -55,7 +55,7 @@ namespace PsHandler.Types
 
         private void Button_Add_Click(object sender, RoutedEventArgs e)
         {
-            WindowPokerTypeEdit windowPokerTypeEdit = new WindowPokerTypeEdit();
+            WindowPokerTypeEdit windowPokerTypeEdit = new WindowPokerTypeEdit(this);
             windowPokerTypeEdit.ShowDialog();
             if (windowPokerTypeEdit.Saved)
             {
@@ -69,7 +69,7 @@ namespace PsHandler.Types
             PokerType selectedItem = ListView_PokerTypes.SelectedItem as PokerType;
             if (selectedItem != null)
             {
-                WindowPokerTypeEdit windowPokerTypeEdit = new WindowPokerTypeEdit(selectedItem);
+                WindowPokerTypeEdit windowPokerTypeEdit = new WindowPokerTypeEdit(this, selectedItem);
                 windowPokerTypeEdit.ShowDialog();
                 UpdateListViewView();
             }

@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using PsHandler.Types;
+using PsHandler.Hud.Import;
+using PsHandler.PokerTypes;
 using Rectangle = System.Drawing.Rectangle;
-using System.Diagnostics;
 
 namespace PsHandler.Hud
 {
@@ -69,7 +68,7 @@ namespace PsHandler.Hud
                                 match = _regexTournamentLoggedIn.Match(title);
                                 if (match.Success) hero = match.Groups["hero"].Value;
 
-                                TournamentInfo tournamentInfo = HudManager.GetTournamentInfo(toutnamentNumber);
+                                Tournament tournamentInfo = App.Import.GetTournament(toutnamentNumber);
                                 if (tournamentInfo != null)
                                 {
                                     int pokerTypeErrors = -1;
@@ -85,12 +84,12 @@ namespace PsHandler.Hud
                                     {
                                         DateTime dateTimeNow = DateTime.Now.AddSeconds(-Config.TimeDiff);
 
-                                        DateTime dateTimeNextLevel = tournamentInfo.FirstHandTimestamp();
+                                        DateTime dateTimeNextLevel = tournamentInfo.GetFirstHandTimestamp();
                                         while (dateTimeNextLevel < dateTimeNow) dateTimeNextLevel = dateTimeNextLevel.AddSeconds(_pokerType.LevelLengthInSeconds);
                                         TimeSpan timeSpan = dateTimeNextLevel - dateTimeNow;
                                         textboxContent = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
 
-                                        decimal latestStack = tournamentInfo.LatestStack(hero);
+                                        decimal latestStack = tournamentInfo.GetLatestStack(hero);
                                         if (latestStack != decimal.MinValue)
                                         {
                                             textboxContent += " " + latestStack;
@@ -136,7 +135,7 @@ namespace PsHandler.Hud
                         Thread.Sleep(1000);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                 }
                 finally

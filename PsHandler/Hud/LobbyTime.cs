@@ -120,10 +120,10 @@ namespace PsHandler.Hud
 
             Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
             {
-                App.WindowMain.UCHud.Button_Sync.Visibility = Visibility.Hidden;
-                App.WindowMain.UCHud.TextBox_TimerDiffLobby.Visibility = Visibility.Hidden;
-                App.WindowMain.UCHud.ProgressBar_Sync.Visibility = Visibility.Visible;
-                App.WindowMain.UCHud.Button_SyncCancel.Visibility = Visibility.Visible;
+                //App.WindowMain.UCHud.Button_Sync.Visibility = Visibility.Hidden;
+                //App.WindowMain.UCHud.TextBox_TimerDiffLobby.Visibility = Visibility.Hidden;
+                //App.WindowMain.UCHud.ProgressBar_Sync.Visibility = Visibility.Visible;
+                //App.WindowMain.UCHud.Button_SyncCancel.Visibility = Visibility.Visible;
             }));
 
             _threadSync = new Thread(() =>
@@ -136,11 +136,12 @@ namespace PsHandler.Hud
                     int hours = -1;
                     int minutes = -1;
 
-                    Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate { App.WindowMain.UCHud.ProgressBar_Sync.Maximum = 70; App.WindowMain.UCHud.ProgressBar_Sync.Value = 0; }));
+                    //Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate { App.WindowMain.UCHud.ProgressBar_Sync.Maximum = 70; App.WindowMain.UCHud.ProgressBar_Sync.Value = 0; }));
 
                     while (_sync)
                     {
-                        PokerStarsThemeLobby theme = Config.PokerStarsThemeLobby;
+                        //PokerStarsThemeLobby theme = Config.PokerStarsThemeLobby;
+                        PokerStarsThemeLobby theme = new PokerStarsThemesLobby.Unknown();
                         if (theme is PokerStarsThemesLobby.Unknown) throw new Exception("Unknown PokerStars Lobby theme.");
 
                         Process[] processesByName = Process.GetProcessesByName("PokerStars");
@@ -198,7 +199,7 @@ namespace PsHandler.Hud
 
                                                     Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
                                                     {
-                                                        App.WindowMain.UCHud.TextBox_TimerDiffLobby.Text = Math.Round((dateTimeNow - dt).TotalSeconds).ToString(CultureInfo.InvariantCulture);
+                                                        //App.WindowMain.UCHud.TextBox_TimerDiffLobby.Text = Math.Round((dateTimeNow - dt).TotalSeconds).ToString(CultureInfo.InvariantCulture);
                                                     }));
 
                                                     throw new ThreadInterruptedException("Done!");
@@ -212,7 +213,7 @@ namespace PsHandler.Hud
 
                         Thread.Sleep(250);
 
-                        Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate { App.WindowMain.UCHud.ProgressBar_Sync.Value = (DateTime.Now - dateTimeStarted).TotalSeconds; }));
+                        //Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate { App.WindowMain.UCHud.ProgressBar_Sync.Value = (DateTime.Now - dateTimeStarted).TotalSeconds; }));
                         if ((DateTime.Now - dateTimeStarted).TotalSeconds > 70)
                         {
                             throw new Exception("PokerStars Lobby scan time out. Check if your lobby theme is set correctly.");
@@ -241,10 +242,10 @@ namespace PsHandler.Hud
 
             Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
             {
-                App.WindowMain.UCHud.Button_Sync.Visibility = Visibility.Visible;
-                App.WindowMain.UCHud.TextBox_TimerDiffLobby.Visibility = Visibility.Visible;
-                App.WindowMain.UCHud.ProgressBar_Sync.Visibility = Visibility.Hidden;
-                App.WindowMain.UCHud.Button_SyncCancel.Visibility = Visibility.Hidden;
+                //App.WindowMain.UCHud.Button_Sync.Visibility = Visibility.Visible;
+                //App.WindowMain.UCHud.TextBox_TimerDiffLobby.Visibility = Visibility.Visible;
+                //App.WindowMain.UCHud.ProgressBar_Sync.Visibility = Visibility.Hidden;
+                //App.WindowMain.UCHud.Button_SyncCancel.Visibility = Visibility.Hidden;
             }));
 
             _sync = false;

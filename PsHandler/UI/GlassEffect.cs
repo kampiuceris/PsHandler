@@ -4,7 +4,7 @@ using System.Windows.Media;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 
-namespace PsHandler
+namespace PsHandler.UI
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct MARGINS

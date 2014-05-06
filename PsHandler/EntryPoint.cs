@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Principal;
-using Microsoft.Win32;
-using PsHandler.Hud;
-using PsHandler.Types;
+using System.Windows.Media;
+using System.Windows;
+using PsHandler.UI;
+using Color = System.Windows.Media.Color;
+using PsHandler.TableTiler;
 
 namespace PsHandler
 {
@@ -43,7 +44,6 @@ namespace PsHandler
 
         public static void Test()
         {
-            
         }
     }
 }

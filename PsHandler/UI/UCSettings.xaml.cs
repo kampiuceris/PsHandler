@@ -32,18 +32,6 @@ namespace PsHandler.UI
                 }
             }
 
-            ComboBox_PokerStarsThemeLobby.Items.Add(new PokerStarsThemesLobby.Unknown());
-            ComboBox_PokerStarsThemeLobby.Items.Add(new PokerStarsThemesLobby.Black());
-            ComboBox_PokerStarsThemeLobby.Items.Add(new PokerStarsThemesLobby.Classic());
-            foreach (var item in ComboBox_PokerStarsThemeLobby.Items)
-            {
-                if (Config.PokerStarsThemeLobby.GetType() == item.GetType())
-                {
-                    ComboBox_PokerStarsThemeLobby.SelectedItem = item;
-                    break;
-                }
-            }
-
             CheckBox_MinimizeToSystemTray.IsChecked = Config.MinimizeToSystemTray;
 
             CheckBox_StartMinimized.IsChecked = Config.StartMinimized;
@@ -58,12 +46,6 @@ namespace PsHandler.UI
             {
                 var value = ComboBox_PokerStarsThemeTable.SelectedItem as PokerStarsThemeTable;
                 Config.PokerStarsThemeTable = value ?? new PokerStarsThemesTable.Unknown();
-            };
-
-            ComboBox_PokerStarsThemeLobby.SelectionChanged += (sender, args) =>
-            {
-                var value = ComboBox_PokerStarsThemeLobby.SelectedItem as PokerStarsThemeLobby;
-                Config.PokerStarsThemeLobby = value ?? new PokerStarsThemesLobby.Unknown();
             };
 
             CheckBox_MinimizeToSystemTray.Checked += (sender, args) => { Config.MinimizeToSystemTray = true; };
