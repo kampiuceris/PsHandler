@@ -121,6 +121,13 @@ namespace PsHandler.TableTiler
             public DateTime FirstHandTimestamp;
         }
 
+        struct Distances
+        {
+            public Rectangle AvailablePosition;
+            public TableInfo ClosestWindow;
+            public double Distance;
+        }
+
         public static void Tile(KeyCombination kc)
         {
             if (!Config.EnableTableTiler)
@@ -222,33 +229,39 @@ namespace PsHandler.TableTiler
                     WinApi.BringWindowToTop(tournamentWindow.Handle);
                 }
 
+                // leftovers to the main window pool
+
+                if (tournamentWindows.Any())
+                {
+                    otherWindows.AddRange(tournamentWindows);
+                }
+
                 // closest then
 
-                List<TableInfo> availableWindows = otherWindows;
-
-                while (availablePositions.Any() && availableWindows.Any())
-                {
-                    Rectangle availablePosition = availablePositions[0];
-                    TableInfo closestWindow = GetClosestWindow(availablePosition, availableWindows);
-                    availablePositions.Remove(availablePosition);
-                    availableWindows.Remove(closestWindow);
-                    MoveAndResize(closestWindow.Handle, availablePosition);
-                }
+                MoveClosest(availablePositions, otherWindows);
             }
             else
             {
-                // closest
-                List<Rectangle> availablePositions = ttati.TableTile.XYWHs.ToList();
-                List<TableInfo> availableWindows = ttati.TableInfos;
+                MoveClosest(ttati.TableTile.XYWHs.ToList(), ttati.TableInfos);
+            }
+        }
 
-                while (availablePositions.Any() && availableWindows.Any())
+        private static void MoveClosest(List<Rectangle> availablePositions, List<TableInfo> availableWindows)
+        {
+            while (availablePositions.Any() && availableWindows.Any())
+            {
+                List<Distances> distances = new List<Distances>();
+                foreach (Rectangle availablePosition in availablePositions)
                 {
-                    Rectangle availablePosition = availablePositions[0];
-                    TableInfo closestWindow = GetClosestWindow(availablePosition, availableWindows);
-                    availablePositions.Remove(availablePosition);
-                    availableWindows.Remove(closestWindow);
-                    MoveAndResize(closestWindow.Handle, availablePosition);
+                    double distance;
+                    TableInfo closestWindow = GetClosestWindowWidhDistance(availablePosition, availableWindows, out distance);
+                    distances.Add(new Distances { AvailablePosition = availablePosition, ClosestWindow = closestWindow, Distance = distance });
                 }
+                distances = distances.OrderBy(o => o.Distance).ToList();
+
+                availablePositions.Remove(distances[0].AvailablePosition);
+                availableWindows.Remove(distances[0].ClosestWindow);
+                MoveAndResize(distances[0].ClosestWindow.Handle, distances[0].AvailablePosition);
             }
         }
 
@@ -268,6 +281,27 @@ namespace PsHandler.TableTiler
             {
                 Point centerAvailableWindow = GetCenterPointOfWindow(availableWindow.CurrentRectangle);
                 double distance = GetDistanceBetweenPoints(centerAvailablePosition, centerAvailableWindow);
+                if (minDistance > distance)
+                {
+                    minDistance = distance;
+                    closestWindow = availableWindow;
+                }
+            }
+
+            return closestWindow ?? availableWindows[0];
+        }
+
+        private static TableInfo GetClosestWindowWidhDistance(Rectangle availablePosition, List<TableInfo> availableWindows, out double distance)
+        {
+            Point centerAvailablePosition = GetCenterPointOfWindow(availablePosition);
+            double minDistance = double.MaxValue;
+            TableInfo? closestWindow = null;
+            distance = double.MaxValue;
+
+            foreach (TableInfo availableWindow in availableWindows)
+            {
+                Point centerAvailableWindow = GetCenterPointOfWindow(availableWindow.CurrentRectangle);
+                distance = GetDistanceBetweenPoints(centerAvailablePosition, centerAvailableWindow);
                 if (minDistance > distance)
                 {
                     minDistance = distance;
