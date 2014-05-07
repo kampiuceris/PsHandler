@@ -16,43 +16,25 @@ namespace PsHandler.UI
         {
             InitializeComponent();
 
-            // Init values
-
-            //CheckBox_EnableHud.IsChecked = Config.TimerHud;
-
-            TextBox_TimerDiff.Text = Config.TimeDiff.ToString(CultureInfo.InvariantCulture);
-
             // Hook values
 
-            CheckBox_EnableHud.Checked += (sender, args) =>
+            CheckBox_EnableHUD.Checked += (sender, args) =>
             {
-                Button_PokerTypes.IsEnabled = false;
-                Button_CustomizeTimer.IsEnabled = false;
-                Config.TimerHud = true;
+                Config.EnableHUD = true;
+                TabItem_Timer.IsEnabled = false;
+                TabItem_BigBlinds.IsEnabled = false;
                 HudManager.Start();
             };
-            CheckBox_EnableHud.Unchecked += (sender, args) =>
+            CheckBox_EnableHUD.Unchecked += (sender, args) =>
             {
                 HudManager.Stop();
-                Config.TimerHud = false;
-                Button_PokerTypes.IsEnabled = true;
-                Button_CustomizeTimer.IsEnabled = true;
+                TabItem_Timer.IsEnabled = true;
+                TabItem_BigBlinds.IsEnabled = true;
+                Config.EnableHUD = false;
             };
 
-            TextBox_TimerDiff.TextChanged += (sender, args) => int.TryParse(TextBox_TimerDiff.Text, out Config.TimeDiff);
-
             // start hud if needed
-            CheckBox_EnableHud.IsChecked = Config.TimerHud;
-        }
-
-        private void Button_PokerTypes_Click(object sender, RoutedEventArgs e)
-        {
-            new WindowPokerTypesEdit(App.WindowMain).ShowDialog();
-        }
-
-        private void Button_CustomizeTimer_Click(object sender, RoutedEventArgs e)
-        {
-            new WindowCustomizeHud(App.WindowMain).ShowDialog();
+            CheckBox_EnableHUD.IsChecked = Config.EnableHUD;
         }
     }
 }

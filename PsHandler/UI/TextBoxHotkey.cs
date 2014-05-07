@@ -11,15 +11,15 @@ namespace PsHandler.UI
 {
     public class TextBoxHotkey : TextBox
     {
-        private KeyCombination _keyCombination = new KeyCombination(Key.None, false, false, false);
-        
+        private KeyCombination _keyCombination;
+
         public KeyCombination KeyCombination
         {
             set
             {
                 if (value == null) return;
                 _keyCombination = value;
-                Text = GetString();
+                Text = GetString(KeyCombination);
                 Foreground = Text.Equals("None") ? Brushes.DarkGray : Brushes.Black;
             }
             get
@@ -30,7 +30,7 @@ namespace PsHandler.UI
 
         public TextBoxHotkey()
         {
-            //KeyCombination = new KeyCombination(Key.None, false, false, false);
+            KeyCombination = new KeyCombination(Key.None, false, false, false);
 
             BorderThickness = new Thickness(1.2);
             BorderBrush = Brushes.DarkGray;
@@ -63,20 +63,20 @@ namespace PsHandler.UI
             KeyCombination = keyCombination;
         }
 
-        private string GetString()
+        public static string GetString(KeyCombination keyCombination)
         {
             List<string> modifiers = new List<string>();
-            if (KeyCombination.Ctrl)
+            if (keyCombination.Ctrl)
             {
                 modifiers.Add("Ctrl");
                 modifiers.Add(" + ");
             }
-            if (KeyCombination.Alt)
+            if (keyCombination.Alt)
             {
                 modifiers.Add("Alt");
                 modifiers.Add(" + ");
             }
-            if (KeyCombination.Shift)
+            if (keyCombination.Shift)
             {
                 modifiers.Add("Shift");
                 modifiers.Add(" + ");
@@ -86,7 +86,7 @@ namespace PsHandler.UI
 
             foreach (string s in modifiers)
                 sb.Append(s);
-            sb.Append(KeyCombination.Key);
+            sb.Append(keyCombination.Key);
 
             return sb.ToString();
         }

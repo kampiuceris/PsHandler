@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using PsHandler.PokerTypes;
 
 namespace PsHandler.UI
 {
@@ -25,7 +26,15 @@ namespace PsHandler.UI
                 WindowState = WindowState.Normal;
                 //MyNotifyIcon.Visibility = Visibility.Hidden;
             };
-            Loaded += (sender, args) => { if (Config.StartMinimized) WindowState = WindowState.Minimized; };
+            Loaded += (sender, args) =>
+            {
+                if (Config.StartMinimized)
+                {
+                    WindowState = WindowState.Minimized;
+                }
+                UCTableTiler.UpdateListView();
+                UCPokerTypes.UpdateListView();
+            };
         }
 
         private ContextMenu GetNotifyIconContextMenu()

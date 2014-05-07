@@ -15,7 +15,6 @@ namespace PsHandler.Hud
 {
     public class HudManager
     {
-        public static readonly List<PokerType> PokerTypes = new List<PokerType>();
         private static readonly List<WindowTimer> _timerWindows = new List<WindowTimer>();
         private static Thread _thread;
         //
@@ -37,9 +36,6 @@ namespace PsHandler.Hud
             {
                 try
                 {
-                    // load poker types
-                    LoadPokerTypesFromRegistry();
-
                     // search for new pokerstars table windows
                     while (true)
                     {
@@ -97,37 +93,22 @@ namespace PsHandler.Hud
             }
         }
 
-        private static void LoadPokerTypesFromRegistry()
-        {
-            PokerTypes.Clear();
-
-            // load Poker Types from registry
-            using (RegistryKey keyPokerTypes = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\PokerTypes", true))
-            {
-                foreach (string valueName in keyPokerTypes.GetValueNames())
-                {
-                    PokerType pokerType = PokerType.FromXml(keyPokerTypes.GetValue(valueName) as string);
-                    if (pokerType != null)
-                    {
-                        PokerTypes.Add(pokerType);
-                    }
-                }
-            }
-        }
-
         public static PokerType FindPokerType(string title, string fileName, out int errorFlags)
         {
             List<PokerType> possiblePokerTypes = new List<PokerType>();
-            foreach (PokerType pokerType in PokerTypes)
+            lock (PokerTypeManager.Lock)
             {
-                var IncludeAnd = pokerType.IncludeAnd.Length == 0 || pokerType.IncludeAnd.All(title.Contains);
-                var IncludeOr = pokerType.IncludeOr.Length == 0 || pokerType.IncludeOr.Any(title.Contains);
-                var ExcludeAnd = pokerType.ExcludeAnd.Length == 0 || !pokerType.ExcludeAnd.All(title.Contains);
-                var ExcludeOr = pokerType.ExcludeOr.Length == 0 || !pokerType.ExcludeOr.Any(title.Contains);
-                var BuyInAndRake = pokerType.BuyInAndRake.Length == 0 || pokerType.BuyInAndRake.Any(fileName.Contains);
-                if (IncludeAnd && IncludeOr && ExcludeAnd && ExcludeOr && BuyInAndRake)
+                foreach (PokerType pokerType in PokerTypeManager.PokerTypes)
                 {
-                    possiblePokerTypes.Add(pokerType);
+                    var IncludeAnd = pokerType.IncludeAnd.Length == 0 || pokerType.IncludeAnd.All(title.Contains);
+                    var IncludeOr = pokerType.IncludeOr.Length == 0 || pokerType.IncludeOr.Any(title.Contains);
+                    var ExcludeAnd = pokerType.ExcludeAnd.Length == 0 || !pokerType.ExcludeAnd.All(title.Contains);
+                    var ExcludeOr = pokerType.ExcludeOr.Length == 0 || !pokerType.ExcludeOr.Any(title.Contains);
+                    var BuyInAndRake = pokerType.BuyInAndRake.Length == 0 || pokerType.BuyInAndRake.Any(fileName.Contains);
+                    if (IncludeAnd && IncludeOr && ExcludeAnd && ExcludeOr && BuyInAndRake)
+                    {
+                        possiblePokerTypes.Add(pokerType);
+                    }
                 }
             }
             if (possiblePokerTypes.Count == 1)

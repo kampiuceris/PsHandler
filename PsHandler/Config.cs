@@ -39,8 +39,12 @@ namespace PsHandler
 
         // HUD
 
-        public static bool TimerHud;
+        public static bool EnableHUD;
+        public static bool EnableHUDTimer;
         public static int TimeDiff;
+
+        // Table Tiler
+        public static bool EnableTableTiler;
 
         // Registry
 
@@ -186,7 +190,8 @@ namespace PsHandler
 
             // hud
 
-            TimerHud = GetBool("TimerHud", 0);
+            EnableHUD = GetBool("EnableHUD", 0);
+            EnableHUDTimer = GetBool("EnableHUDTimer", 0);
             TimeDiff = GetInt("TimeDiff", 0);
 
             HudManager.TimerHudLocationLocked = GetBool("TimerHudLocationLocked", 0);
@@ -208,13 +213,15 @@ namespace PsHandler
             if (HudManager.TimerHudFontSize < 1) HudManager.TimerHudFontSize = 1;
             if (HudManager.TimerHudFontSize > 72) HudManager.TimerHudFontSize = 72;
 
-            // seed poker types if needed
+            // Poker Types
+
+            PokerTypeManager.Load();
 
             #region poker types
 
             using (RegistryKey keyPokerTypes = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\PokerTypes"))
             {
-                if (keyPokerTypes == null)
+                if (keyPokerTypes == null || keyPokerTypes.GetValueNames().Length == 0)
                 {
                     PokerType pt;
 
@@ -390,6 +397,7 @@ namespace PsHandler
 
             // TableTiler
 
+            EnableTableTiler = GetBool("EnableTableTiler", 0);
             TableTileManager.Load();
         }
 
@@ -416,7 +424,8 @@ namespace PsHandler
 
             // hud
 
-            SetValue("TimerHud", TimerHud.ToInt());
+            SetValue("EnableHUD", EnableHUD.ToInt());
+            SetValue("EnableHUDTimer", EnableHUDTimer.ToInt());
             SetValue("TimeDiff", TimeDiff);
 
             SetValue("TimerHudLocationLocked", HudManager.TimerHudLocationLocked.ToInt());
@@ -429,8 +438,13 @@ namespace PsHandler
             SetValue("TimerHudFontStyle", HudManager.TimerHudFontStyle.ToString());
             SetValue("TimerHudFontSize", HudManager.TimerHudFontSize.ToString(CultureInfo.InvariantCulture));
 
+            // Poker Types
+
+            PokerTypeManager.Save();
+
             // TableTiler
 
+            SetValue("EnableTableTiler", EnableTableTiler.ToInt());
             TableTileManager.Save();
         }
     }

@@ -1,46 +1,48 @@
-﻿<UserControl x:Class="PsHandler.UI.UCHud"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:hud="clr-namespace:PsHandler.Hud" xmlns:pokerTypes="clr-namespace:PsHandler.PokerTypes"
+             x:Class="PsHandler.UI.UCHud" 
              mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="600" UseLayoutRounding="True">
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="26"/>
-            <RowDefinition Height="26"/>
-            <RowDefinition Height="26"/>
-            <RowDefinition Height="26"/>
-            <RowDefinition Height="26"/>
-            <RowDefinition Height="26"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="26"/>
-            <ColumnDefinition Width="150"/>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <Image Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" />
-        <Image Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" />
-
-        <CheckBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" Content="Enable HUD" x:Name="CheckBox_EnableHud" />
-        <Label Grid.Column="1" Grid.Row="1" Content="Time Diff:" />
-        <Button Grid.Column="1" Grid.Row="3" Margin="1" HorizontalContentAlignment="Left" x:Name="Button_PokerTypes" Click="Button_PokerTypes_Click">
-            <StackPanel Orientation="Horizontal" Margin="10,0">
-                <Image Height="16" Width="16" Source="../Images/large_tiles.png" />
-                <TextBlock Text="Poker Types" Margin="5,0,0,0" VerticalAlignment="Center" />
-            </StackPanel>
-        </Button>
-        <Button Grid.Column="1" Grid.Row="4" Margin="1" HorizontalContentAlignment="Left" x:Name="Button_CustomizeTimer" Click="Button_CustomizeTimer_Click">
-            <StackPanel Orientation="Horizontal" Margin="10,0">
-                <Image Height="16" Width="16" Source="../Images/timer.png" />
-                <TextBlock Text="Customize Timer" Margin="5,0,0,0" VerticalAlignment="Center" />
-            </StackPanel>
-        </Button>
-        
-        <TextBox Grid.Column="2" Grid.Row="1" Margin="2" x:Name="TextBox_TimerDiff" />
+    <Grid Margin="5">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Height="26">
+            <Image Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" Margin="5" />
+            <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Content="Enable HUD" x:Name="CheckBox_EnableHUD" />
+        </StackPanel>
+        <Separator HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,31,0,0" />
+        <TabControl Margin="0,37,0,0" x:Name="TabControl_Main">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Image Height="16" Width="16" Source="../Images/three_tags.png" />
+                        <TextBlock Text="Poker Types" Margin="5,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </TabItem.Header>
+                <pokerTypes:UCPokerTypes x:Name="UCPokerTypes" />
+            </TabItem>
+            <TabItem x:Name="TabItem_Timer">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Image Height="16" Width="16" Source="../Images/chronometer.png" />
+                        <TextBlock Text="Timer" Margin="5,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </TabItem.Header>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <hud:UCHUDTimer x:Name="UCDHUDTimer"/>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem x:Name="TabItem_BigBlinds">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Image Height="16" Width="16" Source="../Images/chips.png" />
+                        <TextBlock Text="Big Blinds" Margin="5,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </TabItem.Header>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+            </TabItem>
+        </TabControl>
 
     </Grid>
 </UserControl>

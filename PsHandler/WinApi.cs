@@ -20,6 +20,7 @@ namespace PsHandler
         public const int SW_RESTORE = 9;
         public const int WM_SYSCOMMAND = 0x0112;
         public const int SC_CLOSE = 0xF060;
+        public const int WM_SIZE = 0x0005;
 
         public delegate bool EnumThreadDelegate(IntPtr hWnd, IntPtr lParam);
 
@@ -170,8 +171,11 @@ namespace PsHandler
 
         //
 
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool BringWindowToTop(IntPtr hWnd);
+
         [DllImport("user32.dll")]
-        public static extern bool ClientToScreen(IntPtr hwnd, out POINT lpPoint);
+        public static extern bool ClientToScreen(IntPtr hWnd, out POINT lpPoint);
 
         [DllImport("user32.dll")]
         public static extern bool EnumDesktopWindows(IntPtr hDesktop, EnumDelegate lpEnumCallbackFunction, IntPtr lParam);
@@ -180,10 +184,10 @@ namespace PsHandler
         public extern static bool EnumThreadWindows(int dwThreadId, EnumThreadDelegate lpfn, IntPtr lParam);
 
         [DllImport("user32.dll")]
-        public extern static int GetClassName(IntPtr hwnd, StringBuilder lpClassName, int nMaxCount);
+        public extern static int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
         [DllImport("user32.dll")]
-        public static extern bool GetClientRect(IntPtr hwnd, out RECT lpRect);
+        public static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
 
         [DllImport("user32.dll")]
         public static extern bool GetCursorPos(out POINT lpPoint);
@@ -198,10 +202,10 @@ namespace PsHandler
         public static extern long GetWindowLong(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll")]
-        public static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
+        public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
         [DllImport("user32.dll")]
-        public extern static int GetWindowText(IntPtr hwnd, StringBuilder lpWindowText, int nMaxCount);
+        public extern static int GetWindowText(IntPtr hWnd, StringBuilder lpWindowText, int nMaxCount);
 
         [DllImport("user32.dll")]
         public extern static IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
@@ -210,7 +214,10 @@ namespace PsHandler
         public static extern bool IsWindow(IntPtr hWnd);
 
         [DllImport("user32.dll")]
-        public static extern bool IsWindowVisible(IntPtr hwnd);
+        public static extern bool IsWindowVisible(IntPtr hWnd);
+
+        [DllImport("User32.dll")]
+        public static extern bool MoveWindow(IntPtr hWnd, int x, int y, int width, int height, bool redraw);
 
         [DllImport("user32.dll")]
         public static extern bool PostMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);

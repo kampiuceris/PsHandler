@@ -11,15 +11,15 @@
                 <ColumnDefinition Width="25"/>
                 <ColumnDefinition Width="50"/>
                 <ColumnDefinition Width="150"/>
-                <ColumnDefinition Width="50"/>
-                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="220"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="2" Padding="0" x:Name="Label_Name" Content="Name:" />
             <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="2" x:Name="TextBox_Name" TextWrapping="Wrap" Text="" />
             <Label Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="2" Padding="0"  x:Name="Label_Name_Copy" Content="Hotkey:" />
             <UI:TextBoxHotkey Grid.Row="0" Grid.Column="4" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="2" x:Name="TextBoxHotkey_Hotkey" TextWrapping="Wrap" />
-            <CheckBox Grid.Row="0" Grid.Column="6" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="2"  Content="Sort by Starting Time" x:Name="CheckBox_SortByStartingTime" />
+            <CheckBox Grid.Row="0" Grid.Column="6" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="2"  Content="Sort Tournaments by Starting Time" x:Name="CheckBox_SortByStartingTime" />
         </Grid>
         <Border VerticalAlignment="Top" Margin="10,42,10,0" Height="150" BorderThickness="1" BorderBrush="LightGray" Padding="10">
             <local:UCScreenPreview x:Name="UCScreenPreview_Main" />
@@ -36,11 +36,11 @@
                 <ColumnDefinition Width="150*"/>
                 <ColumnDefinition Width="150*"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Row="0" Grid.Column="0" Margin="2" Content="Title Include ALL Words" VerticalAlignment="Center" ToolTip="PokerStars table window title must contains all of these words" />
-            <Label Grid.Row="0" Grid.Column="1" Margin="2" Content="Title Include ANY Word" VerticalAlignment="Center" ToolTip="PokerStars table window title must contains any of these words" />
-            <Label Grid.Row="0" Grid.Column="2" Margin="2" Content="Title Exclude ALL Words" VerticalAlignment="Center" ToolTip="PokerStars table window title must not contain all of these words" />
-            <Label Grid.Row="0" Grid.Column="3" Margin="2" Content="Title Exclude ANY Word" VerticalAlignment="Center" ToolTip="PokerStars table window title must not contain any of these words" />
-            <Label Grid.Row="0" Grid.Column="4" Margin="2" Content="X, Y, Width, Height" VerticalAlignment="Center" ToolTip="HandHistory file name must contains any of these words" x:Name="Label_XYWHs" />
+            <Label Grid.Row="0" Grid.Column="0" Margin="2" Content="Title Include ALL Words" VerticalAlignment="Center" ToolTip="Window title must contains all of these words" />
+            <Label Grid.Row="0" Grid.Column="1" Margin="2" Content="Title Include ANY Word" VerticalAlignment="Center" ToolTip="Window title must contains any of these words" />
+            <Label Grid.Row="0" Grid.Column="2" Margin="2" Content="Title Exclude ALL Words" VerticalAlignment="Center" ToolTip="Window title must not contain all of these words" />
+            <Label Grid.Row="0" Grid.Column="3" Margin="2" Content="Title Exclude ANY Word" VerticalAlignment="Center" ToolTip="Window title must not contain any of these words" />
+            <Label Grid.Row="0" Grid.Column="4" Margin="2" Content="X, Y, Width, Height" VerticalAlignment="Center" ToolTip="Windows Location: X and Y and Size: Width and Height" x:Name="Label_XYWHs" />
             <TextBox x:Name="TextBox_IncludeAnd" Grid.Row="1" Grid.Column="0" Margin="2" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Text=""/>
             <TextBox x:Name="TextBox_IncludeOr" Grid.Row="1" Grid.Column="1" Margin="2" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Text=""/>
             <TextBox x:Name="TextBox_ExcludeAnd" Grid.Row="1" Grid.Column="2" Margin="2" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Text=""/>

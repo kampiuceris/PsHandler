@@ -13,7 +13,41 @@ namespace PsHandler.UI
         public UCTableTiler()
         {
             InitializeComponent();
-            Loaded += (sender, args) => UpdateListView();
+
+            // Hook values
+
+            CheckBox_EnableTableTimer.Checked += (sender, args) => { Config.EnableTableTiler = true; };
+            CheckBox_EnableTableTimer.Unchecked += (sender, args) => { Config.EnableTableTiler = false; };
+
+            // start hud if needed
+            CheckBox_EnableTableTimer.IsChecked = Config.EnableHUDTimer;
+        }
+
+        public static void UpdateListView(TableTile tableTileToSelect = null)
+        {
+            var listView = App.WindowMain.UCTableTiler.ListView_TableTiles;
+            listView.Items.Clear();
+            lock (TableTileManager.Lock)
+            {
+                foreach (var tableTile in TableTileManager.TableTiles)
+                {
+                    listView.Items.Add(new ListViewItemTableTile(tableTile));
+                }
+            }
+
+            if (tableTileToSelect != null)
+            {
+                foreach (var item in listView.Items)
+                {
+                    if (((ListViewItemTableTile)item).TableTile.Name.Equals(tableTileToSelect.Name))
+                    {
+                        listView.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
+
+            App.WindowMain.UCTableTiler.GridView_Name.ResetColumnWidths();
         }
 
         private void Button_Add_Click(object sender, RoutedEventArgs e)
@@ -58,33 +92,6 @@ namespace PsHandler.UI
         {
             Button_Edit_Click(null, new RoutedEventArgs());
         }
-
-        public static void UpdateListView(TableTile tableTileToSelect = null)
-        {
-            var listView = App.WindowMain.UCTableTiler.ListView_TableTiles;
-            listView.Items.Clear();
-            lock (TableTileManager.Lock)
-            {
-                foreach (var tableTile in TableTileManager.TableTiles)
-                {
-                    listView.Items.Add(new ListViewItemTableTile(tableTile));
-                }
-            }
-
-            if (tableTileToSelect != null)
-            {
-                foreach (var item in listView.Items)
-                {
-                    if (((ListViewItemTableTile)item).TableTile.Name.Equals(tableTileToSelect.Name))
-                    {
-                        listView.SelectedItem = item;
-                        break;
-                    }
-                }
-            }
-
-            App.WindowMain.UCTableTiler.GridView_TableTiles.ResetColumnWidths();
-        }
     }
 
     public class ListViewItemTableTile : ListViewItem
@@ -108,7 +115,7 @@ namespace PsHandler.UI
 
             Image image = new Image
             {
-                Source = Methods.GetEmbeddedResourceBitmap(string.Format("PsHandler.Images.application_cascade.png")).ToBitmapSource(),
+                Source = Methods.GetEmbeddedResourceBitmap(string.Format("PsHandler.Images.EmbeddedResources.application_cascade.png")).ToBitmapSource(),
                 Width = 16,
                 Height = 16,
                 Margin = new Thickness(5, 0, 0, 0)

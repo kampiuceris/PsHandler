@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:PsHandler.UI" xmlns:tb="clr-namespace:Hardcodet.Wpf.TaskbarNotification"
         x:Class="PsHandler.UI.WindowMain"
         UseLayoutRounding="True" Background="#FFF0F0F0"
-        Title="PsHandler" Height="400" Width="600" MinHeight="250" MinWidth="500" Icon="../Images/ps.ico">
+        Title="PsHandler" Height="400" Width="600" MinHeight="300" MinWidth="500" Icon="../Images/ps.ico">
     <Window.Resources>
         <Style TargetType="{x:Type Image}">
             <Style.Triggers>
@@ -57,15 +57,13 @@
                         <TextBlock Text="HUD" Margin="5,0,0,0" VerticalAlignment="Center" />
                     </StackPanel>
                 </TabItem.Header>
-                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <local:UCHud x:Name="UCHud" />
-                </ScrollViewer>
+                <local:UCHud x:Name="UCHud" />
             </TabItem>
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <Image Height="16" Width="16" Source="../Images/monitor_window_3d.png" />
-                        <TextBlock Text="Table Tiler" Margin="5,0,0,0" VerticalAlignment="Center" />
+                        <TextBlock Text="Table Tiler" VerticalAlignment="Center" Margin="5,0,0,0" />
                     </StackPanel>
                 </TabItem.Header>
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">

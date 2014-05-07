@@ -69,6 +69,14 @@
     <Compile Include="Bmp.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="Hud\UCHUDTimer.xaml.cs">
+      <DependentUpon>UCHUDTimer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PokerTypes\PokerTypeManager.cs" />
+    <Compile Include="PokerTypes\UCPokerTypes.xaml.cs">
+      <DependentUpon>UCPokerTypes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToDo.cs" />
     <Compile Include="UI\GlassEffect.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Hud\HudManager.cs" />
@@ -129,9 +137,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ScreenCapture.cs" />
-    <Compile Include="PokerTypes\WindowPokerTypesEdit.xaml.cs">
-      <DependentUpon>WindowPokerTypesEdit.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\TextBoxHotkey.cs" />
     <Compile Include="UI\UCController.xaml.cs">
       <DependentUpon>UCController.xaml</DependentUpon>
@@ -177,6 +182,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Hud\UCHUDTimer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Hud\WindowCustomizeHud.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -185,15 +194,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PokerTypes\UCPokerTypes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TableTiler\WindowTableTileEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PokerTypes\WindowPokerTypeEdit.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="PokerTypes\WindowPokerTypesEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -272,10 +281,10 @@
     <EmbeddedResource Include="Images\Themes\Slick\imback2.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\hm2applytosimilartables.png" />
+    <EmbeddedResource Include="Images\EmbeddedResources\hm2applytosimilartables.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\tournamentregistrationpopups.png" />
+    <EmbeddedResource Include="Images\EmbeddedResources\tournamentregistrationpopups.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\Lobby\Black\0.png" />
@@ -304,7 +313,7 @@
     <EmbeddedResource Include="Images\Lobby\Classic\separator.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\appdatafolder.png" />
+    <EmbeddedResource Include="Images\EmbeddedResources\appdatafolder.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\information.png" />
@@ -375,7 +384,27 @@
     <Resource Include="Images\tile_edit.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\application_cascade.png" />
+    <EmbeddedResource Include="Images\EmbeddedResources\application_cascade.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\chips.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\chronometer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\poker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\three_tags.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\tag_blue_add.png" />
+    <Resource Include="Images\tag_blue_delete.png" />
+    <Resource Include="Images\tag_blue_edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\EmbeddedResources\tag_blue.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
