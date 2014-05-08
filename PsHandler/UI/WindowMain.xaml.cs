@@ -12,6 +12,8 @@ namespace PsHandler.UI
     {
         public bool IsClosing;
 
+        public bool Importing { set { Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate { Grid_Import.Visibility = value ? Visibility.Visible : Visibility.Hidden; })); } }
+
         public WindowMain()
         {
             InitializeComponent();

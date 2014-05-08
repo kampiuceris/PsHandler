@@ -49,22 +49,12 @@ namespace PsHandler.Hud.Import
 
         //
 
-        private void AddHands(IEnumerable<Hand> hands)
+        public void AddHands(IEnumerable<Hand> hands)
         {
             lock (_lock)
             {
                 Hands.AddRange(hands);
-            }
-        }
-
-        public void UpdateHands()
-        {
-            FileInfo = new FileInfo(FileInfo.FullName);
-            if (FileInfo.Length > LastLength)
-            {
-                string text = Methods.ReadSeek(FileInfo.FullName, LastLength);
-                LastLength = FileInfo.Length;
-                AddHands(Hand.Parse(text));
+                Hands.Sort((o1, o2) => DateTime.Compare(o1.Timestamp, o2.Timestamp));
             }
         }
 

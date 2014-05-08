@@ -30,7 +30,13 @@ namespace PsHandler.Hud.Import
             {
                 while (true)
                 {
-                    UpdateTournaments();
+                    try
+                    {
+                        UpdateTournaments();
+                    }
+                    catch
+                    {
+                    }
                     Thread.Sleep(3000);
                 }
             });
@@ -80,15 +86,31 @@ namespace PsHandler.Hud.Import
                         {
                             lock (_lock)
                             {
-                                _tournaments.Add(new Tournament { TournamentNumber = tournamentNumber, FileInfo = fi, Hands = Hand.Parse(File.ReadAllText(fi.FullName)), LastLength = fi.Length });
+                                App.WindowMain.Importing = true;
+                                List<Hand> hands = Hand.Parse(File.ReadAllText(fi.FullName)); // import time                               
+                                _tournaments.Add(new Tournament { TournamentNumber = tournamentNumber, FileInfo = fi, Hands = hands, LastLength = fi.Length });
+                                App.WindowMain.Importing = false;
                             }
                         }
                         else
                         {
-                            tournament.UpdateHands();
+                            UpdateHands(tournament);
                         }
                     }
                 }
+            }
+        }
+
+        public void UpdateHands(Tournament tournament)
+        {
+            tournament.FileInfo = new FileInfo(tournament.FileInfo.FullName);
+            if (tournament.FileInfo.Length > tournament.LastLength)
+            {
+                App.WindowMain.Importing = true;
+                List<Hand> hands = Hand.Parse(Methods.ReadSeek(tournament.FileInfo.FullName, tournament.LastLength));
+                tournament.LastLength = tournament.FileInfo.Length;
+                tournament.AddHands(hands);
+                App.WindowMain.Importing = false;
             }
         }
     }

@@ -71,5 +71,13 @@
                 </ScrollViewer>
             </TabItem>
         </TabControl>
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,0,0,5" x:Name="Grid_Import" Visibility="Hidden">
+            <Border Background="#F0F0F0F0" BorderBrush="DarkGray" BorderThickness="1">
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <Image Width="16" Height="16" Source="../Images/page_white_go.png"></Image>
+                    <Label VerticalContentAlignment="Center" Margin="5,0" Padding="0" Content="Importing Hands ..."/>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Window>
