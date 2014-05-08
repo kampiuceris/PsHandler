@@ -24,12 +24,14 @@ namespace PsHandler
             WindowMain.Show();
             Import = new Import();
             Handler.Start();
+            TableTileManager.Start();
             ReleaseOnly();
         }
 
         public static void Quit()
         {
             Autoupdate.Quit();
+            TableTileManager.Stop();
             HudManager.Stop();
             Handler.Stop();
             Import.Stop();
@@ -55,7 +57,7 @@ namespace PsHandler
                 {
                     Quit();
                 }
-                TableTileManager.Tile(kc);
+                TableTileManager.SetKeyCombination(kc);
             });
         }
 

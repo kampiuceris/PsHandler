@@ -27,12 +27,9 @@ namespace PsHandler.UI
         {
             var listView = App.WindowMain.UCTableTiler.ListView_TableTiles;
             listView.Items.Clear();
-            lock (TableTileManager.Lock)
+            foreach (var tableTile in TableTileManager.GetTableTilesCopy())
             {
-                foreach (var tableTile in TableTileManager.TableTiles)
-                {
-                    listView.Items.Add(new ListViewItemTableTile(tableTile));
-                }
+                listView.Items.Add(new ListViewItemTableTile(tableTile));
             }
 
             if (tableTileToSelect != null)

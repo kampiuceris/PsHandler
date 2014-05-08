@@ -90,7 +90,7 @@ namespace PsHandler.TableTiler
                 return;
             }
 
-            int countNames = TableTileManager.TableTiles.Count(o => o.Name.ToLowerInvariant().Equals(TextBox_Name.Text.ToLowerInvariant()));
+            int countNames = TableTileManager.GetTableTilesCopy().Count(o => o.Name.ToLowerInvariant().Equals(TextBox_Name.Text.ToLowerInvariant()));
             if (countNames != 0)
             {
                 MessageBox.Show("Cannot save. Duplicate names.", "Error saving", MessageBoxButton.OK, MessageBoxImage.Error);

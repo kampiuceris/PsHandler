@@ -14,26 +14,32 @@ namespace PsHandler.TableTiler
 {
     public class TableTileManager
     {
+        // Table Tiles list controls
+
         private static readonly Regex _regexTournamentNumber = new Regex(@".+Tournament (?<tournament_number>\d+) .+");
-        public static readonly List<TableTile> TableTiles = new List<TableTile>();
-        public static readonly object Lock = new object();
-        private static bool _busy;
-        private static Thread _thread;
+
+        private static readonly object _lockTableTiles = new object();
+        private static readonly List<TableTile> _tableTiles = new List<TableTile>();
+
+        public static TableTile[] GetTableTilesCopy()
+        {
+            return _tableTiles.ToArray();
+        }
 
         public static void AddTableTile(TableTile tableTile)
         {
-            lock (Lock)
+            lock (_lockTableTiles)
             {
-                TableTiles.Add(tableTile);
-                TableTiles.Sort((o0, o1) => string.CompareOrdinal(o0.Name, o1.Name));
+                _tableTiles.Add(tableTile);
+                _tableTiles.Sort((o0, o1) => string.CompareOrdinal(o0.Name, o1.Name));
             }
         }
 
         public static void RemoveTableTile(TableTile tableTile)
         {
-            lock (Lock)
+            lock (_lockTableTiles)
             {
-                TableTiles.Remove(tableTile);
+                _tableTiles.Remove(tableTile);
             }
         }
 
@@ -61,9 +67,9 @@ namespace PsHandler.TableTiler
                         key.DeleteValue(valueName);
                     }
 
-                    lock (Lock)
+                    lock (_lockTableTiles)
                     {
-                        foreach (var tableTile in TableTiles)
+                        foreach (var tableTile in _tableTiles)
                         {
                             key.SetValue(tableTile.Name, tableTile.ToXml());
                         }
@@ -77,9 +83,9 @@ namespace PsHandler.TableTiler
 
         public static void LoadConfig()
         {
-            lock (Lock)
+            lock (_lockTableTiles)
             {
-                TableTiles.Clear();
+                _tableTiles.Clear();
             }
 
             try
@@ -103,108 +109,124 @@ namespace PsHandler.TableTiler
             }
         }
 
-        //
+        // Tile mech
 
-        struct TableTileAndTableInfos
-        {
-            public TableTile TableTile;
-            public List<TableInfo> TableInfos;
-        }
+        private static bool _busy;
+        private static Thread _thread;
+        private static KeyCombination _keyCombinationPressed;
+        private static readonly object _lockKeyCombination = new object();
 
-        struct TableInfo
+        public static void SetKeyCombination(KeyCombination keyCombination)
         {
-            public IntPtr Handle;
-            public string Title;
-            public Rectangle CurrentRectangle;
-            public bool IsTournament;
-            public long TournamentNumber;
-            public DateTime FirstHandTimestamp;
-        }
-
-        struct Distances
-        {
-            public Rectangle AvailablePosition;
-            public TableInfo ClosestWindow;
-            public double Distance;
-        }
-
-        public static void Tile(KeyCombination kc)
-        {
-            if (!Config.EnableTableTiler)
-            {
-                return;
-            }
+            if (!Config.EnableTableTiler) return;
 
             if (!_busy)
             {
-                _busy = true;
-                _thread = new Thread(() =>
+                lock (_lockKeyCombination)
+                {
+                    _keyCombinationPressed = keyCombination;
+                }
+            }
+        }
+
+        public static void Start()
+        {
+            Stop();
+            _thread = new Thread(() =>
+            {
+                while (true)
                 {
                     try
                     {
-                        // collect info
-
-                        List<TableTileAndTableInfos> ttatis = TableTiles.Where(o => o.IsEnabled && o.KeyCombination.Equals(kc)).Select(tableTile => new TableTileAndTableInfos { TableTile = tableTile, TableInfos = new List<TableInfo>() }).ToList();
-
-                        if (ttatis.Any())
+                        lock (_lockKeyCombination)
                         {
-                            foreach (IntPtr hwnd in WinApi.GetWindowHWndAll().Where(o => !Methods.IsMinimized(o)))
+                            if (_keyCombinationPressed != null)
                             {
-                                string title = WinApi.GetWindowTitle(hwnd);
-                                //Debug.WriteLine("Window: " + title);
-                                foreach (var ttati in ttatis)
-                                {
-                                    var IncludeAnd = ttati.TableTile.IncludeAnd.Length == 0 || ttati.TableTile.IncludeAnd.All(title.Contains);
-                                    var IncludeOr = ttati.TableTile.IncludeOr.Length == 0 || ttati.TableTile.IncludeOr.Any(title.Contains);
-                                    var ExcludeAnd = ttati.TableTile.ExcludeAnd.Length == 0 || !ttati.TableTile.ExcludeAnd.All(title.Contains);
-                                    var ExcludeOr = ttati.TableTile.ExcludeOr.Length == 0 || !ttati.TableTile.ExcludeOr.Any(title.Contains);
-                                    if (IncludeAnd && IncludeOr && ExcludeAnd && ExcludeOr)
-                                    {
-                                        //Debug.WriteLine("Move: " + title);
-
-                                        TableInfo ti = new TableInfo { Handle = hwnd, Title = title, CurrentRectangle = WinApi.GetWindowRectangle(hwnd) };
-                                        Match match = _regexTournamentNumber.Match(title);
-                                        if (match.Success)
-                                        {
-                                            ti.IsTournament = long.TryParse(match.Groups["tournament_number"].Value, out ti.TournamentNumber);
-                                            Tournament tournament = App.Import.GetTournament(ti.TournamentNumber);
-                                            if (tournament != null)
-                                            {
-                                                ti.FirstHandTimestamp = tournament.GetFirstHandTimestamp();
-                                            }
-                                            else
-                                            {
-                                                ti.FirstHandTimestamp = DateTime.MaxValue;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            ti.IsTournament = false;
-                                            ti.FirstHandTimestamp = DateTime.MaxValue;
-                                        }
-                                        ttati.TableInfos.Add(ti);
-                                    }
-                                }
-                            }
-
-                            // tile
-
-                            foreach (var ttati in ttatis)
-                            {
-                                Tile(ttati);
+                                _busy = true;
+                                Tile(_keyCombinationPressed);
+                                _keyCombinationPressed = null;
+                                _busy = false;
                             }
                         }
+                        Thread.Sleep(100);
                     }
-                    catch
+                    catch (Exception e)
                     {
+                        if (e is ThreadInterruptedException)
+                        {
+                            break;
+                        }
                     }
-                    finally
-                    {
-                        _busy = false;
-                    }
-                });
-                _thread.Start();
+                }
+            });
+            _thread.Start();
+        }
+
+        public static void Stop()
+        {
+            if (_thread != null)
+            {
+                _thread.Interrupt();
             }
+        }
+
+        //
+
+        private static void Tile(KeyCombination kc)
+        {
+            // collect info
+
+            List<TableTileAndTableInfos> ttatis = _tableTiles.Where(o => o.IsEnabled && o.KeyCombination.Equals(kc)).Select(tableTile => new TableTileAndTableInfos { TableTile = tableTile, TableInfos = new List<TableInfo>() }).ToList();
+
+            if (ttatis.Any())
+            {
+                foreach (IntPtr hwnd in WinApi.GetWindowHWndAll().Where(o => !Methods.IsMinimized(o)))
+                {
+                    string title = WinApi.GetWindowTitle(hwnd);
+                    //Debug.WriteLine("Window: " + title);
+                    foreach (var ttati in ttatis)
+                    {
+                        var IncludeAnd = ttati.TableTile.IncludeAnd.Length == 0 || ttati.TableTile.IncludeAnd.All(title.Contains);
+                        var IncludeOr = ttati.TableTile.IncludeOr.Length == 0 || ttati.TableTile.IncludeOr.Any(title.Contains);
+                        var ExcludeAnd = ttati.TableTile.ExcludeAnd.Length == 0 || !ttati.TableTile.ExcludeAnd.All(title.Contains);
+                        var ExcludeOr = ttati.TableTile.ExcludeOr.Length == 0 || !ttati.TableTile.ExcludeOr.Any(title.Contains);
+                        if (IncludeAnd && IncludeOr && ExcludeAnd && ExcludeOr)
+                        {
+                            //Debug.WriteLine("Move: " + title);
+
+                            TableInfo ti = new TableInfo { Handle = hwnd, Title = title, CurrentRectangle = WinApi.GetWindowRectangle(hwnd) };
+                            Match match = _regexTournamentNumber.Match(title);
+                            if (match.Success)
+                            {
+                                ti.IsTournament = long.TryParse(match.Groups["tournament_number"].Value, out ti.TournamentNumber);
+                                Tournament tournament = App.Import.GetTournament(ti.TournamentNumber);
+                                if (tournament != null)
+                                {
+                                    ti.FirstHandTimestamp = tournament.GetFirstHandTimestamp();
+                                }
+                                else
+                                {
+                                    ti.FirstHandTimestamp = DateTime.MaxValue;
+                                }
+                            }
+                            else
+                            {
+                                ti.IsTournament = false;
+                                ti.FirstHandTimestamp = DateTime.MaxValue;
+                            }
+                            ttati.TableInfos.Add(ti);
+                        }
+                    }
+                }
+
+                // tile
+
+                foreach (var ttati in ttatis)
+                {
+                    Tile(ttati);
+                }
+            }
+
         }
 
         private static void Tile(TableTileAndTableInfos ttati)
@@ -275,7 +297,7 @@ namespace PsHandler.TableTiler
             WinApi.BringWindowToTop(handle);
         }
 
-        private static TableInfo GetClosestWindow(Rectangle availablePosition, List<TableInfo> availableWindows)
+        private static TableInfo ___GetClosestWindow(Rectangle availablePosition, List<TableInfo> availableWindows)
         {
             Point centerAvailablePosition = GetCenterPointOfWindow(availablePosition);
             double minDistance = double.MaxValue;
@@ -324,6 +346,29 @@ namespace PsHandler.TableTiler
         private static double GetDistanceBetweenPoints(Point p1, Point p2)
         {
             return Math.Sqrt(Math.Pow(p2.X - p1.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
+        }
+
+        private struct TableTileAndTableInfos
+        {
+            public TableTile TableTile;
+            public List<TableInfo> TableInfos;
+        }
+
+        private struct TableInfo
+        {
+            public IntPtr Handle;
+            public string Title;
+            public Rectangle CurrentRectangle;
+            public bool IsTournament;
+            public long TournamentNumber;
+            public DateTime FirstHandTimestamp;
+        }
+
+        private struct Distances
+        {
+            public Rectangle AvailablePosition;
+            public TableInfo ClosestWindow;
+            public double Distance;
         }
     }
 }
