@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="PsHandler.UI.ToolTips.UCToolTipTextBoxCheckFilter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d">
+    <Grid Margin="5">
+        <StackPanel>
+            <Label VerticalContentAlignment="Center" Padding="2" Content="Check if given text passes the filter (usually it's window's title)." />
+            <Label VerticalContentAlignment="Center" Padding="2" Content="You can get required info (copy/paste) by clicking this button:" />
+            <Button Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" Width="130">
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <Image Height="16" Width="16" Source="../../Images/monitor_window_3d_search.png" />
+                    <TextBlock Text="Windows Info" Margin="5,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using PsHandler.TableTiler;
+using PsHandler.UI.ToolTips;
 
 namespace PsHandler.PokerTypes
 {
@@ -21,6 +23,7 @@ namespace PsHandler.PokerTypes
     {
         public PokerType PokerType;
         public bool Saved = false;
+        private WindowWindowsInfo _windowWindowsInfo;
 
         public WindowPokerTypeEdit(Window owner, PokerType pokerType = null)
         {
@@ -36,7 +39,55 @@ namespace PsHandler.PokerTypes
             TextBox_ExcludeAnd.Text = !PokerType.ExcludeAnd.Any() ? "" : PokerType.ExcludeAnd.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
             TextBox_ExcludeOr.Text = !PokerType.ExcludeOr.Any() ? "" : PokerType.ExcludeOr.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
             TextBox_BuyInAndRake.Text = !PokerType.BuyInAndRake.Any() ? "" : PokerType.BuyInAndRake.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
+
+            TextBox_IncludeAnd.TextChanged += (sender, args) => CheckTextBoxFilter();
+            TextBox_IncludeOr.TextChanged += (sender, args) => CheckTextBoxFilter();
+            TextBox_ExcludeAnd.TextChanged += (sender, args) => CheckTextBoxFilter();
+            TextBox_ExcludeOr.TextChanged += (sender, args) => CheckTextBoxFilter();
+            TextBox_CheckFilter.TextChanged += (sender, args) => CheckTextBoxFilter();
+
+            // ToolTips
+
+            Image_TitleIncludeAllWords.ToolTip = new UCToolTipTitleIncludeAllWords();
+            Image_TitleIncludeAnyWords.ToolTip = new UCToolTipTitleIncludeAnyWords();
+            Image_TitleExcludeAllWords.ToolTip = new UCToolTipTitleExcludeAllWords();
+            Image_TitleExcludeAnyWords.ToolTip = new UCToolTipTitleExcludeAnyWords();
+            Image_FileNameBuyInRake.ToolTip = new UCToolTipFileNameBuyInRake();
+            Image_CheckFilter.ToolTip = new UCToolTipTextBoxCheckFilter();
         }
+
+        private void CheckTextBoxFilter()
+        {
+            string text = TextBox_CheckFilter.Text;
+
+            if (string.IsNullOrEmpty(text))
+            {
+                TextBox_CheckFilter.Background = System.Windows.Media.Brushes.White;
+            }
+            else
+            {
+                var includeAnd = TextBox_IncludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                var includeOr = TextBox_IncludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                var excludeAnd = TextBox_ExcludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                var excludeOr = TextBox_ExcludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+
+
+                var bIncludeAnd = includeAnd.Length == 0 || includeAnd.All(text.Contains);
+                var bIncludeOr = includeOr.Length == 0 || includeOr.Any(text.Contains);
+                var bExcludeAnd = excludeAnd.Length == 0 || !excludeAnd.All(text.Contains);
+                var bExcludeOr = excludeOr.Length == 0 || !excludeOr.Any(text.Contains);
+                if (bIncludeAnd && bIncludeOr && bExcludeAnd && bExcludeOr)
+                {
+                    TextBox_CheckFilter.Background = System.Windows.Media.Brushes.Honeydew;
+                }
+                else
+                {
+                    TextBox_CheckFilter.Background = System.Windows.Media.Brushes.MistyRose;
+                }
+            }
+        }
+
 
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
@@ -78,6 +129,22 @@ namespace PsHandler.PokerTypes
             {
                 Label_LevelLengthInMinutes.Content = "LocationX minutes";
             }
+        }
+
+        private void Button_WindowsInfo_Click(object sender, RoutedEventArgs e)
+        {
+            if (_windowWindowsInfo != null) _windowWindowsInfo.Close();
+            _windowWindowsInfo = new WindowWindowsInfo();
+            _windowWindowsInfo.Show();
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            if (_windowWindowsInfo != null)
+            {
+                _windowWindowsInfo.Close();
+            }
+            base.OnClosing(e);
         }
     }
 }

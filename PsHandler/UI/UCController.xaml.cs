@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using PsHandler.UI.ToolTips;
 
 namespace PsHandler.UI
 {
@@ -43,6 +44,14 @@ namespace PsHandler.UI
             CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.Unchecked += (sender, args) => { Config.AutocloseHM2ApplyToSimilarTablesPopups = false; };
 
             TextBoxHotkey_HandReplay.TextChanged += (sender, args) => { Config.HotkeyHandReplay = TextBoxHotkey_HandReplay.KeyCombination; };
+
+            // ToolTips
+
+            Image_AutoclickImBack.ToolTip = new UCToolTipButtonImBack();
+            Image_AutoclickTimebank.ToolTip = new UCToolTipButtonTimebank();
+            Image_AutoclickYesWaitingList.ToolTip = new UCToolTipAutoclickYesSeatAvailable();
+            Image_AutoclickTournamentRegistrationPopups.ToolTip = new UCToolTipAutocloseTournamentRegistrationPopups();
+            Image_AutoclickHM2ApplyToSimilarTablesPopup.ToolTip = new UCToolTipAutocloseHM2ApplyToSimilarTablesPopups();
         }
     }
 }

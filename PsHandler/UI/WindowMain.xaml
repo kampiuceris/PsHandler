@@ -74,9 +74,9 @@
         <Separator VerticalAlignment="Bottom" Margin="0,0,0,26" />
         <Grid Height="26" VerticalAlignment="Bottom">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="0"/>
                 <ColumnDefinition Width="26"/>
-                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="1"/>
                 <ColumnDefinition Width="26"/>
                 <ColumnDefinition Width="120"/>
                 <ColumnDefinition Width="26"/>
@@ -86,9 +86,9 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Image Grid.Row="0" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="../Images/book.png" Margin="0" x:Name="Image_ImportIdle" ToolTip="Waiting for hands ..." />
-            <Image Grid.Row="0" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="../Images/book_go_custom.png" Margin="0" x:Name="Image_ImportBusy" Visibility="Hidden" ToolTip="Importing ..." />
-            <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal">
-                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+            <Image Grid.Row="0" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="../Images/book_open.png" Margin="0" x:Name="Image_ImportBusy" Visibility="Hidden" ToolTip="Importing ..." />
+            <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Margin="0,0,0,0" Grid.ColumnSpan="2">
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="0"/>
             </StackPanel>
             <Image Grid.Row="0" Grid.Column="3" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="../Images/page.png" Margin="0" x:Name="Image_Tournaments" />
             <Label Grid.Row="0" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0" Padding="0" Content="Tournaments: 0" x:Name="Label_Tournaments" />

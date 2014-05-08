@@ -54,7 +54,8 @@ namespace PsHandler.TableTiler
             Canvas_Screens.Children.Clear();
             foreach (System.Windows.Forms.Screen screen in screens)
             {
-                AddRectangle(rScreen, ratio, diffScreenX, diffScreenY, screen.Bounds, Brushes.DarkSlateBlue, 1, Brushes.LightSteelBlue);
+                //AddRectangle(rScreen, ratio, diffScreenX, diffScreenY, screen.Bounds, Brushes.DarkSlateBlue, 1, Brushes.LightSteelBlue);
+                AddScreen(ratio, diffScreenX, diffScreenY, screen.Bounds);
             }
             if (config != null)
             {
@@ -70,8 +71,34 @@ namespace PsHandler.TableTiler
 
         private void AddTable(System.Drawing.Rectangle rScreen, double ratio, double diffScreenX, double diffScreenY, System.Drawing.Rectangle rObject, string text)
         {
-            AddRectangle(rScreen, ratio, diffScreenX, diffScreenY, rObject, Brushes.DimGray, 1, new SolidColorBrush(Color.FromArgb(0x90, 0xFF, 0xFF, 0xFF)));
+            AddRectangle(rScreen, ratio, diffScreenX, diffScreenY, rObject, Brushes.DimGray, 1, new SolidColorBrush(Color.FromArgb(0xC0, 0xFF, 0xFF, 0xFF)));
             AddLabel(rScreen, ratio, diffScreenX, diffScreenY, rObject, text, Brushes.DimGray, Brushes.Transparent);
+        }
+
+        private void AddScreen(double ratio, double diffScreenX, double diffScreenY, System.Drawing.Rectangle rObject)
+        {
+            double x, y, width, height;
+            width = rObject.Width * ratio;
+            height = rObject.Height * ratio;
+            x = (rObject.X + diffScreenX) * ratio;
+            y = (rObject.Y + diffScreenY) * ratio;
+
+            Rectangle r = new Rectangle();
+            r.Width = width;
+            r.Height = height;
+            r.Stroke = Brushes.Black;
+            r.StrokeThickness = 1;
+
+            LinearGradientBrush myLinearGradientBrush = new LinearGradientBrush();
+            myLinearGradientBrush.StartPoint = new Point(0, 0);
+            myLinearGradientBrush.EndPoint = new Point(1, 1);
+            myLinearGradientBrush.GradientStops.Add(new GradientStop(Colors.Gray, 0));
+            myLinearGradientBrush.GradientStops.Add(new GradientStop(Colors.Black, 1));
+            r.Fill = myLinearGradientBrush;
+
+            Canvas_Screens.Children.Add(r);
+            Canvas.SetLeft(r, x);
+            Canvas.SetTop(r, y);
         }
 
         private void AddRectangle(System.Drawing.Rectangle rScreen, double ratio, double diffScreenX, double diffScreenY,

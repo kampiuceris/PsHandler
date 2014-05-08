@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using PsHandler.UI.ToolTips;
 
 namespace PsHandler.UI
 {
@@ -65,6 +66,12 @@ namespace PsHandler.UI
 
             CheckBox_SaveGuiSize.Checked += (sender, args) => { Config.SaveGuiSize = true; };
             CheckBox_SaveGuiSize.Unchecked += (sender, args) => { Config.SaveGuiSize = false; };
+
+            // ToolTips
+
+            Image_AppDataPath.ToolTip = new UCToolTipAppDataFolderPath();
+            Image_PokerStarsThemeTable.ToolTip = new UCToolTipPokerStarsThemeTable();
+            Image_ExitHotkey.ToolTip = new UCToolTipExitHotkey();
         }
     }
 }

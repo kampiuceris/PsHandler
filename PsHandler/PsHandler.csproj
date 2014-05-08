@@ -144,6 +144,51 @@
     </Compile>
     <Compile Include="ScreenCapture.cs" />
     <Compile Include="UI\TextBoxHotkey.cs" />
+    <Compile Include="UI\ToolTips\UCToolTipAutocloseHM2ApplyToSimilarTablesPopups.xaml.cs">
+      <DependentUpon>UCToolTipAutocloseHM2ApplyToSimilarTablesPopups.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipAutocloseTournamentRegistrationPopups.xaml.cs">
+      <DependentUpon>UCToolTipAutocloseTournamentRegistrationPopups.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipAutoclickYesSeatAvailable.xaml.cs">
+      <DependentUpon>UCToolTipAutoclickYesSeatAvailable.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipButtonTimebank.xaml.cs">
+      <DependentUpon>UCToolTipButtonTimebank.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipButtonImBack.xaml.cs">
+      <DependentUpon>UCToolTipButtonImBack.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipExitHotkey.xaml.cs">
+      <DependentUpon>UCToolTipExitHotkey.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipPokerStarsThemeTable.xaml.cs">
+      <DependentUpon>UCToolTipPokerStarsThemeTable.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipAppDataFolderPath.xaml.cs">
+      <DependentUpon>UCToolTipAppDataFolderPath.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipFileNameBuyInRake.xaml.cs">
+      <DependentUpon>UCToolTipFileNameBuyInRake.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipXYWidthHeight.xaml.cs">
+      <DependentUpon>UCToolTipXYWidthHeight.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipTextBoxCheckFilter.xaml.cs">
+      <DependentUpon>UCToolTipTextBoxCheckFilter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipTitleExcludeAnyWords.xaml.cs">
+      <DependentUpon>UCToolTipTitleExcludeAnyWords.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipTitleIncludeAnyWords.xaml.cs">
+      <DependentUpon>UCToolTipTitleIncludeAnyWords.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipTitleIncludeAllWords.xaml.cs">
+      <DependentUpon>UCToolTipTitleIncludeAllWords.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipTitleExcludeAllWords.xaml.cs">
+      <DependentUpon>UCToolTipTitleExcludeAllWords.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\UCController.xaml.cs">
       <DependentUpon>UCController.xaml</DependentUpon>
     </Compile>
@@ -224,6 +269,66 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\ToolTips\UCToolTipAutocloseHM2ApplyToSimilarTablesPopups.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipAutocloseTournamentRegistrationPopups.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipAutoclickYesSeatAvailable.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipButtonTimebank.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipButtonImBack.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipExitHotkey.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipPokerStarsThemeTable.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipAppDataFolderPath.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipFileNameBuyInRake.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipXYWidthHeight.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipTextBoxCheckFilter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipTitleExcludeAnyWords.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipTitleIncludeAnyWords.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipTitleIncludeAllWords.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipTitleExcludeAllWords.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\UCController.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -299,10 +404,10 @@
     <EmbeddedResource Include="Images\Themes\Slick\imback2.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\EmbeddedResources\hm2applytosimilartables.png" />
+    <Resource Include="Images\ToolTips\hm2applytosimilartables.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\EmbeddedResources\tournamentregistrationpopups.png" />
+    <Resource Include="Images\ToolTips\tournamentregistrationpopups.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\Lobby\Black\0.png" />
@@ -331,7 +436,7 @@
     <EmbeddedResource Include="Images\Lobby\Classic\separator.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\EmbeddedResources\appdatafolder.png" />
+    <Resource Include="Images\ToolTips\appdatafolder.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\information.png" />
@@ -425,12 +530,6 @@
     <EmbeddedResource Include="Images\EmbeddedResources\tag_blue.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\chips2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\chips3.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\time.png" />
   </ItemGroup>
   <ItemGroup>
@@ -463,6 +562,32 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\zoom_refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ToolTips\screenspreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ToolTips\xywhgreen.png" />
+    <Resource Include="Images\ToolTips\xywhred.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\book_open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ToolTips\filenamebuyinrake.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ToolTips\pokerstarsthemestable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ToolTips\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ToolTips\buttonimback.png" />
+    <Resource Include="Images\ToolTips\buttontimebank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ToolTips\autoclickyesseatavailable.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

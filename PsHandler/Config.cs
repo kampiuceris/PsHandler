@@ -1,13 +1,17 @@
-﻿using System.Globalization;
+﻿using System.Drawing;
+using System.Globalization;
 using System.Windows.Input;
 using Microsoft.Win32;
 using PsHandler.Hud;
 using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Media;
 using PsHandler.PokerTypes;
 using PsHandler.TableTiler;
+using Color = System.Windows.Media.Color;
+using ColorConverter = System.Windows.Media.ColorConverter;
+using FontFamily = System.Windows.Media.FontFamily;
+using FontStyle = System.Windows.FontStyle;
 
 namespace PsHandler
 {
@@ -239,8 +243,6 @@ namespace PsHandler
 
             // Poker Types
 
-            PokerTypeManager.Load();
-
             #region poker types
 
             using (RegistryKey keyPokerTypes = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\PokerTypes"))
@@ -279,9 +281,9 @@ namespace PsHandler
 
                     pt = new PokerType
                     {
-                        Name = "2-max 2 _players Regular",
+                        Name = "2-max 2 Players Regular",
                         LevelLengthInSeconds = 360,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 _players" },
+                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 Players" },
                         IncludeOr = new string[0],
                         ExcludeAnd = new string[0],
                         ExcludeOr = new[] { "Turbo", "Hyper", "6-Max" },
@@ -291,9 +293,9 @@ namespace PsHandler
 
                     pt = new PokerType
                     {
-                        Name = "2-max 2 _players Turbo",
+                        Name = "2-max 2 Players Turbo",
                         LevelLengthInSeconds = 180,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 _players", "Turbo" },
+                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 Players", "Turbo" },
                         IncludeOr = new string[0],
                         ExcludeAnd = new string[0],
                         ExcludeOr = new[] { "Hyper", "6-Max" },
@@ -303,9 +305,9 @@ namespace PsHandler
 
                     pt = new PokerType
                     {
-                        Name = "2-max 2 _players Hyper-Turbo",
+                        Name = "2-max 2 Players Hyper-Turbo",
                         LevelLengthInSeconds = 120,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 _players", "Hyper-Turbo" },
+                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 Players", "Hyper-Turbo" },
                         IncludeOr = new string[0],
                         ExcludeAnd = new string[0],
                         ExcludeOr = new[] { "6-Max" },
@@ -419,9 +421,75 @@ namespace PsHandler
 
             #endregion
 
+            PokerTypeManager.Load();
+
             // TableTiler
 
             EnableTableTiler = GetBool("EnableTableTiler", 0);
+
+            #region poker types
+
+            using (RegistryKey keyPokerTypes = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\TableTiles"))
+            {
+                if (keyPokerTypes == null || keyPokerTypes.GetValueNames().Length == 0)
+                {
+                    TableTile tt;
+
+                    // Sample: Cascade Cash
+
+                    tt = new TableTile
+                    {
+                        IsEnabled = false,
+                        KeyCombination = new KeyCombination(Key.None, false, false, false),
+                        SortByStartingHand = false,
+                        Name = "Sample: Cascade Cash (No Limit)",
+                        IncludeAnd = new[] { "Logged In as" },
+                        IncludeOr = new[] { "$", "€", "£" },
+                        ExcludeAnd = new string[0],
+                        ExcludeOr = new[] { "Tournament" },
+                        XYWHs = new Rectangle[]
+                        {
+                            new Rectangle(0, 0, 808, 580),
+                            new Rectangle(34, 34, 808, 580),
+                            new Rectangle(68, 68, 808, 580),
+                            new Rectangle(102, 102, 808, 580),
+                            new Rectangle(136, 136, 808, 580),
+                            new Rectangle(170, 170, 808, 580),
+                            new Rectangle(204, 204, 808, 580),
+                            new Rectangle(238, 238, 808, 580),
+                        }
+                    };
+                    SetValue(@"TableTiles\" + tt.Name, tt.ToXml());
+
+                    // Sample: Tile Tournament Sort
+
+                    tt = new TableTile
+                    {
+                        IsEnabled = false,
+                        KeyCombination = new KeyCombination(Key.None, false, false, false),
+                        SortByStartingHand = true,
+                        Name = "Sample: Tile Tournament Sort",
+                        IncludeAnd = new[] { "Logged In as", "Tournament" },
+                        IncludeOr = new[] { "$", "€", "£" },
+                        ExcludeAnd = new string[0],
+                        ExcludeOr = new string[0],
+                        XYWHs = new Rectangle[]
+                        {
+                            new Rectangle(0, 0, 534, 391),
+                            new Rectangle(534, 0, 534, 391),
+                            new Rectangle(1068, 0, 534, 391),
+                            new Rectangle(0, 390, 534, 391),
+                            new Rectangle(534, 390, 534, 391),
+                            new Rectangle(1068, 390, 534, 391),
+                        }
+                    };
+                    SetValue(@"TableTiles\" + tt.Name, tt.ToXml());
+                }
+            }
+
+            #endregion
+
+
             TableTileManager.LoadConfig();
         }
 

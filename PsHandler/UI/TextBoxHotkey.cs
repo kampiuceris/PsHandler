@@ -56,6 +56,8 @@ namespace PsHandler.UI
             {
                 KeyCombination = new KeyCombination(Key.None, false, false, false);
             };
+
+            TextWrapping = TextWrapping.NoWrap;
         }
 
         private void TextBoxKeyDown(KeyCombination keyCombination)
