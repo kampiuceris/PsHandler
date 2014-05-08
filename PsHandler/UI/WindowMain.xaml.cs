@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows;
-using System.Windows.Forms;
 using PsHandler.PokerTypes;
-using ContextMenu = System.Windows.Controls.ContextMenu;
-using MenuItem = System.Windows.Controls.MenuItem;
-using Point = System.Drawing.Point;
+using System.Windows.Controls;
 
 namespace PsHandler.UI
 {
@@ -44,7 +40,7 @@ namespace PsHandler.UI
                 UCPokerTypes.UpdateListView();
             };
 
-            if (CheckAndFixStartingLocation(new Rectangle(Config.GuiLocationX, Config.GuiLocationY, Config.GuiWidth, Config.GuiHeight)))
+            if (CheckAndFixStartingLocation(new System.Drawing.Rectangle(Config.GuiLocationX, Config.GuiLocationY, Config.GuiWidth, Config.GuiHeight)))
             {
                 if (Config.SaveGuiSize)
                 {
@@ -59,25 +55,32 @@ namespace PsHandler.UI
             }
         }
 
-        private bool CheckAndFixStartingLocation(Rectangle rectangle)
+        private bool CheckAndFixStartingLocation(System.Drawing.Rectangle rectangle)
         {
-            var corners = new List<Point>
+            var corners = new List<System.Drawing.Point>
             {
-                new Point(rectangle.Left, rectangle.Top),
-                new Point(rectangle.Right, rectangle.Top),
-                new Point(rectangle.Right, rectangle.Bottom),
-                new Point(rectangle.Left, rectangle.Bottom),
+                new System.Drawing.Point(rectangle.Left, rectangle.Top),
+                new System.Drawing.Point(rectangle.Right, rectangle.Top),
+                new System.Drawing.Point(rectangle.Right, rectangle.Bottom),
+                new System.Drawing.Point(rectangle.Left, rectangle.Bottom),
             };
-            return Screen.AllScreens.Select(screen => corners.Any(p => Methods.CheckIfPointIsInArea(p, screen.WorkingArea))).Any(containsMatchingCorner => containsMatchingCorner);
+            return System.Windows.Forms.Screen.AllScreens.Select(screen => corners.Any(p => Methods.CheckIfPointIsInArea(p, screen.WorkingArea))).Any(containsMatchingCorner => containsMatchingCorner);
         }
 
         private ContextMenu GetNotifyIconContextMenu()
         {
             MenuItem miExit = new MenuItem { Header = "Exit" };
             miExit.Click += (sender, args) => Close();
-
+            miExit.Icon = new Image
+            {
+                Source = Methods.GetEmbeddedResourceBitmap(string.Format("PsHandler.Images.EmbeddedResources.door_out.png")).ToBitmapSource(),
+                Width = 16,
+                Height = 16,
+                Margin = new Thickness(5, 0, 0, 0)
+            };
             ContextMenu cm = new ContextMenu();
             cm.Items.Add(miExit);
+            cm.UseLayoutRounding = true;
 
             return cm;
         }

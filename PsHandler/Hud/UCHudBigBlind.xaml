@@ -39,7 +39,7 @@
         </Grid>
         <Button Margin="10" HorizontalContentAlignment="Left" x:Name="Button_CustomizeBigBlind" Click="Button_CustomizeBigBlind_Click" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="190">
             <StackPanel Orientation="Horizontal" Margin="10,0">
-                <Image Height="16" Width="16" Source="../Images/timer.png" />
+                <Image Height="16" Width="16" Source="../Images/blackboard_drawing.png" />
                 <TextBlock Text="Customize Big Blind HUD" Margin="5,0,0,0" VerticalAlignment="Center" />
             </StackPanel>
         </Button>
