@@ -39,6 +39,7 @@ namespace PsHandler
             //close gui
             WindowMain.IsClosing = true;
             new Thread(() => Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() => WindowMain.Close()))).Start();
+            //Current.Shutdown();
         }
 
         private static void RegisterKeyboardHook()

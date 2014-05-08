@@ -20,7 +20,7 @@ namespace PsHandler.UI
             CheckBox_EnableTableTimer.Unchecked += (sender, args) => { Config.EnableTableTiler = false; };
 
             // start hud if needed
-            CheckBox_EnableTableTimer.IsChecked = Config.EnableHUDTimer;
+            CheckBox_EnableTableTimer.IsChecked = Config.EnableTableTiler;
         }
 
         public static void UpdateListView(TableTile tableTileToSelect = null)
@@ -56,7 +56,7 @@ namespace PsHandler.UI
             dialog.ShowDialog();
             if (dialog.Saved)
             {
-                TableTileManager.Add(dialog.TableTile);
+                TableTileManager.AddTableTile(dialog.TableTile);
                 UpdateListView(dialog.TableTile);
             }
         }
@@ -66,10 +66,10 @@ namespace PsHandler.UI
             ListViewItemTableTile selectedItem = ListView_TableTiles.SelectedItem as ListViewItemTableTile;
             if (selectedItem != null)
             {
-                TableTileManager.Remove(selectedItem.TableTile);
+                TableTileManager.RemoveTableTile(selectedItem.TableTile);
                 WindowTableTileEdit dialog = new WindowTableTileEdit(App.WindowMain, selectedItem.TableTile);
                 dialog.ShowDialog();
-                TableTileManager.Add(dialog.TableTile);
+                TableTileManager.AddTableTile(dialog.TableTile);
                 UpdateListView(dialog.TableTile);
             }
         }
@@ -82,7 +82,7 @@ namespace PsHandler.UI
                 MessageBoxResult messageBoxResult = MessageBox.Show(string.Format("Do you want to delete '{0}'?", selectedItem.TableTile.Name), "Delete", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
                 if (messageBoxResult == MessageBoxResult.Yes)
                 {
-                    TableTileManager.Remove(selectedItem.TableTile);
+                    TableTileManager.RemoveTableTile(selectedItem.TableTile);
                     UpdateListView();
                 }
             }

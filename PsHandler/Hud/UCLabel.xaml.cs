@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -17,25 +18,25 @@ namespace PsHandler.Hud
     /// <summary>
     /// Interaction logic for Timer.xaml
     /// </summary>
-    public partial class Timer : UserControl
+    public partial class UCLabel : UserControl
     {
-        public Timer()
+        public UCLabel()
         {
             InitializeComponent();
         }
 
         public void SetText(string value)
         {
-            Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
             {
-                Label_Timer.Content = value;
+                Label_Main.Content = value;
             }));
             UpdateSize();
         }
 
         public void SetBackground(Color value)
         {
-            Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
             {
                 Background = new SolidColorBrush(value);
             }));
@@ -43,17 +44,17 @@ namespace PsHandler.Hud
 
         public void SetForeground(Color value)
         {
-            Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
             {
-                Label_Timer.Foreground = new SolidColorBrush(value);
+                Label_Main.Foreground = new SolidColorBrush(value);
             }));
         }
 
         public void SetFontFamily(FontFamily value)
         {
-            Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
             {
-                Label_Timer.FontFamily = value;
+                Label_Main.FontFamily = value;
             }));
             UpdateSize();
         }
@@ -62,9 +63,9 @@ namespace PsHandler.Hud
         {
             if (value != null)
             {
-                Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
                 {
-                    Label_Timer.FontWeight = (FontWeight)value;
+                    Label_Main.FontWeight = (FontWeight)value;
                 }));
                 UpdateSize();
             }
@@ -74,9 +75,9 @@ namespace PsHandler.Hud
         {
             if (value != null)
             {
-                Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
                 {
-                    Label_Timer.FontStyle = (FontStyle)value;
+                    Label_Main.FontStyle = (FontStyle)value;
                 }));
                 UpdateSize();
             }
@@ -86,19 +87,19 @@ namespace PsHandler.Hud
         {
             if (value < 1) value = 1;
             if (value > 72) value = 72;
-            Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
             {
-                Label_Timer.FontSize = value;
+                Label_Main.FontSize = value;
             }));
             UpdateSize();
         }
 
         public void UpdateSize()
         {
-            Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
             {
-                Width = Label_Timer.Width + Label_Timer.Margin.Left + Label_Timer.Margin.Right;
-                Height = Label_Timer.Height + Label_Timer.Margin.Top + Label_Timer.Margin.Bottom;
+                Width = Label_Main.Width + Label_Main.Margin.Left + Label_Main.Margin.Right;
+                Height = Label_Main.Height + Label_Main.Margin.Top + Label_Main.Margin.Bottom;
             }));
         }
     }

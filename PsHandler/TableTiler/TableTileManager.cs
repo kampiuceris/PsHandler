@@ -20,7 +20,7 @@ namespace PsHandler.TableTiler
         private static bool _busy;
         private static Thread _thread;
 
-        public static void Add(TableTile tableTile)
+        public static void AddTableTile(TableTile tableTile)
         {
             lock (Lock)
             {
@@ -29,7 +29,7 @@ namespace PsHandler.TableTiler
             }
         }
 
-        public static void Remove(TableTile tableTile)
+        public static void RemoveTableTile(TableTile tableTile)
         {
             lock (Lock)
             {
@@ -37,7 +37,7 @@ namespace PsHandler.TableTiler
             }
         }
 
-        public static void Save()
+        public static void SaveConfig()
         {
             try
             {
@@ -75,7 +75,7 @@ namespace PsHandler.TableTiler
             }
         }
 
-        public static void Load()
+        public static void LoadConfig()
         {
             lock (Lock)
             {
@@ -93,7 +93,7 @@ namespace PsHandler.TableTiler
                         TableTile tableTile = TableTile.FromXml(key.GetValue(valueName) as string);
                         if (tableTile != null)
                         {
-                            Add(tableTile);
+                            AddTableTile(tableTile);
                         }
                     }
                 }
@@ -238,7 +238,11 @@ namespace PsHandler.TableTiler
 
                 // closest then
 
-                MoveClosest(availablePositions, otherWindows);
+                int max = availablePositions.Count;
+                if (max > otherWindows.Count) max = otherWindows.Count;
+
+                //MoveClosest(availablePositions, otherWindows);
+                MoveClosest(availablePositions.GetRange(0, max), otherWindows.GetRange(0, max));
             }
             else
             {

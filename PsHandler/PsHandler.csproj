@@ -69,8 +69,14 @@
     <Compile Include="Bmp.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EntryPoint.cs" />
-    <Compile Include="Hud\UCHUDTimer.xaml.cs">
-      <DependentUpon>UCHUDTimer.xaml</DependentUpon>
+    <Compile Include="Hud\UCHudBigBlind.xaml.cs">
+      <DependentUpon>UCHudBigBlind.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Hud\UCHudTimer.xaml.cs">
+      <DependentUpon>UCHudTimer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Hud\WindowBigBlind.xaml.cs">
+      <DependentUpon>WindowBigBlind.xaml</DependentUpon>
     </Compile>
     <Compile Include="PokerTypes\PokerTypeManager.cs" />
     <Compile Include="PokerTypes\UCPokerTypes.xaml.cs">
@@ -83,8 +89,8 @@
     <Compile Include="Hud\Import\Hand.cs" />
     <Compile Include="Hud\Import\Import.cs" />
     <Compile Include="Hud\LobbyTime.cs" />
-    <Compile Include="Hud\Timer.xaml.cs">
-      <DependentUpon>Timer.xaml</DependentUpon>
+    <Compile Include="Hud\UCLabel.xaml.cs">
+      <DependentUpon>UCLabel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Hud\Import\Tournament.cs" />
     <Compile Include="Hud\WindowCustomizeHud.xaml.cs">
@@ -178,11 +184,19 @@
     <Resource Include="Images\ps.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Hud\Timer.xaml">
+    <Page Include="Hud\UCHudBigBlind.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Hud\UCHUDTimer.xaml">
+    <Page Include="Hud\UCLabel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Hud\UCHudTimer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Hud\WindowBigBlind.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -405,6 +419,15 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\EmbeddedResources\tag_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\chips2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\chips3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\time.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

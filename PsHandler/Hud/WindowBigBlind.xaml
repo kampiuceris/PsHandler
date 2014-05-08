@@ -1,9 +1,7 @@
-﻿<Window
+﻿<Window x:Class="PsHandler.Hud.WindowBigBlind"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:PsHandler.Hud" 
-        xmlns:ui="clr-namespace:PsHandler.UI"
-        x:Class="PsHandler.Hud.WindowTimer"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ui="clr-namespace:PsHandler.UI"
+        xmlns:local="clr-namespace:PsHandler.Hud"
         Title="" SizeToContent="WidthAndHeight"
         ShowInTaskbar="False" WindowStyle="None" 
         ResizeMode="NoResize" Height="16" Focusable="False"

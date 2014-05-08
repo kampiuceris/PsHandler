@@ -77,7 +77,7 @@ namespace PsHandler.Hud.Import
 
         //
 
-        public static Regex RegexHeader = new Regex(@"PokerStars Hand #(?<hand_id>\d+): Tournament #(?<tournament_id>\d+),.+- (?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d\d):(?<minute>\d\d):(?<second>\d\d) (?<timezone>.+) \[.+");
+        public static Regex RegexHeader = new Regex(@"PokerStars Hand #(?<hand_id>\d+): Tournament #(?<tournament_id>\d+),.+- (?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[.+");
         public static Regex RegexSeat = new Regex(@"Seat \d{1,2}: (?<name>.+) \((?<stack>\d+) in chips\)");
         public static Regex RegexAnte = new Regex(@"(?<name>.+): posts the ante (?<amount>\d+)");
         public static Regex RegexSmallBlind = new Regex(@"(?<name>.+): posts small blind (?<amount>\d+)");

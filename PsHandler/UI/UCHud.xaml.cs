@@ -20,21 +20,17 @@ namespace PsHandler.UI
 
             CheckBox_EnableHUD.Checked += (sender, args) =>
             {
-                Config.EnableHUD = true;
-                TabItem_Timer.IsEnabled = false;
-                TabItem_BigBlinds.IsEnabled = false;
+                Config.EnableHud = true;
                 HudManager.Start();
             };
             CheckBox_EnableHUD.Unchecked += (sender, args) =>
             {
                 HudManager.Stop();
-                TabItem_Timer.IsEnabled = true;
-                TabItem_BigBlinds.IsEnabled = true;
-                Config.EnableHUD = false;
+                Config.EnableHud = false;
             };
 
             // start hud if needed
-            CheckBox_EnableHUD.IsChecked = Config.EnableHUD;
+            CheckBox_EnableHUD.IsChecked = Config.EnableHud;
         }
     }
 }

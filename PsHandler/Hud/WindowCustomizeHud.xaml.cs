@@ -14,15 +14,30 @@ namespace PsHandler.Hud
     /// </summary>
     public partial class WindowCustomizeHud : Window
     {
-        public WindowCustomizeHud(Window owner)
+        public bool Saved = false;
+        public Color HudBackground = Colors.Black;
+        public Color HudForeground = Colors.White;
+        public FontFamily HudFontFamily = new FontFamily("Consolas");
+        public FontWeight HudFontWeight = FontWeights.Bold;
+        public FontStyle HudFontStyle = FontStyles.Normal;
+        public double HudFontSize = 10;
+        public string LabelText = "01:23";
+
+        public WindowCustomizeHud(Window owner, Color hudBackground, Color hudForeground, FontFamily hudFontFamily, FontWeight hudFontWeight, FontStyle hudFontStyle, double hudFontSize, string labelText)
         {
             InitializeComponent();
             Owner = owner;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-            // init values
+            HudBackground = hudBackground;
+            HudForeground = hudForeground;
+            HudFontFamily = hudFontFamily;
+            HudFontWeight = hudFontWeight;
+            HudFontStyle = hudFontStyle;
+            HudFontSize = hudFontSize;
+            LabelText = labelText;
 
-            Timer_Main.SetText("01:23");
+            // init values
 
             foreach (var item in typeof(System.Drawing.Color).GetProperties(BindingFlags.Public | BindingFlags.Static))
             {
@@ -58,75 +73,73 @@ namespace PsHandler.Hud
 
             // hook
 
-            ComboBox_Background.SelectionChanged += (o, args) => Timer_Main.SetBackground(((ComboBoxItemColor)ComboBox_Background.SelectedItem).ColorMedia);
-            ComboBox_Foreground.SelectionChanged += (o, args) => Timer_Main.SetForeground(((ComboBoxItemColor)ComboBox_Foreground.SelectedItem).ColorMedia);
-            ComboBox_FontFamily.SelectionChanged += (o, args) => Timer_Main.SetFontFamily(((ComboBoxItemFontFamilyFontWeightFontStyle)ComboBox_FontFamily.SelectedItem).SystemFontFamily);
-            ComboBox_FontWeight.SelectionChanged += (o, args) => Timer_Main.SetFontWeight(((ComboBoxItemFontFamilyFontWeightFontStyle)ComboBox_FontWeight.SelectedItem).SystemFontWeight);
-            ComboBox_FontStyle.SelectionChanged += (o, args) => Timer_Main.SetFontStyle(((ComboBoxItemFontFamilyFontWeightFontStyle)ComboBox_FontStyle.SelectedItem).SystemFontStyle);
-            TextBox_FontSize.TextChanged += (sender, args) => { double value; if (double.TryParse(TextBox_FontSize.Text, out value)) Timer_Main.SetFontSize(value); };
+            ComboBox_Background.SelectionChanged += (o, args) => Label_Main.SetBackground(((ComboBoxItemColor)ComboBox_Background.SelectedItem).ColorMedia);
+            ComboBox_Foreground.SelectionChanged += (o, args) => Label_Main.SetForeground(((ComboBoxItemColor)ComboBox_Foreground.SelectedItem).ColorMedia);
+            ComboBox_FontFamily.SelectionChanged += (o, args) => Label_Main.SetFontFamily(((ComboBoxItemFontFamilyFontWeightFontStyle)ComboBox_FontFamily.SelectedItem).SystemFontFamily);
+            ComboBox_FontWeight.SelectionChanged += (o, args) => Label_Main.SetFontWeight(((ComboBoxItemFontFamilyFontWeightFontStyle)ComboBox_FontWeight.SelectedItem).SystemFontWeight);
+            ComboBox_FontStyle.SelectionChanged += (o, args) => Label_Main.SetFontStyle(((ComboBoxItemFontFamilyFontWeightFontStyle)ComboBox_FontStyle.SelectedItem).SystemFontStyle);
+            TextBox_FontSize.TextChanged += (sender, args) => { double value; if (double.TryParse(TextBox_FontSize.Text, out value)) Label_Main.SetFontSize(value); };
 
-            // config values
+            // seed values
 
-            ConfigValues();
+            SeedValues();
         }
 
-        private void ConfigValues()
+        private void SeedValues()
         {
-            CheckBox_Locked.IsChecked = HudManager.TimerHudLocationLocked;
+            Label_Main.SetText(LabelText);
 
-            foreach (ComboBoxItemColor item in ComboBox_Background.Items.Cast<object>().OfType<ComboBoxItemColor>().Where(item => item.ColorMedia.Equals(HudManager.TimerHudBackground)))
+            foreach (ComboBoxItemColor item in ComboBox_Background.Items.Cast<object>().OfType<ComboBoxItemColor>().Where(item => item.ColorMedia.Equals(HudBackground)))
             {
                 ComboBox_Background.SelectedItem = item;
                 break;
             }
 
-            foreach (ComboBoxItemColor item in ComboBox_Foreground.Items.Cast<object>().OfType<ComboBoxItemColor>().Where(item => item.ColorMedia.Equals(HudManager.TimerHudForeground)))
+            foreach (ComboBoxItemColor item in ComboBox_Foreground.Items.Cast<object>().OfType<ComboBoxItemColor>().Where(item => item.ColorMedia.Equals(HudForeground)))
             {
                 ComboBox_Foreground.SelectedItem = item;
                 break;
             }
 
-            foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontFamily.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontFamily.Equals(HudManager.TimerHudFontFamily)))
+            foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontFamily.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontFamily.Equals(HudFontFamily)))
             {
                 ComboBox_FontFamily.SelectedItem = item;
                 break;
             }
 
-            foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontWeight.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontWeight.Equals(HudManager.TimerHudFontWeight)))
+            foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontWeight.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontWeight.Equals(HudFontWeight)))
             {
                 ComboBox_FontWeight.SelectedItem = item;
                 break;
             }
 
-            foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontStyle.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontStyle.Equals(HudManager.TimerHudFontStyle)))
+            foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontStyle.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontStyle.Equals(HudFontStyle)))
             {
                 ComboBox_FontStyle.SelectedItem = item;
                 break;
             }
 
-            TextBox_FontSize.Text = HudManager.TimerHudFontSize.ToString(CultureInfo.InvariantCulture);
+            TextBox_FontSize.Text = HudFontSize.ToString(CultureInfo.InvariantCulture);
         }
 
         private void Button_SaveAndClose_Click(object sender, RoutedEventArgs e)
         {
-            HudManager.TimerHudLocationLocked = CheckBox_Locked.IsChecked == true;
-
             var ComboBox_BackgroundSelectedItem = (ComboBoxItemColor)ComboBox_Background.SelectedItem;
             if (ComboBox_BackgroundSelectedItem != null)
             {
-                HudManager.TimerHudBackground = ComboBox_BackgroundSelectedItem.ColorMedia;
+                HudBackground = ComboBox_BackgroundSelectedItem.ColorMedia;
             }
 
             var ComboBox_ForegroundSelectedItem = (ComboBoxItemColor)ComboBox_Foreground.SelectedItem;
             if (ComboBox_ForegroundSelectedItem != null)
             {
-                HudManager.TimerHudForeground = ComboBox_ForegroundSelectedItem.ColorMedia;
+                HudForeground = ComboBox_ForegroundSelectedItem.ColorMedia;
             }
 
             var ComboBox_FontFamilySelectedItem = (ComboBoxItemFontFamilyFontWeightFontStyle)ComboBox_FontFamily.SelectedItem;
             if (ComboBox_FontFamilySelectedItem != null)
             {
-                HudManager.TimerHudFontFamily = ComboBox_FontFamilySelectedItem.SystemFontFamily;
+                HudFontFamily = ComboBox_FontFamilySelectedItem.SystemFontFamily;
             }
 
             var ComboBox_FontWeightSelectedItem = (ComboBoxItemFontFamilyFontWeightFontStyle)ComboBox_FontWeight.SelectedItem;
@@ -134,7 +147,7 @@ namespace PsHandler.Hud
             {
                 if (ComboBox_FontWeightSelectedItem.SystemFontWeight != null)
                 {
-                    HudManager.TimerHudFontWeight = (FontWeight)ComboBox_FontWeightSelectedItem.SystemFontWeight;
+                    HudFontWeight = (FontWeight)ComboBox_FontWeightSelectedItem.SystemFontWeight;
                 }
             }
 
@@ -143,28 +156,24 @@ namespace PsHandler.Hud
             {
                 if (ComboBox_FontStyleSelectedItem.SystemFontStyle != null)
                 {
-                    HudManager.TimerHudFontStyle = (FontStyle)ComboBox_FontStyleSelectedItem.SystemFontStyle;
+                    HudFontStyle = (FontStyle)ComboBox_FontStyleSelectedItem.SystemFontStyle;
                 }
             }
 
             double fontSize;
             if (double.TryParse(TextBox_FontSize.Text, out fontSize))
             {
-                HudManager.TimerHudFontSize = fontSize;
+                HudFontSize = fontSize;
             }
 
+            Saved = true;
             Close();
         }
 
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
+            Saved = false;
             Close();
-        }
-
-        private void Button_ResetLocation_Click(object sender, RoutedEventArgs e)
-        {
-            HudManager.TimerHudLocationX = 0;
-            HudManager.TimerHudLocationY = 0;
         }
     }
 

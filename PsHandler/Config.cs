@@ -39,9 +39,9 @@ namespace PsHandler
 
         // HUD
 
-        public static bool EnableHUD;
-        public static bool EnableHUDTimer;
+        public static bool EnableHud;
         public static int TimeDiff;
+        public static int BigBlindDecimals;
 
         // Table Tiler
         public static bool EnableTableTiler;
@@ -190,9 +190,11 @@ namespace PsHandler
 
             // hud
 
-            EnableHUD = GetBool("EnableHUD", 0);
-            EnableHUDTimer = GetBool("EnableHUDTimer", 0);
+            EnableHud = GetBool("EnableHud", 0);
+            HudManager.EnableHudTimer = GetBool("EnableHudTimer", 0);
+            HudManager.EnableHudBigBlind = GetBool("EnableHudBigBlind", 0);
             TimeDiff = GetInt("TimeDiff", 0);
+            BigBlindDecimals = GetInt("BigBlindDecimals", 0);
 
             HudManager.TimerHudLocationLocked = GetBool("TimerHudLocationLocked", 0);
             HudManager.TimerHudLocationX = GetFloat("TimerHudLocationX", HudManager.TimerHudLocationX.ToString(CultureInfo.InvariantCulture));
@@ -203,7 +205,15 @@ namespace PsHandler
             HudManager.TimerHudFontWeight = (FontWeight)new FontWeightConverter().ConvertFrom(GetString("TimerHudFontWeight", HudManager.TimerHudFontWeight.ToString()));
             HudManager.TimerHudFontStyle = (FontStyle)new FontStyleConverter().ConvertFrom(GetString("TimerHudFontStyle", HudManager.TimerHudFontStyle.ToString()));
             HudManager.TimerHudFontSize = GetFloat("TimerHudFontSize", HudManager.TimerHudFontSize.ToString(CultureInfo.InvariantCulture));
-
+            HudManager.BigBlindHudLocationLocked = GetBool("BigBlindHudLocationLocked", 0);
+            HudManager.BigBlindHudLocationX = GetFloat("BigBlindHudLocationX", HudManager.BigBlindHudLocationX.ToString(CultureInfo.InvariantCulture));
+            HudManager.BigBlindHudLocationY = GetFloat("BigBlindHudLocationY", HudManager.BigBlindHudLocationY.ToString(CultureInfo.InvariantCulture));
+            HudManager.BigBlindHudBackground = (Color)ColorConverter.ConvertFromString(GetString("BigBlindHudBackground", HudManager.BigBlindHudBackground.ToString(CultureInfo.InvariantCulture)));
+            HudManager.BigBlindHudForeground = (Color)ColorConverter.ConvertFromString(GetString("BigBlindHudForeground", HudManager.BigBlindHudForeground.ToString(CultureInfo.InvariantCulture)));
+            HudManager.BigBlindHudFontFamily = new FontFamily(GetString("BigBlindHudFontFamily", HudManager.BigBlindHudFontFamily.ToString()));
+            HudManager.BigBlindHudFontWeight = (FontWeight)new FontWeightConverter().ConvertFrom(GetString("BigBlindHudFontWeight", HudManager.BigBlindHudFontWeight.ToString()));
+            HudManager.BigBlindHudFontStyle = (FontStyle)new FontStyleConverter().ConvertFrom(GetString("BigBlindHudFontStyle", HudManager.BigBlindHudFontStyle.ToString()));
+            HudManager.BigBlindHudFontSize = GetFloat("BigBlindHudFontSize", HudManager.BigBlindHudFontSize.ToString(CultureInfo.InvariantCulture));
             // check invalid values
 
             if (HudManager.TimerHudLocationX < -10) HudManager.TimerHudLocationX = -10;
@@ -398,7 +408,7 @@ namespace PsHandler
             // TableTiler
 
             EnableTableTiler = GetBool("EnableTableTiler", 0);
-            TableTileManager.Load();
+            TableTileManager.LoadConfig();
         }
 
         public static void Save()
@@ -424,19 +434,30 @@ namespace PsHandler
 
             // hud
 
-            SetValue("EnableHUD", EnableHUD.ToInt());
-            SetValue("EnableHUDTimer", EnableHUDTimer.ToInt());
+            SetValue("EnableHud", EnableHud.ToInt());
+            SetValue("EnableHudTimer", HudManager.EnableHudTimer.ToInt());
+            SetValue("EnableHudBigBlind", HudManager.EnableHudBigBlind.ToInt());
             SetValue("TimeDiff", TimeDiff);
+            SetValue("BigBlindDecimals", BigBlindDecimals);
 
             SetValue("TimerHudLocationLocked", HudManager.TimerHudLocationLocked.ToInt());
             SetValue("TimerHudLocationX", HudManager.TimerHudLocationX.ToString(CultureInfo.InvariantCulture));
-            SetValue("TimerHudLocationY", HudManager.TimerHudLocationY.ToString(CultureInfo.InvariantCulture));
+            SetValue("TimerHudLocationY", HudManager.TimerHudLocationY.ToString(CultureInfo.InvariantCulture));          
             SetValue("TimerHudBackground", HudManager.TimerHudBackground.ToString(CultureInfo.InvariantCulture));
             SetValue("TimerHudForeground", HudManager.TimerHudForeground.ToString(CultureInfo.InvariantCulture));
             SetValue("TimerHudFontFamily", HudManager.TimerHudFontFamily.ToString());
             SetValue("TimerHudFontWeight", HudManager.TimerHudFontWeight.ToString());
             SetValue("TimerHudFontStyle", HudManager.TimerHudFontStyle.ToString());
             SetValue("TimerHudFontSize", HudManager.TimerHudFontSize.ToString(CultureInfo.InvariantCulture));
+            SetValue("BigBlindHudLocationLocked", HudManager.BigBlindHudLocationLocked.ToInt());
+            SetValue("BigBlindHudLocationX", HudManager.BigBlindHudLocationX.ToString(CultureInfo.InvariantCulture));
+            SetValue("BigBlindHudLocationY", HudManager.BigBlindHudLocationY.ToString(CultureInfo.InvariantCulture));
+            SetValue("BigBlindHudBackground", HudManager.BigBlindHudBackground.ToString(CultureInfo.InvariantCulture));
+            SetValue("BigBlindHudForeground", HudManager.BigBlindHudForeground.ToString(CultureInfo.InvariantCulture));
+            SetValue("BigBlindHudFontFamily", HudManager.BigBlindHudFontFamily.ToString());
+            SetValue("BigBlindHudFontWeight", HudManager.BigBlindHudFontWeight.ToString());
+            SetValue("BigBlindHudFontStyle", HudManager.BigBlindHudFontStyle.ToString());
+            SetValue("BigBlindHudFontSize", HudManager.BigBlindHudFontSize.ToString(CultureInfo.InvariantCulture));
 
             // Poker Types
 
@@ -445,7 +466,7 @@ namespace PsHandler
             // TableTiler
 
             SetValue("EnableTableTiler", EnableTableTiler.ToInt());
-            TableTileManager.Save();
+            TableTileManager.SaveConfig();
         }
     }
 }

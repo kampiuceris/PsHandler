@@ -5,9 +5,6 @@
         Title="Customize Timer HUD" Background="#FFF0F0F0" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize" Icon="../Images/ps.ico">
     <Grid Margin="10">
         <StackPanel Orientation="Vertical">
-            <CheckBox x:Name="CheckBox_Locked" Content="Lock Timer HUD location" HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="149"/>
-            <Button x:Name="Button_ResetLocation" Content="Reset Timer HUD location to (0,0)" HorizontalAlignment="Stretch" Margin="0,5,0,0" Click="Button_ResetLocation_Click"/>
-            <Separator Height="8"/>
             <Grid>
                 <Label Content="Background:" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0" VerticalContentAlignment="Center" Height="22" Width="100"/>
                 <Label Content="Color:" HorizontalAlignment="Left" Margin="0,27,0,0" VerticalAlignment="Top" Padding="0" VerticalContentAlignment="Center" Height="22" Width="100"/>
@@ -24,7 +21,7 @@
             </Grid>
             <Separator Height="8"/>
             <Grid Width="250"  Height="128">
-                <local:Timer Grid.Row="1" x:Name="Timer_Main" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <local:UCLabel Grid.Row="1" x:Name="Label_Main" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Grid>
             <Separator Height="8"/>
             <Grid>

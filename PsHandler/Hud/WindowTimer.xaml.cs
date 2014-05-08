@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using PsHandler.Hud.Import;
 using PsHandler.PokerTypes;
 using Rectangle = System.Drawing.Rectangle;
@@ -31,15 +33,18 @@ namespace PsHandler.Hud
             }
         }
 
-        public WindowTimer()
+        public WindowTimer(IntPtr handleOwner)
         {
             InitializeComponent();
-            Timer_Main.SetBackground(HudManager.TimerHudBackground);
-            Timer_Main.SetForeground(HudManager.TimerHudForeground);
-            Timer_Main.SetFontFamily(HudManager.TimerHudFontFamily);
-            Timer_Main.SetFontWeight(HudManager.TimerHudFontWeight);
-            Timer_Main.SetFontStyle(HudManager.TimerHudFontStyle);
-            Timer_Main.SetFontSize(HudManager.TimerHudFontSize);
+            UCLabel_Main.SetBackground(HudManager.TimerHudBackground);
+            UCLabel_Main.SetForeground(HudManager.TimerHudForeground);
+            UCLabel_Main.SetFontFamily(HudManager.TimerHudFontFamily);
+            UCLabel_Main.SetFontWeight(HudManager.TimerHudFontWeight);
+            UCLabel_Main.SetFontStyle(HudManager.TimerHudFontStyle);
+            UCLabel_Main.SetFontSize(HudManager.TimerHudFontSize);
+            Opacity = 0;
+
+            Loaded += (sender, args) => SetOwner(handleOwner);
         }
 
         public void SetOwner(IntPtr handleOwner)
@@ -58,17 +63,15 @@ namespace PsHandler.Hud
                         if (WinApi.IsWindow(HandleOwner))
                         {
                             string title = WinApi.GetWindowTitle(handleOwner);
-                            string textboxContent = "";
+                            string textboxContent = "HUD";
+                            bool visible = false;
                             Match match = _regexTournament.Match(title);
                             if (match.Success)
                             {
+                                visible = true;
                                 long toutnamentNumber = long.Parse(match.Groups["tn"].Value);
-
-                                string hero = null;
-                                match = _regexTournamentLoggedIn.Match(title);
-                                if (match.Success) hero = match.Groups["hero"].Value;
-
                                 Tournament tournamentInfo = App.Import.GetTournament(toutnamentNumber);
+
                                 if (tournamentInfo != null)
                                 {
                                     int pokerTypeErrors = -1;
@@ -83,17 +86,10 @@ namespace PsHandler.Hud
                                     if (_pokerType != null)
                                     {
                                         DateTime dateTimeNow = DateTime.Now.AddSeconds(-Config.TimeDiff);
-
                                         DateTime dateTimeNextLevel = tournamentInfo.GetFirstHandTimestamp();
                                         while (dateTimeNextLevel < dateTimeNow) dateTimeNextLevel = dateTimeNextLevel.AddSeconds(_pokerType.LevelLengthInSeconds);
                                         TimeSpan timeSpan = dateTimeNextLevel - dateTimeNow;
                                         textboxContent = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
-
-                                        decimal latestStack = tournamentInfo.GetLatestStack(hero);
-                                        if (latestStack != decimal.MinValue)
-                                        {
-                                            textboxContent += " " + latestStack;
-                                        }
                                     }
                                     else
                                     {
@@ -116,21 +112,40 @@ namespace PsHandler.Hud
                                     textboxContent = string.Format("HH not found");
                                 }
                             }
+                            else
+                            {
+                                visible = false;
+                            }
 
-                            Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
                             {
                                 if (!_mouseDown)
                                 {
                                     Rectangle rect = WinApi.GetClientRectangle(HandleOwner);
                                     Left = rect.X + rect.Width * HudManager.TimerHudLocationX;
                                     Top = rect.Y + rect.Height * HudManager.TimerHudLocationY;
+                                    if (visible)
+                                    {
+                                        Opacity = 1;
+                                        UCLabel_Main.SetBackground(HudManager.TimerHudBackground);
+                                        UCLabel_Main.SetForeground(HudManager.TimerHudForeground);
+                                        UCLabel_Main.SetFontFamily(HudManager.TimerHudFontFamily);
+                                        UCLabel_Main.SetFontWeight(HudManager.TimerHudFontWeight);
+                                        UCLabel_Main.SetFontStyle(HudManager.TimerHudFontStyle);
+                                        UCLabel_Main.SetFontSize(HudManager.TimerHudFontSize);
+                                    }
+                                    else
+                                    {
+                                        Opacity = 0;
+                                    }
                                 }
                             }));
-                            Timer_Main.SetText(textboxContent);
+                            UCLabel_Main.SetText(textboxContent);
                         }
                         else
                         {
                             break;
+                            //throw new Exception("Parent is not a window.");
                         }
                         Thread.Sleep(1000);
                     }
@@ -140,7 +155,7 @@ namespace PsHandler.Hud
                 }
                 finally
                 {
-                    Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(Close));
+                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(Close));
                 }
             });
             _thread.Start();
@@ -152,7 +167,7 @@ namespace PsHandler.Hud
             base.OnClosing(e);
         }
 
-        // move
+        //
 
         private bool _mouseDown;
         private Point _startPosition;
@@ -171,7 +186,7 @@ namespace PsHandler.Hud
         {
             if (_mouseDown)
             {
-                Rectangle r = WinApi.GetClientRectangle(HandleOwner);
+                System.Drawing.Rectangle r = WinApi.GetClientRectangle(HandleOwner);
                 HudManager.TimerHudLocationX = (float)((Left - r.Left) / r.Width);
                 HudManager.TimerHudLocationY = (float)((Top - r.Top) / r.Height);
             }
