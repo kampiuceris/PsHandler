@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using System.Globalization;
+using Microsoft.Win32;
 using PsHandler.Hud.Import;
 using PsHandler.PokerTypes;
 using System;
@@ -72,8 +73,37 @@ namespace PsHandler.Hud
         }
         //
         public static bool TimerHudLocationLocked = false;
-        public static float TimerHudLocationX = 0;
-        public static float TimerHudLocationY = 0;
+        private static float _timerHudLocationX;
+        public static void SetTimerHudLocationX(float value, object sender)
+        {
+            _timerHudLocationX = value;
+            if (_timerHudLocationX > 10) _timerHudLocationX = 10;
+            if (_timerHudLocationX < -10) _timerHudLocationX = -10;
+            if (App.WindowMain != null && App.WindowMain.UCHud != null && App.WindowMain.UCHud.UCHudTimer != null && !sender.Equals(App.WindowMain.UCHud.UCHudTimer.TextBox_TimerLocationX))
+            {
+                App.WindowMain.UCHud.UCHudTimer.TextBox_TimerLocationX.Text = _timerHudLocationX.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+        public static float GetTimerHudLocationX(object sender)
+        {
+            return _timerHudLocationX;
+        }
+        private static float _timerHudLocationY;
+        public static void SetTimerHudLocationY(float value, object sender)
+        {
+            _timerHudLocationY = value;
+            if (_timerHudLocationY > 10) _timerHudLocationY = 10;
+            if (_timerHudLocationY < -10) _timerHudLocationY = -10;
+            if (App.WindowMain != null && App.WindowMain.UCHud != null && App.WindowMain.UCHud.UCHudTimer != null && !sender.Equals(App.WindowMain.UCHud.UCHudTimer.TextBox_TimerLocationY))
+            {
+                App.WindowMain.UCHud.UCHudTimer.TextBox_TimerLocationY.Text = _timerHudLocationY.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+        public static float GetTimerHudLocationY(object sender)
+        {
+            return _timerHudLocationY;
+        }
+
         public static Color TimerHudBackground = Colors.Black;
         public static Color TimerHudForeground = Colors.White;
         public static FontFamily TimerHudFontFamily = new FontFamily("Consolas");
@@ -82,8 +112,37 @@ namespace PsHandler.Hud
         public static double TimerHudFontSize = 10;
         //
         public static bool BigBlindHudLocationLocked = false;
-        public static float BigBlindHudLocationX = 0;
-        public static float BigBlindHudLocationY = 0;
+        private static float _bigBlindHudLocationX;
+        public static void SetBigBlindHudLocationX(float value, object sender)
+        {
+            _bigBlindHudLocationX = value;
+            if (_bigBlindHudLocationX > 10) _bigBlindHudLocationX = 10;
+            if (_bigBlindHudLocationX < -10) _bigBlindHudLocationX = -10;
+            if (App.WindowMain != null && App.WindowMain.UCHud != null && App.WindowMain.UCHud.UCHudBigBlind != null && !sender.Equals(App.WindowMain.UCHud.UCHudBigBlind.TextBox_BigBlindLocationX))
+            {
+                App.WindowMain.UCHud.UCHudBigBlind.TextBox_BigBlindLocationX.Text = _bigBlindHudLocationX.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+        public static float GetBigBlindHudLocationX(object sender)
+        {
+            return _bigBlindHudLocationX;
+        }
+        private static float _bigBlindHudLocationY;
+        public static void SetBigBlindHudLocationY(float value, object sender)
+        {
+            _bigBlindHudLocationY = value;
+            if (_bigBlindHudLocationY > 10) _bigBlindHudLocationY = 10;
+            if (_bigBlindHudLocationY < -10) _bigBlindHudLocationY = -10;
+            if (App.WindowMain != null && App.WindowMain.UCHud != null && App.WindowMain.UCHud.UCHudBigBlind != null && !sender.Equals(App.WindowMain.UCHud.UCHudBigBlind.TextBox_BigBlindLocationY))
+            {
+                App.WindowMain.UCHud.UCHudBigBlind.TextBox_BigBlindLocationY.Text = _bigBlindHudLocationY.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+        public static float GetBigBlindHudLocationY(object sender)
+        {
+            return _bigBlindHudLocationY;
+        }
+
         public static Color BigBlindHudBackground = Colors.Black;
         public static Color BigBlindHudForeground = Colors.White;
         public static FontFamily BigBlindHudFontFamily = new FontFamily("Consolas");

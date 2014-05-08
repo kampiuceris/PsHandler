@@ -63,7 +63,7 @@ namespace PsHandler.Hud
                         if (WinApi.IsWindow(HandleOwner))
                         {
                             string title = WinApi.GetWindowTitle(handleOwner);
-                            string textboxContent = "HUD";
+                            string textboxContent = "";
                             bool visible = false;
                             Match match = _regexTournament.Match(title);
                             if (match.Success)
@@ -85,7 +85,7 @@ namespace PsHandler.Hud
                                     }
                                     if (_pokerType != null)
                                     {
-                                        DateTime dateTimeNow = DateTime.Now.AddSeconds(-Config.TimeDiff);
+                                        DateTime dateTimeNow = DateTime.Now.AddSeconds(-Config.TimerDiff);
                                         DateTime dateTimeNextLevel = tournamentInfo.GetFirstHandTimestamp();
                                         while (dateTimeNextLevel < dateTimeNow) dateTimeNextLevel = dateTimeNextLevel.AddSeconds(_pokerType.LevelLengthInSeconds);
                                         TimeSpan timeSpan = dateTimeNextLevel - dateTimeNow;
@@ -95,11 +95,13 @@ namespace PsHandler.Hud
                                     {
                                         if (pokerTypeErrors == 1)
                                         {
-                                            textboxContent = string.Format("PokerType not found");
+                                            //textboxContent = string.Format("PokerType not found");
+                                            textboxContent = Config.TimerPokerTypeNotFound;
                                         }
                                         else if (pokerTypeErrors == 2)
                                         {
-                                            textboxContent = string.Format("Multiple PokerTypes");
+                                            //textboxContent = string.Format("Multiple PokerTypes");
+                                            textboxContent = Config.TimerMultiplePokerTypes;
                                         }
                                         else
                                         {
@@ -109,7 +111,8 @@ namespace PsHandler.Hud
                                 }
                                 else
                                 {
-                                    textboxContent = string.Format("HH not found");
+                                    //textboxContent = string.Format("HH not found");
+                                    textboxContent = Config.TimerHHNotFound;
                                 }
                             }
                             else
@@ -121,9 +124,9 @@ namespace PsHandler.Hud
                             {
                                 if (!_mouseDown)
                                 {
-                                    Rectangle rect = WinApi.GetClientRectangle(HandleOwner);
-                                    Left = rect.X + rect.Width * HudManager.TimerHudLocationX;
-                                    Top = rect.Y + rect.Height * HudManager.TimerHudLocationY;
+                                    System.Drawing.Rectangle rect = WinApi.GetClientRectangle(HandleOwner);
+                                    Left = rect.X + rect.Width * HudManager.GetTimerHudLocationX(this);
+                                    Top = rect.Y + rect.Height * HudManager.GetTimerHudLocationY(this);
                                     if (visible)
                                     {
                                         Opacity = 1;
@@ -187,8 +190,8 @@ namespace PsHandler.Hud
             if (_mouseDown)
             {
                 System.Drawing.Rectangle r = WinApi.GetClientRectangle(HandleOwner);
-                HudManager.TimerHudLocationX = (float)((Left - r.Left) / r.Width);
-                HudManager.TimerHudLocationY = (float)((Top - r.Top) / r.Height);
+                HudManager.SetTimerHudLocationX((float)((Left - r.Left) / r.Width), this);
+                HudManager.SetTimerHudLocationY((float)((Top - r.Top) / r.Height), this);
             }
         }
 

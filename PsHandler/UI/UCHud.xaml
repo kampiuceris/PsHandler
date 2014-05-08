@@ -30,14 +30,14 @@
                     </StackPanel>
                 </TabItem.Header>
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <hud:UCHudTimer x:Name="UCDHUDTimer"/>
+                    <hud:UCHudTimer x:Name="UCHudTimer"/>
                 </ScrollViewer>
             </TabItem>
-            <TabItem x:Name="TabItem_BigBlinds">
+            <TabItem x:Name="TabItem_BigBlind">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <Image Height="16" Width="16" Source="../Images/chips.png" />
-                        <TextBlock Text="Big Blinds" Margin="5,0,0,0" VerticalAlignment="Center" />
+                        <TextBlock Text="Big Blind" Margin="5,0,0,0" VerticalAlignment="Center" />
                     </StackPanel>
                 </TabItem.Header>
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">

@@ -25,13 +25,15 @@ namespace PsHandler.Hud
             InitializeComponent();
 
             // Init values
-
-            TextBox_BigBlindDecimals.Text = Config.BigBlindDecimals.ToString(CultureInfo.InvariantCulture);
-
             CheckBox_EnableHudBigBlind.IsChecked = HudManager.EnableHudBigBlind;
+            TextBox_BigBlindDecimals.Text = Config.BigBlindDecimals.ToString(CultureInfo.InvariantCulture);
+            TextBox_BigBlindLocationX.Text = HudManager.GetBigBlindHudLocationX(TextBox_BigBlindLocationX).ToString(CultureInfo.InvariantCulture);
+            TextBox_BigBlindLocationY.Text = HudManager.GetBigBlindHudLocationY(TextBox_BigBlindLocationY).ToString(CultureInfo.InvariantCulture);
 
             // Hook values
 
+            CheckBox_EnableHudBigBlind.Checked += (sender, args) => { HudManager.EnableHudBigBlind = true; };
+            CheckBox_EnableHudBigBlind.Unchecked += (sender, args) => { HudManager.EnableHudBigBlind = false; };
             TextBox_BigBlindDecimals.TextChanged += (sender, args) =>
             {
                 int i;
@@ -42,9 +44,38 @@ namespace PsHandler.Hud
                 }
                 Config.BigBlindDecimals = i;
             };
+            CheckBox_LockBigBlindHudLocation.Checked += (sender, args) =>
+            {
+                HudManager.BigBlindHudLocationLocked = true;
+                TextBox_BigBlindLocationX.IsEnabled = false;
+                TextBox_BigBlindLocationY.IsEnabled = false;
+            };
+            CheckBox_LockBigBlindHudLocation.Unchecked += (sender, args) =>
+            {
+                HudManager.BigBlindHudLocationLocked = false;
+                TextBox_BigBlindLocationX.IsEnabled = true;
+                TextBox_BigBlindLocationY.IsEnabled = true;
+            };
+            TextBox_BigBlindLocationX.TextChanged += (sender, args) =>
+            {
+                float f;
+                if (float.TryParse(TextBox_BigBlindLocationX.Text, out f))
+                {
+                    HudManager.SetBigBlindHudLocationX(f, TextBox_BigBlindLocationX);
+                }
+            };
+            TextBox_BigBlindLocationY.TextChanged += (sender, args) =>
+            {
+                float f;
+                if (float.TryParse(TextBox_BigBlindLocationY.Text, out f))
+                {
+                    HudManager.SetBigBlindHudLocationY(f, TextBox_BigBlindLocationY);
+                }
+            };
 
-            CheckBox_EnableHudBigBlind.Checked += (sender, args) => { HudManager.EnableHudBigBlind = true; };
-            CheckBox_EnableHudBigBlind.Unchecked += (sender, args) => { HudManager.EnableHudBigBlind = false; };
+            // hook needed init values
+
+            CheckBox_LockBigBlindHudLocation.IsChecked = HudManager.BigBlindHudLocationLocked;
         }
 
         private void Button_CustomizeBigBlind_Click(object sender, RoutedEventArgs e)

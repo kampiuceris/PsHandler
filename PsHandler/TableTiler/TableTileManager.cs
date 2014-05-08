@@ -170,7 +170,7 @@ namespace PsHandler.TableTiler
             }
         }
 
-        //
+        // private Tile mech
 
         private static void Tile(KeyCombination kc)
         {

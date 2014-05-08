@@ -40,7 +40,10 @@ namespace PsHandler
         // HUD
 
         public static bool EnableHud;
-        public static int TimeDiff;
+        public static int TimerDiff;
+        public static string TimerHHNotFound;
+        public static string TimerPokerTypeNotFound;
+        public static string TimerMultiplePokerTypes;
         public static int BigBlindDecimals;
 
         // Table Tiler
@@ -193,12 +196,15 @@ namespace PsHandler
             EnableHud = GetBool("EnableHud", 0);
             HudManager.EnableHudTimer = GetBool("EnableHudTimer", 0);
             HudManager.EnableHudBigBlind = GetBool("EnableHudBigBlind", 0);
-            TimeDiff = GetInt("TimeDiff", 0);
+            TimerDiff = GetInt("TimerDiff", 0);
+            TimerHHNotFound = GetString("TimerHHNotFound", "HH not found");
+            TimerPokerTypeNotFound = GetString("TimerPokerTypeNotFound", "Poker Type not found");
+            TimerMultiplePokerTypes = GetString("TimerMultiplePokerTypes", "Multiple Poker Types");
             BigBlindDecimals = GetInt("BigBlindDecimals", 0);
 
             HudManager.TimerHudLocationLocked = GetBool("TimerHudLocationLocked", 0);
-            HudManager.TimerHudLocationX = GetFloat("TimerHudLocationX", HudManager.TimerHudLocationX.ToString(CultureInfo.InvariantCulture));
-            HudManager.TimerHudLocationY = GetFloat("TimerHudLocationY", HudManager.TimerHudLocationY.ToString(CultureInfo.InvariantCulture));
+            HudManager.SetTimerHudLocationX(GetFloat("TimerHudLocationX", HudManager.GetTimerHudLocationX(null).ToString(CultureInfo.InvariantCulture)), null);
+            HudManager.SetTimerHudLocationY(GetFloat("TimerHudLocationY", HudManager.GetTimerHudLocationY(null).ToString(CultureInfo.InvariantCulture)), null);
             HudManager.TimerHudBackground = (Color)ColorConverter.ConvertFromString(GetString("TimerHudBackground", HudManager.TimerHudBackground.ToString(CultureInfo.InvariantCulture)));
             HudManager.TimerHudForeground = (Color)ColorConverter.ConvertFromString(GetString("TimerHudForeground", HudManager.TimerHudForeground.ToString(CultureInfo.InvariantCulture)));
             HudManager.TimerHudFontFamily = new FontFamily(GetString("TimerHudFontFamily", HudManager.TimerHudFontFamily.ToString()));
@@ -206,20 +212,16 @@ namespace PsHandler
             HudManager.TimerHudFontStyle = (FontStyle)new FontStyleConverter().ConvertFrom(GetString("TimerHudFontStyle", HudManager.TimerHudFontStyle.ToString()));
             HudManager.TimerHudFontSize = GetFloat("TimerHudFontSize", HudManager.TimerHudFontSize.ToString(CultureInfo.InvariantCulture));
             HudManager.BigBlindHudLocationLocked = GetBool("BigBlindHudLocationLocked", 0);
-            HudManager.BigBlindHudLocationX = GetFloat("BigBlindHudLocationX", HudManager.BigBlindHudLocationX.ToString(CultureInfo.InvariantCulture));
-            HudManager.BigBlindHudLocationY = GetFloat("BigBlindHudLocationY", HudManager.BigBlindHudLocationY.ToString(CultureInfo.InvariantCulture));
+            HudManager.SetBigBlindHudLocationX(GetFloat("BigBlindHudLocationX", HudManager.GetBigBlindHudLocationX(null).ToString(CultureInfo.InvariantCulture)), null);
+            HudManager.SetBigBlindHudLocationY(GetFloat("BigBlindHudLocationY", HudManager.GetBigBlindHudLocationY(null).ToString(CultureInfo.InvariantCulture)), null);
             HudManager.BigBlindHudBackground = (Color)ColorConverter.ConvertFromString(GetString("BigBlindHudBackground", HudManager.BigBlindHudBackground.ToString(CultureInfo.InvariantCulture)));
             HudManager.BigBlindHudForeground = (Color)ColorConverter.ConvertFromString(GetString("BigBlindHudForeground", HudManager.BigBlindHudForeground.ToString(CultureInfo.InvariantCulture)));
             HudManager.BigBlindHudFontFamily = new FontFamily(GetString("BigBlindHudFontFamily", HudManager.BigBlindHudFontFamily.ToString()));
             HudManager.BigBlindHudFontWeight = (FontWeight)new FontWeightConverter().ConvertFrom(GetString("BigBlindHudFontWeight", HudManager.BigBlindHudFontWeight.ToString()));
             HudManager.BigBlindHudFontStyle = (FontStyle)new FontStyleConverter().ConvertFrom(GetString("BigBlindHudFontStyle", HudManager.BigBlindHudFontStyle.ToString()));
             HudManager.BigBlindHudFontSize = GetFloat("BigBlindHudFontSize", HudManager.BigBlindHudFontSize.ToString(CultureInfo.InvariantCulture));
-            // check invalid values
 
-            if (HudManager.TimerHudLocationX < -10) HudManager.TimerHudLocationX = -10;
-            if (HudManager.TimerHudLocationX > 10) HudManager.TimerHudLocationX = 10;
-            if (HudManager.TimerHudLocationY < -10) HudManager.TimerHudLocationY = -10;
-            if (HudManager.TimerHudLocationY > 10) HudManager.TimerHudLocationY = 10;
+            // check invalid values
             if (HudManager.TimerHudFontSize < 1) HudManager.TimerHudFontSize = 1;
             if (HudManager.TimerHudFontSize > 72) HudManager.TimerHudFontSize = 72;
 
@@ -437,12 +439,15 @@ namespace PsHandler
             SetValue("EnableHud", EnableHud.ToInt());
             SetValue("EnableHudTimer", HudManager.EnableHudTimer.ToInt());
             SetValue("EnableHudBigBlind", HudManager.EnableHudBigBlind.ToInt());
-            SetValue("TimeDiff", TimeDiff);
+            SetValue("TimerDiff", TimerDiff);
+            SetValue("TimerHHNotFound", TimerHHNotFound);
+            SetValue("TimerPokerTypeNotFound", TimerPokerTypeNotFound);
+            SetValue("TimerMultiplePokerTypes", TimerMultiplePokerTypes);
             SetValue("BigBlindDecimals", BigBlindDecimals);
 
             SetValue("TimerHudLocationLocked", HudManager.TimerHudLocationLocked.ToInt());
-            SetValue("TimerHudLocationX", HudManager.TimerHudLocationX.ToString(CultureInfo.InvariantCulture));
-            SetValue("TimerHudLocationY", HudManager.TimerHudLocationY.ToString(CultureInfo.InvariantCulture));          
+            SetValue("TimerHudLocationX", HudManager.GetTimerHudLocationX(null).ToString(CultureInfo.InvariantCulture));
+            SetValue("TimerHudLocationY", HudManager.GetTimerHudLocationY(null).ToString(CultureInfo.InvariantCulture));
             SetValue("TimerHudBackground", HudManager.TimerHudBackground.ToString(CultureInfo.InvariantCulture));
             SetValue("TimerHudForeground", HudManager.TimerHudForeground.ToString(CultureInfo.InvariantCulture));
             SetValue("TimerHudFontFamily", HudManager.TimerHudFontFamily.ToString());
@@ -450,8 +455,8 @@ namespace PsHandler
             SetValue("TimerHudFontStyle", HudManager.TimerHudFontStyle.ToString());
             SetValue("TimerHudFontSize", HudManager.TimerHudFontSize.ToString(CultureInfo.InvariantCulture));
             SetValue("BigBlindHudLocationLocked", HudManager.BigBlindHudLocationLocked.ToInt());
-            SetValue("BigBlindHudLocationX", HudManager.BigBlindHudLocationX.ToString(CultureInfo.InvariantCulture));
-            SetValue("BigBlindHudLocationY", HudManager.BigBlindHudLocationY.ToString(CultureInfo.InvariantCulture));
+            SetValue("BigBlindHudLocationX", HudManager.GetBigBlindHudLocationX(null).ToString(CultureInfo.InvariantCulture));
+            SetValue("BigBlindHudLocationY", HudManager.GetBigBlindHudLocationY(null).ToString(CultureInfo.InvariantCulture));
             SetValue("BigBlindHudBackground", HudManager.BigBlindHudBackground.ToString(CultureInfo.InvariantCulture));
             SetValue("BigBlindHudForeground", HudManager.BigBlindHudForeground.ToString(CultureInfo.InvariantCulture));
             SetValue("BigBlindHudFontFamily", HudManager.BigBlindHudFontFamily.ToString());

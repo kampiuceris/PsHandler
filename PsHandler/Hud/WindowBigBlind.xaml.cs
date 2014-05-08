@@ -108,10 +108,9 @@ namespace PsHandler.Hud
                             {
                                 if (!_mouseDown)
                                 {
-                                    System.Drawing.Rectangle clientRectangle = WinApi.GetClientRectangle(HandleOwner);
-                                    System.Drawing.Rectangle rect = clientRectangle;
-                                    Left = rect.X + rect.Width * HudManager.BigBlindHudLocationX;
-                                    Top = rect.Y + rect.Height * HudManager.BigBlindHudLocationY;
+                                    System.Drawing.Rectangle rect = WinApi.GetClientRectangle(HandleOwner);
+                                    Left = rect.X + rect.Width * HudManager.GetBigBlindHudLocationX(this);
+                                    Top = rect.Y + rect.Height * HudManager.GetBigBlindHudLocationY(this);
                                     if (visible)
                                     {
                                         Opacity = 1;
@@ -175,8 +174,8 @@ namespace PsHandler.Hud
             if (_mouseDown)
             {
                 System.Drawing.Rectangle r = WinApi.GetClientRectangle(HandleOwner);
-                HudManager.BigBlindHudLocationX = (float)((Left - r.Left) / r.Width);
-                HudManager.BigBlindHudLocationY = (float)((Top - r.Top) / r.Height);
+                HudManager.SetBigBlindHudLocationX((float)((Left - r.Left) / r.Width), this);
+                HudManager.SetBigBlindHudLocationY((float)((Top - r.Top) / r.Height), this);
             }
         }
 
@@ -187,7 +186,7 @@ namespace PsHandler.Hud
 
         private void Window_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (!HudManager.TimerHudLocationLocked)
+            if (!HudManager.BigBlindHudLocationLocked)
             {
                 if (e.RightButton == MouseButtonState.Pressed)
                 {
