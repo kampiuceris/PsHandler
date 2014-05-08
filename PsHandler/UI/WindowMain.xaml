@@ -16,7 +16,7 @@
     </Window.Resources>
     <Grid>
         <tb:TaskbarIcon x:Name="TaskbarIcon_NotifyIcon" IconSource="../Images/ps.ico" />
-        <TabControl Margin="10">
+        <TabControl Margin="10,10,10,33">
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal" Margin="2">
@@ -71,13 +71,31 @@
                 </ScrollViewer>
             </TabItem>
         </TabControl>
-        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,0,0,5" x:Name="Grid_Import" Visibility="Hidden">
-            <Border Background="#F0F0F0F0" BorderBrush="DarkGray" BorderThickness="1">
-                <StackPanel Orientation="Horizontal" Margin="5">
-                    <Image Width="16" Height="16" Source="../Images/page_white_go.png"></Image>
-                    <Label VerticalContentAlignment="Center" Margin="5,0" Padding="0" Content="Importing Hands ..."/>
-                </StackPanel>
-            </Border>
+        <Separator VerticalAlignment="Bottom" Margin="0,0,0,26" />
+        <Grid Height="26" VerticalAlignment="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="26"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="26"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="26"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="26"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Row="0" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="../Images/book.png" Margin="0" x:Name="Image_ImportIdle" ToolTip="Waiting for hands ..." />
+            <Image Grid.Row="0" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="../Images/book_go_custom.png" Margin="0" x:Name="Image_ImportBusy" Visibility="Hidden" ToolTip="Importing ..." />
+            <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal">
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+            </StackPanel>
+            <Image Grid.Row="0" Grid.Column="3" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="../Images/page.png" Margin="0" x:Name="Image_Tournaments" />
+            <Label Grid.Row="0" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0" Padding="0" Content="Tournaments: 0" x:Name="Label_Tournaments" />
+            <Image Grid.Row="0" Grid.Column="5" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="../Images/page_white.png" Margin="0" x:Name="Image_Hands" />
+            <Label Grid.Row="0" Grid.Column="6" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0" Padding="0" Content="Hands: 0" x:Name="Label_Hands" />
+            <Image Grid.Row="0" Grid.Column="7" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="../Images/page_white_error.png" Margin="0" x:Name="Image_Errors" Visibility="Hidden" />
+            <Label Grid.Row="0" Grid.Column="8" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0" Padding="0" Content="Errors: 0" x:Name="Label_Errors" Visibility="Hidden" />
         </Grid>
     </Grid>
 </Window>

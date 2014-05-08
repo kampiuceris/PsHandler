@@ -15,6 +15,7 @@ namespace PsHandler.Hud.Import
         //private static readonly Regex _RegexTimestamp = new Regex(@".+ - (?<timestamp>\d{4}.\d{2}.\d{2} \d{1,2}:\d{2}:\d{2})");
         private static readonly object _lock = new object();
         private static readonly List<Tournament> _tournaments = new List<Tournament>();
+        private static int _importErrors;
         private static Thread _thread;
 
         public Import()
@@ -30,6 +31,7 @@ namespace PsHandler.Hud.Import
             {
                 while (true)
                 {
+
                     try
                     {
                         UpdateTournaments();
@@ -87,7 +89,10 @@ namespace PsHandler.Hud.Import
                             lock (_lock)
                             {
                                 App.WindowMain.Importing = true;
-                                List<Hand> hands = Hand.Parse(File.ReadAllText(fi.FullName)); // import time                               
+                                int importErrors;
+                                List<Hand> hands = Hand.Parse(File.ReadAllText(fi.FullName), out importErrors); // import time 
+                                _importErrors += importErrors;
+                                App.WindowMain.Errors = _importErrors;
                                 _tournaments.Add(new Tournament { TournamentNumber = tournamentNumber, FileInfo = fi, Hands = hands, LastLength = fi.Length });
                                 App.WindowMain.Importing = false;
                             }
@@ -96,6 +101,8 @@ namespace PsHandler.Hud.Import
                         {
                             UpdateHands(tournament);
                         }
+                        App.WindowMain.Tournaments = _tournaments.Count;
+                        App.WindowMain.Hands = _tournaments.Sum(o => o.Hands.Count);
                     }
                 }
             }
@@ -107,7 +114,10 @@ namespace PsHandler.Hud.Import
             if (tournament.FileInfo.Length > tournament.LastLength)
             {
                 App.WindowMain.Importing = true;
-                List<Hand> hands = Hand.Parse(Methods.ReadSeek(tournament.FileInfo.FullName, tournament.LastLength));
+                int importErrors;
+                List<Hand> hands = Hand.Parse(Methods.ReadSeek(tournament.FileInfo.FullName, tournament.LastLength), out importErrors);
+                _importErrors += importErrors;
+                App.WindowMain.Errors = _importErrors;
                 tournament.LastLength = tournament.FileInfo.Length;
                 tournament.AddHands(hands);
                 App.WindowMain.Importing = false;

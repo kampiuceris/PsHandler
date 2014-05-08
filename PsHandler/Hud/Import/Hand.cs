@@ -31,7 +31,7 @@ namespace PsHandler.Hud.Import
         private readonly List<Player> _players = new List<Player>();
         private bool _smallBlindCollectPots;
 
-        public static List<Hand> Parse(string text)
+        public static List<Hand> Parse(string text, out int importErrors)
         {
             List<Hand> hands = new List<Hand>();
 
@@ -44,6 +44,8 @@ namespace PsHandler.Hud.Import
                     handHistories.Add("PokerStars Ha" + handsText[i]);
                 }
             }
+
+            importErrors = 0;
 
             foreach (string ht in handHistories)
             {
@@ -64,6 +66,7 @@ namespace PsHandler.Hud.Import
                 }
                 catch (Exception)
                 {
+                    importErrors++;
                 }
             }
 

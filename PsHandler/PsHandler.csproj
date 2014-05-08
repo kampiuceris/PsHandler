@@ -82,13 +82,11 @@
     <Compile Include="PokerTypes\UCPokerTypes.xaml.cs">
       <DependentUpon>UCPokerTypes.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToDo.cs" />
     <Compile Include="UI\GlassEffect.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Hud\HudManager.cs" />
     <Compile Include="Hud\Import\Hand.cs" />
     <Compile Include="Hud\Import\Import.cs" />
-    <Compile Include="Hud\LobbyTime.cs" />
     <Compile Include="Hud\UCLabel.xaml.cs">
       <DependentUpon>UCLabel.xaml</DependentUpon>
     </Compile>
@@ -118,7 +116,6 @@
     <Compile Include="NotifyIconWpf\RoutedEventHelper.cs" />
     <Compile Include="NotifyIconWpf\TaskbarIcon.cs" />
     <Compile Include="NotifyIconWpf\Util.cs" />
-    <Compile Include="PokerStarsThemesLobby.cs" />
     <Compile Include="PokerStarsThemesTable.cs" />
     <Compile Include="TableTiler\TableTile.cs" />
     <Compile Include="TableTiler\TableTileManager.cs" />
@@ -440,6 +437,19 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\EmbeddedResources\door_out.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\page_white.png" />
+    <Resource Include="Images\page_white_error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\page.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\book.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\book_go_custom.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
