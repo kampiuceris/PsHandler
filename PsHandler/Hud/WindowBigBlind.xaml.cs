@@ -119,7 +119,9 @@ namespace PsHandler.Hud
                                         UCLabel_Main.SetFontFamily(HudManager.BigBlindHudFontFamily);
                                         UCLabel_Main.SetFontWeight(HudManager.BigBlindHudFontWeight);
                                         UCLabel_Main.SetFontStyle(HudManager.BigBlindHudFontStyle);
-                                        UCLabel_Main.SetFontSize(HudManager.BigBlindHudFontSize);
+                                        // size relative to default PS table size
+                                        double tableSizeRatio = rect.Height / PokerStarsThemeTable.HEIGHT;
+                                        UCLabel_Main.SetFontSize(HudManager.BigBlindHudFontSize * tableSizeRatio);
                                     }
                                     else
                                     {
