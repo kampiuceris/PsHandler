@@ -82,6 +82,9 @@
     <Compile Include="PokerTypes\UCPokerTypes.xaml.cs">
       <DependentUpon>UCPokerTypes.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TableTiler\WindowWindowsInfo.xaml.cs">
+      <DependentUpon>WindowWindowsInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\GlassEffect.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Hud\HudManager.cs" />
@@ -214,6 +217,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PokerTypes\WindowPokerTypeEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TableTiler\WindowWindowsInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -450,6 +457,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\book_go_custom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\monitor_window_3d_search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\zoom_refresh.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

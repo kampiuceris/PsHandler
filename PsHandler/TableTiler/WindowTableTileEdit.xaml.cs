@@ -122,5 +122,10 @@ namespace PsHandler.TableTiler
             Saved = false;
             Close();
         }
+
+        private void Button_WindowsInfo_Click(object sender, RoutedEventArgs e)
+        {
+            new WindowWindowsInfo().Show();
+        }
     }
 }
