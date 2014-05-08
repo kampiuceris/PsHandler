@@ -27,6 +27,12 @@ namespace PsHandler
         public static bool MinimizeToSystemTray;
         public static bool StartMinimized;
         public static KeyCombination HotkeyExit;
+        public static bool SaveGuiLocation;
+        public static int GuiLocationX;
+        public static int GuiLocationY;
+        public static bool SaveGuiSize;
+        public static int GuiWidth;
+        public static int GuiHeight;
 
         // Controller
 
@@ -181,6 +187,12 @@ namespace PsHandler
             MinimizeToSystemTray = GetBool("MinimizeToSystemTray", 0);
             StartMinimized = GetBool("StartMinimized", 0);
             HotkeyExit = KeyCombination.Parse(GetString("HotkeyExit", new KeyCombination(Key.None, false, false, false).ToString()));
+            SaveGuiLocation = GetBool("SaveGuiLocation", 0);
+            GuiLocationX = GetInt("GuiLocationX", 0);
+            GuiLocationY = GetInt("GuiLocationY", 0);
+            SaveGuiSize = GetBool("SaveGuiSize", 0);
+            GuiWidth = GetInt("GuiWidth", 0);
+            GuiHeight = GetInt("GuiHeight", 0);
 
             // controller
 
@@ -424,6 +436,12 @@ namespace PsHandler
             SetValue("MinimizeToSystemTray", MinimizeToSystemTray.ToInt());
             SetValue("StartMinimized", StartMinimized.ToInt());
             SetValue("HotkeyExit", HotkeyExit.ToString());
+            SetValue("SaveGuiLocation", SaveGuiLocation.ToInt());
+            SetValue("GuiLocationX", GuiLocationX);
+            SetValue("GuiLocationY", GuiLocationY);
+            SetValue("SaveGuiSize", SaveGuiSize.ToInt());
+            SetValue("GuiWidth", GuiWidth);
+            SetValue("GuiHeight", GuiHeight);
 
             // controller
 

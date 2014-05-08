@@ -38,6 +38,10 @@ namespace PsHandler.UI
 
             TextBoxHotkey_Exit.KeyCombination = Config.HotkeyExit;
 
+            CheckBox_SaveGuiLocation.IsChecked = Config.SaveGuiLocation;
+
+            CheckBox_SaveGuiSize.IsChecked = Config.SaveGuiSize;
+
             // Hook values
 
             TextBox_PokerStarsAppDataFolderPath.TextChanged += (sender, args) => { Config.AppDataPath = TextBox_PokerStarsAppDataFolderPath.Text; };
@@ -55,6 +59,12 @@ namespace PsHandler.UI
             CheckBox_StartMinimized.Unchecked += (sender, args) => { Config.StartMinimized = false; };
 
             TextBoxHotkey_Exit.TextChanged += (sender, args) => { Config.HotkeyExit = TextBoxHotkey_Exit.KeyCombination; };
+
+            CheckBox_SaveGuiLocation.Checked += (sender, args) => { Config.SaveGuiLocation = true; };
+            CheckBox_SaveGuiLocation.Unchecked += (sender, args) => { Config.SaveGuiLocation = false; };
+
+            CheckBox_SaveGuiSize.Checked += (sender, args) => { Config.SaveGuiSize = true; };
+            CheckBox_SaveGuiSize.Unchecked += (sender, args) => { Config.SaveGuiSize = false; };
         }
     }
 }

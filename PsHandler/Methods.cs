@@ -108,6 +108,11 @@ namespace PsHandler
             }
             return text;
         }
+
+        public static bool CheckIfPointIsInArea(System.Drawing.Point point, Rectangle area)
+        {
+            return (point.X > area.X && point.X < area.X + area.Width) && (point.Y > area.Y && point.Y < area.Y + area.Height);
+        }
     }
 
     public static class ExtensionMethods
