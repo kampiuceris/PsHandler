@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d">
+             mc:Ignorable="d" UseLayoutRounding="True">
     <Grid Margin="5">
         <StackPanel>
             <Label VerticalContentAlignment="Center" Padding="2" Content="Poker Type also will be determined by checking file names." />
@@ -11,7 +11,7 @@
             <Label VerticalContentAlignment="Center" Padding="2" Margin="20,10" Content="CurrencySing BuyIn + CurrencySign Rake" FontWeight="SemiBold"/>
             <Label VerticalContentAlignment="Center" Padding="2" Content="Example (considering image):" />
             <Label VerticalContentAlignment="Center" Padding="2" Margin="20,10" Content="$95.86 + $4.14" FontWeight="SemiBold"/>
-            <Image Margin="10" Width="500" Height="107" Source="../../Images/ToolTips/filenamebuyinrake.png" />
+            <Image Margin="10" Width="288" Height="107" Source="../../Images/ToolTips/filenamebuyinrake.png" />
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal"/>
         </StackPanel>
     </Grid>

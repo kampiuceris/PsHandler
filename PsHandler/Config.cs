@@ -180,6 +180,46 @@ namespace PsHandler
             return float.Parse((string)GetValue(relativePath, defaultValue));
         }
 
+        private static bool DeleteValue(string relativePath)
+        {
+            try
+            {
+                string[] paths = relativePath.Split(new[] { @"\", @"/" }, StringSplitOptions.RemoveEmptyEntries);
+
+                RegistryKey keyPsHandler = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler", true);
+                if (keyPsHandler == null)
+                {
+                    using (RegistryKey keySoftware = Registry.CurrentUser.OpenSubKey(@"Software", true))
+                    {
+                        if (keySoftware == null) throw new NotSupportedException("Cannot load 'HKEY_CURRENTY_USER/Software'");
+                        keyPsHandler = keySoftware.CreateSubKey("PsHandler");
+                        if (keyPsHandler == null) throw new NotSupportedException("Cannot create 'HKEY_CURRENTY_USER/Software/PsHandler'");
+                    }
+                }
+
+                List<RegistryKey> keys = new List<RegistryKey> { keyPsHandler };
+                for (int i = 0; i < paths.Length - 1; i++)
+                {
+                    RegistryKey subKey = keys[keys.Count - 1].OpenSubKey(paths[i], true) ?? keys[keys.Count - 1].CreateSubKey(paths[i]);
+                    if (subKey == null) throw new NotSupportedException("Cannot create ('" + relativePath + "') '" + paths[i] + "'");
+                    keys.Add(subKey);
+                }
+
+                keys[keys.Count - 1].DeleteValue(paths[paths.Length - 1]);
+
+                foreach (var key in keys)
+                {
+                    key.Dispose();
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         //
 
         public static void Load()
@@ -243,7 +283,7 @@ namespace PsHandler
 
             // Poker Types
 
-            #region poker types
+            #region default poker types
 
             using (RegistryKey keyPokerTypes = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\PokerTypes"))
             {
@@ -427,7 +467,7 @@ namespace PsHandler
 
             EnableTableTiler = GetBool("EnableTableTiler", 0);
 
-            #region poker types
+            #region default table tiles
 
             using (RegistryKey keyPokerTypes = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\TableTiles"))
             {
@@ -491,6 +531,10 @@ namespace PsHandler
 
 
             TableTileManager.LoadConfig();
+
+            // delete obsolete
+
+            DeleteValue("TimeDiff");
         }
 
         public static void Save()

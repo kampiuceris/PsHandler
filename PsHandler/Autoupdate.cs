@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Xml.Linq;
+using Hardcodet.Wpf.TaskbarNotification;
 
 namespace PsHandler
 {
@@ -30,7 +31,7 @@ namespace PsHandler
                             MessageBoxResult messageBoxResult = MessageBoxResult.Cancel;
                             Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
                             {
-                                messageBoxResult = MessageBox.Show(owner, "New updates for '" + applicationName + "' are available. Do you want to close application and download updates?", "Update", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                                messageBoxResult = MessageBox.Show("New updates for '" + applicationName + "' are available. Do you want to close application and download updates?", "Update", MessageBoxButton.YesNo, MessageBoxImage.Question);
                             }));
                             if (messageBoxResult == MessageBoxResult.Yes)
                             {
@@ -91,9 +92,15 @@ namespace PsHandler
                 if (tempDirUpdateFile != null) tempDirUpdateFile.Delete();
 
                 // check files
-                if (root.Elements().Where(e => e.Name.LocalName.Equals("file")).Select(e => new[] { e.Attribute("name").Value, e.Attribute("md5").Value }).Any(file => !GetMd5(file[0]).Equals(file[1])))
+                string[][] files = root.Elements().Where(e => e.Name.LocalName.Equals("file")).Select(e => new[] { e.Attribute("name").Value, e.Attribute("md5").Value }).ToArray();
+
+                foreach (string[] f in files)
                 {
-                    return true;
+                    string fileName = f[0];
+                    string md5 = f[1];
+
+                    if (!File.Exists(fileName)) return true;
+                    if (!GetMd5(fileName).Equals(md5)) return true;
                 }
 
                 return false;

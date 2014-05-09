@@ -144,6 +144,12 @@
     </Compile>
     <Compile Include="ScreenCapture.cs" />
     <Compile Include="UI\TextBoxHotkey.cs" />
+    <Compile Include="UI\ToolTips\UCToolTipHandReplayHotkey.xaml.cs">
+      <DependentUpon>UCToolTipHandReplayHotkey.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipTimeDiff.xaml.cs">
+      <DependentUpon>UCToolTipTimeDiff.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\ToolTips\UCToolTipAutocloseHM2ApplyToSimilarTablesPopups.xaml.cs">
       <DependentUpon>UCToolTipAutocloseHM2ApplyToSimilarTablesPopups.xaml</DependentUpon>
     </Compile>
@@ -268,6 +274,14 @@
     <Page Include="TableTiler\WindowWindowsInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipHandReplayHotkey.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipTimeDiff.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\ToolTips\UCToolTipAutocloseHM2ApplyToSimilarTablesPopups.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -574,9 +588,6 @@
     <Resource Include="Images\book_open.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\ToolTips\filenamebuyinrake.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\ToolTips\pokerstarsthemestable.png" />
   </ItemGroup>
   <ItemGroup>
@@ -588,6 +599,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\ToolTips\autoclickyesseatavailable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ToolTips\filenamebuyinrake.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ToolTips\internettimeupdate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ToolTips\replayhandhotkey.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PsHandler.PokerTypes;
+using PsHandler.UI.ToolTips;
 
 namespace PsHandler.Hud
 {
@@ -75,6 +76,10 @@ namespace PsHandler.Hud
             // hook needed init values
 
             CheckBox_LockTimerHudLocation.IsChecked = HudManager.TimerHudLocationLocked;
+
+            // ToolTips
+
+            Image_TimeDiff.ToolTip = new UCToolTipTimeDiff();
         }
 
         private void Button_CustomizeTimer_Click(object sender, RoutedEventArgs e)

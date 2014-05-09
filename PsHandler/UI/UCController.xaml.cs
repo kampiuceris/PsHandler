@@ -52,6 +52,7 @@ namespace PsHandler.UI
             Image_AutoclickYesWaitingList.ToolTip = new UCToolTipAutoclickYesSeatAvailable();
             Image_AutoclickTournamentRegistrationPopups.ToolTip = new UCToolTipAutocloseTournamentRegistrationPopups();
             Image_AutoclickHM2ApplyToSimilarTablesPopup.ToolTip = new UCToolTipAutocloseHM2ApplyToSimilarTablesPopups();
+            Image_HandReplayHotkey.ToolTip = new UCToolTipHandReplayHotkey();
         }
     }
 }
