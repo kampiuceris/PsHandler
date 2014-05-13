@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Security.Principal;
 using System.Windows.Media;
 using System.Windows;
+using System.Xml.Linq;
 using PsHandler.UI;
 using Color = System.Windows.Media.Color;
 using PsHandler.TableTiler;
@@ -15,6 +16,9 @@ namespace PsHandler
         [STAThreadAttribute]
         public static void Main()
         {
+            System.Globalization.CultureInfo.DefaultThreadCurrentCulture = new System.Globalization.CultureInfo("en-US");
+            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = new System.Globalization.CultureInfo("en-US");
+
             //Test(); return;
 
             WindowsPrincipal pricipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());

@@ -20,11 +20,28 @@ namespace PsHandler.PokerTypes
             }
         }
 
+        public static void Add(IEnumerable<PokerType> pokerTypes)
+        {
+            lock (Lock)
+            {
+                PokerTypes.AddRange(pokerTypes);
+                PokerTypes.Sort((o0, o1) => string.CompareOrdinal(o0.Name, o1.Name));
+            }
+        }
+
         public static void Remove(PokerType pokerType)
         {
             lock (Lock)
             {
                 PokerTypes.Remove(pokerType);
+            }
+        }
+
+        public static void SeedDefaultValues()
+        {
+            if (!PokerTypes.Any())
+            {
+                Add(PokerType.GetDefaultValues());
             }
         }
 

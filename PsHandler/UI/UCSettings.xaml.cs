@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Controls;
 using PsHandler.UI.ToolTips;
 
 namespace PsHandler.UI
@@ -24,12 +25,15 @@ namespace PsHandler.UI
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Nova());
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Slick());
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Stars());
-            foreach (var item in ComboBox_PokerStarsThemeTable.Items)
+            if (Config.PokerStarsThemeTable != null)
             {
-                if (Config.PokerStarsThemeTable.GetType() == item.GetType())
+                foreach (var item in ComboBox_PokerStarsThemeTable.Items)
                 {
-                    ComboBox_PokerStarsThemeTable.SelectedItem = item;
-                    break;
+                    if (Config.PokerStarsThemeTable.GetType() == item.GetType())
+                    {
+                        ComboBox_PokerStarsThemeTable.SelectedItem = item;
+                        break;
+                    }
                 }
             }
 

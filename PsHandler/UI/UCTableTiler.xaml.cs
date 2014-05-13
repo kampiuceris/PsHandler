@@ -53,7 +53,7 @@ namespace PsHandler.UI
             dialog.ShowDialog();
             if (dialog.Saved)
             {
-                TableTileManager.AddTableTile(dialog.TableTile);
+                TableTileManager.Add(dialog.TableTile);
                 UpdateListView(dialog.TableTile);
             }
         }
@@ -66,7 +66,7 @@ namespace PsHandler.UI
                 TableTileManager.RemoveTableTile(selectedItem.TableTile);
                 WindowTableTileEdit dialog = new WindowTableTileEdit(App.WindowMain, selectedItem.TableTile);
                 dialog.ShowDialog();
-                TableTileManager.AddTableTile(dialog.TableTile);
+                TableTileManager.Add(dialog.TableTile);
                 UpdateListView(dialog.TableTile);
             }
         }

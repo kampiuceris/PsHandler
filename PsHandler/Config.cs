@@ -1,6 +1,12 @@
-﻿using System.Drawing;
+﻿using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Xml.Linq;
+using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Win32;
 using PsHandler.Hud;
 using System;
@@ -8,10 +14,7 @@ using System.Collections.Generic;
 using System.Windows;
 using PsHandler.PokerTypes;
 using PsHandler.TableTiler;
-using Color = System.Windows.Media.Color;
-using ColorConverter = System.Windows.Media.ColorConverter;
-using FontFamily = System.Windows.Media.FontFamily;
-using FontStyle = System.Windows.FontStyle;
+using System.Threading;
 
 namespace PsHandler
 {
@@ -20,7 +23,7 @@ namespace PsHandler
         // Constants
 
         public const string NAME = "PsHandler";
-        public const int VERSION = 8;
+        public const int VERSION = 9;
         public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static string MACHINE_GUID = GetMachineGuid();
 
@@ -224,6 +227,14 @@ namespace PsHandler
 
         public static void Load()
         {
+            using (RegistryKey keyPsHandler = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler"))
+            {
+                if (keyPsHandler == null)
+                {
+                    return; //TODO obsolete code
+                }
+            }
+
             // settings
 
             AppDataPath = GetString("AppDataPath", "");
@@ -283,262 +294,45 @@ namespace PsHandler
 
             // Poker Types
 
-            #region default poker types
-
-            using (RegistryKey keyPokerTypes = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\PokerTypes"))
-            {
-                if (keyPokerTypes == null || keyPokerTypes.GetValueNames().Length == 0)
-                {
-                    PokerType pt;
-
-                    // 10-max Fifty50
-
-                    pt = new PokerType
-                    {
-                        Name = "10-max Fifty50 Regular",
-                        LevelLengthInSeconds = 360,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "Fifty50" },
-                        IncludeOr = new string[0],
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new[] { "Turbo", "Hyper", "6-Max" },
-                        BuyInAndRake = new[] { "$1.35 + $0.15", "$3.26 + $0.24", "$6.60 + $0.40", "$14.15 + $0.85", "$28.30 + $1.70", "$56.60 + $3.40", "$94.90 + $5.10", "$191.35 + $8.65" }
-                    };
-                    SetValue(@"PokerTypes\" + pt.Name, pt.ToXml());
-
-                    pt = new PokerType
-                    {
-                        Name = "10-max Fifty50 Turbo",
-                        LevelLengthInSeconds = 180,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "Fifty50", "Turbo" },
-                        IncludeOr = new string[0],
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new[] { "Hyper", "6-Max" },
-                        BuyInAndRake = new[] { "$1.39 + $0.11", "$3.30 + $0.20", "$6.68 + $0.32", "$14.31 + $0.69", "$28.63 + $1.37", "$57.25 + $2.75", "$95.86 + $4.14", "$193.05 + $6.95", "$291.60 + $8.40", "$487.20 + $12.80" }
-                    };
-                    SetValue(@"PokerTypes\" + pt.Name, pt.ToXml());
-
-                    // 2-max
-
-                    pt = new PokerType
-                    {
-                        Name = "2-max 2 Players Regular",
-                        LevelLengthInSeconds = 360,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 Players" },
-                        IncludeOr = new string[0],
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new[] { "Turbo", "Hyper", "6-Max" },
-                        BuyInAndRake = new[] { "$1.38 + $0.12", "$3.29 + $0.21", "$6.67 + $0.33", "$14.29 + $0.71", "$28.57 + $1.43", "$57.28 + $2.72", "$95.69 + $4.31", "$192.75 + $7.25", "$289.85 + $10.15", "$485.40 + $14.60", "$975.60 + $24.40", "$1956.00 + $44.00", "$4926.00 + $74.00" }
-                    };
-                    SetValue(@"PokerTypes\" + pt.Name, pt.ToXml());
-
-                    pt = new PokerType
-                    {
-                        Name = "2-max 2 Players Turbo",
-                        LevelLengthInSeconds = 180,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 Players", "Turbo" },
-                        IncludeOr = new string[0],
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new[] { "Hyper", "6-Max" },
-                        BuyInAndRake = new[] { "$1.40 + $0.10", "$3.32 + $0.18", "$6.71 + $0.29", "$14.39 + $0.61", "$28.78 + $1.22", "$57.67 + $2.33", "$96.32 + $3.68", "$193.85 + $6.15", "$291.25 + $8.75", "$487.60 + $12.40", "$979.20 + $20.80", "$1962.50 + $37.50", "$4937.00 + $63.00" }
-                    };
-                    SetValue(@"PokerTypes\" + pt.Name, pt.ToXml());
-
-                    pt = new PokerType
-                    {
-                        Name = "2-max 2 Players Hyper-Turbo",
-                        LevelLengthInSeconds = 120,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "HU", "2 Players", "Hyper-Turbo" },
-                        IncludeOr = new string[0],
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new[] { "6-Max" },
-                        BuyInAndRake = new[] { "$1.44 + $0.06", "$3.40 + $0.10", "$6.85 + $0.15", "$14.69 + $0.31", "$29.37 + $0.63", "$58.74 + $1.26", "$98.12 + $1.88", "$196.66 + $3.34", "$295.51 + $4.49", "$493.35 + $6.65", "$988.80 + $11.20" }
-                    };
-                    SetValue(@"PokerTypes\" + pt.Name, pt.ToXml());
-
-                    // 9-max
-
-                    pt = new PokerType
-                    {
-                        Name = "9-max Regular",
-                        LevelLengthInSeconds = 600,
-                        IncludeAnd = new[] { "Logged In as", "Tournament" },
-                        IncludeOr = new string[0],
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new[] { "Turbo", "Hyper", "6-Max" },
-                        BuyInAndRake = new[] { "$1.29 + $0.21", "$3.11 + $0.39", "$6.37 + $0.63", "$13.70 + $1.30", "$27.40 + $2.60", "$54.80 + $5.20", "$92.15 + $7.85", "$186.50 + $13.50", "$281.00 + $19.00", "$471.75 + $28.25" }
-                    };
-                    SetValue(@"PokerTypes\" + pt.Name, pt.ToXml());
-
-                    pt = new PokerType
-                    {
-                        Name = "9-max Turbo",
-                        LevelLengthInSeconds = 300,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "Turbo" },
-                        IncludeOr = new string[0],
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new[] { "Hyper", "6-Max" },
-                        BuyInAndRake = new[] { "$1.32 + $0.18", "$3.16 + $0.34", "$6.45 + $0.55", "$13.89 + $1.11", "$27.78 + $2.22", "$55.56 + $4.44", "$92.80 + $7.20", "$187.80 + $12.20", "$283.00 + $17.00", "$474.00 + $26.00", "$957.00 + $43.00", "$1923.00 + $77.00" }
-                    };
-                    SetValue(@"PokerTypes\" + pt.Name, pt.ToXml());
-
-                    pt = new PokerType
-                    {
-                        Name = "9-max Hyper-Turbo",
-                        LevelLengthInSeconds = 120,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "Hyper-Turbo" },
-                        IncludeOr = new string[0],
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new[] { "6-Max" },
-                        BuyInAndRake = new[] { "$1.39 + $0.11", "$3.31 + $0.19", "$6.70 + $0.30", "$14.39 + $0.61", "$28.77 + $1.23", "$57.54 + $2.46", "$96.32 + $3.68", "$193.18 + $6.82" }
-                    };
-                    SetValue(@"PokerTypes\" + pt.Name, pt.ToXml());
-
-                    // 6-max
-
-                    pt = new PokerType
-                    {
-                        Name = "6-max Regular",
-                        LevelLengthInSeconds = 600,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "6-Max" },
-                        IncludeOr = new string[0],
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new[] { "Turbo", "Hyper" },
-                        BuyInAndRake = new[] { "$1.29 + $0.21", "$3.13 + $0.37", "$6.39 + $0.61", "$13.79 + $1.21", "$27.58 + $2.42", "$55.13 + $4.84", "$92.60 + $7.40", "$186.90 + $13.10", "$281.70 + $18.30", "$472.75 + $27.25" }
-                    };
-                    SetValue(@"PokerTypes\" + pt.Name, pt.ToXml());
-
-                    pt = new PokerType
-                    {
-                        Name = "6-max Turbo",
-                        LevelLengthInSeconds = 300,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "6-Max", "Turbo" },
-                        IncludeOr = new string[0],
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new[] { "Hyper" },
-                        BuyInAndRake = new[] { "$1.32 + $0.18", "$3.19 + $0.31", "$6.48 + $0.52", "$13.92 + $1.08", "$27.84 + $2.16", "$55.68 + $4.32", "$93.25 + $6.75", "$188.20 + $11.80", "$283.70 + $16.30", "$475.00 + $25.00", "$959.25 + $40.75", "$1928.00 + $72.00", "$4878.00 + $122.00" }
-                    };
-                    SetValue(@"PokerTypes\" + pt.Name, pt.ToXml());
-
-                    pt = new PokerType
-                    {
-                        Name = "6-max Hyper-Turbo",
-                        LevelLengthInSeconds = 120,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "6-Max", "Hyper-Turbo" },
-                        IncludeOr = new string[0],
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new string[0],
-                        BuyInAndRake = new[] { "$1.40 + $0.10", "$3.32 + $0.18", "$6.71 + $0.29", "$14.41 + $0.59", "$28.83 + $1.17", "$57.66 + $2.34", "$96.49 + $3.51", "$193.52 + $6.48", "$291.40 + $8.60", "$487.52 + $12.48" }
-                    };
-                    SetValue(@"PokerTypes\" + pt.Name, pt.ToXml());
-
-                    //  9-max knockout
-
-                    pt = new PokerType
-                    {
-                        Name = "9-max Knockout Regular",
-                        LevelLengthInSeconds = 600,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", "Knockout" },
-                        IncludeOr = new string[0],
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new[] { "Turbo", "Hyper", "6-Max" },
-                        BuyInAndRake = new[] { "$1.35 + $0.15", "$3.20 + $0.30", "$6.50 + $0.50", "$13.90 + $1.10", "$27.80 + $2.20", "$55.75 + $4.25", "$93.60 + $6.40", "$189.05 + $10.95" }
-                    };
-                    SetValue(@"PokerTypes\" + pt.Name, pt.ToXml());
-
-                    pt = new PokerType
-                    {
-                        Name = "9-max Knockout Turbo",
-                        LevelLengthInSeconds = 300,
-                        IncludeAnd = new[] { "Logged In as", "Tournament", " Knockout", "Turbo" },
-                        IncludeOr = new string[0],
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new[] { "Hyper", "6-Max" },
-                        BuyInAndRake = new[] { "$1.35 + $0.15", "$3.20 + $0.30", "$6.55 + $0.45", "$14.10 + $0.90", "$28.15 + $1.85", "$56.40 + $3.60", "$94.15 + $5.85" }
-                    };
-                    SetValue(@"PokerTypes\" + pt.Name, pt.ToXml());
-                }
-            }
-
-            #endregion
-
             PokerTypeManager.Load();
+            PokerTypeManager.SeedDefaultValues();
 
             // TableTiler
 
             EnableTableTiler = GetBool("EnableTableTiler", 0);
-
-            #region default table tiles
-
-            using (RegistryKey keyPokerTypes = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\TableTiles"))
-            {
-                if (keyPokerTypes == null || keyPokerTypes.GetValueNames().Length == 0)
-                {
-                    TableTile tt;
-
-                    // Sample: Cascade Cash
-
-                    tt = new TableTile
-                    {
-                        IsEnabled = false,
-                        KeyCombination = new KeyCombination(Key.None, false, false, false),
-                        SortByStartingHand = false,
-                        Name = "Sample: Cascade Cash (No Limit)",
-                        IncludeAnd = new[] { "Logged In as" },
-                        IncludeOr = new[] { "$", "€", "£" },
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new[] { "Tournament" },
-                        XYWHs = new Rectangle[]
-                        {
-                            new Rectangle(0, 0, 808, 580),
-                            new Rectangle(34, 34, 808, 580),
-                            new Rectangle(68, 68, 808, 580),
-                            new Rectangle(102, 102, 808, 580),
-                            new Rectangle(136, 136, 808, 580),
-                            new Rectangle(170, 170, 808, 580),
-                            new Rectangle(204, 204, 808, 580),
-                            new Rectangle(238, 238, 808, 580),
-                        }
-                    };
-                    SetValue(@"TableTiles\" + tt.Name, tt.ToXml());
-
-                    // Sample: Tile Tournament Sort
-
-                    tt = new TableTile
-                    {
-                        IsEnabled = false,
-                        KeyCombination = new KeyCombination(Key.None, false, false, false),
-                        SortByStartingHand = true,
-                        Name = "Sample: Tile Tournament Sort",
-                        IncludeAnd = new[] { "Logged In as", "Tournament" },
-                        IncludeOr = new[] { "$", "€", "£" },
-                        ExcludeAnd = new string[0],
-                        ExcludeOr = new string[0],
-                        XYWHs = new Rectangle[]
-                        {
-                            new Rectangle(0, 0, 534, 391),
-                            new Rectangle(534, 0, 534, 391),
-                            new Rectangle(1068, 0, 534, 391),
-                            new Rectangle(0, 390, 534, 391),
-                            new Rectangle(534, 390, 534, 391),
-                            new Rectangle(1068, 390, 534, 391),
-                        }
-                    };
-                    SetValue(@"TableTiles\" + tt.Name, tt.ToXml());
-                }
-            }
-
-            #endregion
-
-
             TableTileManager.LoadConfig();
-
-            // delete obsolete
-
-            DeleteValue("TimeDiff");
+            TableTileManager.SeedDefaultValues();
         }
 
         public static void Save()
         {
+            try
+            {
+                bool needToBeDeleted = false;
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler"))
+                {
+                    if (key != null)
+                    {
+                        needToBeDeleted = true;
+                    }
+                }
+                if (needToBeDeleted)
+                {
+                    using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software", true))
+                    {
+                        if (key != null)
+                        {
+                            key.DeleteSubKeyTree("PsHandler");
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            return;
+
             SetValue("Version", VERSION);
 
             // settings
@@ -602,6 +396,330 @@ namespace PsHandler
 
             SetValue("EnableTableTiler", EnableTableTiler.ToInt());
             TableTileManager.SaveConfig();
+        }
+
+        //
+
+        private static void Set(XElement xElement, string name, object o, ref int errorCode, object defaultValue = null)
+        {
+            try
+            {
+                xElement.Add(new XElement(name, o != null ? o.ToString() : defaultValue.ToString()));
+            }
+            catch (Exception)
+            {
+                errorCode++;
+            }
+        }
+
+        //
+
+        private static bool GetBool(XElement xElement, string name, ref int errorCode, bool defaultValue = default(bool))
+        {
+            try
+            {
+                return bool.Parse(xElement.Element(name).Value);
+            }
+            catch (Exception)
+            {
+                errorCode += 1;
+                return defaultValue;
+            }
+        }
+
+        private static string GetString(XElement xElement, string name, ref int errorCode, string defaultValue = default(string))
+        {
+            try
+            {
+                return xElement.Element(name).Value;
+            }
+            catch (Exception)
+            {
+                errorCode += 1;
+                return defaultValue;
+            }
+        }
+
+        private static int GetInt(XElement xElement, string name, ref int errorCode, int defaultValue = default(int))
+        {
+            try
+            {
+                return int.Parse(xElement.Element(name).Value);
+            }
+            catch (Exception)
+            {
+                errorCode += 1;
+                return defaultValue;
+            }
+        }
+
+        private static float GetFloat(XElement xElement, string name, ref int errorCode, float defaultValue = default(float))
+        {
+            try
+            {
+                return float.Parse(xElement.Element(name).Value);
+            }
+            catch (Exception)
+            {
+                errorCode += 1;
+                return defaultValue;
+            }
+        }
+
+        private static Color GetColor(XElement xElement, string name, ref int errorCode, Color defaultValue = default(Color))
+        {
+            try
+            {
+                return (Color)ColorConverter.ConvertFromString(xElement.Element(name).Value);
+            }
+            catch (Exception)
+            {
+                errorCode += 1;
+                return defaultValue;
+            }
+        }
+
+        private static FontFamily GetFontFamily(XElement xElement, string name, ref int errorCode, FontFamily defaultValue = default(FontFamily))
+        {
+            try
+            {
+                return new FontFamily(xElement.Element(name).Value);
+            }
+            catch (Exception)
+            {
+                errorCode += 1;
+                return defaultValue;
+            }
+        }
+
+        private static FontWeight GetFontWeight(XElement xElement, string name, ref int errorCode, FontWeight defaultValue = default(FontWeight))
+        {
+            try
+            {
+                return (FontWeight)new FontWeightConverter().ConvertFrom(xElement.Element(name).Value);
+            }
+            catch (Exception)
+            {
+                errorCode += 1;
+                return defaultValue;
+            }
+        }
+
+        private static FontStyle GetFontStyle(XElement xElement, string name, ref int errorCode, FontStyle defaultValue = default(FontStyle))
+        {
+            try
+            {
+                return (FontStyle)new FontStyleConverter().ConvertFrom(xElement.Element(name).Value);
+            }
+            catch (Exception)
+            {
+                errorCode += 1;
+                return defaultValue;
+            }
+        }
+
+        //
+
+        public static int SaveXml()
+        {
+            int errors = 0;
+            try
+            {
+                XDocument xDoc = new XDocument();
+                XElement root = new XElement("Config");
+                xDoc.Add(root);
+
+                //Set(root, "", );
+
+                Set(root, "Version", VERSION, ref errors);
+
+                //settings
+
+                XElement xAppDataPaths = new XElement("AppDataPaths");
+                root.Add(xAppDataPaths);
+                Set(xAppDataPaths, "AppDataPath", AppDataPath, ref errors, "");
+
+                Set(root, "PokerStarsThemeTable", PokerStarsThemeTable, ref errors, new PokerStarsThemesTable.Unknown());
+                Set(root, "MinimizeToSystemTray", MinimizeToSystemTray, ref errors);
+                Set(root, "StartMinimized", StartMinimized, ref errors);
+                Set(root, "HotkeyExit", HotkeyExit, ref errors, KeyCombination.Parse(null));
+                Set(root, "SaveGuiLocation", SaveGuiLocation, ref errors);
+                Set(root, "GuiLocationX", GuiLocationX, ref errors);
+                Set(root, "GuiLocationY", GuiLocationY, ref errors);
+                Set(root, "SaveGuiSize", SaveGuiSize, ref errors);
+                Set(root, "GuiWidth", GuiWidth, ref errors);
+                Set(root, "GuiHeight", GuiHeight, ref errors);
+
+                // controller
+
+                Set(root, "AutoclickImBack", AutoclickImBack, ref errors);
+                Set(root, "AutoclickTimebank", AutoclickTimebank, ref errors);
+                Set(root, "AutoclickYesSeatAvailable", AutoclickYesSeatAvailable, ref errors);
+                Set(root, "AutocloseTournamentRegistrationPopups", AutocloseTournamentRegistrationPopups, ref errors);
+                Set(root, "AutocloseHM2ApplyToSimilarTablesPopups", AutocloseHM2ApplyToSimilarTablesPopups, ref errors);
+                Set(root, "HotkeyHandReplay", HotkeyHandReplay, ref errors, KeyCombination.Parse(null));
+
+                // hud
+
+                Set(root, "EnableHud", EnableHud, ref errors);
+                Set(root, "EnableHudTimer", HudManager.EnableHudTimer, ref errors);
+                Set(root, "EnableHudBigBlind", HudManager.EnableHudBigBlind, ref errors);
+                Set(root, "TimerDiff", TimerDiff, ref errors);
+                Set(root, "TimerHHNotFound", TimerHHNotFound, ref errors, "");
+                Set(root, "TimerPokerTypeNotFound", TimerPokerTypeNotFound, ref errors, "");
+                Set(root, "TimerMultiplePokerTypes", TimerMultiplePokerTypes, ref errors, "");
+                Set(root, "BigBlindDecimals", BigBlindDecimals, ref errors);
+
+                Set(root, "TimerHudLocationLocked", HudManager.TimerHudLocationLocked, ref errors);
+                Set(root, "TimerHudLocationX", HudManager.GetTimerHudLocationX(null), ref errors);
+                Set(root, "TimerHudLocationY", HudManager.GetTimerHudLocationY(null), ref errors);
+                Set(root, "TimerHudBackground", HudManager.TimerHudBackground, ref errors);
+                Set(root, "TimerHudForeground", HudManager.TimerHudForeground, ref errors);
+                Set(root, "TimerHudFontFamily", HudManager.TimerHudFontFamily, ref errors);
+                Set(root, "TimerHudFontWeight", HudManager.TimerHudFontWeight, ref errors);
+                Set(root, "TimerHudFontStyle", HudManager.TimerHudFontStyle, ref errors);
+                Set(root, "TimerHudFontSize", HudManager.TimerHudFontSize, ref errors);
+                Set(root, "BigBlindHudLocationLocked", HudManager.BigBlindHudLocationLocked, ref errors);
+                Set(root, "BigBlindHudLocationX", HudManager.GetBigBlindHudLocationX(null), ref errors);
+                Set(root, "BigBlindHudLocationY", HudManager.GetBigBlindHudLocationY(null), ref errors);
+                Set(root, "BigBlindHudBackground", HudManager.BigBlindHudBackground, ref errors);
+                Set(root, "BigBlindHudForeground", HudManager.BigBlindHudForeground, ref errors);
+                Set(root, "BigBlindHudFontFamily", HudManager.BigBlindHudFontFamily, ref errors);
+                Set(root, "BigBlindHudFontWeight", HudManager.BigBlindHudFontWeight, ref errors);
+                Set(root, "BigBlindHudFontStyle", HudManager.BigBlindHudFontStyle, ref errors);
+                Set(root, "BigBlindHudFontSize", HudManager.BigBlindHudFontSize, ref errors);
+
+                // Poker Types
+
+                PokerTypeManager.Save();
+
+                XElement xPokerTypes = new XElement("PokerTypes");
+                root.Add(xPokerTypes);
+                foreach (PokerType pokerType in PokerTypeManager.PokerTypes)
+                {
+                    xPokerTypes.Add(pokerType.ToXElement());
+                }
+
+                // TableTiler
+
+                Set(root, "EnableTableTiler", EnableTableTiler, ref errors);
+
+                XElement xTableTiles = new XElement("TableTiles");
+                root.Add(xTableTiles);
+                foreach (var tableTile in TableTileManager.GetTableTilesCopy())
+                {
+                    xTableTiles.Add(tableTile.ToXElement());
+                }
+
+                //
+
+                xDoc.Save("pshandler.xml");
+            }
+            catch (Exception)
+            {
+                errors++;
+            }
+
+            if (errors != 0)
+            {
+                App.TaskbarIcon.ShowBalloonTip("Error Saving Config XML", "Some configurations weren't saved. Contact support." + Environment.NewLine + "(Program will continue after 10 seconds)", BalloonIcon.Error);
+                Thread.Sleep(10000);
+            }
+
+            return errors;
+        }
+
+        public static int LoadXml()
+        {
+            int errors = 0;
+            try
+            {
+                XDocument xDoc = XDocument.Load("pshandler.xml");
+                XElement root = xDoc.Element("Config");
+
+                foreach (XElement xAppDataPath in root.Elements("AppDataPaths").SelectMany(o => o.Elements("AppDataPath")))
+                {
+                    AppDataPath = xAppDataPath.Value;
+                }
+
+                PokerStarsThemeTable = PokerStarsThemeTable.Parse(GetString(root, "PokerStarsThemeTable", ref errors));
+                MinimizeToSystemTray = GetBool(root, "MinimizeToSystemTray", ref errors);
+                StartMinimized = GetBool(root, "StartMinimized", ref errors);
+                HotkeyExit = KeyCombination.Parse(GetString(root, "HotkeyExit", ref errors));
+                SaveGuiLocation = GetBool(root, "SaveGuiLocation", ref errors);
+                GuiLocationX = GetInt(root, "GuiLocationX", ref errors);
+                GuiLocationY = GetInt(root, "GuiLocationY", ref errors);
+                SaveGuiSize = GetBool(root, "SaveGuiSize", ref errors);
+                GuiWidth = GetInt(root, "GuiWidth", ref errors);
+                GuiHeight = GetInt(root, "GuiHeight", ref errors);
+
+                // controller
+
+                AutoclickImBack = GetBool(root, "AutoclickImBack", ref errors);
+                AutoclickTimebank = GetBool(root, "AutoclickTimebank", ref errors);
+                AutoclickYesSeatAvailable = GetBool(root, "AutoclickYesSeatAvailable", ref errors);
+                AutocloseTournamentRegistrationPopups = GetBool(root, "AutocloseTournamentRegistrationPopups", ref errors);
+                AutocloseHM2ApplyToSimilarTablesPopups = GetBool(root, "AutocloseHM2ApplyToSimilarTablesPopups", ref errors);
+                HotkeyHandReplay = KeyCombination.Parse(GetString(root, "HotkeyHandReplay", ref errors));
+
+                // hud
+
+                EnableHud = GetBool(root, "EnableHud", ref errors);
+                HudManager.EnableHudTimer = GetBool(root, "EnableHudTimer", ref errors);
+                HudManager.EnableHudBigBlind = GetBool(root, "EnableHudBigBlind", ref errors);
+                TimerDiff = GetInt(root, "TimerDiff", ref errors);
+                TimerHHNotFound = GetString(root, "TimerHHNotFound", ref errors, "HH not found");
+                TimerPokerTypeNotFound = GetString(root, "TimerPokerTypeNotFound", ref errors, "Poker Type not found");
+                TimerMultiplePokerTypes = GetString(root, "TimerMultiplePokerTypes", ref errors, "Multiple Poker Types");
+                BigBlindDecimals = GetInt(root, "BigBlindDecimals", ref errors);
+
+
+                HudManager.TimerHudLocationLocked = GetBool(root, "TimerHudLocationLocked", ref errors);
+                HudManager.SetTimerHudLocationX(GetFloat(root, "TimerHudLocationX", ref errors), null);
+                HudManager.SetTimerHudLocationY(GetFloat(root, "TimerHudLocationY", ref errors), null);
+                HudManager.TimerHudBackground = GetColor(root, "TimerHudBackground", ref errors, Colors.Black);
+                HudManager.TimerHudForeground = GetColor(root, "TimerHudForeground", ref errors, Colors.White);
+                HudManager.TimerHudFontFamily = GetFontFamily(root, "TimerHudFontFamily", ref errors, new FontFamily("Consolas"));
+                HudManager.TimerHudFontWeight = GetFontWeight(root, "TimerHudFontWeight", ref errors);
+                HudManager.TimerHudFontStyle = GetFontStyle(root, "TimerHudFontStyle", ref errors);
+                HudManager.TimerHudFontSize = GetFloat(root, "TimerHudFontSize", ref errors, 10);
+                if (HudManager.TimerHudFontSize < 1) HudManager.TimerHudFontSize = 1;
+                HudManager.BigBlindHudLocationLocked = GetBool(root, "BigBlindHudLocationLocked", ref errors);
+                HudManager.SetBigBlindHudLocationX(GetFloat(root, "BigBlindHudLocationX", ref errors), null);
+                HudManager.SetBigBlindHudLocationY(GetFloat(root, "BigBlindHudLocationY", ref errors), null);
+                HudManager.BigBlindHudBackground = GetColor(root, "BigBlindHudBackground", ref errors, Colors.Black);
+                HudManager.BigBlindHudForeground = GetColor(root, "BigBlindHudForeground", ref errors, Colors.White);
+                HudManager.BigBlindHudFontFamily = GetFontFamily(root, "BigBlindHudFontFamily", ref errors, new FontFamily("Consolas"));
+                HudManager.BigBlindHudFontWeight = GetFontWeight(root, "BigBlindHudFontWeight", ref errors);
+                HudManager.BigBlindHudFontStyle = GetFontStyle(root, "BigBlindHudFontStyle", ref errors);
+                HudManager.BigBlindHudFontSize = GetFloat(root, "BigBlindHudFontSize", ref errors, 10);
+                if (HudManager.TimerHudFontSize > 72) HudManager.TimerHudFontSize = 72;
+
+                // Poker Types
+
+                foreach (XElement xElement in root.Elements("PokerTypes"))
+                {
+                    PokerTypeManager.Add(xElement.Elements("PokerType").Select(PokerType.FromXElement).Where(o => o != null));
+                }
+                PokerTypeManager.SeedDefaultValues();
+
+                // TableTiler
+
+                EnableTableTiler = GetBool(root, "EnableTableTiler", ref errors);
+
+                foreach (XElement xElement in root.Elements("TableTiles"))
+                {
+                    TableTileManager.Add(xElement.Elements("TableTile").Select(TableTile.FromXElement).Where(o => o != null));
+                }
+                TableTileManager.SeedDefaultValues();
+
+            }
+            catch (Exception)
+            {
+                errors++;
+            }
+
+            return errors;
         }
     }
 }

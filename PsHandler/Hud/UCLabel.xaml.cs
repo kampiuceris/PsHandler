@@ -52,11 +52,14 @@ namespace PsHandler.Hud
 
         public void SetFontFamily(FontFamily value)
         {
-            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+            if (value != null)
             {
-                Label_Main.FontFamily = value;
-            }));
-            UpdateSize();
+                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                {
+                    Label_Main.FontFamily = value;
+                }));
+                UpdateSize();
+            }
         }
 
         public void SetFontWeight(FontWeight? value)

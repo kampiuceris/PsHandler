@@ -64,45 +64,57 @@ namespace PsHandler.Hud.Import
 
         private void UpdateTournaments()
         {
-            DirectoryInfo dirPs = new DirectoryInfo(Config.AppDataPath);
-            if (!dirPs.Exists) return;
-            DirectoryInfo dirHH = dirPs.GetDirectories().FirstOrDefault(di => di.Name.Equals("HandHistory"));
-            if (dirHH == null || !dirHH.Exists) return;
-
-            foreach (var dirPlayers in dirHH.GetDirectories())
+            string[] appDataPaths = new[]
             {
-                FileInfo[] fis = dirPlayers.GetFiles();
-                foreach (FileInfo fi in fis)
-                {
-                    Match matchFileName = _RegexFileName.Match(fi.Name);
-                    if (matchFileName.Success)
-                    {
-                        long tournamentNumber = long.Parse(matchFileName.Groups["tn"].Value);
+                Config.AppDataPath
+            };
 
-                        Tournament tournament;
-                        lock (_lock)
+            foreach (string appDataPath in appDataPaths)
+            {
+                DirectoryInfo dirPs = new DirectoryInfo(appDataPath);
+
+                if (dirPs.Exists)
+                {
+                    DirectoryInfo dirHH = dirPs.GetDirectories().FirstOrDefault(di => di.Name.Equals("HandHistory"));
+                    if (dirHH != null && dirHH.Exists)
+                    {
+                        foreach (var dirPlayers in dirHH.GetDirectories())
                         {
-                            tournament = _tournaments.FirstOrDefault(o => o.TournamentNumber.Equals(tournamentNumber));
-                        }
-                        if (tournament == null)
-                        {
-                            lock (_lock)
+                            FileInfo[] fis = dirPlayers.GetFiles();
+                            foreach (FileInfo fi in fis)
                             {
-                                App.WindowMain.Importing = true;
-                                int importErrors;
-                                List<Hand> hands = Hand.Parse(File.ReadAllText(fi.FullName), out importErrors); // import time 
-                                _importErrors += importErrors;
-                                App.WindowMain.Errors = _importErrors;
-                                _tournaments.Add(new Tournament { TournamentNumber = tournamentNumber, FileInfo = fi, Hands = hands, LastLength = fi.Length });
-                                App.WindowMain.Importing = false;
+                                Match matchFileName = _RegexFileName.Match(fi.Name);
+                                if (matchFileName.Success)
+                                {
+                                    long tournamentNumber = long.Parse(matchFileName.Groups["tn"].Value);
+
+                                    Tournament tournament;
+                                    lock (_lock)
+                                    {
+                                        tournament = _tournaments.FirstOrDefault(o => o.TournamentNumber.Equals(tournamentNumber));
+                                    }
+                                    if (tournament == null)
+                                    {
+                                        lock (_lock)
+                                        {
+                                            App.WindowMain.Importing = true;
+                                            int importErrors;
+                                            List<Hand> hands = Hand.Parse(File.ReadAllText(fi.FullName), out importErrors); // import time 
+                                            _importErrors += importErrors;
+                                            App.WindowMain.Errors = _importErrors;
+                                            _tournaments.Add(new Tournament { TournamentNumber = tournamentNumber, FileInfo = fi, Hands = hands, LastLength = fi.Length });
+                                            App.WindowMain.Importing = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        UpdateHands(tournament);
+                                    }
+                                    App.WindowMain.Tournaments = _tournaments.Count;
+                                    App.WindowMain.Hands = _tournaments.Sum(o => o.Hands.Count);
+                                }
                             }
                         }
-                        else
-                        {
-                            UpdateHands(tournament);
-                        }
-                        App.WindowMain.Tournaments = _tournaments.Count;
-                        App.WindowMain.Hands = _tournaments.Sum(o => o.Hands.Count);
                     }
                 }
             }

@@ -26,11 +26,20 @@ namespace PsHandler.TableTiler
             return _tableTiles.ToArray();
         }
 
-        public static void AddTableTile(TableTile tableTile)
+        public static void Add(TableTile tableTile)
         {
             lock (_lockTableTiles)
             {
                 _tableTiles.Add(tableTile);
+                _tableTiles.Sort((o0, o1) => string.CompareOrdinal(o0.Name, o1.Name));
+            }
+        }
+
+        public static void Add(IEnumerable<TableTile> tableTiles)
+        {
+            lock (_lockTableTiles)
+            {
+                _tableTiles.AddRange(tableTiles);
                 _tableTiles.Sort((o0, o1) => string.CompareOrdinal(o0.Name, o1.Name));
             }
         }
@@ -99,13 +108,21 @@ namespace PsHandler.TableTiler
                         TableTile tableTile = TableTile.FromXml(key.GetValue(valueName) as string);
                         if (tableTile != null)
                         {
-                            AddTableTile(tableTile);
+                            Add(tableTile);
                         }
                     }
                 }
             }
             catch (Exception)
             {
+            }
+        }
+
+        public static void SeedDefaultValues()
+        {
+            if (!_tableTiles.Any())
+            {
+                Add(TableTile.GetDefaultValues());
             }
         }
 
