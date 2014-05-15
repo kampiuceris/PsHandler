@@ -15,6 +15,7 @@ using System.Windows;
 using PsHandler.PokerTypes;
 using PsHandler.TableTiler;
 using System.Threading;
+using System.IO;
 
 namespace PsHandler
 {
@@ -23,44 +24,44 @@ namespace PsHandler
         // Constants
 
         public const string NAME = "PsHandler";
-        public const int VERSION = 9;
+        public const int VERSION = 10;
         public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static string MACHINE_GUID = GetMachineGuid();
 
         // Settings
 
-        public static string AppDataPath;
-        public static PokerStarsThemeTable PokerStarsThemeTable;
-        public static bool MinimizeToSystemTray;
-        public static bool StartMinimized;
-        public static KeyCombination HotkeyExit;
-        public static bool SaveGuiLocation;
-        public static int GuiLocationX;
-        public static int GuiLocationY;
-        public static bool SaveGuiSize;
-        public static int GuiWidth;
-        public static int GuiHeight;
+        public static string AppDataPath = "";
+        public static PokerStarsThemeTable PokerStarsThemeTable = new PokerStarsThemesTable.Unknown();
+        public static bool MinimizeToSystemTray = false;
+        public static bool StartMinimized = false;
+        public static KeyCombination HotkeyExit = new KeyCombination(Key.None, false, false, false);
+        public static bool SaveGuiLocation = false;
+        public static int GuiLocationX = 0;
+        public static int GuiLocationY = 0;
+        public static bool SaveGuiSize = false;
+        public static int GuiWidth = 600;
+        public static int GuiHeight = 400;
 
         // Controller
 
-        public static bool AutoclickImBack;
-        public static bool AutoclickTimebank;
-        public static bool AutoclickYesSeatAvailable;
-        public static bool AutocloseTournamentRegistrationPopups;
-        public static bool AutocloseHM2ApplyToSimilarTablesPopups;
-        public static KeyCombination HotkeyHandReplay;
+        public static bool AutoclickImBack = false;
+        public static bool AutoclickTimebank = false;
+        public static bool AutoclickYesSeatAvailable = false;
+        public static bool AutocloseTournamentRegistrationPopups = false;
+        public static bool AutocloseHM2ApplyToSimilarTablesPopups = false;
+        public static KeyCombination HotkeyHandReplay = new KeyCombination(Key.None, false, false, false);
 
         // HUD
 
-        public static bool EnableHud;
-        public static int TimerDiff;
-        public static string TimerHHNotFound;
-        public static string TimerPokerTypeNotFound;
-        public static string TimerMultiplePokerTypes;
-        public static int BigBlindDecimals;
+        public static bool EnableHud = false;
+        public static int TimerDiff = 0;
+        public static string TimerHHNotFound = "HH not found";
+        public static string TimerPokerTypeNotFound = "Poker Type not found";
+        public static string TimerMultiplePokerTypes = "Multiple Poker Types";
+        public static int BigBlindDecimals = 0;
 
         // Table Tiler
-        public static bool EnableTableTiler;
+        public static bool EnableTableTiler = false;
 
         // Registry
 
@@ -701,7 +702,6 @@ namespace PsHandler
                 {
                     PokerTypeManager.Add(xElement.Elements("PokerType").Select(PokerType.FromXElement).Where(o => o != null));
                 }
-                PokerTypeManager.SeedDefaultValues();
 
                 // TableTiler
 
@@ -711,13 +711,15 @@ namespace PsHandler
                 {
                     TableTileManager.Add(xElement.Elements("TableTile").Select(TableTile.FromXElement).Where(o => o != null));
                 }
-                TableTileManager.SeedDefaultValues();
 
             }
             catch (Exception)
             {
                 errors++;
             }
+
+            PokerTypeManager.SeedDefaultValues();
+            TableTileManager.SeedDefaultValues();
 
             return errors;
         }

@@ -71,6 +71,8 @@ namespace PsHandler.Hud.Import
 
             foreach (string appDataPath in appDataPaths)
             {
+                if (String.IsNullOrEmpty(appDataPath)) continue;
+
                 DirectoryInfo dirPs = new DirectoryInfo(appDataPath);
 
                 if (dirPs.Exists)
