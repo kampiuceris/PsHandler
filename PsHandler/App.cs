@@ -18,9 +18,8 @@ namespace PsHandler
 
         public App()
         {
-            Config.Load();
             Config.LoadXml();
-            RegisterKeyboardHook(); //TODO
+            RegisterKeyboardHook();
             WindowMain = new WindowMain();
             WindowMain.Show();
             Import = new Import();
@@ -36,8 +35,7 @@ namespace PsHandler
             HudManager.Stop();
             Handler.Stop();
             Import.Stop();
-            KeyboardHook.Dispose(); //TODO
-            Config.Save();
+            KeyboardHook.Dispose();
             Config.SaveXml();
 
             //close gui

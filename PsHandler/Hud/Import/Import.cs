@@ -64,10 +64,7 @@ namespace PsHandler.Hud.Import
 
         private void UpdateTournaments()
         {
-            string[] appDataPaths = new[]
-            {
-                Config.AppDataPath
-            };
+            string[] appDataPaths = Config.AppDataPaths.ToArray();
 
             foreach (string appDataPath in appDataPaths)
             {

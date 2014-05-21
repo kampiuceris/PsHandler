@@ -15,7 +15,10 @@ namespace PsHandler.PokerTypes
         {
             lock (Lock)
             {
-                PokerTypes.Add(pokerType);
+                if (!PokerTypes.Any(o => o.Name.Equals(pokerType.Name)))
+                {
+                    PokerTypes.Add(pokerType);
+                }
                 PokerTypes.Sort((o0, o1) => string.CompareOrdinal(o0.Name, o1.Name));
             }
         }
@@ -24,7 +27,13 @@ namespace PsHandler.PokerTypes
         {
             lock (Lock)
             {
-                PokerTypes.AddRange(pokerTypes);
+                foreach (var pokerType in pokerTypes)
+                {
+                    if (!PokerTypes.Any(o => o.Name.Equals(pokerType.Name)))
+                    {
+                        PokerTypes.Add(pokerType);
+                    }
+                }
                 PokerTypes.Sort((o0, o1) => string.CompareOrdinal(o0.Name, o1.Name));
             }
         }

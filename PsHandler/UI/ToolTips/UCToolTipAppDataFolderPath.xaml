@@ -11,6 +11,8 @@
             <Label VerticalContentAlignment="Center" Padding="2" Content="Example (considering image):" />
             <Label VerticalContentAlignment="Center" Padding="2" Margin="20,10" Content="C:\Users\#####\AppData\Local\PokerStars.EU" FontWeight="SemiBold"/>
             <Image Margin="10" Width="250" Height="193" Source="../../Images/ToolTips/appdatafolder.png" />
+            <Label VerticalContentAlignment="Center" Padding="2" Content="If you play on different PokerStars clients, you can separate AppData paths using semicolons:" />
+            <Label VerticalContentAlignment="Center" Padding="2" Margin="20,10" Content="C:\Users\#####\AppData\Local\PokerStars.EU;C:\Users\#####\AppData\Local\PokerStars.FR;" FontWeight="SemiBold"/>
         </StackPanel>
     </Grid>
 </UserControl>

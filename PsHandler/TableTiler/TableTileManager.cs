@@ -30,7 +30,10 @@ namespace PsHandler.TableTiler
         {
             lock (_lockTableTiles)
             {
-                _tableTiles.Add(tableTile);
+                if (!_tableTiles.Any(o => o.Name.Equals(tableTile.Name)))
+                {
+                    _tableTiles.Add(tableTile);
+                }
                 _tableTiles.Sort((o0, o1) => string.CompareOrdinal(o0.Name, o1.Name));
             }
         }
@@ -39,7 +42,13 @@ namespace PsHandler.TableTiler
         {
             lock (_lockTableTiles)
             {
-                _tableTiles.AddRange(tableTiles);
+                foreach (var tableTile in tableTiles)
+                {
+                    if (!_tableTiles.Any(o => o.Name.Equals(tableTile.Name)))
+                    {
+                        _tableTiles.Add(tableTile);
+                    }
+                }
                 _tableTiles.Sort((o0, o1) => string.CompareOrdinal(o0.Name, o1.Name));
             }
         }

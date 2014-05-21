@@ -8,6 +8,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Xml.Linq;
 using Hardcodet.Wpf.TaskbarNotification;
 
@@ -23,31 +25,23 @@ namespace PsHandler
             {
                 try
                 {
+                    bool trayBalloonTipClickedRoutedEventHandlerAdded = false;
                     while (true)
                     {
-                        string updateFileHref, updateFileNameFullPath;
-                        if (CheckForUpdatesAndDeleteFiles(hrefPhp, out updateFileHref, out updateFileNameFullPath))
+                        string updateFileHref, updateFileNameFullPath, version;
+                        if (CheckForUpdatesAndDeleteFiles(hrefPhp, out updateFileHref, out updateFileNameFullPath, out version))
                         {
-                            MessageBoxResult messageBoxResult = MessageBoxResult.Cancel;
-                            Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+                            // needs update
+                            App.TaskbarIcon.ShowBalloonTip(string.Format("{0} Update", applicationName), string.Format("Latest {0} version is available. Click here to update.", version), BalloonIcon.Info);
+                            if (!trayBalloonTipClickedRoutedEventHandlerAdded)
                             {
-                                messageBoxResult = MessageBox.Show("New updates for '" + applicationName + "' are available. Do you want to close application and download updates?", "Update", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                            }));
-                            if (messageBoxResult == MessageBoxResult.Yes)
-                            {
-                                // get update
-                                using (WebClient Client = new WebClient { Proxy = null })
-                                {
-                                    Client.DownloadFile(updateFileHref, updateFileNameFullPath);
-                                }
-                                string args = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"", applicationName, hrefXml, exeName, exeDir.Replace(@"\", "/"));
-                                Process.Start(updateFileNameFullPath, args);
-                                new Thread(quitAction.Invoke).Start();
+                                App.TaskbarIcon.TrayBalloonTipClicked += (sender, args) => ShowMessageBoxUpdate(hrefXml, applicationName, exeName, exeDir, owner, quitAction, updateFileHref, updateFileNameFullPath, version);
+                                trayBalloonTipClickedRoutedEventHandlerAdded = true;
                             }
                         }
 
                         Thread.Sleep(7200000); // 2 hours
-                        //Thread.Sleep(5000);
+                        //Thread.Sleep(10000);
                     }
                 }
                 catch (Exception)
@@ -57,7 +51,27 @@ namespace PsHandler
             _threadUpdate.Start();
         }
 
-        private static bool CheckForUpdatesAndDeleteFiles(string href, out string autoupdateHref, out string autoupdateFileNameFullPath)
+        private static void ShowMessageBoxUpdate(string hrefXml, string applicationName, string exeName, string exeDir, Window owner, Action quitAction, string updateFileHref, string updateFileNameFullPath, string version)
+        {
+            MessageBoxResult messageBoxResult = MessageBoxResult.Cancel;
+            Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+            {
+                messageBoxResult = MessageBox.Show(string.Format("Latest version '{1}' is available for '{0}'. Do you want to close application and download updates?", applicationName, version), string.Format("Update {0}", version), MessageBoxButton.YesNo, MessageBoxImage.Question);
+            }));
+            if (messageBoxResult == MessageBoxResult.Yes)
+            {
+                // get update
+                using (WebClient Client = new WebClient { Proxy = null })
+                {
+                    Client.DownloadFile(updateFileHref, updateFileNameFullPath);
+                }
+                string args = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"", applicationName, hrefXml, exeName, exeDir.Replace(@"\", "/"));
+                Process.Start(updateFileNameFullPath, args);
+                new Thread(quitAction.Invoke).Start();
+            }
+        }
+
+        private static bool CheckForUpdatesAndDeleteFiles(string href, out string autoupdateHref, out string autoupdateFileNameFullPath, out string version)
         {
             using (WebClient webClient = new WebClient { Proxy = null })
             {
@@ -79,6 +93,9 @@ namespace PsHandler
                         File.Delete(file);
                     }
                 }
+
+                // version
+                version = root.Attribute("version").Value;
 
                 // update file
                 autoupdateHref = root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("href").Value;

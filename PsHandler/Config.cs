@@ -1,7 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -15,7 +12,6 @@ using System.Windows;
 using PsHandler.PokerTypes;
 using PsHandler.TableTiler;
 using System.Threading;
-using System.IO;
 
 namespace PsHandler
 {
@@ -24,13 +20,13 @@ namespace PsHandler
         // Constants
 
         public const string NAME = "PsHandler";
-        public const int VERSION = 10;
+        public const int VERSION = 11;
         public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static string MACHINE_GUID = GetMachineGuid();
 
         // Settings
 
-        public static string AppDataPath = "";
+        public static List<string> AppDataPaths = new List<string>();
         public static PokerStarsThemeTable PokerStarsThemeTable = new PokerStarsThemesTable.Unknown();
         public static bool MinimizeToSystemTray = false;
         public static bool StartMinimized = false;
@@ -63,7 +59,7 @@ namespace PsHandler
         // Table Tiler
         public static bool EnableTableTiler = false;
 
-        // Registry
+        //
 
         private static string GetMachineGuid()
         {
@@ -80,327 +76,6 @@ namespace PsHandler
             }
         }
 
-        private static bool SetValue(string relativePath, object value)
-        {
-            try
-            {
-                string[] paths = relativePath.Split(new[] { @"\", @"/" }, StringSplitOptions.RemoveEmptyEntries);
-
-                RegistryKey keyPsHandler = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler", true);
-                if (keyPsHandler == null)
-                {
-                    using (RegistryKey keySoftware = Registry.CurrentUser.OpenSubKey(@"Software", true))
-                    {
-                        if (keySoftware == null) throw new NotSupportedException("Cannot load 'HKEY_CURRENTY_USER/Software'");
-                        keyPsHandler = keySoftware.CreateSubKey("PsHandler");
-                        if (keyPsHandler == null) throw new NotSupportedException("Cannot create 'HKEY_CURRENTY_USER/Software/PsHandler'");
-                    }
-                }
-
-                List<RegistryKey> keys = new List<RegistryKey> { keyPsHandler };
-                for (int i = 0; i < paths.Length - 1; i++)
-                {
-                    RegistryKey subKey = keys[keys.Count - 1].OpenSubKey(paths[i], true) ?? keys[keys.Count - 1].CreateSubKey(paths[i]);
-                    if (subKey == null) throw new NotSupportedException("Cannot create ('" + relativePath + "') '" + paths[i] + "'");
-                    keys.Add(subKey);
-                }
-                keys[keys.Count - 1].SetValue(paths[paths.Length - 1], value);
-
-                foreach (var key in keys)
-                {
-                    key.Dispose();
-                }
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        private static object GetValue(string relativePath, object defaultValue)
-        {
-            try
-            {
-                string[] paths = relativePath.Split(new[] { @"\", @"/" }, StringSplitOptions.RemoveEmptyEntries);
-
-                RegistryKey keyPsHandler = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler", true);
-                if (keyPsHandler == null)
-                {
-                    using (RegistryKey keySoftware = Registry.CurrentUser.OpenSubKey(@"Software", true))
-                    {
-                        if (keySoftware == null) throw new NotSupportedException("Cannot load 'HKEY_CURRENTY_USER/Software'");
-                        keyPsHandler = keySoftware.CreateSubKey("PsHandler");
-                        if (keyPsHandler == null) throw new NotSupportedException("Cannot create 'HKEY_CURRENTY_USER/Software/PsHandler'");
-                    }
-                }
-
-                List<RegistryKey> keys = new List<RegistryKey> { keyPsHandler };
-                for (int i = 0; i < paths.Length - 1; i++)
-                {
-                    RegistryKey subKey = keys[keys.Count - 1].OpenSubKey(paths[i], true) ?? keys[keys.Count - 1].CreateSubKey(paths[i]);
-                    if (subKey == null) throw new NotSupportedException("Cannot create ('" + relativePath + "') '" + paths[i] + "'");
-                    keys.Add(subKey);
-                }
-
-                object value = keys[keys.Count - 1].GetValue(paths[paths.Length - 1]);
-                if (value == null)
-                {
-                    keys[keys.Count - 1].SetValue(paths[paths.Length - 1], defaultValue);
-                    value = defaultValue;
-                }
-
-                foreach (var key in keys)
-                {
-                    key.Dispose();
-                }
-
-                return value;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        private static bool GetBool(string relativePath, object defaultValue)
-        {
-            return (int)GetValue(relativePath, defaultValue) != 0;
-        }
-
-        private static int GetInt(string relativePath, object defaultValue)
-        {
-            return (int)GetValue(relativePath, defaultValue);
-        }
-
-        private static string GetString(string relativePath, object defaultValue)
-        {
-            return (string)GetValue(relativePath, defaultValue);
-        }
-
-        private static float GetFloat(string relativePath, object defaultValue)
-        {
-            return float.Parse((string)GetValue(relativePath, defaultValue));
-        }
-
-        private static bool DeleteValue(string relativePath)
-        {
-            try
-            {
-                string[] paths = relativePath.Split(new[] { @"\", @"/" }, StringSplitOptions.RemoveEmptyEntries);
-
-                RegistryKey keyPsHandler = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler", true);
-                if (keyPsHandler == null)
-                {
-                    using (RegistryKey keySoftware = Registry.CurrentUser.OpenSubKey(@"Software", true))
-                    {
-                        if (keySoftware == null) throw new NotSupportedException("Cannot load 'HKEY_CURRENTY_USER/Software'");
-                        keyPsHandler = keySoftware.CreateSubKey("PsHandler");
-                        if (keyPsHandler == null) throw new NotSupportedException("Cannot create 'HKEY_CURRENTY_USER/Software/PsHandler'");
-                    }
-                }
-
-                List<RegistryKey> keys = new List<RegistryKey> { keyPsHandler };
-                for (int i = 0; i < paths.Length - 1; i++)
-                {
-                    RegistryKey subKey = keys[keys.Count - 1].OpenSubKey(paths[i], true) ?? keys[keys.Count - 1].CreateSubKey(paths[i]);
-                    if (subKey == null) throw new NotSupportedException("Cannot create ('" + relativePath + "') '" + paths[i] + "'");
-                    keys.Add(subKey);
-                }
-
-                keys[keys.Count - 1].DeleteValue(paths[paths.Length - 1]);
-
-                foreach (var key in keys)
-                {
-                    key.Dispose();
-                }
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        //
-
-        public static void Load()
-        {
-            using (RegistryKey keyPsHandler = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler"))
-            {
-                if (keyPsHandler == null)
-                {
-                    return; //TODO obsolete code
-                }
-            }
-
-            // settings
-
-            AppDataPath = GetString("AppDataPath", "");
-            PokerStarsThemeTable = PokerStarsThemeTable.Parse(GetString("PokerStarsThemeTable", "Unknown"));
-            MinimizeToSystemTray = GetBool("MinimizeToSystemTray", 0);
-            StartMinimized = GetBool("StartMinimized", 0);
-            HotkeyExit = KeyCombination.Parse(GetString("HotkeyExit", new KeyCombination(Key.None, false, false, false).ToString()));
-            SaveGuiLocation = GetBool("SaveGuiLocation", 0);
-            GuiLocationX = GetInt("GuiLocationX", 0);
-            GuiLocationY = GetInt("GuiLocationY", 0);
-            SaveGuiSize = GetBool("SaveGuiSize", 0);
-            GuiWidth = GetInt("GuiWidth", 0);
-            GuiHeight = GetInt("GuiHeight", 0);
-
-            // controller
-
-            AutoclickImBack = GetBool("AutoclickImBack", 0);
-            AutoclickTimebank = GetBool("AutoclickTimebank", 0);
-            AutoclickYesSeatAvailable = GetBool("AutoclickYesSeatAvailable", 0);
-            AutocloseTournamentRegistrationPopups = GetBool("AutocloseTournamentRegistrationPopups", 0);
-            AutocloseHM2ApplyToSimilarTablesPopups = GetBool("AutocloseHM2ApplyToSimilarTablesPopups", 0);
-            HotkeyHandReplay = KeyCombination.Parse(GetString("HotkeyHandReplay", new KeyCombination(Key.None, false, false, false).ToString()));
-
-            // hud
-
-            EnableHud = GetBool("EnableHud", 0);
-            HudManager.EnableHudTimer = GetBool("EnableHudTimer", 0);
-            HudManager.EnableHudBigBlind = GetBool("EnableHudBigBlind", 0);
-            TimerDiff = GetInt("TimerDiff", 0);
-            TimerHHNotFound = GetString("TimerHHNotFound", "HH not found");
-            TimerPokerTypeNotFound = GetString("TimerPokerTypeNotFound", "Poker Type not found");
-            TimerMultiplePokerTypes = GetString("TimerMultiplePokerTypes", "Multiple Poker Types");
-            BigBlindDecimals = GetInt("BigBlindDecimals", 0);
-
-            HudManager.TimerHudLocationLocked = GetBool("TimerHudLocationLocked", 0);
-            HudManager.SetTimerHudLocationX(GetFloat("TimerHudLocationX", HudManager.GetTimerHudLocationX(null).ToString(CultureInfo.InvariantCulture)), null);
-            HudManager.SetTimerHudLocationY(GetFloat("TimerHudLocationY", HudManager.GetTimerHudLocationY(null).ToString(CultureInfo.InvariantCulture)), null);
-            HudManager.TimerHudBackground = (Color)ColorConverter.ConvertFromString(GetString("TimerHudBackground", HudManager.TimerHudBackground.ToString(CultureInfo.InvariantCulture)));
-            HudManager.TimerHudForeground = (Color)ColorConverter.ConvertFromString(GetString("TimerHudForeground", HudManager.TimerHudForeground.ToString(CultureInfo.InvariantCulture)));
-            HudManager.TimerHudFontFamily = new FontFamily(GetString("TimerHudFontFamily", HudManager.TimerHudFontFamily.ToString()));
-            HudManager.TimerHudFontWeight = (FontWeight)new FontWeightConverter().ConvertFrom(GetString("TimerHudFontWeight", HudManager.TimerHudFontWeight.ToString()));
-            HudManager.TimerHudFontStyle = (FontStyle)new FontStyleConverter().ConvertFrom(GetString("TimerHudFontStyle", HudManager.TimerHudFontStyle.ToString()));
-            HudManager.TimerHudFontSize = GetFloat("TimerHudFontSize", HudManager.TimerHudFontSize.ToString(CultureInfo.InvariantCulture));
-            HudManager.BigBlindHudLocationLocked = GetBool("BigBlindHudLocationLocked", 0);
-            HudManager.SetBigBlindHudLocationX(GetFloat("BigBlindHudLocationX", HudManager.GetBigBlindHudLocationX(null).ToString(CultureInfo.InvariantCulture)), null);
-            HudManager.SetBigBlindHudLocationY(GetFloat("BigBlindHudLocationY", HudManager.GetBigBlindHudLocationY(null).ToString(CultureInfo.InvariantCulture)), null);
-            HudManager.BigBlindHudBackground = (Color)ColorConverter.ConvertFromString(GetString("BigBlindHudBackground", HudManager.BigBlindHudBackground.ToString(CultureInfo.InvariantCulture)));
-            HudManager.BigBlindHudForeground = (Color)ColorConverter.ConvertFromString(GetString("BigBlindHudForeground", HudManager.BigBlindHudForeground.ToString(CultureInfo.InvariantCulture)));
-            HudManager.BigBlindHudFontFamily = new FontFamily(GetString("BigBlindHudFontFamily", HudManager.BigBlindHudFontFamily.ToString()));
-            HudManager.BigBlindHudFontWeight = (FontWeight)new FontWeightConverter().ConvertFrom(GetString("BigBlindHudFontWeight", HudManager.BigBlindHudFontWeight.ToString()));
-            HudManager.BigBlindHudFontStyle = (FontStyle)new FontStyleConverter().ConvertFrom(GetString("BigBlindHudFontStyle", HudManager.BigBlindHudFontStyle.ToString()));
-            HudManager.BigBlindHudFontSize = GetFloat("BigBlindHudFontSize", HudManager.BigBlindHudFontSize.ToString(CultureInfo.InvariantCulture));
-
-            // check invalid values
-            if (HudManager.TimerHudFontSize < 1) HudManager.TimerHudFontSize = 1;
-            if (HudManager.TimerHudFontSize > 72) HudManager.TimerHudFontSize = 72;
-
-            // Poker Types
-
-            PokerTypeManager.Load();
-            PokerTypeManager.SeedDefaultValues();
-
-            // TableTiler
-
-            EnableTableTiler = GetBool("EnableTableTiler", 0);
-            TableTileManager.LoadConfig();
-            TableTileManager.SeedDefaultValues();
-        }
-
-        public static void Save()
-        {
-            try
-            {
-                bool needToBeDeleted = false;
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler"))
-                {
-                    if (key != null)
-                    {
-                        needToBeDeleted = true;
-                    }
-                }
-                if (needToBeDeleted)
-                {
-                    using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software", true))
-                    {
-                        if (key != null)
-                        {
-                            key.DeleteSubKeyTree("PsHandler");
-                        }
-                    }
-                }
-            }
-            catch
-            {
-            }
-
-            return;
-
-            SetValue("Version", VERSION);
-
-            // settings
-
-            SetValue("AppDataPath", AppDataPath);
-            SetValue("PokerStarsThemeTable", PokerStarsThemeTable.ToString());
-            SetValue("MinimizeToSystemTray", MinimizeToSystemTray.ToInt());
-            SetValue("StartMinimized", StartMinimized.ToInt());
-            SetValue("HotkeyExit", HotkeyExit.ToString());
-            SetValue("SaveGuiLocation", SaveGuiLocation.ToInt());
-            SetValue("GuiLocationX", GuiLocationX);
-            SetValue("GuiLocationY", GuiLocationY);
-            SetValue("SaveGuiSize", SaveGuiSize.ToInt());
-            SetValue("GuiWidth", GuiWidth);
-            SetValue("GuiHeight", GuiHeight);
-
-            // controller
-
-            SetValue("AutoclickImBack", AutoclickImBack.ToInt());
-            SetValue("AutoclickTimebank", AutoclickTimebank.ToInt());
-            SetValue("AutoclickYesSeatAvailable", AutoclickYesSeatAvailable.ToInt());
-            SetValue("AutocloseTournamentRegistrationPopups", AutocloseTournamentRegistrationPopups.ToInt());
-            SetValue("AutocloseHM2ApplyToSimilarTablesPopups", AutocloseHM2ApplyToSimilarTablesPopups.ToInt());
-            SetValue("HotkeyHandReplay", HotkeyHandReplay.ToString());
-
-            // hud
-
-            SetValue("EnableHud", EnableHud.ToInt());
-            SetValue("EnableHudTimer", HudManager.EnableHudTimer.ToInt());
-            SetValue("EnableHudBigBlind", HudManager.EnableHudBigBlind.ToInt());
-            SetValue("TimerDiff", TimerDiff);
-            SetValue("TimerHHNotFound", TimerHHNotFound);
-            SetValue("TimerPokerTypeNotFound", TimerPokerTypeNotFound);
-            SetValue("TimerMultiplePokerTypes", TimerMultiplePokerTypes);
-            SetValue("BigBlindDecimals", BigBlindDecimals);
-
-            SetValue("TimerHudLocationLocked", HudManager.TimerHudLocationLocked.ToInt());
-            SetValue("TimerHudLocationX", HudManager.GetTimerHudLocationX(null).ToString(CultureInfo.InvariantCulture));
-            SetValue("TimerHudLocationY", HudManager.GetTimerHudLocationY(null).ToString(CultureInfo.InvariantCulture));
-            SetValue("TimerHudBackground", HudManager.TimerHudBackground.ToString(CultureInfo.InvariantCulture));
-            SetValue("TimerHudForeground", HudManager.TimerHudForeground.ToString(CultureInfo.InvariantCulture));
-            SetValue("TimerHudFontFamily", HudManager.TimerHudFontFamily.ToString());
-            SetValue("TimerHudFontWeight", HudManager.TimerHudFontWeight.ToString());
-            SetValue("TimerHudFontStyle", HudManager.TimerHudFontStyle.ToString());
-            SetValue("TimerHudFontSize", HudManager.TimerHudFontSize.ToString(CultureInfo.InvariantCulture));
-            SetValue("BigBlindHudLocationLocked", HudManager.BigBlindHudLocationLocked.ToInt());
-            SetValue("BigBlindHudLocationX", HudManager.GetBigBlindHudLocationX(null).ToString(CultureInfo.InvariantCulture));
-            SetValue("BigBlindHudLocationY", HudManager.GetBigBlindHudLocationY(null).ToString(CultureInfo.InvariantCulture));
-            SetValue("BigBlindHudBackground", HudManager.BigBlindHudBackground.ToString(CultureInfo.InvariantCulture));
-            SetValue("BigBlindHudForeground", HudManager.BigBlindHudForeground.ToString(CultureInfo.InvariantCulture));
-            SetValue("BigBlindHudFontFamily", HudManager.BigBlindHudFontFamily.ToString());
-            SetValue("BigBlindHudFontWeight", HudManager.BigBlindHudFontWeight.ToString());
-            SetValue("BigBlindHudFontStyle", HudManager.BigBlindHudFontStyle.ToString());
-            SetValue("BigBlindHudFontSize", HudManager.BigBlindHudFontSize.ToString(CultureInfo.InvariantCulture));
-
-            // Poker Types
-
-            PokerTypeManager.Save();
-
-            // TableTiler
-
-            SetValue("EnableTableTiler", EnableTableTiler.ToInt());
-            TableTileManager.SaveConfig();
-        }
-
-        //
-
         private static void Set(XElement xElement, string name, object o, ref int errorCode, object defaultValue = null)
         {
             try
@@ -412,8 +87,6 @@ namespace PsHandler
                 errorCode++;
             }
         }
-
-        //
 
         private static bool GetBool(XElement xElement, string name, ref int errorCode, bool defaultValue = default(bool))
         {
@@ -538,7 +211,10 @@ namespace PsHandler
 
                 XElement xAppDataPaths = new XElement("AppDataPaths");
                 root.Add(xAppDataPaths);
-                Set(xAppDataPaths, "AppDataPath", AppDataPath, ref errors, "");
+                foreach (var path in AppDataPaths.ToArray())
+                {
+                    Set(xAppDataPaths, "AppDataPath", path, ref errors, "");
+                }
 
                 Set(root, "PokerStarsThemeTable", PokerStarsThemeTable, ref errors, new PokerStarsThemesTable.Unknown());
                 Set(root, "MinimizeToSystemTray", MinimizeToSystemTray, ref errors);
@@ -640,7 +316,10 @@ namespace PsHandler
 
                 foreach (XElement xAppDataPath in root.Elements("AppDataPaths").SelectMany(o => o.Elements("AppDataPath")))
                 {
-                    AppDataPath = xAppDataPath.Value;
+                    if (!String.IsNullOrEmpty(xAppDataPath.Value))
+                    {
+                        AppDataPaths.Add(xAppDataPath.Value);
+                    }
                 }
 
                 PokerStarsThemeTable = PokerStarsThemeTable.Parse(GetString(root, "PokerStarsThemeTable", ref errors));

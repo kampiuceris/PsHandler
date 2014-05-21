@@ -35,7 +35,7 @@
         <CheckBox Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" Content="Autoclose HM2 'Apply to similar tables?' Popups" x:Name="CheckBox_AutocloseHM2ApplyToSimilarTablesPopups" />
         <StackPanel Grid.Column="1" Grid.Row="5" Orientation="Horizontal">
             <Label Content="Hand Replay Hotkey:" HorizontalAlignment="Left" VerticalAlignment="Center" />
-            <ui:TextBoxHotkey x:Name="TextBoxHotkey_HandReplay" Margin="2" Width="150"/>
+            <ui:TextBoxHotkey x:Name="TextBoxHotkey_HandReplay" Margin="2" Width="150" VerticalContentAlignment="Center" />
         </StackPanel>
 
     </Grid>

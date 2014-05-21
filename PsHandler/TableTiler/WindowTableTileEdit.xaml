@@ -7,15 +7,15 @@
     <Grid>
         <StackPanel VerticalAlignment="Top" Margin="10,10,10,0" Height="27" Orientation="Horizontal">
             <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Padding="0" x:Name="Label_Name" Content="Name:" />
-            <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" x:Name="TextBox_Name" TextWrapping="NoWrap" Text="" Width="150" />
+            <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" x:Name="TextBox_Name" TextWrapping="NoWrap" Text="" Width="150" VerticalContentAlignment="Center" />
             <Label Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Padding="0"  x:Name="Label_Name_Copy" Content="Hotkey:" />
-            <UI:TextBoxHotkey Grid.Row="0" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" x:Name="TextBoxHotkey_Hotkey" Width="150" />
+            <UI:TextBoxHotkey Grid.Row="0" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" x:Name="TextBoxHotkey_Hotkey" Width="150" VerticalContentAlignment="Center" />
             <CheckBox Grid.Row="0" Grid.Column="6" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"  Content="Sort tournaments by oldest" x:Name="CheckBox_SortByStartingTime" />
         </StackPanel>
         <Border VerticalAlignment="Top" Margin="10,42,10,0" Height="125" BorderThickness="1" BorderBrush="LightGray" Padding="5">
             <local:UCScreenPreview x:Name="UCScreenPreview_Main" />
         </Border>
-        <Grid Margin="10,172,10,72">
+        <Grid Margin="10,172,10,41">
             <Grid.RowDefinitions>
                 <RowDefinition Height="26"/>
                 <RowDefinition Height="150*"/>
@@ -52,11 +52,6 @@
             <TextBox x:Name="TextBox_ExcludeAnd" Grid.Row="4" Grid.Column="0" Margin="2" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Text="" />
             <TextBox x:Name="TextBox_ExcludeOr" Grid.Row="4" Grid.Column="1" Margin="2" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Text="" />
             <TextBox x:Name="TextBox_XYWH" Grid.Row="1" Grid.Column="2" Margin="2" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Text="" FontFamily="Consolas" FontSize="11" Grid.RowSpan="3" />
-        </Grid>
-        <Grid Margin="10,0,10,41" Height="26" VerticalAlignment="Bottom">
-            <Image HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Height="16" Width="16" Source="../Images/information.png" ToolTipService.ShowDuration="60000" x:Name="Image_CheckFilter" />
-            <Label HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="23,5,0,5" Padding="0" Content="Check if text passes Filter:" />
-            <TextBox Grid.Row="0" VerticalAlignment="Bottom" Margin="170,0,0,2" x:Name="TextBox_CheckFilter" TextWrapping="NoWrap" Text="" />
         </Grid>
         <Button Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="130" x:Name="Button_WindowsInfo" Click="Button_WindowsInfo_Click">
             <StackPanel Orientation="Horizontal" Margin="2">

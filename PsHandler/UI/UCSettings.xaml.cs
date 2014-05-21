@@ -1,6 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Controls;
 using PsHandler.UI.ToolTips;
+using System.Text;
 
 namespace PsHandler.UI
 {
@@ -14,8 +17,7 @@ namespace PsHandler.UI
             InitializeComponent();
 
             // Init values
-
-            TextBox_PokerStarsAppDataFolderPath.Text = Config.AppDataPath;
+            TextBox_PokerStarsAppDataFolderPaths.Text = !Config.AppDataPaths.Any() ? "" : Config.AppDataPaths.Aggregate("", (current, path) => current + (path + ";"));
 
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Unknown());
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Azure());
@@ -49,7 +51,14 @@ namespace PsHandler.UI
 
             // Hook values
 
-            TextBox_PokerStarsAppDataFolderPath.TextChanged += (sender, args) => { Config.AppDataPath = TextBox_PokerStarsAppDataFolderPath.Text; };
+            TextBox_PokerStarsAppDataFolderPaths.TextChanged += (sender, args) =>
+            {
+                Config.AppDataPaths.Clear();
+                foreach (var path in TextBox_PokerStarsAppDataFolderPaths.Text.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    Config.AppDataPaths.Add(path);
+                }
+            };
 
             ComboBox_PokerStarsThemeTable.SelectionChanged += (sender, args) =>
             {

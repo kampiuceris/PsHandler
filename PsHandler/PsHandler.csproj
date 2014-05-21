@@ -82,7 +82,8 @@
     <Compile Include="PokerTypes\UCPokerTypes.xaml.cs">
       <DependentUpon>UCPokerTypes.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TableTiler\WindowWindowsInfo.xaml.cs">
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="UI\WindowWindowsInfo.xaml.cs">
       <DependentUpon>WindowWindowsInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\GlassEffect.cs" />
@@ -143,6 +144,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ScreenCapture.cs" />
+    <Compile Include="UI\IFilter.cs" />
     <Compile Include="UI\TextBoxHotkey.cs" />
     <Compile Include="UI\ToolTips\UCToolTipHandReplayHotkey.xaml.cs">
       <DependentUpon>UCToolTipHandReplayHotkey.xaml</DependentUpon>
@@ -197,9 +199,6 @@
     </Compile>
     <Compile Include="UI\UCController.xaml.cs">
       <DependentUpon>UCController.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\UCHome.xaml.cs">
-      <DependentUpon>UCHome.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\UCHud.xaml.cs">
       <DependentUpon>UCHud.xaml</DependentUpon>
@@ -271,7 +270,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TableTiler\WindowWindowsInfo.xaml">
+    <Page Include="UI\WindowWindowsInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -344,10 +343,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\UCController.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\UCHome.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -608,6 +603,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\ToolTips\replayhandhotkey.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\update_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cross-button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\information_32x32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

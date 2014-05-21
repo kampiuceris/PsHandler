@@ -256,7 +256,7 @@ namespace PsHandler.PokerTypes
             {
                 Name = "9-max Knockout Turbo",
                 LevelLengthInSeconds = 300,
-                IncludeAnd = new[] { "Logged In as", "Tournament", " Knockout", "Turbo" },
+                IncludeAnd = new[] { "Logged In as", "Tournament", "Knockout", "Turbo" },
                 IncludeOr = new string[0],
                 ExcludeAnd = new string[0],
                 ExcludeOr = new[] { "Hyper", "6-Max" },

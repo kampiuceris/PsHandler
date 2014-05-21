@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using PsHandler.PokerTypes;
 using PsHandler.UI.ToolTips;
+using PsHandler.UI;
 
 
 namespace PsHandler.TableTiler
@@ -22,7 +23,7 @@ namespace PsHandler.TableTiler
     /// <summary>
     /// Interaction logic for WindowTableTileEdit.xaml
     /// </summary>
-    public partial class WindowTableTileEdit : Window
+    public partial class WindowTableTileEdit : Window, IFilter
     {
         public TableTile TableTile;
         public bool Saved;
@@ -34,6 +35,15 @@ namespace PsHandler.TableTiler
             Owner = owner;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             TableTile = tableTile ?? new TableTile();
+
+            // IFilter hook
+
+            TextBox_IncludeAnd.TextChanged += (sender, args) => UpdateFilter();
+            TextBox_IncludeOr.TextChanged += (sender, args) => UpdateFilter();
+            TextBox_ExcludeAnd.TextChanged += (sender, args) => UpdateFilter();
+            TextBox_ExcludeOr.TextChanged += (sender, args) => UpdateFilter();
+
+            // seed values
 
             TextBox_Name.Text = TableTile.Name;
             TextBoxHotkey_Hotkey.KeyCombination = TableTile.KeyCombination;
@@ -51,12 +61,6 @@ namespace PsHandler.TableTiler
             CheckBox_SortByStartingTime.Checked += (sender, args) => UCScreenPreview_Main_Update();
             CheckBox_SortByStartingTime.Unchecked += (sender, args) => UCScreenPreview_Main_Update();
 
-            TextBox_IncludeAnd.TextChanged += (sender, args) => CheckTextBoxFilter();
-            TextBox_IncludeOr.TextChanged += (sender, args) => CheckTextBoxFilter();
-            TextBox_ExcludeAnd.TextChanged += (sender, args) => CheckTextBoxFilter();
-            TextBox_ExcludeOr.TextChanged += (sender, args) => CheckTextBoxFilter();
-            TextBox_CheckFilter.TextChanged += (sender, args) => CheckTextBoxFilter();
-
             Loaded += (sender, args) =>
             {
                 string text = TextBox_XYWH.Text;
@@ -71,39 +75,6 @@ namespace PsHandler.TableTiler
             Image_TitleExcludeAllWords.ToolTip = new UCToolTipTitleExcludeAllWords();
             Image_TitleExcludeAnyWords.ToolTip = new UCToolTipTitleExcludeAnyWords();
             Image_XYWHs.ToolTip = new UCToolTipXYWidthHeight();
-            Image_CheckFilter.ToolTip = new UCToolTipTextBoxCheckFilter();
-        }
-
-        private void CheckTextBoxFilter()
-        {
-            string text = TextBox_CheckFilter.Text;
-
-            if (string.IsNullOrEmpty(text))
-            {
-                TextBox_CheckFilter.Background = System.Windows.Media.Brushes.White;
-            }
-            else
-            {
-                var includeAnd = TextBox_IncludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                var includeOr = TextBox_IncludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                var excludeAnd = TextBox_ExcludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                var excludeOr = TextBox_ExcludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-
-
-                var bIncludeAnd = includeAnd.Length == 0 || includeAnd.All(text.Contains);
-                var bIncludeOr = includeOr.Length == 0 || includeOr.Any(text.Contains);
-                var bExcludeAnd = excludeAnd.Length == 0 || !excludeAnd.All(text.Contains);
-                var bExcludeOr = excludeOr.Length == 0 || !excludeOr.Any(text.Contains);
-                if (bIncludeAnd && bIncludeOr && bExcludeAnd && bExcludeOr)
-                {
-                    TextBox_CheckFilter.Background = System.Windows.Media.Brushes.Honeydew;
-                }
-                else
-                {
-                    TextBox_CheckFilter.Background = System.Windows.Media.Brushes.MistyRose;
-                }
-            }
         }
 
         private void UCScreenPreview_Main_Update()
@@ -138,9 +109,7 @@ namespace PsHandler.TableTiler
                 MessageBox.Show(string.Format("Invalid '{0}' input.", Label_Name.Content), "Error saving", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
-            int countNames = TableTileManager.GetTableTilesCopy().Count(o => o.Name.ToLowerInvariant().Equals(TextBox_Name.Text.ToLowerInvariant()));
-            if (countNames != 0)
+            if (TableTileManager.GetTableTilesCopy().Any(o => o.Name.ToLowerInvariant().Equals(TextBox_Name.Text.ToLowerInvariant())))
             {
                 MessageBox.Show("Cannot save. Duplicate names.", "Error saving", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -175,7 +144,7 @@ namespace PsHandler.TableTiler
         private void Button_WindowsInfo_Click(object sender, RoutedEventArgs e)
         {
             if (_windowWindowsInfo != null) _windowWindowsInfo.Close();
-            _windowWindowsInfo = new WindowWindowsInfo();
+            _windowWindowsInfo = new WindowWindowsInfo(this);
             _windowWindowsInfo.Show();
         }
 
@@ -186,6 +155,33 @@ namespace PsHandler.TableTiler
                 _windowWindowsInfo.Close();
             }
             base.OnClosing(e);
+        }
+
+        // IFilter
+
+        private readonly object _filterLock = new object();
+        private readonly List<string> _filterIncludeAnd = new List<string>();
+        private readonly List<string> _filterIncludeOr = new List<string>();
+        private readonly List<string> _filterExcludeAnd = new List<string>();
+        private readonly List<string> _filterExcludeOr = new List<string>();
+        public List<string> FilterIncludeAnd { get { lock (_filterLock) { return _filterIncludeAnd.ToList(); } } }
+        public List<string> FilterIncludeOr { get { lock (_filterLock) { return _filterIncludeOr.ToList(); } } }
+        public List<string> FilterExcludeAnd { get { lock (_filterLock) { return _filterExcludeAnd.ToList(); } } }
+        public List<string> FilterExcludeOr { get { lock (_filterLock) { return _filterExcludeOr.ToList(); } } }
+
+        private void UpdateFilter()
+        {
+            lock (_filterLock)
+            {
+                _filterIncludeAnd.Clear();
+                _filterIncludeOr.Clear();
+                _filterExcludeAnd.Clear();
+                _filterExcludeOr.Clear();
+                _filterIncludeAnd.AddRange(TextBox_IncludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
+                _filterIncludeOr.AddRange(TextBox_IncludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
+                _filterExcludeAnd.AddRange(TextBox_ExcludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
+                _filterExcludeOr.AddRange(TextBox_ExcludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
+            }
         }
     }
 }
