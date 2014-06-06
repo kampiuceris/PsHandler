@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -20,9 +21,10 @@ namespace PsHandler
         // Constants
 
         public const string NAME = "PsHandler";
-        public const int VERSION = 11;
+        public const int VERSION = 12;
         public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static string MACHINE_GUID = GetMachineGuid();
+        public static string CONFIG_FILENAME = "pshandler.xml";
 
         // Settings
 
@@ -290,10 +292,26 @@ namespace PsHandler
 
                 //
 
-                xDoc.Save("pshandler.xml");
+                // handle hidden files
+                FileInfo fi = new FileInfo(CONFIG_FILENAME);
+                bool isHidden = false;
+                if (fi.Exists)
+                {
+                    isHidden = ((File.GetAttributes(CONFIG_FILENAME) & FileAttributes.Hidden) == FileAttributes.Hidden);
+                    if (isHidden)
+                    {
+                        fi.Attributes &= ~FileAttributes.Hidden; // remove the hidden attribute from the file
+                    }
+                }
+                xDoc.Save(CONFIG_FILENAME);
+                if (isHidden)
+                {
+                    fi.Attributes |= FileAttributes.Hidden; // set the file as hidden
+                }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 errors++;
             }
 
@@ -311,7 +329,7 @@ namespace PsHandler
             int errors = 0;
             try
             {
-                XDocument xDoc = XDocument.Load("pshandler.xml");
+                XDocument xDoc = XDocument.Load(CONFIG_FILENAME);
                 XElement root = xDoc.Element("Config");
 
                 foreach (XElement xAppDataPath in root.Elements("AppDataPaths").SelectMany(o => o.Elements("AppDataPath")))

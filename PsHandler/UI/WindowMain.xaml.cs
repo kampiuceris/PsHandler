@@ -71,6 +71,8 @@ namespace PsHandler.UI
                 Show();
                 WindowState = WindowState.Normal;
                 //MyNotifyIcon.Visibility = Visibility.Hidden;
+                Topmost = true;
+                Topmost = false;
             };
             Loaded += (sender, args) =>
             {
