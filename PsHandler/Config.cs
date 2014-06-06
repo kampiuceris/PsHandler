@@ -13,6 +13,7 @@ using System.Windows;
 using PsHandler.PokerTypes;
 using PsHandler.TableTiler;
 using System.Threading;
+using PsHandler.Hud.Import;
 
 namespace PsHandler
 {
@@ -259,8 +260,7 @@ namespace PsHandler
                 Set(root, "TimerHudFontStyle", HudManager.TimerHudFontStyle, ref errors);
                 Set(root, "TimerHudFontSize", HudManager.TimerHudFontSize, ref errors);
                 Set(root, "BigBlindHudLocationLocked", HudManager.BigBlindHudLocationLocked, ref errors);
-                Set(root, "BigBlindHudLocationX", HudManager.GetBigBlindHudLocationX(null), ref errors);
-                Set(root, "BigBlindHudLocationY", HudManager.GetBigBlindHudLocationY(null), ref errors);
+
                 Set(root, "BigBlindHudBackground", HudManager.BigBlindHudBackground, ref errors);
                 Set(root, "BigBlindHudForeground", HudManager.BigBlindHudForeground, ref errors);
                 Set(root, "BigBlindHudFontFamily", HudManager.BigBlindHudFontFamily, ref errors);
@@ -272,6 +272,24 @@ namespace PsHandler
                 foreach (var item in HudManager.BigBlindColorsByValue)
                 {
                     xBigBlindColorsByValue.Add(item.ToXElement());
+                }
+                XElement xBigBlindLocationsX = new XElement("BigBlindHudLocations");
+                root.Add(xBigBlindLocationsX);
+                foreach (TableSize tableSize in Enum.GetValues(typeof(TableSize)))
+                {
+                    xBigBlindLocationsX.Add(
+                        new XElement("LocationByTableSize",
+                             new XElement("TableSize", (int)tableSize),
+                             new XElement("LocationX", HudManager.GetBigBlindHudLocationX(tableSize)),
+                             new XElement("LocationY", HudManager.GetBigBlindHudLocationY(tableSize))
+                    ));
+                }
+
+                XElement xBigBlindLocationsY = new XElement("BigBlindHudLocationsY");
+                root.Add(xBigBlindLocationsY);
+                foreach (TableSize tableSize in Enum.GetValues(typeof(TableSize)))
+                {
+                    xBigBlindLocationsY.Add(new XElement(tableSize.ToString(), HudManager.GetBigBlindHudLocationX(tableSize)));
                 }
 
                 // Poker Types
@@ -389,8 +407,6 @@ namespace PsHandler
                 HudManager.TimerHudFontSize = GetFloat(root, "TimerHudFontSize", ref errors, 10);
                 if (HudManager.TimerHudFontSize < 1) HudManager.TimerHudFontSize = 1;
                 HudManager.BigBlindHudLocationLocked = GetBool(root, "BigBlindHudLocationLocked", ref errors);
-                HudManager.SetBigBlindHudLocationX(GetFloat(root, "BigBlindHudLocationX", ref errors), null);
-                HudManager.SetBigBlindHudLocationY(GetFloat(root, "BigBlindHudLocationY", ref errors), null);
                 HudManager.BigBlindHudBackground = GetColor(root, "BigBlindHudBackground", ref errors, Colors.Black);
                 HudManager.BigBlindHudForeground = GetColor(root, "BigBlindHudForeground", ref errors, Colors.White);
                 HudManager.BigBlindHudFontFamily = GetFontFamily(root, "BigBlindHudFontFamily", ref errors, new FontFamily("Consolas"));
@@ -402,6 +418,24 @@ namespace PsHandler
                 {
                     HudManager.BigBlindColorsByValue.AddRange(xElement.Elements("ColorByValue").Select(ColorByValue.FromXElement).Where(o => o != null));
                 }
+
+                foreach (XElement xElementBigBlindLocations in root.Elements("BigBlindHudLocations"))
+                {
+                    foreach (XElement xElementLocationByTableSize in xElementBigBlindLocations.Elements("LocationByTableSize"))
+                    {
+                        int tableSize; float locationX, locationY;
+                        if (int.TryParse(xElementLocationByTableSize.Element("TableSize").Value, out tableSize)
+                            && float.TryParse(xElementLocationByTableSize.Element("LocationX").Value, out locationX)
+                            && float.TryParse(xElementLocationByTableSize.Element("LocationY").Value, out locationY))
+                        {
+                            HudManager.SetBigBlindHudLocationX((TableSize)tableSize, locationX, null);
+                            HudManager.SetBigBlindHudLocationY((TableSize)tableSize, locationY, null);
+                        }
+                    }
+                }
+                //HudManager.SetBigBlindHudLocationX(GetFloat(root, "BigBlindHudLocationX", ref errors), null);
+                //HudManager.SetBigBlindHudLocationY(GetFloat(root, "BigBlindHudLocationY", ref errors), null);
+
 
                 // Poker Types
 

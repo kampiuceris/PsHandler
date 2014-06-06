@@ -47,6 +47,11 @@ namespace PsHandler.Hud.Import
             }
         }
 
+        public TableSize GetLastHandTableSize()
+        {
+            return !Hands.Any() ? TableSize.Default : Hands.Last().TableSize;
+        }
+
         //
 
         public void AddHands(IEnumerable<Hand> hands)

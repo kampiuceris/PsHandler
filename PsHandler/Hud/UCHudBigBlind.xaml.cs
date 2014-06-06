@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PsHandler.Hud.Import;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -20,15 +21,45 @@ namespace PsHandler.Hud
     /// </summary>
     public partial class UCHudBigBlind : UserControl
     {
+        public readonly TextBox[] TextBox_BigBlindLocationX;
+        public readonly TextBox[] TextBox_BigBlindLocationY;
+
         public UCHudBigBlind()
         {
             InitializeComponent();
 
+            TextBox_BigBlindLocationX = new TextBox[]
+            {
+                TextBox_BigBlindLocationXDefault, 
+                TextBox_BigBlindLocationX10max, 
+                TextBox_BigBlindLocationX9max, 
+                TextBox_BigBlindLocationX8max, 
+                TextBox_BigBlindLocationX7max, 
+                TextBox_BigBlindLocationX6max, 
+                TextBox_BigBlindLocationX4max, 
+                TextBox_BigBlindLocationX2max, 
+            };
+            TextBox_BigBlindLocationY = new TextBox[]
+            {
+                TextBox_BigBlindLocationYDefault, 
+                TextBox_BigBlindLocationY10max, 
+                TextBox_BigBlindLocationY9max, 
+                TextBox_BigBlindLocationY8max, 
+                TextBox_BigBlindLocationY7max, 
+                TextBox_BigBlindLocationY6max, 
+                TextBox_BigBlindLocationY4max, 
+                TextBox_BigBlindLocationY2max, 
+            };
+
             // Init values
             CheckBox_EnableHudBigBlind.IsChecked = HudManager.EnableHudBigBlind;
             TextBox_BigBlindDecimals.Text = Config.BigBlindDecimals.ToString(CultureInfo.InvariantCulture);
-            TextBox_BigBlindLocationX.Text = HudManager.GetBigBlindHudLocationX(TextBox_BigBlindLocationX).ToString(CultureInfo.InvariantCulture);
-            TextBox_BigBlindLocationY.Text = HudManager.GetBigBlindHudLocationY(TextBox_BigBlindLocationY).ToString(CultureInfo.InvariantCulture);
+
+            for (int i = 0; i < TextBox_BigBlindLocationX.Length; i++)
+            {
+                TextBox_BigBlindLocationX[i].Text = HudManager.GetBigBlindHudLocationX((TableSize)i).ToString(CultureInfo.InvariantCulture);
+                TextBox_BigBlindLocationY[i].Text = HudManager.GetBigBlindHudLocationY((TableSize)i).ToString(CultureInfo.InvariantCulture);
+            }
 
             // Hook values
 
@@ -47,31 +78,41 @@ namespace PsHandler.Hud
             CheckBox_LockBigBlindHudLocation.Checked += (sender, args) =>
             {
                 HudManager.BigBlindHudLocationLocked = true;
-                TextBox_BigBlindLocationX.IsEnabled = false;
-                TextBox_BigBlindLocationY.IsEnabled = false;
+                for (int i = 0; i < TextBox_BigBlindLocationX.Length; i++)
+                {
+                    TextBox_BigBlindLocationX[i].IsEnabled = false;
+                    TextBox_BigBlindLocationY[i].IsEnabled = false;
+                }
             };
             CheckBox_LockBigBlindHudLocation.Unchecked += (sender, args) =>
             {
                 HudManager.BigBlindHudLocationLocked = false;
-                TextBox_BigBlindLocationX.IsEnabled = true;
-                TextBox_BigBlindLocationY.IsEnabled = true;
-            };
-            TextBox_BigBlindLocationX.TextChanged += (sender, args) =>
-            {
-                float f;
-                if (float.TryParse(TextBox_BigBlindLocationX.Text, out f))
+                for (int i = 0; i < TextBox_BigBlindLocationX.Length; i++)
                 {
-                    HudManager.SetBigBlindHudLocationX(f, TextBox_BigBlindLocationX);
+                    TextBox_BigBlindLocationX[i].IsEnabled = true;
+                    TextBox_BigBlindLocationY[i].IsEnabled = true;
                 }
             };
-            TextBox_BigBlindLocationY.TextChanged += (sender, args) =>
+            for (int i = 0; i < TextBox_BigBlindLocationX.Length; i++)
             {
-                float f;
-                if (float.TryParse(TextBox_BigBlindLocationY.Text, out f))
+                int i1 = i;
+                TextBox_BigBlindLocationX[i].TextChanged += (sender, args) =>
                 {
-                    HudManager.SetBigBlindHudLocationY(f, TextBox_BigBlindLocationY);
-                }
-            };
+                    float f;
+                    if (float.TryParse(TextBox_BigBlindLocationX[i1].Text, out f))
+                    {
+                        HudManager.SetBigBlindHudLocationX((TableSize)i1, f, TextBox_BigBlindLocationX[i1]);
+                    }
+                };
+                TextBox_BigBlindLocationY[i].TextChanged += (sender, args) =>
+                {
+                    float f;
+                    if (float.TryParse(TextBox_BigBlindLocationY[i1].Text, out f))
+                    {
+                        HudManager.SetBigBlindHudLocationY((TableSize)i1, f, TextBox_BigBlindLocationY[i1]);
+                    }
+                };
+            }
 
             // hook needed init values
 

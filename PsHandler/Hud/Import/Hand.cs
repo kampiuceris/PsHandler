@@ -5,6 +5,20 @@ using System.Text.RegularExpressions;
 
 namespace PsHandler.Hud.Import
 {
+    // SeatMax
+
+    public enum TableSize
+    {
+        Default,
+        Max10,
+        Max9,
+        Max8,
+        Max7,
+        Max6,
+        Max4,
+        Max2,
+    }
+
     // Player
 
     public class Player
@@ -27,6 +41,8 @@ namespace PsHandler.Hud.Import
         public long TournamentNumber;
         public DateTime Timestamp;
         public Player[] Players;
+        public TableSize TableSize;
+        public short ButtonSeat;
 
         private readonly List<Player> _players = new List<Player>();
         private bool _smallBlindCollectPots;
@@ -80,7 +96,8 @@ namespace PsHandler.Hud.Import
 
         //
 
-        public static Regex RegexHeader = new Regex(@"PokerStars Hand #(?<hand_id>\d+): Tournament #(?<tournament_id>\d+),.+- (?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[.+");
+        public static Regex RegexHeader = new Regex(@"\APokerStars Hand #(?<hand_id>\d+): Tournament #(?<tournament_id>\d+),.+- (?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[.+");
+        public static Regex RegexSeatMaxButton = new Regex(@"\ATable '\d+ \d+' (?<table_size>\d+)-max Seat #(?<button_seat>\d+) is the button");
         public static Regex RegexSeat = new Regex(@"Seat \d{1,2}: (?<name>.+) \((?<stack>\d+) in chips\)");
         public static Regex RegexAnte = new Regex(@"(?<name>.+): posts the ante (?<amount>\d+)");
         public static Regex RegexSmallBlind = new Regex(@"(?<name>.+): posts small blind (?<amount>\d+)");
@@ -110,6 +127,14 @@ namespace PsHandler.Hud.Import
                 int minute = int.Parse(match.Groups["minute"].Value);
                 int second = int.Parse(match.Groups["second"].Value);
                 hand.Timestamp = new DateTime(year, month, day, hour, minute, second);
+                return;
+            }
+
+            match = RegexSeatMaxButton.Match(line);
+            if (match.Success)
+            {
+                hand.TableSize = SeatToTableSize(int.Parse(match.Groups["table_size"].Value));
+                hand.ButtonSeat = short.Parse(match.Groups["button_seat"].Value);
                 return;
             }
 
@@ -232,6 +257,29 @@ namespace PsHandler.Hud.Import
         {
             foreach (var player in _players)
                 player.Bet = 0;
+        }
+
+        public static TableSize SeatToTableSize(int tableSize)
+        {
+            switch (tableSize)
+            {
+                case 10:
+                return TableSize.Max10;
+                case 9:
+                return TableSize.Max9;
+                case 8:
+                return TableSize.Max8;
+                case 7:
+                return TableSize.Max7;
+                case 6:
+                return TableSize.Max6;
+                case 4:
+                return TableSize.Max4;
+                case 2:
+                return TableSize.Max2;
+                default:
+                return TableSize.Default;
+            }
         }
     }
 }

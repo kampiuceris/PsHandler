@@ -112,35 +112,39 @@ namespace PsHandler.Hud
         public static double TimerHudFontSize = 10;
         //
         public static bool BigBlindHudLocationLocked = false;
-        private static float _bigBlindHudLocationX;
-        public static void SetBigBlindHudLocationX(float value, object sender)
+
+        // default, 10-max, 9-max, 8-max, 7-max, 6-max, 4-max, 2-max
+        private static float[] _bigBlindHudLocationX = new float[8];
+        private static float[] _bigBlindHudLocationY = new float[8];
+
+        public static void SetBigBlindHudLocationX(TableSize tableSize, float value, object sender)
         {
-            _bigBlindHudLocationX = value;
-            if (_bigBlindHudLocationX > 10) _bigBlindHudLocationX = 10;
-            if (_bigBlindHudLocationX < -10) _bigBlindHudLocationX = -10;
-            if (App.WindowMain != null && App.WindowMain.UCHud != null && App.WindowMain.UCHud.UCHudBigBlind != null && !sender.Equals(App.WindowMain.UCHud.UCHudBigBlind.TextBox_BigBlindLocationX))
+            if (value > 10) value = 10;
+            if (value < -10) value = -10;
+            _bigBlindHudLocationX[(int)tableSize] = value;
+            if (App.WindowMain != null && App.WindowMain.UCHud != null && App.WindowMain.UCHud.UCHudBigBlind != null && App.WindowMain.UCHud.UCHudBigBlind.TextBox_BigBlindLocationX.All(o => !sender.Equals(o)))
             {
-                App.WindowMain.UCHud.UCHudBigBlind.TextBox_BigBlindLocationX.Text = _bigBlindHudLocationX.ToString(CultureInfo.InvariantCulture);
+                App.WindowMain.UCHud.UCHudBigBlind.TextBox_BigBlindLocationX[(int)tableSize].Text = _bigBlindHudLocationX[(int)tableSize].ToString(CultureInfo.InvariantCulture);
             }
         }
-        public static float GetBigBlindHudLocationX(object sender)
+        public static float GetBigBlindHudLocationX(TableSize tableSize)
         {
-            return _bigBlindHudLocationX;
+            return _bigBlindHudLocationX[(int)tableSize];
         }
-        private static float _bigBlindHudLocationY;
-        public static void SetBigBlindHudLocationY(float value, object sender)
+        public static void SetBigBlindHudLocationY(TableSize tableSize, float value, object sender)
         {
-            _bigBlindHudLocationY = value;
-            if (_bigBlindHudLocationY > 10) _bigBlindHudLocationY = 10;
-            if (_bigBlindHudLocationY < -10) _bigBlindHudLocationY = -10;
-            if (App.WindowMain != null && App.WindowMain.UCHud != null && App.WindowMain.UCHud.UCHudBigBlind != null && !sender.Equals(App.WindowMain.UCHud.UCHudBigBlind.TextBox_BigBlindLocationY))
+            if (value > 10) value = 10;
+            if (value < -10) value = -10;
+            _bigBlindHudLocationY[(int)tableSize] = value;
+
+            if (App.WindowMain != null && App.WindowMain.UCHud != null && App.WindowMain.UCHud.UCHudBigBlind != null && App.WindowMain.UCHud.UCHudBigBlind.TextBox_BigBlindLocationY.All(o => !sender.Equals(o)))
             {
-                App.WindowMain.UCHud.UCHudBigBlind.TextBox_BigBlindLocationY.Text = _bigBlindHudLocationY.ToString(CultureInfo.InvariantCulture);
+                App.WindowMain.UCHud.UCHudBigBlind.TextBox_BigBlindLocationY[(int)tableSize].Text = _bigBlindHudLocationY[(int)tableSize].ToString(CultureInfo.InvariantCulture);
             }
         }
-        public static float GetBigBlindHudLocationY(object sender)
+        public static float GetBigBlindHudLocationY(TableSize tableSize)
         {
-            return _bigBlindHudLocationY;
+            return _bigBlindHudLocationY[(int)tableSize];
         }
 
         public static Color BigBlindHudBackground = Colors.Black;

@@ -26,6 +26,7 @@ namespace PsHandler.Hud
         private Thread _thread;
         private static readonly Regex _regexSbBb = new Regex(@".+Blinds .{0,1}(?<sb>[\d\.]+)\/.{0,1}(?<bb>[\d\.]+) - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
         private static readonly Regex _regexSbBbAnte = new Regex(@".+Blinds .{0,1}(?<sb>[\d\.]+)\/.{0,1}(?<bb>[\d\.]+) Ante .{0,1}(?<ante>[\d\.]+) - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
+        private TableSize _lastKnownTableSize = TableSize.Default;
 
         public WindowBigBlind(IntPtr handleOwner)
         {
@@ -68,7 +69,7 @@ namespace PsHandler.Hud
                         {
                             string title = WinApi.GetWindowTitle(handleOwner);
                             string textboxContent = "X";
-                            bool visible = false;
+                            bool visible = true;
 
                             decimal sb = decimal.MinValue, bb = decimal.MinValue, ante = decimal.MinValue;
                             string hero = "";
@@ -89,10 +90,11 @@ namespace PsHandler.Hud
                                 long toutnamentNumber = long.Parse(match.Groups["tournament_number"].Value);
                                 hero = match.Groups["hero"].Value;
 
-                                Tournament tournamentInfo = App.Import.GetTournament(toutnamentNumber);
-                                if (tournamentInfo != null)
+                                Tournament tournament = App.Import.GetTournament(toutnamentNumber);
+                                if (tournament != null)
                                 {
-                                    decimal latestStack = tournamentInfo.GetLatestStack(hero);
+                                    _lastKnownTableSize = tournament.GetLastHandTableSize();
+                                    decimal latestStack = tournament.GetLatestStack(hero);
                                     if (latestStack != decimal.MinValue)
                                     {
                                         //textboxContent = sb + "/" + bb + (ante == decimal.MinValue ? "" : (" " + ante)) + " " + latestStack;
@@ -109,13 +111,12 @@ namespace PsHandler.Hud
                                 if (!_mouseDown)
                                 {
                                     System.Drawing.Rectangle rect = WinApi.GetClientRectangle(HandleOwner);
-                                    Left = rect.X + rect.Width * HudManager.GetBigBlindHudLocationX(this);
-                                    Top = rect.Y + rect.Height * HudManager.GetBigBlindHudLocationY(this);
+                                    Left = rect.X + rect.Width * HudManager.GetBigBlindHudLocationX(_lastKnownTableSize);
+                                    Top = rect.Y + rect.Height * HudManager.GetBigBlindHudLocationY(_lastKnownTableSize);
                                     if (visible)
                                     {
                                         Opacity = 1;
                                         UCLabel_Main.SetBackground(HudManager.BigBlindHudBackground);
-                                        //UCLabel_Main.SetForeground(HudManager.BigBlindHudForeground);
                                         UCLabel_Main.SetForeground(HudManager.GetBigBlindForeground(textboxContent));
                                         UCLabel_Main.SetFontFamily(HudManager.BigBlindHudFontFamily);
                                         UCLabel_Main.SetFontWeight(HudManager.BigBlindHudFontWeight);
@@ -177,8 +178,8 @@ namespace PsHandler.Hud
             if (_mouseDown)
             {
                 System.Drawing.Rectangle r = WinApi.GetClientRectangle(HandleOwner);
-                HudManager.SetBigBlindHudLocationX((float)((Left - r.Left) / r.Width), this);
-                HudManager.SetBigBlindHudLocationY((float)((Top - r.Top) / r.Height), this);
+                HudManager.SetBigBlindHudLocationX(_lastKnownTableSize, (float)((Left - r.Left) / r.Width), this);
+                HudManager.SetBigBlindHudLocationY(_lastKnownTableSize, (float)((Top - r.Top) / r.Height), this);
             }
         }
 
