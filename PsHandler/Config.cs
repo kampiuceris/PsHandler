@@ -267,6 +267,12 @@ namespace PsHandler
                 Set(root, "BigBlindHudFontWeight", HudManager.BigBlindHudFontWeight, ref errors);
                 Set(root, "BigBlindHudFontStyle", HudManager.BigBlindHudFontStyle, ref errors);
                 Set(root, "BigBlindHudFontSize", HudManager.BigBlindHudFontSize, ref errors);
+                XElement xBigBlindColorsByValue = new XElement("BigBlindColorsByValue");
+                root.Add(xBigBlindColorsByValue);
+                foreach (var item in HudManager.BigBlindColorsByValue)
+                {
+                    xBigBlindColorsByValue.Add(item.ToXElement());
+                }
 
                 // Poker Types
 
@@ -392,6 +398,10 @@ namespace PsHandler
                 HudManager.BigBlindHudFontStyle = GetFontStyle(root, "BigBlindHudFontStyle", ref errors);
                 HudManager.BigBlindHudFontSize = GetFloat(root, "BigBlindHudFontSize", ref errors, 10);
                 if (HudManager.TimerHudFontSize > 72) HudManager.TimerHudFontSize = 72;
+                foreach (XElement xElement in root.Elements("BigBlindColorsByValue"))
+                {
+                    HudManager.BigBlindColorsByValue.AddRange(xElement.Elements("ColorByValue").Select(ColorByValue.FromXElement).Where(o => o != null));
+                }
 
                 // Poker Types
 

@@ -69,6 +69,10 @@
     <Compile Include="Bmp.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="Hud\ColorByValue.cs" />
+    <Compile Include="Hud\UCColorByValue.xaml.cs">
+      <DependentUpon>UCColorByValue.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Hud\UCHudBigBlind.xaml.cs">
       <DependentUpon>UCHudBigBlind.xaml</DependentUpon>
     </Compile>
@@ -77,6 +81,9 @@
     </Compile>
     <Compile Include="Hud\WindowBigBlind.xaml.cs">
       <DependentUpon>WindowBigBlind.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Hud\WindowCustomizeColorsByValue.xaml.cs">
+      <DependentUpon>WindowCustomizeColorsByValue.xaml</DependentUpon>
     </Compile>
     <Compile Include="PokerTypes\PokerTypeManager.cs" />
     <Compile Include="PokerTypes\UCPokerTypes.xaml.cs">
@@ -234,6 +241,10 @@
     <Resource Include="Images\ps.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Hud\UCColorByValue.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Hud\UCHudBigBlind.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -247,6 +258,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Hud\WindowBigBlind.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Hud\WindowCustomizeColorsByValue.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -612,6 +627,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\information_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\color_wheel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\delete2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

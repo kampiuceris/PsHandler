@@ -149,6 +149,27 @@ namespace PsHandler.Hud
         public static FontWeight BigBlindHudFontWeight = FontWeights.Bold;
         public static FontStyle BigBlindHudFontStyle = FontStyles.Normal;
         public static double BigBlindHudFontSize = 10;
+        public static List<ColorByValue> BigBlindColorsByValue = new List<ColorByValue>();
+        public static Color GetBigBlindForeground(string text)
+        {
+            Color color = BigBlindHudForeground;
+
+            decimal value;
+            bool success = decimal.TryParse(text, out value);
+
+            if (success)
+            {
+                foreach (var colorByValue in BigBlindColorsByValue)
+                {
+                    if (colorByValue.GreaterOrEqual <= value && value < colorByValue.Less)
+                    {
+                        color = colorByValue.Color;
+                    }
+                }
+            }
+
+            return color;
+        }
 
         //
 

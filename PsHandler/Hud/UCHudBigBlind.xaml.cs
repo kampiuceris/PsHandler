@@ -100,5 +100,15 @@ namespace PsHandler.Hud
                 HudManager.BigBlindHudFontSize = dialog.HudFontSize;
             }
         }
+
+        private void Button_CustomizeColorsByValue_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new WindowCustomizeColorsByValue(App.WindowMain, HudManager.BigBlindHudForeground, HudManager.BigBlindColorsByValue);
+            dialog.ShowDialog();
+            if (dialog.Saved)
+            {
+                HudManager.BigBlindColorsByValue = dialog.ColorsByValue;
+            }
+        }
     }
 }

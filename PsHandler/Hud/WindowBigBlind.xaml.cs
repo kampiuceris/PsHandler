@@ -115,7 +115,8 @@ namespace PsHandler.Hud
                                     {
                                         Opacity = 1;
                                         UCLabel_Main.SetBackground(HudManager.BigBlindHudBackground);
-                                        UCLabel_Main.SetForeground(HudManager.BigBlindHudForeground);
+                                        //UCLabel_Main.SetForeground(HudManager.BigBlindHudForeground);
+                                        UCLabel_Main.SetForeground(HudManager.GetBigBlindForeground(textboxContent));
                                         UCLabel_Main.SetFontFamily(HudManager.BigBlindHudFontFamily);
                                         UCLabel_Main.SetFontWeight(HudManager.BigBlindHudFontWeight);
                                         UCLabel_Main.SetFontStyle(HudManager.BigBlindHudFontStyle);
