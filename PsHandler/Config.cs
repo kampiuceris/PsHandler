@@ -22,7 +22,7 @@ namespace PsHandler
         // Constants
 
         public const string NAME = "PsHandler";
-        public const int VERSION = 12;
+        public const int VERSION = 13;
         public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static string MACHINE_GUID = GetMachineGuid();
         public static string CONFIG_FILENAME = "pshandler.xml";
