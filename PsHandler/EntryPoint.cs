@@ -1,14 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using System.Security.Principal;
-using System.Windows.Media;
-using System.Windows;
-using System.Xml.Linq;
-using PsHandler.UI;
-using Color = System.Windows.Media.Color;
-using PsHandler.TableTiler;
 
 namespace PsHandler
 {
