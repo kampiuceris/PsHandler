@@ -42,6 +42,7 @@ namespace PsHandler.TableTiler
             TextBox_IncludeOr.TextChanged += (sender, args) => UpdateFilter();
             TextBox_ExcludeAnd.TextChanged += (sender, args) => UpdateFilter();
             TextBox_ExcludeOr.TextChanged += (sender, args) => UpdateFilter();
+            TextBox_WindowClass.TextChanged += (sender, args) => UpdateFilter();
 
             // seed values
 
@@ -52,6 +53,7 @@ namespace PsHandler.TableTiler
             TextBox_IncludeOr.Text = !TableTile.IncludeOr.Any() ? "" : TableTile.IncludeOr.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
             TextBox_ExcludeAnd.Text = !TableTile.ExcludeAnd.Any() ? "" : TableTile.ExcludeAnd.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
             TextBox_ExcludeOr.Text = !TableTile.ExcludeOr.Any() ? "" : TableTile.ExcludeOr.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
+            TextBox_WindowClass.Text = TableTile.WindowClass;
 
             StringBuilder sb = new StringBuilder();
             foreach (var xywh in TableTile.XYWHs) sb.Append(string.Format("{0} {1} {2} {3}{4}", xywh.X, xywh.Y, xywh.Width, xywh.Height, Environment.NewLine));
@@ -130,6 +132,7 @@ namespace PsHandler.TableTiler
             TableTile.ExcludeAnd = TextBox_ExcludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             TableTile.ExcludeOr = TextBox_ExcludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             TableTile.XYWHs = xywhs;
+            TableTile.WindowClass = TextBox_WindowClass.Text;
 
             Saved = true;
             Close();
@@ -164,10 +167,12 @@ namespace PsHandler.TableTiler
         private readonly List<string> _filterIncludeOr = new List<string>();
         private readonly List<string> _filterExcludeAnd = new List<string>();
         private readonly List<string> _filterExcludeOr = new List<string>();
+        private string _filterWindowClass = "";
         public List<string> FilterIncludeAnd { get { lock (_filterLock) { return _filterIncludeAnd.ToList(); } } }
         public List<string> FilterIncludeOr { get { lock (_filterLock) { return _filterIncludeOr.ToList(); } } }
         public List<string> FilterExcludeAnd { get { lock (_filterLock) { return _filterExcludeAnd.ToList(); } } }
         public List<string> FilterExcludeOr { get { lock (_filterLock) { return _filterExcludeOr.ToList(); } } }
+        public string WindowClass { get { lock (_filterLock) { return _filterWindowClass; } } }
 
         private void UpdateFilter()
         {
@@ -181,6 +186,7 @@ namespace PsHandler.TableTiler
                 _filterIncludeOr.AddRange(TextBox_IncludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
                 _filterExcludeAnd.AddRange(TextBox_ExcludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
                 _filterExcludeOr.AddRange(TextBox_ExcludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
+                _filterWindowClass = TextBox_WindowClass.Text;
             }
         }
     }

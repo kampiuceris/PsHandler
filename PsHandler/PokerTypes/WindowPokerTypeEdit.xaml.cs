@@ -39,6 +39,7 @@ namespace PsHandler.PokerTypes
             TextBox_IncludeOr.TextChanged += (sender, args) => UpdateFilter();
             TextBox_ExcludeAnd.TextChanged += (sender, args) => UpdateFilter();
             TextBox_ExcludeOr.TextChanged += (sender, args) => UpdateFilter();
+            TextBox_WindowClass.TextChanged += (sender, args) => UpdateFilter();
 
             // seed values
 
@@ -49,6 +50,7 @@ namespace PsHandler.PokerTypes
             TextBox_ExcludeAnd.Text = !PokerType.ExcludeAnd.Any() ? "" : PokerType.ExcludeAnd.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
             TextBox_ExcludeOr.Text = !PokerType.ExcludeOr.Any() ? "" : PokerType.ExcludeOr.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
             TextBox_BuyInAndRake.Text = !PokerType.BuyInAndRake.Any() ? "" : PokerType.BuyInAndRake.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
+            TextBox_WindowClass.Text = PokerType.WindowClass;
 
             // ToolTips
 
@@ -91,6 +93,7 @@ namespace PsHandler.PokerTypes
             PokerType.ExcludeAnd = TextBox_ExcludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             PokerType.ExcludeOr = TextBox_ExcludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             PokerType.BuyInAndRake = TextBox_BuyInAndRake.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            PokerType.WindowClass = TextBox_WindowClass.Text;
 
             Saved = true;
             Close();
@@ -132,10 +135,12 @@ namespace PsHandler.PokerTypes
         private readonly List<string> _filterIncludeOr = new List<string>();
         private readonly List<string> _filterExcludeAnd = new List<string>();
         private readonly List<string> _filterExcludeOr = new List<string>();
+        private string _filterWindowClass = "";
         public List<string> FilterIncludeAnd { get { lock (_filterLock) { return _filterIncludeAnd.ToList(); } } }
         public List<string> FilterIncludeOr { get { lock (_filterLock) { return _filterIncludeOr.ToList(); } } }
         public List<string> FilterExcludeAnd { get { lock (_filterLock) { return _filterExcludeAnd.ToList(); } } }
         public List<string> FilterExcludeOr { get { lock (_filterLock) { return _filterExcludeOr.ToList(); } } }
+        public string WindowClass { get { lock (_filterLock) { return _filterWindowClass; } } }
 
         private void UpdateFilter()
         {
@@ -149,6 +154,7 @@ namespace PsHandler.PokerTypes
                 _filterIncludeOr.AddRange(TextBox_IncludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
                 _filterExcludeAnd.AddRange(TextBox_ExcludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
                 _filterExcludeOr.AddRange(TextBox_ExcludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
+                _filterWindowClass = TextBox_WindowClass.Text;
             }
         }
     }

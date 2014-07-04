@@ -17,6 +17,7 @@ namespace PsHandler.TableTiler
         public string[] IncludeOr = new string[0];
         public string[] ExcludeAnd = new string[0];
         public string[] ExcludeOr = new string[0];
+        public string WindowClass = "";
         public Rectangle[] XYWHs = new Rectangle[0];
         public bool IsEnabled;
 
@@ -27,18 +28,7 @@ namespace PsHandler.TableTiler
 
         public string ToXml()
         {
-            return new XDocument(
-                new XElement("PokerType",
-                             new XElement("Name", Name),
-                             new XElement("Hotkey", KeyCombination.ToString()),
-                             new XElement("SortByStartingHand", SortByStartingHand),
-                             new XElement("IncludeAnd", IncludeAnd.Select(s => new XElement("Text", s))),
-                             new XElement("IncludeOr", IncludeOr.Select(s => new XElement("Text", s))),
-                             new XElement("ExcludeAnd", ExcludeAnd.Select(s => new XElement("Text", s))),
-                             new XElement("ExcludeOr", ExcludeOr.Select(s => new XElement("Text", s))),
-                             new XElement("XYWHs", XYWHs.Select(s => new XElement("XYWH", string.Format("{0} {1} {2} {3}", s.X, s.Y, s.Width, s.Height)))),
-                             new XElement("IsEnabled", IsEnabled)
-                    )).ToString();
+            return new XDocument(ToXElement()).ToString();
         }
 
         public XElement ToXElement()
@@ -51,6 +41,7 @@ namespace PsHandler.TableTiler
                                      new XElement("IncludeOr", IncludeOr.Select(s => new XElement("Text", s))),
                                      new XElement("ExcludeAnd", ExcludeAnd.Select(s => new XElement("Text", s))),
                                      new XElement("ExcludeOr", ExcludeOr.Select(s => new XElement("Text", s))),
+                                     new XElement("WindowClass", WindowClass),
                                      new XElement("XYWHs", XYWHs.Select(s => new XElement("XYWH", string.Format("{0} {1} {2} {3}", s.X, s.Y, s.Width, s.Height)))),
                                      new XElement("IsEnabled", IsEnabled)
                                 );
@@ -60,25 +51,7 @@ namespace PsHandler.TableTiler
         {
             try
             {
-                XDocument xdoc = XDocument.Parse(xml);
-                XElement root = xdoc.Root;
-
-                return new TableTile
-                {
-                    Name = root.Element("Name").Value,
-                    KeyCombination = KeyCombination.Parse(root.Element("Hotkey").Value),
-                    SortByStartingHand = bool.Parse(root.Element("SortByStartingHand").Value),
-                    IncludeAnd = root.Element("IncludeAnd").Elements().Select(o => o.Value).ToArray(),
-                    IncludeOr = root.Element("IncludeOr").Elements().Select(o => o.Value).ToArray(),
-                    ExcludeAnd = root.Element("ExcludeAnd").Elements().Select(o => o.Value).ToArray(),
-                    ExcludeOr = root.Element("ExcludeOr").Elements().Select(o => o.Value).ToArray(),
-                    XYWHs = root.Element("XYWHs").Elements().Select(o =>
-                    {
-                        string[] s = o.Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-                        return new Rectangle(int.Parse(s[0]), int.Parse(s[1]), int.Parse(s[2]), int.Parse(s[3]));
-                    }).ToArray(),
-                    IsEnabled = bool.Parse(root.Element("IsEnabled").Value),
-                };
+                return FromXElement(XDocument.Parse(xml).Root);
             }
             catch (Exception)
             {
@@ -92,19 +65,20 @@ namespace PsHandler.TableTiler
             {
                 return new TableTile
                 {
-                    Name = xElement.Element("Name").Value,
-                    KeyCombination = KeyCombination.Parse(xElement.Element("Hotkey").Value),
-                    SortByStartingHand = bool.Parse(xElement.Element("SortByStartingHand").Value),
-                    IncludeAnd = xElement.Element("IncludeAnd").Elements().Select(o => o.Value).ToArray(),
-                    IncludeOr = xElement.Element("IncludeOr").Elements().Select(o => o.Value).ToArray(),
-                    ExcludeAnd = xElement.Element("ExcludeAnd").Elements().Select(o => o.Value).ToArray(),
-                    ExcludeOr = xElement.Element("ExcludeOr").Elements().Select(o => o.Value).ToArray(),
-                    XYWHs = xElement.Element("XYWHs").Elements().Select(o =>
+                    Name = xElement.Element("Name") == null ? "" : xElement.Element("Name").Value,
+                    KeyCombination = xElement.Element("Hotkey") == null ? new KeyCombination(Key.None, false, false, false) : KeyCombination.Parse(xElement.Element("Hotkey").Value),
+                    SortByStartingHand = xElement.Element("SortByStartingHand") == null ? false : bool.Parse(xElement.Element("SortByStartingHand").Value),
+                    IncludeAnd = xElement.Element("IncludeAnd") == null ? new string[0] : xElement.Element("IncludeAnd").Elements().Select(o => o.Value).ToArray(),
+                    IncludeOr = xElement.Element("IncludeOr") == null ? new string[0] : xElement.Element("IncludeOr").Elements().Select(o => o.Value).ToArray(),
+                    ExcludeAnd = xElement.Element("ExcludeAnd") == null ? new string[0] : xElement.Element("ExcludeAnd").Elements().Select(o => o.Value).ToArray(),
+                    ExcludeOr = xElement.Element("ExcludeOr") == null ? new string[0] : xElement.Element("ExcludeOr").Elements().Select(o => o.Value).ToArray(),
+                    WindowClass = xElement.Element("WindowClass") == null ? "" : xElement.Element("WindowClass").Value,
+                    XYWHs = xElement.Element("XYWHs") == null ? new Rectangle[0] : xElement.Element("XYWHs").Elements().Select(o =>
                     {
                         string[] s = o.Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                         return new Rectangle(int.Parse(s[0]), int.Parse(s[1]), int.Parse(s[2]), int.Parse(s[3]));
                     }).ToArray(),
-                    IsEnabled = bool.Parse(xElement.Element("IsEnabled").Value),
+                    IsEnabled = xElement.Element("IsEnabled") == null ? false : bool.Parse(xElement.Element("IsEnabled").Value),
                 };
             }
             catch (Exception)
@@ -131,6 +105,7 @@ namespace PsHandler.TableTiler
                 IncludeOr = new[] { "$", "€", "£" },
                 ExcludeAnd = new string[0],
                 ExcludeOr = new[] { "Tournament" },
+                WindowClass = "",
                 XYWHs = new Rectangle[]
 			    {
 				    new Rectangle(0, 0, 808, 580),
@@ -156,6 +131,7 @@ namespace PsHandler.TableTiler
                 IncludeOr = new[] { "$", "€", "£" },
                 ExcludeAnd = new string[0],
                 ExcludeOr = new string[0],
+                WindowClass = "",
                 XYWHs = new Rectangle[]
 			    {
 				    new Rectangle(0, 0, 534, 391),

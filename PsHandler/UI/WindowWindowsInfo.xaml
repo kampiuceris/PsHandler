@@ -12,6 +12,7 @@
                     <GridViewColumn Width="Auto" Header="Width" DisplayMemberBinding="{Binding Width}" />
                     <GridViewColumn Width="Auto" Header="Height" DisplayMemberBinding="{Binding Height}" />
                     <GridViewColumn Width="Auto" Header="Title" DisplayMemberBinding="{Binding Title}" />
+                    <GridViewColumn Width="Auto" Header="WindowClass" DisplayMemberBinding="{Binding WindowClass}" />
                 </GridView>
             </ListView.View>
             <ListView.Resources>

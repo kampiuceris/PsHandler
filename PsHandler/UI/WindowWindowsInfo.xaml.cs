@@ -53,6 +53,13 @@ namespace PsHandler.UI
                 if (selectedItem != null) Clipboard.SetText(String.IsNullOrEmpty(selectedItem.Title) ? "" : selectedItem.Title);
             };
             contextMenu.Items.Add(menuItem);
+            menuItem = new MenuItem { Header = "Copy to clipboard: WindowClass" };
+            menuItem.Click += (sender, args) =>
+            {
+                Info selectedItem = ListView_Main.SelectedItem as Info;
+                if (selectedItem != null) Clipboard.SetText(String.IsNullOrEmpty(selectedItem.WindowClass) ? "" : selectedItem.WindowClass);
+            };
+            contextMenu.Items.Add(menuItem);
 
             // Update Thread
             _thread = new Thread(() =>
@@ -68,7 +75,19 @@ namespace PsHandler.UI
 
         private void UpdateList()
         {
-            List<Info> latestInfo = (from handle in WinApi.GetWindowHWndAll().Where(handle => !Methods.IsMinimized(handle)) let rect = WinApi.GetWindowRectangle(handle) select new Info { Handle = handle, Class = WinApi.GetClassName(handle), Title = WinApi.GetWindowTitle(handle), X = rect.X, Y = rect.Y, Width = rect.Width, Height = rect.Height }).ToList();
+            List<Info> latestInfo = (from handle in WinApi.GetWindowHWndAll().Where(handle => !Methods.IsMinimized(handle))
+                                     let rect = WinApi.GetWindowRectangle(handle)
+                                     select new Info
+                                        {
+                                            Handle = handle,
+                                            Class = WinApi.GetClassName(handle),
+                                            Title = WinApi.GetWindowTitle(handle),
+                                            X = rect.X,
+                                            Y = rect.Y,
+                                            Width = rect.Width,
+                                            Height = rect.Height,
+                                            WindowClass = WinApi.GetClassName(handle)
+                                        }).ToList();
             latestInfo.Sort((o1, o2) => o1.Y - o2.Y);
             latestInfo.Sort((o1, o2) => o1.X - o2.X);
 
@@ -90,7 +109,8 @@ namespace PsHandler.UI
                         var includeOr = _iFilter.FilterIncludeOr.Count == 0 || _iFilter.FilterIncludeOr.Any(item.Title.Contains);
                         var excludeAnd = _iFilter.FilterExcludeAnd.Count == 0 || !_iFilter.FilterExcludeAnd.All(item.Title.Contains);
                         var excludeOr = _iFilter.FilterExcludeOr.Count == 0 || !_iFilter.FilterExcludeOr.Any(item.Title.Contains);
-                        if (includeAnd && includeOr && excludeAnd && excludeOr) item.PassesFilter = true; else item.PassesFilter = false;
+                        var windowClassMatch = string.IsNullOrEmpty(_iFilter.WindowClass) || _iFilter.WindowClass.Equals(item.WindowClass);
+                        if (includeAnd && includeOr && excludeAnd && excludeOr && windowClassMatch) { item.PassesFilter = true; } else { item.PassesFilter = false; }
 
                         var firstOrDefault = _currentInfo.FirstOrDefault(o => o.Handle.Equals(item.Handle));
                         if (firstOrDefault != null)
@@ -100,6 +120,7 @@ namespace PsHandler.UI
                             firstOrDefault.Width = item.Width;
                             firstOrDefault.Height = item.Height;
                             firstOrDefault.Title = item.Title;
+                            firstOrDefault.WindowClass = item.WindowClass;
                             firstOrDefault.PassesFilter = item.PassesFilter;
                         }
                         else
@@ -175,23 +196,23 @@ namespace PsHandler.UI
             switch (sortBy)
             {
                 case "Passes Filter?":
-                sortBy = "PassesFilter";
-                break;
+                    sortBy = "PassesFilter";
+                    break;
                 case "X":
-                sortBy = "X";
-                break;
+                    sortBy = "X";
+                    break;
                 case "Y":
-                sortBy = "Y";
-                break;
+                    sortBy = "Y";
+                    break;
                 case "Width":
-                sortBy = "Width";
-                break;
+                    sortBy = "Width";
+                    break;
                 case "Height":
-                sortBy = "Height";
-                break;
+                    sortBy = "Height";
+                    break;
                 case "Title":
-                sortBy = "Title";
-                break;
+                    sortBy = "Title";
+                    break;
             }
 
             SortDescription sd = new SortDescription(sortBy, direction);
@@ -215,6 +236,7 @@ namespace PsHandler.UI
         private int _width;
         private int _height;
         private string _title;
+        private string _windowClass;
         private bool _passesFilter;
 
         public IntPtr Handle { get { return _handle; } set { _handle = value; NotifyPropertyChanged(); } }
@@ -224,6 +246,7 @@ namespace PsHandler.UI
         public int Width { get { return _width; } set { _width = value; NotifyPropertyChanged(); } }
         public int Height { get { return _height; } set { _height = value; NotifyPropertyChanged(); } }
         public string Title { get { return _title; } set { _title = value; NotifyPropertyChanged(); } }
+        public string WindowClass { get { return _windowClass; } set { _windowClass = value; NotifyPropertyChanged(); } }
         public bool PassesFilter { get { return _passesFilter; } set { _passesFilter = value; NotifyPropertyChanged(); } }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -209,6 +209,7 @@ namespace PsHandler.TableTiler
                 foreach (IntPtr hwnd in WinApi.GetWindowHWndAll().Where(o => !Methods.IsMinimized(o)))
                 {
                     string title = WinApi.GetWindowTitle(hwnd);
+                    string windowClass = WinApi.GetClassName(hwnd);
                     //Debug.WriteLine("Window: " + title);
                     foreach (var ttati in ttatis)
                     {
@@ -216,10 +217,9 @@ namespace PsHandler.TableTiler
                         var IncludeOr = ttati.TableTile.IncludeOr.Length == 0 || ttati.TableTile.IncludeOr.Any(title.Contains);
                         var ExcludeAnd = ttati.TableTile.ExcludeAnd.Length == 0 || !ttati.TableTile.ExcludeAnd.All(title.Contains);
                         var ExcludeOr = ttati.TableTile.ExcludeOr.Length == 0 || !ttati.TableTile.ExcludeOr.Any(title.Contains);
-                        if (IncludeAnd && IncludeOr && ExcludeAnd && ExcludeOr)
+                        var WindowClassMatch = string.IsNullOrEmpty(ttati.TableTile.WindowClass) || ttati.TableTile.WindowClass.Equals(windowClass);
+                        if (IncludeAnd && IncludeOr && ExcludeAnd && ExcludeOr && WindowClassMatch)
                         {
-                            //Debug.WriteLine("Move: " + title);
-
                             TableInfo ti = new TableInfo { Handle = hwnd, Title = title, CurrentRectangle = WinApi.GetWindowRectangle(hwnd) };
                             Match match = _regexTournamentNumber.Match(title);
                             if (match.Success)

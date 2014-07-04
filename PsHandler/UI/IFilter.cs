@@ -12,5 +12,6 @@ namespace PsHandler.UI
         List<string> FilterIncludeOr { get; }
         List<string> FilterExcludeAnd { get; }
         List<string> FilterExcludeOr { get; }
+        string WindowClass { get; }
     }
 }
