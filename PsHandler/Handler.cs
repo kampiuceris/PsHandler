@@ -95,7 +95,7 @@ namespace PsHandler
                                                     // 133x28 = "Show Lobby" button decorated
                                                     // 98x28 = "Close" button decorated
 
-                                                    if ((rect.Width == 85 && rect.Height == 28) || (rect.Width == 77 && rect.Height == 28)) 
+                                                    if ((rect.Width == 85 && rect.Height == 28) || (rect.Width == 77 && rect.Height == 28))
                                                     // Registration "OK" (decorated) || Unregister "OK" (decorated) (2014-06-25 update)
                                                     {
                                                         Methods.LeftMouseClick(buttonOkToClick, 5, 5);

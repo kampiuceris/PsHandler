@@ -103,7 +103,7 @@ namespace PsHandler
             public Black()
             {
                 ButtonImBack = new PokerStarsButton(new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.Themes.Black.imback.png")), 600, 455, 526, 442, 4, 4, 4);
-                ButtonTimebank = new PokerStarsButton(new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.Themes.Black.timebank.png")), 445, 460, 387, 435, 11, 11, 7);
+                ButtonTimebank = new PokerStarsButton(new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.Themes.Black.timebank.png")), 445, 460, 387, 435, 11, 14, 14);
                 ButtonHandReplayX = 177 / WIDTH;
                 ButtonHandReplayY = 13 / HEIGHT;
             }
