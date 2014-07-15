@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 
 namespace PsHandler.UI
@@ -62,7 +63,14 @@ namespace PsHandler.UI
 
         private void TextBoxKeyDown(KeyCombination keyCombination)
         {
-            KeyCombination = keyCombination;
+            Window parentWindow = Window.GetWindow(this);
+            if (parentWindow != null && parentWindow.WindowState != WindowState.Minimized)
+            {
+                if (new WindowInteropHelper(parentWindow).Handle == WinApi.GetActiveWindow())
+                {
+                    KeyCombination = keyCombination;
+                }
+            }
         }
 
         public static string GetString(KeyCombination keyCombination)

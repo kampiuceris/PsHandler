@@ -184,6 +184,9 @@ namespace PsHandler
         public extern static bool EnumThreadWindows(int dwThreadId, EnumThreadDelegate lpfn, IntPtr lParam);
 
         [DllImport("user32.dll")]
+        public static extern IntPtr GetActiveWindow();
+
+        [DllImport("user32.dll")]
         public extern static int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
         [DllImport("user32.dll")]
