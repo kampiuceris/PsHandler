@@ -49,7 +49,7 @@
             <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="2">
                 <Image HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" ToolTipService.ShowDuration="60000" />
                 <Label HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="2,0" Padding="0" Content="Window Class:" />
-                <TextBox x:Name="TextBox_WindowClass" Grid.Row="3" Grid.Column="0" Margin="5,0" AcceptsReturn="False" Width="250" Text="" VerticalContentAlignment="Center" />
+                <TextBox x:Name="TextBox_WindowClass" Margin="5,0" AcceptsReturn="False" Width="250" Text="" VerticalContentAlignment="Center" />
             </StackPanel>
         </Grid>
         <Button Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="130" x:Name="Button_WindowsInfo" Click="Button_WindowsInfo_Click">

@@ -6,11 +6,11 @@
         Title="Table Tile Config Edit" Width="600" Height="550" MinWidth="600" MinHeight="400" Background="#FFF0F0F0" Icon="../Images/ps.ico" UseLayoutRounding="True">
     <Grid>
         <StackPanel VerticalAlignment="Top" Margin="10,10,10,0" Height="27" Orientation="Horizontal">
-            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Padding="0" x:Name="Label_Name" Content="Name:" />
-            <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" x:Name="TextBox_Name" TextWrapping="NoWrap" Text="" Width="150" VerticalContentAlignment="Center" />
-            <Label Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Padding="0"  x:Name="Label_Name_Copy" Content="Hotkey:" />
-            <UI:TextBoxHotkey Grid.Row="0" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" x:Name="TextBoxHotkey_Hotkey" Width="150" VerticalContentAlignment="Center" />
-            <CheckBox Grid.Row="0" Grid.Column="6" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"  Content="Sort tournaments by oldest" x:Name="CheckBox_SortByStartingTime" />
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Padding="0" x:Name="Label_Name" Content="Name:" />
+            <TextBox HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" x:Name="TextBox_Name" TextWrapping="NoWrap" Text="" Width="150" VerticalContentAlignment="Center" />
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Padding="0"  x:Name="Label_Name_Copy" Content="Hotkey:" />
+            <UI:TextBoxHotkey HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" x:Name="TextBoxHotkey_Hotkey" Width="150" VerticalContentAlignment="Center" />
+            <CheckBox HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"  Content="Sort tournaments by oldest" x:Name="CheckBox_SortByStartingTime" />
         </StackPanel>
         <Border VerticalAlignment="Top" Margin="10,42,10,0" Height="125" BorderThickness="1" BorderBrush="LightGray" Padding="5">
             <local:UCScreenPreview x:Name="UCScreenPreview_Main" />
@@ -56,7 +56,7 @@
             <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="2">
                 <Image HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" ToolTipService.ShowDuration="60000" />
                 <Label HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="2,0" Padding="0" Content="Window Class:" />
-                <TextBox x:Name="TextBox_WindowClass" Grid.Row="3" Grid.Column="0" Margin="5,0" AcceptsReturn="False" Width="250" Text="" VerticalContentAlignment="Center" />
+                <TextBox x:Name="TextBox_WindowClass" Margin="5,0" AcceptsReturn="False" Width="250" Text="" VerticalContentAlignment="Center" />
             </StackPanel>
         </Grid>
         <Button Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="130" x:Name="Button_WindowsInfo" Click="Button_WindowsInfo_Click">
