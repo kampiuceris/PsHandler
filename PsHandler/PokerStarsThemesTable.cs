@@ -154,7 +154,7 @@ namespace PsHandler
         {
             public Slick()
             {
-                ButtonImBack = new PokerStarsButton(new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.Themes.Slick.imback.png")), 560, 450, 528, 442, 7, 7, 7);
+                ButtonImBack = new PokerStarsButton(new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.Themes.Slick.imback.png")), 560, 450, 528, 442, 9, 9, 9);
                 ButtonTimebank = new PokerStarsButton(new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.Themes.Slick.timebank.png")), 446, 459, 386, 434, 13, 13, 13);
                 ButtonHandReplayX = 177 / WIDTH;
                 ButtonHandReplayY = 13 / HEIGHT;

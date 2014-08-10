@@ -29,7 +29,8 @@ namespace PsHandler
 
         // Settings
 
-        public static List<string> AppDataPaths = new List<string>();
+        //public static List<string> AppDataPaths = new List<string>();
+        public static List<string> ImportFolders = new List<string>();
         public static PokerStarsThemeTable PokerStarsThemeTable = new PokerStarsThemesTable.Unknown();
         public static bool MinimizeToSystemTray = false;
         public static bool StartMinimized = false;
@@ -212,11 +213,11 @@ namespace PsHandler
 
                 //settings
 
-                XElement xAppDataPaths = new XElement("AppDataPaths");
-                root.Add(xAppDataPaths);
-                foreach (var path in AppDataPaths.ToArray())
+                XElement xImportFolderPaths = new XElement("ImportFolderPaths");
+                root.Add(xImportFolderPaths);
+                foreach (var path in ImportFolders.ToArray())
                 {
-                    Set(xAppDataPaths, "AppDataPath", path, ref errors, "");
+                    Set(xImportFolderPaths, "ImportFolderPath", path, ref errors, "");
                 }
 
                 Set(root, "PokerStarsThemeTable", PokerStarsThemeTable, ref errors, new PokerStarsThemesTable.Unknown());
@@ -356,11 +357,13 @@ namespace PsHandler
                 XDocument xDoc = XDocument.Load(CONFIG_FILENAME);
                 XElement root = xDoc.Element("Config");
 
-                foreach (XElement xAppDataPath in root.Elements("AppDataPaths").SelectMany(o => o.Elements("AppDataPath")))
+                VersionControl(root);
+
+                foreach (XElement xImportFolderPath in root.Elements("ImportFolderPaths").SelectMany(o => o.Elements("ImportFolderPath")))
                 {
-                    if (!String.IsNullOrEmpty(xAppDataPath.Value))
+                    if (!String.IsNullOrEmpty(xImportFolderPath.Value))
                     {
-                        AppDataPaths.Add(xAppDataPath.Value);
+                        ImportFolders.Add(xImportFolderPath.Value);
                     }
                 }
 
@@ -433,9 +436,6 @@ namespace PsHandler
                         }
                     }
                 }
-                //HudManager.SetBigBlindHudLocationX(GetFloat(root, "BigBlindHudLocationX", ref errors), null);
-                //HudManager.SetBigBlindHudLocationY(GetFloat(root, "BigBlindHudLocationY", ref errors), null);
-
 
                 // Poker Types
 
@@ -463,6 +463,37 @@ namespace PsHandler
             TableTileManager.SeedDefaultValues();
 
             return errors;
+        }
+
+        public static void VersionControl(XElement root)
+        {
+            // AppDataPaths -> ImportFolderPaths (v1.15 -> v1.16)
+
+            foreach (XElement xAppDataPath in root.Elements("AppDataPaths").SelectMany(o => o.Elements("AppDataPath")))
+            {
+                if (!String.IsNullOrEmpty(xAppDataPath.Value))
+                {
+                    DirectoryInfo dirPokerStarsAppData = new DirectoryInfo(xAppDataPath.Value);
+                    if (dirPokerStarsAppData.Exists)
+                    {
+                        DirectoryInfo[] dirsHandHistories = dirPokerStarsAppData.GetDirectories("HandHistory");
+                        foreach (DirectoryInfo dirHandHistory in dirsHandHistories)
+                        {
+                            if (dirHandHistory.Exists)
+                            {
+                                DirectoryInfo[] dirPlayers = dirHandHistory.GetDirectories();
+                                foreach (DirectoryInfo dirPlayer in dirPlayers)
+                                {
+                                    if (dirPlayer.Exists)
+                                    {
+                                        ImportFolders.Add(dirPlayer.FullName);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

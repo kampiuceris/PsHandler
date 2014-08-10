@@ -107,7 +107,7 @@ namespace PsHandler.PokerTypes
 
             Image image = new Image
             {
-                Source = Methods.GetEmbeddedResourceBitmap(string.Format("PsHandler.Images.EmbeddedResources.tag_blue.png")).ToBitmapSource(),
+                Source = Methods.GetEmbeddedResourceBitmap(string.Format("PsHandler.Images.EmbeddedResources.Size16x16.tag_blue.png")).ToBitmapSource(),
                 Width = 16,
                 Height = 16,
                 Margin = new Thickness(0, 0, 0, 0)

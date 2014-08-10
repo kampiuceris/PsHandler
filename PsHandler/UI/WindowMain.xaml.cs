@@ -117,7 +117,7 @@ namespace PsHandler.UI
             miExit.Click += (sender, args) => Close();
             miExit.Icon = new Image
             {
-                Source = Methods.GetEmbeddedResourceBitmap(string.Format("PsHandler.Images.EmbeddedResources.door_out.png")).ToBitmapSource(),
+                Source = Methods.GetEmbeddedResourceBitmap(string.Format("PsHandler.Images.EmbeddedResources.Size16x16.door_out.png")).ToBitmapSource(),
                 Width = 16,
                 Height = 16,
                 Margin = new Thickness(5, 0, 0, 0)

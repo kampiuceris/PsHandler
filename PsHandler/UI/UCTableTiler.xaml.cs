@@ -112,7 +112,7 @@ namespace PsHandler.UI
 
             Image image = new Image
             {
-                Source = Methods.GetEmbeddedResourceBitmap(string.Format("PsHandler.Images.EmbeddedResources.application_cascade.png")).ToBitmapSource(),
+                Source = Methods.GetEmbeddedResourceBitmap(string.Format("PsHandler.Images.EmbeddedResources.Size16x16.application_cascade.png")).ToBitmapSource(),
                 Width = 16,
                 Height = 16,
                 Margin = new Thickness(5, 0, 0, 0)

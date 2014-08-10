@@ -31,6 +31,7 @@ namespace PsHandler
                 (int)Math.Round(button.Height * bmp.Height));
             double r, g, b;
             AverageColor(bmp, rect, out r, out g, out b);
+            //Debug.WriteLine(string.Format("{0:0.000} {1:0.000} {2:0.000}", r - button.AvgR, g - button.AvgG, b - button.AvgB));
             if (CompareColors(r, g, b, button.AvgR, button.AvgG, button.AvgB, button.MaxDiffR, button.MaxDiffG, button.MaxDiffB))
             {
                 if (button.ButtonSecondaryCheck != null)// secondary check for some buggy themes
@@ -42,8 +43,7 @@ namespace PsHandler
                     //Debug.Write("CLICK ");
                     LeftMouseClickRelative(handle, button.ClickX, button.ClickY, true);
                 }
-            }
-            //Debug.WriteLine(string.Format("{0:0.000} {1:0.000} {2:0.000}", r - button.AvgR, g - button.AvgG, b - button.AvgB));
+            }          
         }
 
         public static bool IsMinimized(IntPtr handle)

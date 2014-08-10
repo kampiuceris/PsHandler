@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
@@ -17,7 +18,7 @@ namespace PsHandler.UI
             InitializeComponent();
 
             // Init values
-            TextBox_PokerStarsAppDataFolderPaths.Text = !Config.AppDataPaths.Any() ? "" : Config.AppDataPaths.Aggregate("", (current, path) => current + (path + ";"));
+            UCImportFolders_Main.Seed(Config.ImportFolders);
 
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Unknown());
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Azure());
@@ -51,15 +52,6 @@ namespace PsHandler.UI
 
             // Hook values
 
-            TextBox_PokerStarsAppDataFolderPaths.TextChanged += (sender, args) =>
-            {
-                Config.AppDataPaths.Clear();
-                foreach (var path in TextBox_PokerStarsAppDataFolderPaths.Text.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    Config.AppDataPaths.Add(path);
-                }
-            };
-
             ComboBox_PokerStarsThemeTable.SelectionChanged += (sender, args) =>
             {
                 var value = ComboBox_PokerStarsThemeTable.SelectedItem as PokerStarsThemeTable;
@@ -82,7 +74,6 @@ namespace PsHandler.UI
 
             // ToolTips
 
-            Image_AppDataPath.ToolTip = new UCToolTipAppDataFolderPath();
             Image_PokerStarsThemeTable.ToolTip = new UCToolTipPokerStarsThemeTable();
             Image_ExitHotkey.ToolTip = new UCToolTipExitHotkey();
         }

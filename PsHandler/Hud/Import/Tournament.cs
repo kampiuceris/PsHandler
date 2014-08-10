@@ -49,7 +49,10 @@ namespace PsHandler.Hud.Import
 
         public TableSize GetLastHandTableSize()
         {
-            return !Hands.Any() ? TableSize.Default : Hands.Last().TableSize;
+            lock (_lock)
+            {
+                return !Hands.Any() ? 0 : Hands.Last().TableSize;
+            } 
         }
 
         //

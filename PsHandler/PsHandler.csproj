@@ -90,6 +90,12 @@
       <DependentUpon>UCPokerTypes.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="UI\UCImportFolder.xaml.cs">
+      <DependentUpon>UCImportFolder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UCImportFolders.xaml.cs">
+      <DependentUpon>UCImportFolders.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\WindowWindowsInfo.xaml.cs">
       <DependentUpon>WindowWindowsInfo.xaml</DependentUpon>
     </Compile>
@@ -282,6 +288,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PokerTypes\WindowPokerTypeEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UCImportFolder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UCImportFolders.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -531,7 +545,7 @@
     <Resource Include="Images\tile_edit.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\EmbeddedResources\application_cascade.png" />
+    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\application_cascade.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\chips.png" />
@@ -551,7 +565,7 @@
     <Resource Include="Images\tag_blue_edit.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\EmbeddedResources\tag_blue.png" />
+    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\tag_blue.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\time.png" />
@@ -564,9 +578,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\blackboard_drawing.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\EmbeddedResources\door_out.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\page_white.png" />
@@ -633,6 +644,20 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\delete2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Size16x16\folder.png" />
+    <Resource Include="Images\Size16x16\folder_add.png" />
+    <Resource Include="Images\Size16x16\folder_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\update.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\door_out.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\cancel.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

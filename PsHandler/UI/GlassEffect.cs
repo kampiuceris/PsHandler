@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using System.Runtime.InteropServices;
@@ -24,7 +25,7 @@ namespace PsHandler.UI
         static extern bool DwmIsCompositionEnabled();
 
         public static readonly DependencyProperty IsEnabledProperty =
-            DependencyProperty.RegisterAttached("IsEnabled",
+                DependencyProperty.RegisterAttached("IsEnabled",
                 typeof(Boolean),
                 typeof(GlassEffect),
                 new FrameworkPropertyMetadata(OnIsEnabledChanged));
@@ -49,7 +50,7 @@ namespace PsHandler.UI
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Error(GlassEffect): " + e.Message + "\nStackTrace: " + e.StackTrace);
+                    Debug.WriteLine("Error(GlassEffect): " + e.Message + "\nStackTrace: " + e.StackTrace);
                 }
             }
         }
@@ -82,6 +83,5 @@ namespace PsHandler.UI
                 wnd.Background = originalBackground;
             }
         }
-
     }
 }
