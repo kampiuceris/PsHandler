@@ -36,6 +36,11 @@ namespace PsHandler
             Handler.Stop();
             Import.Stop();
             KeyboardHook.Dispose();
+
+            Config.GuiLocationX = (int)WindowMain.Left;
+            Config.GuiLocationY = (int)WindowMain.Top;
+            Config.GuiWidth = (int)WindowMain.Width;
+            Config.GuiHeight = (int)WindowMain.Height;
             Config.SaveXml();
 
             //close gui

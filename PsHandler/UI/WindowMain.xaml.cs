@@ -151,10 +151,6 @@ namespace PsHandler.UI
             if (!IsClosing)
             {
                 e.Cancel = true;
-                Config.GuiLocationX = (int)Left;
-                Config.GuiLocationY = (int)Top;
-                Config.GuiWidth = (int)Width;
-                Config.GuiHeight = (int)Height;
                 App.Quit();
             }
             else
