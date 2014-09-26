@@ -31,6 +31,7 @@ namespace PsHandler.UI
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Black());
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Classic());
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.HyperSimple());
+            ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Mercury());
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Nova());
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Slick());
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Stars());

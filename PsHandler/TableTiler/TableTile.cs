@@ -34,6 +34,12 @@ namespace PsHandler.TableTiler
 
             List<Rectangle> rects = new List<Rectangle>();
             int offsetX = 0, offsetY = 0;
+
+            //
+
+            rects.Clear();
+            offsetX = 0;
+            offsetY = 0;
             for (int i = 0; i < 8; i++)
             {
                 rects.Add(new Rectangle(
@@ -45,7 +51,6 @@ namespace PsHandler.TableTiler
                 offsetX += Config.WINDOWS_TITLE_BORDER_THICKNESS + Config.WINDOWS_BORDER_THICKNESS;
                 offsetY += Config.WINDOWS_TITLE_BORDER_THICKNESS + Config.WINDOWS_BORDER_THICKNESS;
             }
-
             tableTilesDefault.Add(new TableTile
             {
                 IsEnabled = false,
@@ -57,6 +62,20 @@ namespace PsHandler.TableTiler
                 XYWHs = rects.ToArray()
             });
 
+            //
+
+            rects.Clear();
+            offsetX = 0;
+            offsetY = 0;
+            for (int i = 0; i < 6; i++)
+            {
+                rects.Add(new Rectangle(
+                    (i % 3) * (Config.WINDOWS_BORDER_THICKNESS + Config.POKERSTARS_TABLE_CLIENT_SIZE_MIN.Width + Config.WINDOWS_BORDER_THICKNESS),
+                    (i / 3) * (Config.WINDOWS_BORDER_THICKNESS + Config.WINDOWS_TITLE_BORDER_THICKNESS + Config.POKERSTARS_TABLE_CLIENT_SIZE_MIN.Height + Config.WINDOWS_BORDER_THICKNESS),
+                    Config.WINDOWS_BORDER_THICKNESS + Config.POKERSTARS_TABLE_CLIENT_SIZE_MIN.Width + Config.WINDOWS_BORDER_THICKNESS,
+                    Config.WINDOWS_BORDER_THICKNESS + Config.WINDOWS_TITLE_BORDER_THICKNESS + Config.POKERSTARS_TABLE_CLIENT_SIZE_MIN.Height + Config.WINDOWS_BORDER_THICKNESS
+                    ));
+            }
             tableTilesDefault.Add(new TableTile
             {
                 IsEnabled = false,
@@ -65,15 +84,7 @@ namespace PsHandler.TableTiler
                 Name = "Sample: Tile All PokerStars Tables",
                 RegexWindowTitle = new Regex(""),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
-                XYWHs = new Rectangle[]
-			    {
-				    new Rectangle(0, 0, 485, 359),
-				    new Rectangle(485, 0, 485, 359),
-				    new Rectangle(970, 0, 485, 359),
-				    new Rectangle(0, 359, 485, 359),
-				    new Rectangle(485, 359, 485, 359),
-				    new Rectangle(970, 359, 485, 359),
-			    }
+                XYWHs = rects.ToArray()
             });
 
             return tableTilesDefault;

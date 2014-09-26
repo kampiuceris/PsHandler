@@ -7,7 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600">
     <Grid>
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Content="Enable Randomizer" x:Name="CheckBox_EnableRandomizer" />
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" x:Name="CheckBox_EnableRandomizer">
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Enable Randomizer" />
+        </CheckBox>
 
         <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="30" Margin="0,27,0,0" VerticalContentAlignment="Center" Text="" x:Name="TextBox_Chance90" />
         <Label VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="0" Margin="35,27,0,0" Height="22" HorizontalAlignment="Left" Content="% chance"/>

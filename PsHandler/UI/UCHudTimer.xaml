@@ -6,12 +6,16 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="500">
     <Grid>
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,0,0,0" VerticalContentAlignment="Center" Content="Enable Timer HUD" x:Name="CheckBox_EnableHudTimer" />
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,0,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_EnableHudTimer">
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Enable Timer HUD" />
+        </CheckBox>
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" Margin="0,27,0,0" VerticalContentAlignment="Center" Content="Time difference:" />
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" Margin="0,54,0,0" VerticalContentAlignment="Center" Content="Message &quot;HH not found&quot;:" />
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" Margin="0,81,0,0" VerticalContentAlignment="Center" Content="Message &quot;PokerType not found&quot;:" />
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" Margin="0,108,0,0" VerticalContentAlignment="Center" Content="Message &quot;Multiple PokerTypes&quot;:" />
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,162,0,0" VerticalContentAlignment="Center" Content="Lock Timer HUD location" x:Name="CheckBox_LockHudTimerLocation" />
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,162,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_LockHudTimerLocation">
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Lock Timer HUD location" />
+        </CheckBox>
 
         <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="150" Margin="180,27,0,0" VerticalContentAlignment="Center" x:Name="TextBox_TimerDiff" />
         <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="150" Margin="180,54,0,0" VerticalContentAlignment="Center" x:Name="TextBox_TimerHHNotFound" />

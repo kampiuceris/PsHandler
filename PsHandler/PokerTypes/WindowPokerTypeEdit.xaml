@@ -2,17 +2,17 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Poker Type Edit" UseLayoutRounding="True" Background="#FFF0F0F0" Icon="../Images/PsHandler.ico"
-        MinWidth="480" MinHeight="175" Width="480" Height="175">
+        MinWidth="480" MinHeight="175" Width="500" SizeToContent="Height">
     <Grid >
-        <Grid Margin="10">
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="18" Content="Name:" x:Name="Label_Name" />
-            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="39,0,0,0" Height="18" AcceptsReturn="False" x:Name="TextBox_Name" />
-            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="0,23,0,0" Padding="0" Height="18" Content="Level Length (hh:mm:ss):" x:Name="Label_LevelLength" />
-            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="135,23,0,0" Height="18" AcceptsReturn="False" x:Name="TextBox_LevelLength" />
-            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="0,46,0,0" Padding="0" Height="18" Content="Regex window title:" x:Name="Label_RegexWindowTitle" />
-            <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="112,46,0,0" Height="18" AcceptsReturn="False" x:Name="TextBox_RegexWindowTitle" />
-            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="0,69,0,0" Padding="0" Height="18" Content="Regex window class:" x:Name="Label_RegexWindowClass" />
-            <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="112,69,0,0" Height="18" AcceptsReturn="False" x:Name="TextBox_RegexWindowClass" />
+        <Grid Margin="10,10,10,39">
+            <Label HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Content="Name:" x:Name="Label_Name" />
+            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="39,0,0,0" Height="22" AcceptsReturn="False" x:Name="TextBox_Name" />
+            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="0,27,0,0" Padding="0" Height="22" Content="Level Length (hh:mm:ss):" x:Name="Label_LevelLength" />
+            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="135,27,0,0" Height="22" AcceptsReturn="False" x:Name="TextBox_LevelLength" />
+            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="0,54,0,0" Padding="0" Height="22" Content="Regex window title:" x:Name="Label_RegexWindowTitle" />
+            <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="112,54,0,0" Height="22" AcceptsReturn="False" x:Name="TextBox_RegexWindowTitle" />
+            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="0,81,0,0" Padding="0" Height="22" Content="Regex window class:" x:Name="Label_RegexWindowClass" />
+            <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="112,81,0,0" Height="22" AcceptsReturn="False" x:Name="TextBox_RegexWindowClass" />
         </Grid>
 
         <Button Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="130" x:Name="Button_WindowsInfo" Click="Button_WindowsInfo_Click">

@@ -6,10 +6,18 @@
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="600">
     <Grid>
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,0,0,0" VerticalContentAlignment="Center" Content="Enable BigBlind/M HUD" x:Name="CheckBox_EnableHudBigBlind" />
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,27,0,0" VerticalContentAlignment="Center" Content="Show Tournament M (instead of BigBlind)" x:Name="CheckBox_ShowTournamentM" />
-        <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="30,49,0,0" VerticalContentAlignment="Center" Content="M based on player count (recommended)" IsEnabled="False" x:Name="RadioButton_MByPlayerCount" />
-        <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="30,71,0,0" VerticalContentAlignment="Center" Content="M based on table size" IsEnabled="False" x:Name="RadioButton_MByTableSize" />
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,0,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_EnableHudBigBlind">
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Enable BigBlind/M HUD" />
+        </CheckBox>
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,27,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_ShowTournamentM">
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Show Tournament M (instead of BigBlind)" />
+        </CheckBox>
+        <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="30,49,0,0" VerticalContentAlignment="Center" IsEnabled="False" x:Name="RadioButton_MByPlayerCount">
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="M based on player count (recommended)" />
+        </RadioButton>
+        <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="30,71,0,0" VerticalContentAlignment="Center" IsEnabled="False" x:Name="RadioButton_MByTableSize">
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="M based on table size" />
+        </RadioButton>
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" Margin="0,98,0,0" VerticalContentAlignment="Center" Content="Decimals:" Width="140" />
         <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="150" Margin="145,98,0,0" VerticalContentAlignment="Center" x:Name="TextBox_Decimals" />
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="140" Padding="0" Margin="0,125,0,0" VerticalContentAlignment="Center" Content="Message &quot;HH not found&quot;:" />
@@ -33,7 +41,9 @@
             </StackPanel>
         </Button>
 
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,260,0,0" VerticalContentAlignment="Center" Content="Lock BigBlind/M HUD location" x:Name="CheckBox_LockHudBigBlindLocation" />
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,260,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_LockHudBigBlindLocation">
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Lock BigBlind/M HUD location" />
+        </CheckBox>
 
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="22" Padding="0" Margin="57,287,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Content="Location X" />
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="22" Padding="0" Margin="162,287,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Content="Location Y" />

@@ -7,7 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Content="Enable HUD" x:Name="CheckBox_EnableHud" />
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" x:Name="CheckBox_EnableHud">
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Enable HUD" />
+        </CheckBox>
         <TabControl Margin="0,27,0,0" x:Name="TabControl_Main">
             <TabItem>
                 <TabItem.Header>

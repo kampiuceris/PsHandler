@@ -6,7 +6,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Content="Enable Table Tiler" x:Name="CheckBox_EnableTableTimer" />
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" x:Name="CheckBox_EnableTableTimer">
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Enable Table Tiler" />
+        </CheckBox>
         <Grid Margin="0,27,0,0">
             <ListView x:Name="ListView_TableTiles" SelectionMode="Single" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,0,145,0" MouseDoubleClick="ListView_TableTilerConfigs_OnMouseDoubleClick" >
                 <ListView.Resources>

@@ -22,6 +22,7 @@ namespace PsHandler
             o = new PokerStarsThemesTable.Black(); if (value.Equals(o.ToString())) return o;
             o = new PokerStarsThemesTable.Classic(); if (value.Equals(o.ToString())) return o;
             o = new PokerStarsThemesTable.HyperSimple(); if (value.Equals(o.ToString())) return o;
+            o = new PokerStarsThemesTable.Mercury(); if (value.Equals(o.ToString())) return o;
             o = new PokerStarsThemesTable.Nova(); if (value.Equals(o.ToString())) return o;
             o = new PokerStarsThemesTable.Slick(); if (value.Equals(o.ToString())) return o;
             o = new PokerStarsThemesTable.Stars(); if (value.Equals(o.ToString())) return o;
@@ -133,6 +134,19 @@ namespace PsHandler
             }
 
             public override string ToString() { return "HyperSimple"; }
+        }
+
+        public class Mercury : PokerStarsThemeTable
+        {
+            public Mercury()
+            {
+                ButtonImBack = new PokerStarsButton(new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.Themes.Mercury.imback.png")), 650, 490, 613, 471, 10, 10, 10);
+                ButtonTimebank = new PokerStarsButton(new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.Themes.Mercury.timebank.png")), 439, 469, 404, 463, 26, 26, 26);
+                ButtonHandReplayX = 109 / WIDTH;
+                ButtonHandReplayY = 12 / HEIGHT;
+            }
+
+            public override string ToString() { return "Mercury"; }
         }
 
         public class Nova : PokerStarsThemeTable

@@ -6,18 +6,34 @@
              xmlns:ui="clr-namespace:PsHandler.UI"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400">
     <Grid>
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,0,0,0" Content="Autoclick &quot;I'm Back&quot; button" x:Name="CheckBox_AutoclickImBack" />
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,27,0,0" Content="Autoclick &quot;Timebank&quot; button" x:Name="CheckBox_AutoclickTimebank" />
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,54,0,0" Content="Autoclick &quot;Yes&quot; on waiting list &quot;Seat Available&quot; popup" x:Name="CheckBox_AutoclickYesSeatAvailable" />
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,81,0,0" Content="Autoclose tournament registration popups (PokerStars 6)" x:Name="CheckBox_AutocloseTournamentRegistrationPopups" />
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,108,0,0" Content="Autoclose HM2 &quot;Apply to similar tables?&quot; popup" x:Name="CheckBox_AutocloseHM2ApplyToSimilarTablesPopups" />
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,0,0,0" x:Name="CheckBox_AutoclickImBack">
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Autoclick &quot;I'm Back&quot; button" />
+        </CheckBox>
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,27,0,0" x:Name="CheckBox_AutoclickTimebank">
+            <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Autoclick &quot;Timebank&quot; button" />
+        </CheckBox>
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,54,0,0" x:Name="CheckBox_AutoclickYesSeatAvailable">
+            <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Autoclick &quot;Yes&quot; on waiting list &quot;Seat Available&quot; popup" />
+        </CheckBox>
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,81,0,0" x:Name="CheckBox_AutocloseTournamentRegistrationPopups">
+            <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Autoclose tournament registration popups (PokerStars 6)" />
+        </CheckBox>
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,108,0,0" x:Name="CheckBox_AutocloseHM2ApplyToSimilarTablesPopups">
+            <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Autoclose HM2 &quot;Apply to similar tables?&quot; popup" />
+        </CheckBox>
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" VerticalContentAlignment="Center" Margin="0,135,0,0" Content="Hand replay hotkey:" />
         <ui:TextBoxHotkey HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="200" VerticalContentAlignment="Center" Margin="121,135,0,0" x:Name="TextBoxHotkey_HandReplay" />
         <Label VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="0" Margin="0,162,0,0" Height="22" HorizontalAlignment="Left" Content="Quick Preview hotkey:"/>
-        <ui:TextBoxHotkey HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="200" Margin="121,162,0,0" VerticalContentAlignment="Center" x:Name="TextBoxHotkey_QuickPreview" />
-        <Label VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="0" Margin="326,162,0,0" Height="22" HorizontalAlignment="Left" Content="(singe keys only)" FontStyle="Italic"/>
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,189,0,0" Content="Enable custom tables window style (beta):" x:Name="CheckBox_EnableCustomTablesWindowStyle" />
-        <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="30,211,0,0" Content="No caption (experimental)" IsEnabled="False" x:Name="RadioButton_NoCaption" />
-        <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="30,233,0,0" Content="Borderless" IsEnabled="False" x:Name="RadioButton_Borderless" />
+        <ui:TextBoxHotkey HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="108" Margin="121,162,0,0" VerticalContentAlignment="Center" x:Name="TextBoxHotkey_QuickPreview" />
+        <Label VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="0" Margin="234,162,0,0" Height="22" HorizontalAlignment="Left" Content="(single keys only)" FontStyle="Italic"/>
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,189,0,0" x:Name="CheckBox_EnableCustomTablesWindowStyle">
+            <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Enable custom tables window style (beta):" />
+        </CheckBox>
+        <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="30,211,0,0" IsEnabled="False" x:Name="RadioButton_NoCaption">
+            <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="No caption (experimental)" />
+        </RadioButton>
+        <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="30,233,0,0" IsEnabled="False" x:Name="RadioButton_Borderless">
+            <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Borderless" />
+        </RadioButton>
     </Grid>
 </UserControl>

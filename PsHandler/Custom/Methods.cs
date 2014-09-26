@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -35,7 +36,7 @@ namespace PsHandler.Custom
                 (int)Math.Round(button.Height * bmp.Height));
             double r, g, b;
             AverageColor(bmp, rect, out r, out g, out b);
-            //Debug.WriteLine(string.Format("{0:0.000} {1:0.000} {2:0.000}", r - button.AvgR, g - button.AvgG, b - button.AvgB));
+            //Debug.WriteLine(string.Format("{0:0.000} {1:0.000} {2:0.000}", r - button.AvgR, g - button.AvgG, b - button.AvgB)); return;
             if (CompareColors(r, g, b, button.AvgR, button.AvgG, button.AvgB, button.MaxDiffR, button.MaxDiffG, button.MaxDiffB))
             {
                 if (button.ButtonSecondaryCheck != null)// secondary check for some buggy themes

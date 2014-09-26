@@ -29,7 +29,7 @@ namespace PsHandler
 
         public App()
         {
-            //RegisterHook(); // TODO debuging faster
+            RegisterHook(); // TODO debuging faster
             Config.LoadXml();
             HandHistoryManager = new HandHistoryManager();
             TableManager = new TableManager();

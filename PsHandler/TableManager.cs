@@ -147,7 +147,6 @@ namespace PsHandler
                             if (ObserverTableManagerTableList != null) ObserverTableManagerTableList.UpdateView(_tables);
                             if (ObserverTableManagerTableCount != null) ObserverTableManagerTableCount.SetTableCount(_tables.Count);
                         }
-
                         Thread.Sleep(DELAY_MS);
                     }
                 }

@@ -64,7 +64,6 @@ namespace PsHandler.TableTiler
             Canvas_Screens.Children.Clear();
             foreach (System.Windows.Forms.Screen screen in _screens)
             {
-                //AddRectangle(rScreen, ratio, diffScreenX, diffScreenY, screen.Bounds, Brushes.DarkSlateBlue, 1, Brushes.LightSteelBlue);
                 AddScreen(ratio, diffScreenX, diffScreenY, screen.Bounds);
             }
             if (config != null)
@@ -74,9 +73,6 @@ namespace PsHandler.TableTiler
                     AddTable(rScreen, ratio, diffScreenX, diffScreenY, config[i], numerate ? (i + 1).ToString(CultureInfo.InvariantCulture) : "");
                 }
             }
-
-            // test all windows
-            //IntPtr[] windowHWndAll = WinApi.GetWindowHWndAll(); for (int i = 0; i < windowHWndAll.Length; i++) if (!WinApi.GetWindowTitle(windowHWndAll[i]).Equals("Program Manager")) AddTable(rScreen, ratio, diffScreenX, diffScreenY, WinApi.GetWindowRectangle(windowHWndAll[i]), i.ToString());
         }
 
         private void AddTable(System.Drawing.Rectangle rScreen, double ratio, double diffScreenX, double diffScreenY, System.Drawing.Rectangle rObject, string text)
