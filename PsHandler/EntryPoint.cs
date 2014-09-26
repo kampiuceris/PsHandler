@@ -29,9 +29,8 @@ namespace PsHandler
                 {
                     Process.Start(processInfo);
                 }
-                catch (Exception)
+                catch
                 {
-                    // This will be thrown if the user cancels the prompt
                 }
             }
             else

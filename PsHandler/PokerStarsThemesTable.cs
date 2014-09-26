@@ -1,15 +1,13 @@
-﻿using System;
-using System.Diagnostics;
-using System.Drawing;
+﻿using System.Drawing;
+using PsHandler.Custom;
 
 namespace PsHandler
 {
     public abstract class PokerStarsThemeTable
     {
+        // client size for windows 7/8/8.1
         public const double WIDTH = 792;
         public const double HEIGHT = 546;
-        public const double WIDTH_SMALL = 475;
-        public const double HEIGHT_SMALL = 327;
 
         public PokerStarsButton ButtonImBack { get; set; }
         public PokerStarsButton ButtonTimebank { get; set; }

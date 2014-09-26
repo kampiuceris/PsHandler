@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using PsHandler.UI;
 
 namespace PsHandler.Hud
 {
@@ -30,6 +32,17 @@ namespace PsHandler.Hud
 
             Rectangle_Default.Fill = new SolidColorBrush(defaultColor);
             Label_Default.Content = defaultColor.ToString();
+            List<string> colorNames = typeof(System.Drawing.Color).GetProperties(BindingFlags.Public | BindingFlags.Static).Select(item => item.Name).ToList();
+            foreach (string colorName in colorNames)
+            {
+                System.Drawing.Color colorDrawing = System.Drawing.Color.FromName(colorName);
+                System.Windows.Media.Color colorMedia = Color.FromArgb(colorDrawing.A, colorDrawing.R, colorDrawing.G, colorDrawing.B);
+                if (defaultColor.Equals(colorMedia))
+                {
+                    Label_Default.Content = colorName;
+                    break;
+                }
+            }
 
             if (ColorsByValue == null) ColorsByValue = new List<ColorByValue>();
             foreach (var colorByValue in ColorsByValue)
@@ -52,7 +65,7 @@ namespace PsHandler.Hud
                 ColorByValue colorByValue = item.GetColorByValue();
                 if (colorByValue == null)
                 {
-                    MessageBox.Show(string.Format("Invalid one or more 'Color By Value' input."), "Error saving", MessageBoxButton.OK, MessageBoxImage.Error);
+                    WindowMessage.ShowDialog(string.Format("Invalid one or more 'Color By Value' input."), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
                     return;
                 }
                 ColorsByValue.Add(colorByValue);
@@ -69,3 +82,4 @@ namespace PsHandler.Hud
         }
     }
 }
+

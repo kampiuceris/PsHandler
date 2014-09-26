@@ -1,22 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using PsHandler.PokerTypes;
-using PsHandler.UI.ToolTips;
 using PsHandler.UI;
-
 
 namespace PsHandler.TableTiler
 {
@@ -36,59 +25,75 @@ namespace PsHandler.TableTiler
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             TableTile = tableTile ?? new TableTile();
 
-            // IFilter hook
+            // Hook
 
-            TextBox_IncludeAnd.TextChanged += (sender, args) => UpdateFilter();
-            TextBox_IncludeOr.TextChanged += (sender, args) => UpdateFilter();
-            TextBox_ExcludeAnd.TextChanged += (sender, args) => UpdateFilter();
-            TextBox_ExcludeOr.TextChanged += (sender, args) => UpdateFilter();
-            TextBox_WindowClass.TextChanged += (sender, args) => UpdateFilter();
+            Closing += (sender, args) => { if (_windowWindowsInfo != null) { _windowWindowsInfo.Close(); } };
 
-            // seed values
+            TextBox_RegexWindowTitle.TextChanged += (sender, args) => UpdateIFilter();
+            TextBox_RegexWindowClass.TextChanged += (sender, args) => UpdateIFilter();
+
+            TextBox_XYWidthHeight.TextChanged += (sender, args) => UCScreenPreview_Main_Update();
+            CheckBox_SortTournamentsByStartingTime.Checked += (sender, args) => UCScreenPreview_Main_Update();
+            CheckBox_SortTournamentsByStartingTime.Unchecked += (sender, args) => UCScreenPreview_Main_Update();
+            CheckBox_EnableAutoTile.Checked += (sender, args) =>
+            {
+                RadioButton_ToTheTop.IsEnabled = true;
+                RadioButton_ToTheClosest.IsEnabled = true;
+            };
+            CheckBox_EnableAutoTile.Unchecked += (sender, args) =>
+            {
+                RadioButton_ToTheTop.IsEnabled = false;
+                RadioButton_ToTheClosest.IsEnabled = false;
+            };
+            SizeChanged += (sender, args) => UCScreenPreview_Main_Update();
+            Loaded += (sender, args) =>
+            {
+                string text = TextBox_XYWidthHeight.Text; TextBox_XYWidthHeight.Text = text + "1"; TextBox_XYWidthHeight.Text = text;
+                text = TextBox_RegexWindowTitle.Text; TextBox_RegexWindowTitle.Text = text + "1"; TextBox_RegexWindowTitle.Text = text;
+                text = TextBox_RegexWindowClass.Text; TextBox_RegexWindowClass.Text = text + "1"; TextBox_RegexWindowClass.Text = text;
+            };
+
+            // Seed
 
             TextBox_Name.Text = TableTile.Name;
             TextBoxHotkey_Hotkey.KeyCombination = TableTile.KeyCombination;
-            CheckBox_SortByStartingTime.IsChecked = TableTile.SortByStartingHand;
-            TextBox_IncludeAnd.Text = !TableTile.IncludeAnd.Any() ? "" : TableTile.IncludeAnd.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
-            TextBox_IncludeOr.Text = !TableTile.IncludeOr.Any() ? "" : TableTile.IncludeOr.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
-            TextBox_ExcludeAnd.Text = !TableTile.ExcludeAnd.Any() ? "" : TableTile.ExcludeAnd.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
-            TextBox_ExcludeOr.Text = !TableTile.ExcludeOr.Any() ? "" : TableTile.ExcludeOr.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
-            TextBox_WindowClass.Text = TableTile.WindowClass;
-
-            StringBuilder sb = new StringBuilder();
-            foreach (var xywh in TableTile.XYWHs) sb.Append(string.Format("{0} {1} {2} {3}{4}", xywh.X, xywh.Y, xywh.Width, xywh.Height, Environment.NewLine));
-            TextBox_XYWH.Text = sb.ToString();
-
-            TextBox_XYWH.TextChanged += (sender, args) => UCScreenPreview_Main_Update();
-            CheckBox_SortByStartingTime.Checked += (sender, args) => UCScreenPreview_Main_Update();
-            CheckBox_SortByStartingTime.Unchecked += (sender, args) => UCScreenPreview_Main_Update();
-
-            Loaded += (sender, args) =>
+            CheckBox_SortTournamentsByStartingTime.IsChecked = TableTile.SortByStartingHand;
+            TextBox_RegexWindowTitle.Text = TableTile.RegexWindowTitle == null ? "" : TableTile.RegexWindowTitle.ToString();
+            TextBox_RegexWindowClass.Text = TableTile.RegexWindowClass == null ? "" : TableTile.RegexWindowClass.ToString();
+            StringBuilder sb = new StringBuilder(); foreach (var xywh in TableTile.XYWHs) sb.Append(string.Format("{0} {1} {2} {3}{4}", xywh.X, xywh.Y, xywh.Width, xywh.Height, Environment.NewLine)); TextBox_XYWidthHeight.Text = sb.ToString();
+            CheckBox_SortTournamentsByStartingTime.IsChecked = TableTile.SortByStartingHand;
+            CheckBox_EnableAutoTile.IsChecked = TableTile.AutoTile;
+            switch (TableTile.AutoTileMethod)
             {
-                string text = TextBox_XYWH.Text;
-                TextBox_XYWH.Text = text + "1";
-                TextBox_XYWH.Text = text;
-            };
+                case AutoTileMethod.ToTheTopSlot:
+                    RadioButton_ToTheTop.IsChecked = true;
+                    break;
+                case AutoTileMethod.ToTheClosestSlot:
+                    RadioButton_ToTheClosest.IsChecked = true;
+                    break;
+            }
 
             // ToolTips
 
-            Image_TitleIncludeAllWords.ToolTip = new UCToolTipTitleIncludeAllWords();
-            Image_TitleIncludeAnyWords.ToolTip = new UCToolTipTitleIncludeAnyWords();
-            Image_TitleExcludeAllWords.ToolTip = new UCToolTipTitleExcludeAllWords();
-            Image_TitleExcludeAnyWords.ToolTip = new UCToolTipTitleExcludeAnyWords();
-            Image_XYWHs.ToolTip = new UCToolTipXYWidthHeight();
+            //TODO
         }
 
         private void UCScreenPreview_Main_Update()
         {
             var config = GetXYWHs();
-            TextBox_XYWH.Background = config == null ? new SolidColorBrush(Colors.MistyRose) : new SolidColorBrush(Colors.Honeydew);
-            UCScreenPreview_Main.Update(config, CheckBox_SortByStartingTime.IsChecked == true);
+            TextBox_XYWidthHeight.Background = config == null ? new SolidColorBrush(Colors.MistyRose) : new SolidColorBrush(Colors.Honeydew);
+            try
+            {
+                UCScreenPreview_Main.Update(config, CheckBox_SortTournamentsByStartingTime.IsChecked == true);
+            }
+            catch
+            {
+            }
         }
 
         private System.Drawing.Rectangle[] GetXYWHs()
         {
-            string text = TextBox_XYWH.Text;
+            string text = TextBox_XYWidthHeight.Text;
             string[] lines = text.Split(new[] { Environment.NewLine, "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
             List<System.Drawing.Rectangle> config = new List<System.Drawing.Rectangle>();
             foreach (string line in lines)
@@ -104,35 +109,58 @@ namespace PsHandler.TableTiler
             return config.ToArray();
         }
 
+        private void Button_WindowsInfo_Click(object sender, RoutedEventArgs e)
+        {
+            if (_windowWindowsInfo != null) _windowWindowsInfo.Close();
+            _windowWindowsInfo = new WindowWindowsInfo(this);
+            _windowWindowsInfo.Show();
+        }
+
         private void Button_SaveAndClose_Click(object sender, RoutedEventArgs e)
         {
             if (TextBox_Name.Text.Length == 0)
             {
-                MessageBox.Show(string.Format("Invalid '{0}' input.", Label_Name.Content), "Error saving", MessageBoxButton.OK, MessageBoxImage.Error);
+                WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", Label_Name.Content), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
                 return;
             }
             if (TableTileManager.GetTableTilesCopy().Any(o => o.Name.ToLowerInvariant().Equals(TextBox_Name.Text.ToLowerInvariant())))
             {
-                MessageBox.Show("Cannot save. Duplicate names.", "Error saving", MessageBoxButton.OK, MessageBoxImage.Error);
+                WindowMessage.ShowDialog("Cannot save. Duplicate names.", "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
                 return;
             }
-
             System.Drawing.Rectangle[] xywhs = GetXYWHs();
             if (xywhs == null)
             {
-                MessageBox.Show(string.Format("Invalid '{0}' input.", Label_XYWHs.Content), "Error saving", MessageBoxButton.OK, MessageBoxImage.Error);
+                WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", Label_XYWidthHeight.Content), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
+                return;
+            }
+            try
+            {
+                new Regex(TextBox_RegexWindowTitle.Text);
+            }
+            catch
+            {
+                WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", Label_RegexWindowTitle.Content), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
+                return;
+            }
+            try
+            {
+                new Regex(TextBox_RegexWindowClass.Text);
+            }
+            catch
+            {
+                WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", Label_RegexWindowClass.Content), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
                 return;
             }
 
             TableTile.Name = TextBox_Name.Text;
             TableTile.KeyCombination = TextBoxHotkey_Hotkey.KeyCombination;
-            TableTile.SortByStartingHand = CheckBox_SortByStartingTime.IsChecked == true;
-            TableTile.IncludeAnd = TextBox_IncludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            TableTile.IncludeOr = TextBox_IncludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            TableTile.ExcludeAnd = TextBox_ExcludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            TableTile.ExcludeOr = TextBox_ExcludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            TableTile.SortByStartingHand = CheckBox_SortTournamentsByStartingTime.IsChecked == true;
+            TableTile.RegexWindowTitle = new Regex(TextBox_RegexWindowTitle.Text);
+            TableTile.RegexWindowClass = new Regex(TextBox_RegexWindowClass.Text);
             TableTile.XYWHs = xywhs;
-            TableTile.WindowClass = TextBox_WindowClass.Text;
+            TableTile.AutoTile = CheckBox_EnableAutoTile.IsChecked == true;
+            TableTile.AutoTileMethod = RadioButton_ToTheTop.IsChecked == true ? AutoTileMethod.ToTheTopSlot : RadioButton_ToTheClosest.IsChecked == true ? AutoTileMethod.ToTheClosestSlot : /*unknown default = to the top slot*/ AutoTileMethod.ToTheTopSlot;
 
             Saved = true;
             Close();
@@ -144,49 +172,56 @@ namespace PsHandler.TableTiler
             Close();
         }
 
-        private void Button_WindowsInfo_Click(object sender, RoutedEventArgs e)
-        {
-            if (_windowWindowsInfo != null) _windowWindowsInfo.Close();
-            _windowWindowsInfo = new WindowWindowsInfo(this);
-            _windowWindowsInfo.Show();
-        }
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            if (_windowWindowsInfo != null)
-            {
-                _windowWindowsInfo.Close();
-            }
-            base.OnClosing(e);
-        }
-
         // IFilter
 
-        private readonly object _filterLock = new object();
-        private readonly List<string> _filterIncludeAnd = new List<string>();
-        private readonly List<string> _filterIncludeOr = new List<string>();
-        private readonly List<string> _filterExcludeAnd = new List<string>();
-        private readonly List<string> _filterExcludeOr = new List<string>();
-        private string _filterWindowClass = "";
-        public List<string> FilterIncludeAnd { get { lock (_filterLock) { return _filterIncludeAnd.ToList(); } } }
-        public List<string> FilterIncludeOr { get { lock (_filterLock) { return _filterIncludeOr.ToList(); } } }
-        public List<string> FilterExcludeAnd { get { lock (_filterLock) { return _filterExcludeAnd.ToList(); } } }
-        public List<string> FilterExcludeOr { get { lock (_filterLock) { return _filterExcludeOr.ToList(); } } }
-        public string WindowClass { get { lock (_filterLock) { return _filterWindowClass; } } }
-
-        private void UpdateFilter()
+        private readonly object _iFilterLock = new object();
+        public Regex _regexWindowTitle = new Regex("");
+        public Regex _regexWindowClass = new Regex("");
+        public Regex RegexWindowTitle
         {
-            lock (_filterLock)
+            get
             {
-                _filterIncludeAnd.Clear();
-                _filterIncludeOr.Clear();
-                _filterExcludeAnd.Clear();
-                _filterExcludeOr.Clear();
-                _filterIncludeAnd.AddRange(TextBox_IncludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
-                _filterIncludeOr.AddRange(TextBox_IncludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
-                _filterExcludeAnd.AddRange(TextBox_ExcludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
-                _filterExcludeOr.AddRange(TextBox_ExcludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
-                _filterWindowClass = TextBox_WindowClass.Text;
+                lock (_iFilterLock)
+                {
+                    return _regexWindowTitle;
+                }
+            }
+        }
+        public Regex RegexWindowClass
+        {
+            get
+            {
+                lock (_iFilterLock)
+                {
+                    return _regexWindowClass;
+                }
+            }
+        }
+
+        private void UpdateIFilter()
+        {
+            lock (_iFilterLock)
+            {
+                try
+                {
+                    _regexWindowTitle = new Regex(TextBox_RegexWindowTitle.Text);
+                    TextBox_RegexWindowTitle.Background = Brushes.Honeydew;
+                }
+                catch
+                {
+                    _regexWindowTitle = new Regex("");
+                    TextBox_RegexWindowTitle.Background = Brushes.MistyRose;
+                }
+                try
+                {
+                    _regexWindowClass = new Regex(TextBox_RegexWindowClass.Text);
+                    TextBox_RegexWindowClass.Background = Brushes.Honeydew;
+                }
+                catch (Exception)
+                {
+                    _regexWindowClass = new Regex("");
+                    TextBox_RegexWindowClass.Background = Brushes.MistyRose;
+                }
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="PsHandler.UI.WindowWindowsInfo"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Windows Info" MinWidth="650" MinHeight="200" Background="#FFF0F0F0" Icon="../Images/ps.ico" UseLayoutRounding="True" SizeToContent="WidthAndHeight">
+        Title="Windows Info" MinWidth="650" MinHeight="200" Background="#FFF0F0F0" Icon="../Images/PsHandler.ico" UseLayoutRounding="True" SizeToContent="WidthAndHeight">
     <Grid>
         <ListView Margin="10" x:Name="ListView_Main" ItemsSource="{Binding}" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
             <ListView.View>

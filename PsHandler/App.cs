@@ -1,11 +1,20 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Drawing;
 using System.Threading;
 using System.Windows;
+using System.Windows.Forms;
 using Hardcodet.Wpf.TaskbarNotification;
+using PsHandler.Custom;
+using PsHandler.Hook;
+using PsHandler.Hook.WinApi;
 using PsHandler.Hud;
+using PsHandler.Import;
+using PsHandler.PokerTypes;
+using PsHandler.Randomizer;
 using PsHandler.TableTiler;
 using PsHandler.UI;
-using PsHandler.Hud.Import;
+using Application = System.Windows.Application;
 
 namespace PsHandler
 {
@@ -13,55 +22,87 @@ namespace PsHandler
     {
         public static WindowMain WindowMain;
         public static TaskbarIcon TaskbarIcon { get { return WindowMain.TaskbarIcon_NotifyIcon; } }
-        public static KeyboardHook KeyboardHook;
-        public static Import Import;
+        public static KeyboardHookListener KeyboardHook;
+        public static MouseHookListener MouseHook;
+        public static HandHistoryManager HandHistoryManager;
+        public static TableManager TableManager;
 
         public App()
         {
+            //RegisterHook(); // TODO debuging faster
             Config.LoadXml();
-            RegisterKeyboardHook();
+            HandHistoryManager = new HandHistoryManager();
+            TableManager = new TableManager();
+            TableTileManager.Start();
+            Handler.Start();
+
             WindowMain = new WindowMain();
             WindowMain.Show();
-            Import = new Import();
-            Handler.Start();
-            TableTileManager.Start();
-            ReleaseOnly();
+
+            TableManager.Start();
+            HandHistoryManager.Observer = WindowMain.UcStatusBar;
+            TableManager.ObserverTableManagerTableList = WindowMain.UCTables;
+            TableManager.ObserverTableManagerTableCount = WindowMain.UcStatusBar;
+
+            //ReleaseOnly(); // TODO update for release
         }
 
         public static void Quit()
         {
-            Autoupdate.Quit();
-            TableTileManager.Stop();
-            HudManager.Stop();
+            //Autoupdate.Quit(); // TODO update for release
+
             Handler.Stop();
-            Import.Stop();
-            KeyboardHook.Dispose();
+            TableTileManager.Stop();
+
+            HandHistoryManager.Stop();
 
             Config.GuiLocationX = (int)WindowMain.Left;
             Config.GuiLocationY = (int)WindowMain.Top;
             Config.GuiWidth = (int)WindowMain.Width;
             Config.GuiHeight = (int)WindowMain.Height;
+
             Config.SaveXml();
+            if (KeyboardHook != null) KeyboardHook.Enabled = false;
+            if (KeyboardHook != null) MouseHook.Enabled = false;
+
+            Config.EnableCustomTablesWindowStyle = false;
+            TableManager.EnsureTablesStyle();
+            TableManager.Stop();
 
             //close gui
             WindowMain.IsClosing = true;
             new Thread(() => Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() => WindowMain.Close()))).Start();
         }
 
-        private static void RegisterKeyboardHook()
+        private static void RegisterHook()
         {
-            KeyboardHook = new KeyboardHook();
-            KeyboardHook.KeyCombinationDownMethods.Add(kc =>
+            KeyboardHook = new KeyboardHookListener(new GlobalHooker()) { Enabled = true };
+            MouseHook = new MouseHookListener(new GlobalHooker()) { Enabled = true };
+
+            KeyboardHook.KeyDownMethods.Add(kc =>
             {
                 if (kc.Equals(Config.HotkeyHandReplay))
                 {
                     Handler.ClickReplayHandButton();
+                }
+                if (kc.Equals(Config.HotkeyQuickPreview))
+                {
+                    Handler.QuickPreviewStart();
                 }
                 if (kc.Equals(Config.HotkeyExit))
                 {
                     Quit();
                 }
                 TableTileManager.SetKeyCombination(kc);
+                RandomizerManager.CheckKeyCombination(kc);
+            });
+
+            KeyboardHook.KeyUpMethods.Add(kc =>
+            {
+                if (kc.Equals(Config.HotkeyQuickPreview))
+                {
+                    Handler.QuickPreviewStop();
+                }
             });
         }
 

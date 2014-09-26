@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Controls;
-using PsHandler.UI.ToolTips;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace PsHandler.UI
 {
@@ -18,7 +25,6 @@ namespace PsHandler.UI
             InitializeComponent();
 
             // Init values
-            UCImportFolders_Main.Seed(Config.ImportFolders);
 
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Unknown());
             ComboBox_PokerStarsThemeTable.Items.Add(new PokerStarsThemesTable.Azure());
@@ -74,8 +80,14 @@ namespace PsHandler.UI
 
             // ToolTips
 
-            Image_PokerStarsThemeTable.ToolTip = new UCToolTipPokerStarsThemeTable();
-            Image_ExitHotkey.ToolTip = new UCToolTipExitHotkey();
+            //Image_PokerStarsThemeTable.ToolTip = new UCToolTipPokerStarsThemeTable();
+            //Image_ExitHotkey.ToolTip = new UCToolTipExitHotkey();
+        }
+
+        private void Button_ManageImportFolders_Click(object sender, RoutedEventArgs e)
+        {
+            WindowManageImportFolders dialog = new WindowManageImportFolders(App.WindowMain);
+            dialog.ShowDialog();
         }
     }
 }

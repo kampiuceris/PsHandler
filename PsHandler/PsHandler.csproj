@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PsHandler</RootNamespace>
     <AssemblyName>PsHandler</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -37,7 +37,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Images\ps.ico</ApplicationIcon>
+    <ApplicationIcon>Images\PsHandler.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
@@ -66,18 +66,41 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Autoupdate.cs" />
-    <Compile Include="Bmp.cs" />
+    <Compile Include="Handler.cs" />
+    <Compile Include="Custom\Bmp.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="Hook\BaseHookListener.cs" />
+    <Compile Include="Hook\Controls\HookType.cs" />
+    <Compile Include="Hook\Controls\MouseKeyEventProvider.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Hook\KeyboardHookListener.cs" />
+    <Compile Include="Hook\KeyCombination.cs" />
+    <Compile Include="Hook\KeyEventArgsExt.cs" />
+    <Compile Include="Hook\KeyPressEventArgsExt.cs" />
+    <Compile Include="Hook\MouseEventExtArgs.cs" />
+    <Compile Include="Hook\MouseHookListener.cs" />
+    <Compile Include="Hook\WinApi\AppHooker.cs" />
+    <Compile Include="Hook\WinApi\GlobalHooker.cs" />
+    <Compile Include="Hook\WinApi\HookCallback.cs" />
+    <Compile Include="Hook\WinApi\Hooker.cs" />
+    <Compile Include="Hook\WinApi\Keyboard.cs" />
+    <Compile Include="Hook\WinApi\KeyboardHookStruct.cs" />
+    <Compile Include="Hook\WinApi\Messages.cs" />
+    <Compile Include="Hook\WinApi\Mouse.cs" />
+    <Compile Include="Hook\WinApi\MouseStructures.cs" />
+    <Compile Include="Hook\WinApi\Point.cs" />
     <Compile Include="Hud\ColorByValue.cs" />
+    <Compile Include="Hud\TableHud.cs" />
     <Compile Include="Hud\UCColorByValue.xaml.cs">
       <DependentUpon>UCColorByValue.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Hud\UCHudBigBlind.xaml.cs">
-      <DependentUpon>UCHudBigBlind.xaml</DependentUpon>
+    <Compile Include="Hud\UCHudLabel.xaml.cs">
+      <DependentUpon>UCHudLabel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Hud\UCHudTimer.xaml.cs">
-      <DependentUpon>UCHudTimer.xaml</DependentUpon>
+    <Compile Include="Hud\UCLabel.xaml.cs">
+      <DependentUpon>UCLabel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Hud\WindowBigBlind.xaml.cs">
       <DependentUpon>WindowBigBlind.xaml</DependentUpon>
@@ -85,37 +108,27 @@
     <Compile Include="Hud\WindowCustomizeColorsByValue.xaml.cs">
       <DependentUpon>WindowCustomizeColorsByValue.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PokerTypes\PokerTypeManager.cs" />
-    <Compile Include="PokerTypes\UCPokerTypes.xaml.cs">
-      <DependentUpon>UCPokerTypes.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="UI\UCImportFolder.xaml.cs">
-      <DependentUpon>UCImportFolder.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\UCImportFolders.xaml.cs">
-      <DependentUpon>UCImportFolders.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\WindowWindowsInfo.xaml.cs">
-      <DependentUpon>WindowWindowsInfo.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\GlassEffect.cs" />
-    <Compile Include="Handler.cs" />
-    <Compile Include="Hud\HudManager.cs" />
-    <Compile Include="Hud\Import\Hand.cs" />
-    <Compile Include="Hud\Import\Import.cs" />
-    <Compile Include="Hud\UCLabel.xaml.cs">
-      <DependentUpon>UCLabel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Hud\Import\Tournament.cs" />
-    <Compile Include="Hud\WindowCustomizeHud.xaml.cs">
-      <DependentUpon>WindowCustomizeHud.xaml</DependentUpon>
+    <Compile Include="Hud\WindowHudDesign.xaml.cs">
+      <DependentUpon>WindowHudDesign.xaml</DependentUpon>
     </Compile>
     <Compile Include="Hud\WindowTimer.xaml.cs">
       <DependentUpon>WindowTimer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="KeyboardHook.cs" />
-    <Compile Include="Methods.cs" />
+    <Compile Include="Import\Hand.cs" />
+    <Compile Include="Import\HandHistoryManager.cs" />
+    <Compile Include="Import\Tournament.cs" />
+    <Compile Include="PokerTypes\PokerType.cs" />
+    <Compile Include="PokerTypes\PokerTypeManager.cs" />
+    <Compile Include="PokerTypes\WindowPokerTypeEdit.xaml.cs">
+      <DependentUpon>WindowPokerTypeEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Randomizer\RandomizerManager.cs" />
+    <Compile Include="TableManager.cs" />
+    <Compile Include="TableTiler\TableTile.cs" />
+    <Compile Include="TableTiler\TableTileManager.cs" />
+    <Compile Include="UI\GlassEffect.cs" />
+    <Compile Include="Custom\Methods.cs" />
     <Compile Include="NotifyIconWpf\BalloonIcon.cs" />
     <Compile Include="NotifyIconWpf\Interop\BalloonFlags.cs" />
     <Compile Include="NotifyIconWpf\Interop\IconDataMembers.cs" />
@@ -134,15 +147,6 @@
     <Compile Include="NotifyIconWpf\TaskbarIcon.cs" />
     <Compile Include="NotifyIconWpf\Util.cs" />
     <Compile Include="PokerStarsThemesTable.cs" />
-    <Compile Include="TableTiler\TableTile.cs" />
-    <Compile Include="TableTiler\TableTileManager.cs" />
-    <Compile Include="TableTiler\WindowTableTileEdit.xaml.cs">
-      <DependentUpon>WindowTableTileEdit.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PokerTypes\PokerType.cs" />
-    <Compile Include="PokerTypes\WindowPokerTypeEdit.xaml.cs">
-      <DependentUpon>WindowPokerTypeEdit.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -156,77 +160,58 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ScreenCapture.cs" />
-    <Compile Include="UI\IFilter.cs" />
+    <Compile Include="Custom\ScreenCapture.cs" />
     <Compile Include="UI\TextBoxHotkey.cs" />
-    <Compile Include="UI\ToolTips\UCToolTipHandReplayHotkey.xaml.cs">
-      <DependentUpon>UCToolTipHandReplayHotkey.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipTimeDiff.xaml.cs">
-      <DependentUpon>UCToolTipTimeDiff.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipAutocloseHM2ApplyToSimilarTablesPopups.xaml.cs">
-      <DependentUpon>UCToolTipAutocloseHM2ApplyToSimilarTablesPopups.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipAutocloseTournamentRegistrationPopups.xaml.cs">
-      <DependentUpon>UCToolTipAutocloseTournamentRegistrationPopups.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipAutoclickYesSeatAvailable.xaml.cs">
-      <DependentUpon>UCToolTipAutoclickYesSeatAvailable.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipButtonTimebank.xaml.cs">
-      <DependentUpon>UCToolTipButtonTimebank.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipButtonImBack.xaml.cs">
-      <DependentUpon>UCToolTipButtonImBack.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipExitHotkey.xaml.cs">
-      <DependentUpon>UCToolTipExitHotkey.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipPokerStarsThemeTable.xaml.cs">
-      <DependentUpon>UCToolTipPokerStarsThemeTable.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipAppDataFolderPath.xaml.cs">
-      <DependentUpon>UCToolTipAppDataFolderPath.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipFileNameBuyInRake.xaml.cs">
-      <DependentUpon>UCToolTipFileNameBuyInRake.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipXYWidthHeight.xaml.cs">
-      <DependentUpon>UCToolTipXYWidthHeight.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipTextBoxCheckFilter.xaml.cs">
-      <DependentUpon>UCToolTipTextBoxCheckFilter.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipTitleExcludeAnyWords.xaml.cs">
-      <DependentUpon>UCToolTipTitleExcludeAnyWords.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipTitleIncludeAnyWords.xaml.cs">
-      <DependentUpon>UCToolTipTitleIncludeAnyWords.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipTitleIncludeAllWords.xaml.cs">
-      <DependentUpon>UCToolTipTitleIncludeAllWords.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ToolTips\UCToolTipTitleExcludeAllWords.xaml.cs">
-      <DependentUpon>UCToolTipTitleExcludeAllWords.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\UCController.xaml.cs">
       <DependentUpon>UCController.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\UCHud.xaml.cs">
-      <DependentUpon>UCHud.xaml</DependentUpon>
     </Compile>
     <Compile Include="TableTiler\UCScreenPreview.xaml.cs">
       <DependentUpon>UCScreenPreview.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\UCHud.xaml.cs">
+      <DependentUpon>UCHud.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UCHudBigBlind.xaml.cs">
+      <DependentUpon>UCHudBigBlind.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UCHudPokerTypes.xaml.cs">
+      <DependentUpon>UCHudPokerTypes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UCHudTimer.xaml.cs">
+      <DependentUpon>UCHudTimer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UCRandomizer.xaml.cs">
+      <DependentUpon>UCRandomizer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\UCSettings.xaml.cs">
       <DependentUpon>UCSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UCStatusBar.xaml.cs">
+      <DependentUpon>UCStatusBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UCTables.xaml.cs">
+      <DependentUpon>UCTables.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\UCTableTiler.xaml.cs">
       <DependentUpon>UCTableTiler.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\WindowMain.xaml.cs">
       <DependentUpon>WindowMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TableTiler\WindowTableTileEdit.xaml.cs">
+      <DependentUpon>WindowTableTileEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\WindowManageImportFolders.xaml.cs">
+      <DependentUpon>WindowManageImportFolders.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\WindowMessage.xaml.cs">
+      <DependentUpon>WindowMessage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Randomizer\WindowRandomizer.xaml.cs">
+      <DependentUpon>WindowRandomizer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\WindowWindowsInfo.xaml.cs">
+      <DependentUpon>WindowWindowsInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="WinApi.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -244,22 +229,15 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\ps.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="Hud\UCColorByValue.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Hud\UCHudBigBlind.xaml">
+    <Page Include="Hud\UCHudLabel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Hud\UCLabel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Hud\UCHudTimer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -271,7 +249,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Hud\WindowCustomizeHud.xaml">
+    <Page Include="Hud\WindowHudDesign.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -279,95 +257,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PokerTypes\UCPokerTypes.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="TableTiler\WindowTableTileEdit.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="PokerTypes\WindowPokerTypeEdit.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\UCImportFolder.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\UCImportFolders.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\WindowWindowsInfo.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipHandReplayHotkey.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipTimeDiff.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipAutocloseHM2ApplyToSimilarTablesPopups.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipAutocloseTournamentRegistrationPopups.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipAutoclickYesSeatAvailable.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipButtonTimebank.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipButtonImBack.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipExitHotkey.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipPokerStarsThemeTable.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipAppDataFolderPath.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipFileNameBuyInRake.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipXYWidthHeight.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipTextBoxCheckFilter.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipTitleExcludeAnyWords.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipTitleIncludeAnyWords.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipTitleIncludeAllWords.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ToolTips\UCToolTipTitleExcludeAllWords.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -375,15 +265,39 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\UCHud.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="TableTiler\UCScreenPreview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\UCHud.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UCHudBigBlind.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UCHudPokerTypes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UCHudTimer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UCRandomizer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\UCSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UCStatusBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UCTables.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -392,6 +306,26 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\WindowMain.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TableTiler\WindowTableTileEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\WindowManageImportFolders.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\WindowMessage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Randomizer\WindowRandomizer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\WindowWindowsInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -442,213 +376,9 @@
     <EmbeddedResource Include="Images\Themes\Slick\imback2.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\ToolTips\hm2applytosimilartables.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolTips\tournamentregistrationpopups.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Lobby\Black\0.png" />
-    <EmbeddedResource Include="Images\Lobby\Black\1.png" />
-    <EmbeddedResource Include="Images\Lobby\Black\2.png" />
-    <EmbeddedResource Include="Images\Lobby\Black\3.png" />
-    <EmbeddedResource Include="Images\Lobby\Black\4.png" />
-    <EmbeddedResource Include="Images\Lobby\Black\5.png" />
-    <EmbeddedResource Include="Images\Lobby\Black\6.png" />
-    <EmbeddedResource Include="Images\Lobby\Black\7.png" />
-    <EmbeddedResource Include="Images\Lobby\Black\8.png" />
-    <EmbeddedResource Include="Images\Lobby\Black\9.png" />
-    <EmbeddedResource Include="Images\Lobby\Black\separator.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Lobby\Classic\0.png" />
-    <EmbeddedResource Include="Images\Lobby\Classic\1.png" />
-    <EmbeddedResource Include="Images\Lobby\Classic\2.png" />
-    <EmbeddedResource Include="Images\Lobby\Classic\3.png" />
-    <EmbeddedResource Include="Images\Lobby\Classic\4.png" />
-    <EmbeddedResource Include="Images\Lobby\Classic\5.png" />
-    <EmbeddedResource Include="Images\Lobby\Classic\6.png" />
-    <EmbeddedResource Include="Images\Lobby\Classic\7.png" />
-    <EmbeddedResource Include="Images\Lobby\Classic\8.png" />
-    <EmbeddedResource Include="Images\Lobby\Classic\9.png" />
-    <EmbeddedResource Include="Images\Lobby\Classic\separator.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolTips\appdatafolder.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\information.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\accept.png" />
-    <Resource Include="Images\cancel.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\table_row_delete.png" />
-    <Resource Include="Images\table_row_insert.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\add.png" />
-    <Resource Include="Images\delete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\edit.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\cog.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\small_tiles.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\house.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\controller.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\update.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\large_tiles.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\timer.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Themes\Slick\checked.png" />
-    <EmbeddedResource Include="Images\Themes\Slick\unchecked.png" />
-    <EmbeddedResource Include="Images\Themes\Slick\uncheckedfold.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Themes\Stars\checked.png" />
-    <EmbeddedResource Include="Images\Themes\Stars\checkedfold.png" />
-    <EmbeddedResource Include="Images\Themes\Stars\unchecked.png" />
-    <EmbeddedResource Include="Images\Themes\Stars\uncheckedfold.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Themes\Nova\checked.png" />
-    <EmbeddedResource Include="Images\Themes\Nova\unchecked.png" />
-    <EmbeddedResource Include="Images\Themes\Nova\uncheckedfold.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Themes\Nova\checkedsmall.png" />
-    <EmbeddedResource Include="Images\Themes\Nova\uncheckedfoldsmall.png" />
-    <EmbeddedResource Include="Images\Themes\Nova\uncheckedsmall.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\monitor_window_3d.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\tile_add.png" />
-    <Resource Include="Images\tile_delete.png" />
-    <Resource Include="Images\tile_edit.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\application_cascade.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\chips.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\chronometer.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\poker.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\three_tags.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\tag_blue_add.png" />
-    <Resource Include="Images\tag_blue_delete.png" />
-    <Resource Include="Images\tag_blue_edit.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\tag_blue.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\time.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\download.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\page_white_go.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\blackboard_drawing.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\page_white.png" />
-    <Resource Include="Images\page_white_error.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\page.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\book.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\book_go_custom.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\monitor_window_3d_search.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\zoom_refresh.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolTips\screenspreview.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolTips\xywhgreen.png" />
-    <Resource Include="Images\ToolTips\xywhred.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\book_open.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolTips\pokerstarsthemestable.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolTips\delete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolTips\buttonimback.png" />
-    <Resource Include="Images\ToolTips\buttontimebank.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolTips\autoclickyesseatavailable.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolTips\filenamebuyinrake.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolTips\internettimeupdate.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolTips\replayhandhotkey.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\update_32x32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\cross-button.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\information_32x32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\color_wheel.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\delete2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Size16x16\folder.png" />
-    <Resource Include="Images\Size16x16\folder_add.png" />
-    <Resource Include="Images\Size16x16\folder_delete.png" />
+    <Resource Include="Images\Resources\Size16x16\folder.png" />
+    <Resource Include="Images\Resources\Size16x16\folder_add.png" />
+    <Resource Include="Images\Resources\Size16x16\folder_delete.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\update.png" />
@@ -658,6 +388,101 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\cancel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PsHandler.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\cog.png" />
+    <Resource Include="Images\Resources\Size16x16\controller.png" />
+    <Resource Include="Images\Resources\Size16x16\monitor_window_3d.png" />
+    <Resource Include="Images\Resources\Size16x16\small_tiles.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\poker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\poker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\page.png" />
+    <Resource Include="Images\Resources\Size16x16\page_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\page_white_error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\information.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\accept.png" />
+    <Resource Include="Images\Resources\Size16x16\cancel.png" />
+    <Resource Include="Images\Resources\Size16x16\monitor_window_3d_search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size32x32\cancel.png" />
+    <Resource Include="Images\Resources\Size32x32\information.png" />
+    <Resource Include="Images\Resources\Size32x32\question.png" />
+    <Resource Include="Images\Resources\Size32x32\warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\door_in.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\folder_go.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\tile_add.png" />
+    <Resource Include="Images\Resources\Size16x16\tile_delete.png" />
+    <Resource Include="Images\Resources\Size16x16\tile_edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\application_cascade.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\chips.png" />
+    <Resource Include="Images\Resources\Size16x16\three_tags.png" />
+    <Resource Include="Images\Resources\Size16x16\time.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\tag_blue_add.png" />
+    <Resource Include="Images\Resources\Size16x16\tag_blue_delete.png" />
+    <Resource Include="Images\Resources\Size16x16\tag_blue_edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\tag_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\application_cascade.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\color_wheel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\blackboard_drawing.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\zoom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sound\EmbeddedResources\no_old.wav" />
+    <EmbeddedResource Include="Sound\EmbeddedResources\yes_old.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\dice.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sound\EmbeddedResources\no.wav" />
+    <EmbeddedResource Include="Sound\EmbeddedResources\yes.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

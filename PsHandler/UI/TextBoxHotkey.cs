@@ -7,12 +7,14 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using PsHandler.Hook;
 
 namespace PsHandler.UI
 {
     public class TextBoxHotkey : TextBox
     {
         private KeyCombination _keyCombination;
+        public bool RestrictedToSingeKeys;
 
         public KeyCombination KeyCombination
         {
@@ -29,8 +31,10 @@ namespace PsHandler.UI
             }
         }
 
-        public TextBoxHotkey()
+        public TextBoxHotkey(bool restrictedToSingeKeys)
         {
+            RestrictedToSingeKeys = restrictedToSingeKeys;
+
             KeyCombination = new KeyCombination(Key.None, false, false, false);
 
             BorderThickness = new Thickness(1.2);
@@ -40,17 +44,24 @@ namespace PsHandler.UI
             SelectionBrush = Brushes.Transparent;
             VerticalContentAlignment = VerticalAlignment.Center;
             ToolTip = "Double click mouse to remove hotkey";
+            Padding = new Thickness(0);
 
             GotFocus += (sender, args) =>
             {
                 BorderBrush = Brushes.Red;
-                App.KeyboardHook.KeyCombinationDownMethods.Add(TextBoxKeyDown);
+                if (App.KeyboardHook != null)
+                {
+                    App.KeyboardHook.KeyDownMethods.Add(TextBoxKeyDown);
+                }
             };
 
             LostFocus += (sender, args) =>
             {
                 BorderBrush = Brushes.DarkGray;
-                App.KeyboardHook.KeyCombinationDownMethods.Remove(TextBoxKeyDown);
+                if (App.KeyboardHook != null)
+                {
+                    App.KeyboardHook.KeyDownMethods.Remove(TextBoxKeyDown);
+                }
             };
 
             MouseDoubleClick += (sender, args) =>
@@ -61,6 +72,11 @@ namespace PsHandler.UI
             TextWrapping = TextWrapping.NoWrap;
         }
 
+        public TextBoxHotkey()
+            : this(false)
+        {
+        }
+
         private void TextBoxKeyDown(KeyCombination keyCombination)
         {
             Window parentWindow = Window.GetWindow(this);
@@ -68,6 +84,12 @@ namespace PsHandler.UI
             {
                 if (new WindowInteropHelper(parentWindow).Handle == WinApi.GetActiveWindow())
                 {
+                    if (RestrictedToSingeKeys)
+                    {
+                        keyCombination.Alt = false;
+                        keyCombination.Shift = false;
+                        keyCombination.Ctrl = false;
+                    }
                     KeyCombination = keyCombination;
                 }
             }

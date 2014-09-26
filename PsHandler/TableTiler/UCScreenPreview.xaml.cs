@@ -1,8 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace PsHandler.TableTiler
@@ -12,6 +21,8 @@ namespace PsHandler.TableTiler
     /// </summary>
     public partial class UCScreenPreview : UserControl
     {
+        private readonly System.Windows.Forms.Screen[] _screens = System.Windows.Forms.Screen.AllScreens;
+
         public UCScreenPreview()
         {
             InitializeComponent();
@@ -19,15 +30,13 @@ namespace PsHandler.TableTiler
 
         public void Update(System.Drawing.Rectangle[] config, bool numerate)
         {
-            System.Windows.Forms.Screen[] screens = System.Windows.Forms.Screen.AllScreens;
-
             double
                 leftScreen = double.MaxValue,
                 topScreen = double.MaxValue,
                 rightScreen = double.MinValue,
                 bottomScreen = double.MinValue;
 
-            foreach (System.Windows.Forms.Screen screen in screens)
+            foreach (System.Windows.Forms.Screen screen in _screens)
             {
                 if (leftScreen > screen.Bounds.Left) leftScreen = screen.Bounds.Left;
                 if (topScreen > screen.Bounds.Top) topScreen = screen.Bounds.Top;
@@ -43,7 +52,8 @@ namespace PsHandler.TableTiler
 
             double ratio = widthCanvas / widthScreen; // x ratio
             if (heightScreen * ratio > heightCanvas) ratio = heightCanvas / heightScreen; // y ratio
-            if (widthScreen * ratio > widthCanvas) throw new NotSupportedException();
+            //if (widthScreen * ratio > widthCanvas) throw new NotSupportedException();
+            if (widthScreen * ratio > widthCanvas) return;
 
             System.Drawing.Rectangle rScreen = new System.Drawing.Rectangle((int)leftScreen, (int)topScreen, (int)widthScreen, (int)heightScreen);
             double diffScreenX = -rScreen.Left;
@@ -52,7 +62,7 @@ namespace PsHandler.TableTiler
             // draw
 
             Canvas_Screens.Children.Clear();
-            foreach (System.Windows.Forms.Screen screen in screens)
+            foreach (System.Windows.Forms.Screen screen in _screens)
             {
                 //AddRectangle(rScreen, ratio, diffScreenX, diffScreenY, screen.Bounds, Brushes.DarkSlateBlue, 1, Brushes.LightSteelBlue);
                 AddScreen(ratio, diffScreenX, diffScreenY, screen.Bounds);

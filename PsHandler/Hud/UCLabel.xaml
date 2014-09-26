@@ -4,5 +4,5 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" Background="Transparent">
-    <Label x:Name="Label_Main" HorizontalAlignment="Center" VerticalAlignment="Center" Content="" Padding="0" Margin="2"/>
+    <Label x:Name="Label_Main" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" Margin="2" Content="" />
 </UserControl>

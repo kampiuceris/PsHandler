@@ -2,61 +2,101 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 using System.Xml.Linq;
+using PsHandler.Hook;
 
 namespace PsHandler.TableTiler
 {
+    public enum AutoTileMethod
+    {
+        ToTheTopSlot,
+        ToTheClosestSlot,
+    }
+
     public class TableTile
     {
+        public bool IsEnabled;
+
         public string Name = "";
         public KeyCombination KeyCombination;
         public bool SortByStartingHand;
-        public string[] IncludeAnd = new string[0];
-        public string[] IncludeOr = new string[0];
-        public string[] ExcludeAnd = new string[0];
-        public string[] ExcludeOr = new string[0];
-        public string WindowClass = "";
+        public bool AutoTile;
+        public AutoTileMethod AutoTileMethod = AutoTileMethod.ToTheTopSlot;
+        public Regex RegexWindowTitle = new Regex("");
+        public Regex RegexWindowClass = new Regex("");
         public Rectangle[] XYWHs = new Rectangle[0];
-        public bool IsEnabled;
 
-        public override string ToString()
+        public static IEnumerable<TableTile> GetDefaultValues()
         {
-            return Name;
+            List<TableTile> tableTilesDefault = new List<TableTile>();
+
+            List<Rectangle> rects = new List<Rectangle>();
+            int offsetX = 0, offsetY = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                rects.Add(new Rectangle(
+                    0 + offsetX,
+                    0 + offsetY,
+                    Config.POKERSTARS_TABLE_CLIENT_SIZE_DEFAULT.Width + Config.WINDOWS_BORDER_THICKNESS + Config.WINDOWS_BORDER_THICKNESS,
+                    Config.POKERSTARS_TABLE_CLIENT_SIZE_DEFAULT.Height + Config.WINDOWS_BORDER_THICKNESS + Config.WINDOWS_BORDER_THICKNESS + Config.WINDOWS_TITLE_BORDER_THICKNESS
+                    ));
+                offsetX += Config.WINDOWS_TITLE_BORDER_THICKNESS + Config.WINDOWS_BORDER_THICKNESS;
+                offsetY += Config.WINDOWS_TITLE_BORDER_THICKNESS + Config.WINDOWS_BORDER_THICKNESS;
+            }
+
+            tableTilesDefault.Add(new TableTile
+            {
+                IsEnabled = false,
+                KeyCombination = new KeyCombination(Key.None, false, false, false),
+                SortByStartingHand = true,
+                Name = "Sample: Cascade All PokerStars Tables",
+                RegexWindowTitle = new Regex(""),
+                RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
+                XYWHs = rects.ToArray()
+            });
+
+            tableTilesDefault.Add(new TableTile
+            {
+                IsEnabled = false,
+                KeyCombination = new KeyCombination(Key.None, false, false, false),
+                SortByStartingHand = true,
+                Name = "Sample: Tile All PokerStars Tables",
+                RegexWindowTitle = new Regex(""),
+                RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
+                XYWHs = new Rectangle[]
+			    {
+				    new Rectangle(0, 0, 485, 359),
+				    new Rectangle(485, 0, 485, 359),
+				    new Rectangle(970, 0, 485, 359),
+				    new Rectangle(0, 359, 485, 359),
+				    new Rectangle(485, 359, 485, 359),
+				    new Rectangle(970, 359, 485, 359),
+			    }
+            });
+
+            return tableTilesDefault;
         }
 
-        public string ToXml()
+        public static AutoTileMethod ParseAutoTileMethod(string text)
         {
-            return new XDocument(ToXElement()).ToString();
+            return Enum.GetValues(typeof(AutoTileMethod)).Cast<AutoTileMethod>().FirstOrDefault(item => item.ToString().Equals(text));
         }
 
         public XElement ToXElement()
         {
             return new XElement("TableTile",
-                                     new XElement("Name", Name),
-                                     new XElement("Hotkey", KeyCombination.ToString()),
-                                     new XElement("SortByStartingHand", SortByStartingHand),
-                                     new XElement("IncludeAnd", IncludeAnd.Select(s => new XElement("Text", s))),
-                                     new XElement("IncludeOr", IncludeOr.Select(s => new XElement("Text", s))),
-                                     new XElement("ExcludeAnd", ExcludeAnd.Select(s => new XElement("Text", s))),
-                                     new XElement("ExcludeOr", ExcludeOr.Select(s => new XElement("Text", s))),
-                                     new XElement("WindowClass", WindowClass),
-                                     new XElement("XYWHs", XYWHs.Select(s => new XElement("XYWH", string.Format("{0} {1} {2} {3}", s.X, s.Y, s.Width, s.Height)))),
-                                     new XElement("IsEnabled", IsEnabled)
+                                    new XElement("Name", Name),
+                                    new XElement("IsEnabled", IsEnabled.ToString()),
+                                    new XElement("Hotkey", KeyCombination.ToString()),
+                                    new XElement("SortByStartingHand", SortByStartingHand.ToString()),
+                                    new XElement("AutoTile", AutoTile.ToString()),
+                                    new XElement("AutoTileMethod", AutoTileMethod.ToString()),
+                                    new XElement("RegexWindowTitle", RegexWindowTitle.ToString()),
+                                    new XElement("RegexWindowClass", RegexWindowClass.ToString()),
+                                    new XElement("XYWHs", XYWHs.Select(o => new XElement("XYWH", string.Format("{0} {1} {2} {3}", o.X, o.Y, o.Width, o.Height))))
                                 );
-        }
-
-        public static TableTile FromXml(string xml)
-        {
-            try
-            {
-                return FromXElement(XDocument.Parse(xml).Root);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
         }
 
         public static TableTile FromXElement(XElement xElement)
@@ -65,86 +105,26 @@ namespace PsHandler.TableTiler
             {
                 return new TableTile
                 {
-                    Name = xElement.Element("Name") == null ? "" : xElement.Element("Name").Value,
-                    KeyCombination = xElement.Element("Hotkey") == null ? new KeyCombination(Key.None, false, false, false) : KeyCombination.Parse(xElement.Element("Hotkey").Value),
-                    SortByStartingHand = xElement.Element("SortByStartingHand") == null ? false : bool.Parse(xElement.Element("SortByStartingHand").Value),
-                    IncludeAnd = xElement.Element("IncludeAnd") == null ? new string[0] : xElement.Element("IncludeAnd").Elements().Select(o => o.Value).ToArray(),
-                    IncludeOr = xElement.Element("IncludeOr") == null ? new string[0] : xElement.Element("IncludeOr").Elements().Select(o => o.Value).ToArray(),
-                    ExcludeAnd = xElement.Element("ExcludeAnd") == null ? new string[0] : xElement.Element("ExcludeAnd").Elements().Select(o => o.Value).ToArray(),
-                    ExcludeOr = xElement.Element("ExcludeOr") == null ? new string[0] : xElement.Element("ExcludeOr").Elements().Select(o => o.Value).ToArray(),
-                    WindowClass = xElement.Element("WindowClass") == null ? "" : xElement.Element("WindowClass").Value,
+                    Name = xElement.Element("Name").Value,
+                    IsEnabled = bool.Parse(xElement.Element("IsEnabled").Value),
+                    KeyCombination = KeyCombination.Parse(xElement.Element("Hotkey").Value),
+                    SortByStartingHand = bool.Parse(xElement.Element("SortByStartingHand").Value),
+                    AutoTile = bool.Parse(xElement.Element("AutoTile").Value),
+                    AutoTileMethod = ParseAutoTileMethod(xElement.Element("AutoTileMethod").Value),
+                    RegexWindowTitle = new Regex(xElement.Element("RegexWindowTitle").Value),
+                    RegexWindowClass = new Regex(xElement.Element("RegexWindowClass").Value),
                     XYWHs = xElement.Element("XYWHs") == null ? new Rectangle[0] : xElement.Element("XYWHs").Elements().Select(o =>
                     {
                         string[] s = o.Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                         return new Rectangle(int.Parse(s[0]), int.Parse(s[1]), int.Parse(s[2]), int.Parse(s[3]));
                     }).ToArray(),
-                    IsEnabled = xElement.Element("IsEnabled") == null ? false : bool.Parse(xElement.Element("IsEnabled").Value),
+
                 };
             }
             catch (Exception)
             {
                 return null;
             }
-        }
-
-        public static IEnumerable<TableTile> GetDefaultValues()
-        {
-            List<TableTile> collection = new List<TableTile>();
-
-            TableTile tt;
-
-            // Sample: Cascade Cash
-
-            tt = new TableTile
-            {
-                IsEnabled = false,
-                KeyCombination = new KeyCombination(Key.None, false, false, false),
-                SortByStartingHand = false,
-                Name = "Sample: Cascade Cash (No Limit)",
-                IncludeAnd = new[] { "Logged In as" },
-                IncludeOr = new[] { "$", "€", "£" },
-                ExcludeAnd = new string[0],
-                ExcludeOr = new[] { "Tournament" },
-                WindowClass = "",
-                XYWHs = new Rectangle[]
-			    {
-				    new Rectangle(0, 0, 808, 580),
-				    new Rectangle(34, 34, 808, 580),
-				    new Rectangle(68, 68, 808, 580),
-				    new Rectangle(102, 102, 808, 580),
-				    new Rectangle(136, 136, 808, 580),
-				    new Rectangle(170, 170, 808, 580),
-				    new Rectangle(204, 204, 808, 580),
-				    new Rectangle(238, 238, 808, 580),
-			    }
-            };
-            collection.Add(tt);
-            // Sample: Tile Tournament Sort
-
-            tt = new TableTile
-            {
-                IsEnabled = false,
-                KeyCombination = new KeyCombination(Key.None, false, false, false),
-                SortByStartingHand = true,
-                Name = "Sample: Tile Tournament Sort",
-                IncludeAnd = new[] { "Logged In as", "Tournament" },
-                IncludeOr = new[] { "$", "€", "£" },
-                ExcludeAnd = new string[0],
-                ExcludeOr = new string[0],
-                WindowClass = "",
-                XYWHs = new Rectangle[]
-			    {
-				    new Rectangle(0, 0, 534, 391),
-				    new Rectangle(534, 0, 534, 391),
-				    new Rectangle(1068, 0, 534, 391),
-				    new Rectangle(0, 390, 534, 391),
-				    new Rectangle(534, 390, 534, 391),
-				    new Rectangle(1068, 390, 534, 391),
-			    }
-            };
-            collection.Add(tt);
-
-            return collection;
         }
     }
 }

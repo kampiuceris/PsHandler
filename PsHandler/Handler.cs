@@ -1,66 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using PsHandler.Custom;
+using PsHandler.UI;
+using System.Windows.Controls;
 
 namespace PsHandler
 {
     public class Handler
     {
-        private const int DELAY_AUTOCLOSE_TOURNAMENT_REGISTRATION_POPUPS = 250;
-        private const int DELAY_TABLE_CONTROL = 2000;
-        private static Thread _threadAutocloseTournamentRegistrationPopups;
-        private static Thread _threadTableControl;
+        private const int DELAY_MS = 250;
+
+        private static Thread _threadHandler;
 
         public static void Start()
         {
-            #region TableControl
-
-            _threadTableControl = new Thread(() =>
-            {
-                try
-                {
-                    while (true)
-                    {
-                        if (Config.AutoclickImBack || Config.AutoclickTimebank)
-                        {
-                            foreach (var process in Process.GetProcessesByName("PokerStars"))
-                            {
-                                foreach (IntPtr handle in WinApi.EnumerateProcessWindowHandles(process.Id).Where(o => !Methods.IsMinimized(o)))
-                                {
-                                    string className = WinApi.GetClassName(handle);
-                                    if (className.Equals("PokerStarsTableFrameClass"))
-                                    {
-                                        Bmp bmp = new Bmp(ScreenCapture.GetBitmapWindowClient(handle));
-                                        if (Config.AutoclickImBack) Methods.CheckButtonAndClick(bmp, Config.PokerStarsThemeTable.ButtonImBack, handle);
-                                        if (Config.AutoclickTimebank) Methods.CheckButtonAndClick(bmp, Config.PokerStarsThemeTable.ButtonTimebank, handle);
-                                    }
-                                }
-                            }
-                        }
-
-                        Thread.Sleep(DELAY_TABLE_CONTROL);
-                        //Thread.Sleep(500);
-                    }
-                }
-                catch (Exception e)
-                {
-                    if (!(e is ThreadInterruptedException))
-                    {
-                        MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        System.IO.File.WriteAllText(DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
-                        Stop();
-                    }
-                }
-            });
-            _threadTableControl.Start();
-
-            #endregion
-
-            #region AutoclosePopups
-
-            _threadAutocloseTournamentRegistrationPopups = new Thread(() =>
+            _threadHandler = new Thread(() =>
             {
                 try
                 {
@@ -147,32 +109,27 @@ namespace PsHandler
                             }
                         }
 
-                        Thread.Sleep(DELAY_AUTOCLOSE_TOURNAMENT_REGISTRATION_POPUPS);
+                        Thread.Sleep(DELAY_MS);
                     }
                 }
                 catch (Exception e)
                 {
                     if (!(e is ThreadInterruptedException))
                     {
-                        MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        System.IO.File.WriteAllText(DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
+                        WindowMessage.ShowDialog(e.Message, "Error", WindowMessageButtons.OK, WindowMessageImage.Error, App.WindowMain);
+                        System.IO.File.WriteAllText("PsHandler Error Log " + DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
                         Stop();
                     }
                 }
             });
-            _threadAutocloseTournamentRegistrationPopups.Start();
-            #endregion
+            _threadHandler.Start();
         }
 
         public static void Stop()
         {
-            if (_threadAutocloseTournamentRegistrationPopups != null)
+            if (_threadHandler != null)
             {
-                _threadAutocloseTournamentRegistrationPopups.Interrupt();
-            }
-            if (_threadTableControl != null)
-            {
-                _threadTableControl.Interrupt();
+                _threadHandler.Interrupt();
             }
         }
 
@@ -183,6 +140,102 @@ namespace PsHandler
             if (className.Equals("PokerStarsTableFrameClass"))
             {
                 Methods.LeftMouseClickRelative(handle, Config.PokerStarsThemeTable.ButtonHandReplayX, Config.PokerStarsThemeTable.ButtonHandReplayY, false);
+            }
+        }
+
+        // Quick Preview
+
+        private static Thread _threadQuickPreview;
+        public static bool _quickPreviewIsRunning;
+        public static Window _windowQuickPreview;
+        public static Image _imageQuickPreview;
+
+        public static void QuickPreviewStart()
+        {
+            if (_threadQuickPreview == null || !_quickPreviewIsRunning)
+            {
+                QuickPreviewStop();
+                _quickPreviewIsRunning = true;
+
+                _threadQuickPreview = new Thread(() =>
+                {
+                    try
+                    {
+                        IntPtr handle = WinApi.GetForegroundWindow();
+                        string windowTitle = WinApi.GetWindowTitle(handle);
+                        string windowClass = WinApi.GetClassName(handle);
+
+                        if (!(windowClass.Equals("PokerStarsTableFrameClass") && WinApi.IsWindowVisible(handle) &&
+                            !Methods.IsMinimized(handle) && !string.IsNullOrEmpty(windowTitle)))
+                        {
+                            handle = IntPtr.Zero;
+                        }
+
+                        Methods.UiInvoke(() =>
+                        {
+                            _windowQuickPreview = new Window
+                            {
+                                Title = "Quick Preview",
+                                SizeToContent = SizeToContent.WidthAndHeight,
+                                Topmost = true,
+                                WindowStyle = WindowStyle.None,
+                                UseLayoutRounding = true,
+                                ResizeMode = ResizeMode.NoResize,
+                                Background = Brushes.Black,
+                                Width = 5,
+                                Height = 5,
+                                ShowInTaskbar = false,
+                                Focusable = false,
+                                Visibility = Visibility.Visible
+                            };
+                            _imageQuickPreview = new Image();
+                            _windowQuickPreview.Content = _imageQuickPreview;
+                            _windowQuickPreview.SourceInitialized += (sender, args) =>
+                            {
+                                var interopHelper = new WindowInteropHelper(_windowQuickPreview);
+                                int exStyle = (int)WinApi.GetWindowLong(interopHelper.Handle, WinApi.GWL_EXSTYLE);
+                                WinApi.SetWindowLong(interopHelper.Handle, WinApi.GWL_EXSTYLE, exStyle | WinApi.WS_EX_NOACTIVATE);
+                            };
+                            _windowQuickPreview.Show();
+                        });
+
+                        while (true)
+                        {
+                            if (handle != IntPtr.Zero)
+                            {
+                                System.Drawing.Bitmap bitmapWindowClient = ScreenCapture.GetBitmapWindowClient(handle);
+                                Methods.UiInvoke(() =>
+                                {
+                                    _imageQuickPreview.Width = bitmapWindowClient.Width;
+                                    _imageQuickPreview.Height = bitmapWindowClient.Height;
+                                    _imageQuickPreview.Source = bitmapWindowClient.ToBitmapSource();
+                                    System.Drawing.Rectangle clientRectangle = WinApi.GetClientRectangle(handle);
+                                    _windowQuickPreview.Left = clientRectangle.Left;
+                                    _windowQuickPreview.Top = clientRectangle.Top;
+                                });
+                            }
+
+                            Thread.Sleep(25);
+                        }
+                    }
+                    catch (ThreadInterruptedException)
+                    {
+                    }
+                    finally
+                    {
+                        Methods.UiInvoke(() => { _windowQuickPreview.Close(); });
+                        _quickPreviewIsRunning = false;
+                    }
+                });
+                _threadQuickPreview.Start();
+            }
+        }
+
+        public static void QuickPreviewStop()
+        {
+            if (_threadQuickPreview != null)
+            {
+                _threadQuickPreview.Interrupt();
             }
         }
     }

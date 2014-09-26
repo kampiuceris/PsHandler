@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="PsHandler.UI.UCStatusBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             UseLayoutRounding="True">
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5">
+        <Image Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="16" Height="16" Source="../Images/Resources/Size16x16/poker.png" ToolTip="Live Tables" />
+        <Label Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Padding="0" Content="Tables:" />
+        <Label Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="16" Padding="0" Content="0" x:Name="Label_Tables" />
+        <Image Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="16" Height="16" Source="../Images/Resources/Size16x16/page.png" ToolTip="Imported Tournaments" />
+        <Label Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Padding="0" Content="Tournaments:" />
+        <Label Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="16" Padding="0" Content="0" x:Name="Label_ImportedTournaments" />
+        <Image Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="16" Height="16" Source="../Images/Resources/Size16x16/page_white.png" ToolTip="Imported Hands" />
+        <Label Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Padding="0" Content="Hands:" />
+        <Label Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="16" Padding="0" Content="0" x:Name="Label_ImportedHands" />
+        <Image Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="16" Height="16" Source="../Images/Resources/Size16x16/page_white_error.png" ToolTip="Import Errors" x:Name="Image_ImportedErrors" Visibility="Collapsed" />
+        <Label Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Padding="0" Content="Errors:" x:Name="Label_ErrorsCaption" Visibility="Collapsed" />
+        <Label Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="16" Padding="0" Content="0" x:Name="Label_ImportedErrors" Visibility="Collapsed" />
+    </StackPanel>
+</UserControl>

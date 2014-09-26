@@ -1,7 +1,19 @@
-﻿using PsHandler.TableTiler;
+﻿using PsHandler.Custom;
+using PsHandler.TableTiler;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace PsHandler.UI
 {
@@ -19,13 +31,13 @@ namespace PsHandler.UI
             CheckBox_EnableTableTimer.Checked += (sender, args) => { Config.EnableTableTiler = true; };
             CheckBox_EnableTableTimer.Unchecked += (sender, args) => { Config.EnableTableTiler = false; };
 
-            // start hud if needed
+            // start table tiler if needed
             CheckBox_EnableTableTimer.IsChecked = Config.EnableTableTiler;
         }
 
-        public static void UpdateListView(TableTile tableTileToSelect = null)
+        public void UpdateListView(TableTile tableTileToSelect = null)
         {
-            var listView = App.WindowMain.UCTableTiler.ListView_TableTiles;
+            var listView = ListView_TableTiles;
             listView.Items.Clear();
             foreach (var tableTile in TableTileManager.GetTableTilesCopy())
             {
@@ -44,7 +56,7 @@ namespace PsHandler.UI
                 }
             }
 
-            App.WindowMain.UCTableTiler.GridView_Name.ResetColumnWidths();
+            GridView_Name.ResetColumnWidths();
         }
 
         private void Button_Add_Click(object sender, RoutedEventArgs e)
@@ -63,7 +75,7 @@ namespace PsHandler.UI
             ListViewItemTableTile selectedItem = ListView_TableTiles.SelectedItem as ListViewItemTableTile;
             if (selectedItem != null)
             {
-                TableTileManager.RemoveTableTile(selectedItem.TableTile);
+                TableTileManager.Remove(selectedItem.TableTile);
                 WindowTableTileEdit dialog = new WindowTableTileEdit(App.WindowMain, selectedItem.TableTile);
                 dialog.ShowDialog();
                 TableTileManager.Add(dialog.TableTile);
@@ -76,10 +88,10 @@ namespace PsHandler.UI
             ListViewItemTableTile selectedItem = ListView_TableTiles.SelectedItem as ListViewItemTableTile;
             if (selectedItem != null)
             {
-                MessageBoxResult messageBoxResult = MessageBox.Show(string.Format("Do you want to delete '{0}'?", selectedItem.TableTile.Name), "Delete", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-                if (messageBoxResult == MessageBoxResult.Yes)
+                WindowMessageResult result = WindowMessage.ShowDialog(string.Format("Do you want to delete '{0}'?", selectedItem.TableTile.Name), "Delete", WindowMessageButtons.YesNoCancel, WindowMessageImage.Question, App.WindowMain);
+                if (result == WindowMessageResult.Yes)
                 {
-                    TableTileManager.RemoveTableTile(selectedItem.TableTile);
+                    TableTileManager.Remove(selectedItem.TableTile);
                     UpdateListView();
                 }
             }
@@ -88,6 +100,43 @@ namespace PsHandler.UI
         private void ListView_TableTilerConfigs_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Button_Edit_Click(null, new RoutedEventArgs());
+        }
+
+        private void Button_RestoreDefaults_Click(object sender, RoutedEventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Do you want to restore default table tile configs?");
+            sb.AppendLine("This will overwrite only default named table tile configs.");
+            sb.AppendLine("Custom table tile cofigs will remain untouched.");
+            sb.AppendLine();
+            sb.AppendLine("Default table tile configs:");
+            sb.AppendLine();
+            List<TableTile> defaultTableTiles = TableTile.GetDefaultValues().ToList();
+            foreach (TableTile tableTile in defaultTableTiles)
+            {
+                sb.AppendLine("     " + tableTile.Name);
+            }
+
+            WindowMessageResult windowMessageResult = WindowMessage.ShowDialog(
+                sb.ToString(),
+                "Restore Default Table Tile Configs",
+                WindowMessageButtons.YesNoCancel,
+                WindowMessageImage.Warning,
+                App.WindowMain);
+
+            if (windowMessageResult == WindowMessageResult.Yes)
+            {
+                foreach (TableTile tableTile in TableTileManager.GetTableTilesCopy())
+                {
+                    if (!defaultTableTiles.Any(a => a.Name.Equals(tableTile.Name)))
+                    {
+                        defaultTableTiles.Add(tableTile);
+                    }
+                }
+                TableTileManager.RemoveAll();
+                TableTileManager.Add(defaultTableTiles);
+                UpdateListView();
+            }
         }
     }
 

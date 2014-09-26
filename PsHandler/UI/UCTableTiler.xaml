@@ -4,15 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" UseLayoutRounding="True" >
-    <Grid Margin="5">
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Height="26">
-            <Image Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Source="../Images/information.png" Margin="5" ToolTipService.ShowDuration="60000" ToolTip="Enable/Disable Table Tiler. You can manually Enable/Disable chosen Table Tile configs." />
-            <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Content="Enable Table Tiler" x:Name="CheckBox_EnableTableTimer" />
-        </StackPanel>
-        <Separator HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,31,0,0" />
-        <Grid Margin="0,37,0,0">
-            <ListView x:Name="ListView_TableTiles" SelectionMode="Single" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,0,135,0" MouseDoubleClick="ListView_TableTilerConfigs_OnMouseDoubleClick" >
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Content="Enable Table Tiler" x:Name="CheckBox_EnableTableTimer" />
+        <Grid Margin="0,27,0,0">
+            <ListView x:Name="ListView_TableTiles" SelectionMode="Single" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,0,145,0" MouseDoubleClick="ListView_TableTilerConfigs_OnMouseDoubleClick" >
                 <ListView.Resources>
                     <Style TargetType="GridViewColumnHeader">
                         <Setter Property="Visibility" Value="Collapsed" />
@@ -25,22 +21,28 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <Button HorizontalAlignment="Right" VerticalAlignment="Top" HorizontalContentAlignment="Left" Width="130" x:Name="Button_Add" Click="Button_Add_Click" >
+            <Button HorizontalAlignment="Right" VerticalAlignment="Top" HorizontalContentAlignment="Left" Width="140" x:Name="Button_Add" Click="Button_Add_Click" >
                 <StackPanel Orientation="Horizontal" Margin="10,2">
-                    <Image Height="16" Width="16" Source="../Images/tile_add.png" />
+                    <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/tile_add.png" />
                     <TextBlock Text="Add New" Margin="5,0,0,0" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,31,0,0" HorizontalContentAlignment="Left" Width="130" x:Name="Button_Edit" Click="Button_Edit_Click" >
+            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,31,0,0" HorizontalContentAlignment="Left" Width="140" x:Name="Button_Edit" Click="Button_Edit_Click" >
                 <StackPanel Orientation="Horizontal" Margin="10,2">
-                    <Image Height="16" Width="16" Source="../Images/tile_edit.png" />
+                    <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/tile_edit.png" />
                     <TextBlock Text="Edit Selected" Margin="5,0,0,0" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,62,0,0" HorizontalContentAlignment="Left" Width="130" x:Name="Button_Delete" Click="Button_Delete_Click" >
+            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,62,0,0" HorizontalContentAlignment="Left" Width="140" x:Name="Button_Delete" Click="Button_Delete_Click" >
                 <StackPanel Orientation="Horizontal" Margin="10,2">
-                    <Image Height="16" Width="16" Source="../Images/tile_delete.png" />
+                    <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/tile_delete.png" />
                     <TextBlock Text="Delete Selected" Margin="5,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,91,0,0" HorizontalContentAlignment="Left" Width="140" x:Name="Button_RestoreDefaults" Click="Button_RestoreDefaults_Click" >
+                <StackPanel Orientation="Horizontal" Margin="10,2">
+                    <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/application_cascade.png" />
+                    <TextBlock Text="Restore Defaults" Margin="5,0,0,0" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
         </Grid>

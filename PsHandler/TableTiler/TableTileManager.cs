@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
-using Microsoft.Win32;
-using PsHandler.Hud.Import;
-using PsHandler.UI;
 using System.Threading;
+using System.Windows.Forms;
+using System.Xml.Linq;
+using PsHandler.Custom;
+using PsHandler.Hook;
+using PsHandler.Import;
+using PsHandler.UI;
 
 namespace PsHandler.TableTiler
 {
@@ -53,7 +55,7 @@ namespace PsHandler.TableTiler
             }
         }
 
-        public static void RemoveTableTile(TableTile tableTile)
+        public static void Remove(TableTile tableTile)
         {
             lock (_lockTableTiles)
             {
@@ -61,69 +63,11 @@ namespace PsHandler.TableTiler
             }
         }
 
-        public static void SaveConfig()
-        {
-            try
-            {
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\TableTiles", true))
-                {
-                    if (key == null)
-                    {
-                        using (RegistryKey keyPsHandler = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler", true))
-                        {
-                            keyPsHandler.CreateSubKey("TableTiles");
-                        }
-                    }
-                }
-
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\TableTiles", true))
-                {
-                    if (key == null) return;
-
-                    foreach (string valueName in key.GetValueNames())
-                    {
-                        key.DeleteValue(valueName);
-                    }
-
-                    lock (_lockTableTiles)
-                    {
-                        foreach (var tableTile in _tableTiles)
-                        {
-                            key.SetValue(tableTile.Name, tableTile.ToXml());
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        public static void LoadConfig()
+        public static void RemoveAll()
         {
             lock (_lockTableTiles)
             {
                 _tableTiles.Clear();
-            }
-
-            try
-            {
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\TableTiles", true))
-                {
-                    if (key == null) return;
-
-                    foreach (string valueName in key.GetValueNames())
-                    {
-                        TableTile tableTile = TableTile.FromXml(key.GetValue(valueName) as string);
-                        if (tableTile != null)
-                        {
-                            Add(tableTile);
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
             }
         }
 
@@ -141,6 +85,9 @@ namespace PsHandler.TableTiler
         private static Thread _thread;
         private static KeyCombination _keyCombinationPressed;
         private static readonly object _lockKeyCombination = new object();
+        private static Table _newTable;
+        private static IEnumerable<Table> _oldTables;
+        private static readonly object _lockAutoTile = new object();
 
         public static void SetKeyCombination(KeyCombination keyCombination)
         {
@@ -152,6 +99,17 @@ namespace PsHandler.TableTiler
                 {
                     _keyCombinationPressed = keyCombination;
                 }
+            }
+        }
+
+        public static void SetAutoTileTable(Table newTable, IEnumerable<Table> oldTables)
+        {
+            if (!Config.EnableTableTiler) return;
+
+            lock (_lockAutoTile)
+            {
+                _newTable = newTable;
+                _oldTables = oldTables;
             }
         }
 
@@ -171,6 +129,17 @@ namespace PsHandler.TableTiler
                                 _busy = true;
                                 Tile(_keyCombinationPressed);
                                 _keyCombinationPressed = null;
+                                _busy = false;
+                            }
+                        }
+                        lock (_lockAutoTile)
+                        {
+                            if (_newTable != null && _oldTables != null)
+                            {
+                                _busy = true;
+                                AutoTile(_newTable, _oldTables);
+                                _newTable = null;
+                                _oldTables = null;
                                 _busy = false;
                             }
                         }
@@ -213,19 +182,14 @@ namespace PsHandler.TableTiler
                     //Debug.WriteLine("Window: " + title);
                     foreach (var ttati in ttatis)
                     {
-                        var IncludeAnd = ttati.TableTile.IncludeAnd.Length == 0 || ttati.TableTile.IncludeAnd.All(title.Contains);
-                        var IncludeOr = ttati.TableTile.IncludeOr.Length == 0 || ttati.TableTile.IncludeOr.Any(title.Contains);
-                        var ExcludeAnd = ttati.TableTile.ExcludeAnd.Length == 0 || !ttati.TableTile.ExcludeAnd.All(title.Contains);
-                        var ExcludeOr = ttati.TableTile.ExcludeOr.Length == 0 || !ttati.TableTile.ExcludeOr.Any(title.Contains);
-                        var WindowClassMatch = string.IsNullOrEmpty(ttati.TableTile.WindowClass) || ttati.TableTile.WindowClass.Equals(windowClass);
-                        if (IncludeAnd && IncludeOr && ExcludeAnd && ExcludeOr && WindowClassMatch)
+                        if (ttati.TableTile.RegexWindowClass.IsMatch(windowClass) && ttati.TableTile.RegexWindowTitle.IsMatch(title))
                         {
                             TableInfo ti = new TableInfo { Handle = hwnd, Title = title, CurrentRectangle = WinApi.GetWindowRectangle(hwnd) };
                             Match match = _regexTournamentNumber.Match(title);
                             if (match.Success)
                             {
                                 ti.IsTournament = long.TryParse(match.Groups["tournament_number"].Value, out ti.TournamentNumber);
-                                Tournament tournament = App.Import.GetTournament(ti.TournamentNumber);
+                                Tournament tournament = App.HandHistoryManager.GetTournament(ti.TournamentNumber);
                                 if (tournament != null)
                                 {
                                     ti.FirstHandTimestamp = tournament.GetFirstHandTimestamp();
@@ -257,6 +221,8 @@ namespace PsHandler.TableTiler
 
         private static void Tile(TableTileAndTableInfos ttati)
         {
+            List<HandleRectangleWindow> infoForWindowsToMove = new List<HandleRectangleWindow>();
+
             if (ttati.TableTile.SortByStartingHand)
             {
                 // sort
@@ -273,8 +239,12 @@ namespace PsHandler.TableTiler
                     TableInfo tournamentWindow = tournamentWindows[0];
                     availablePositions.Remove(availablePosition);
                     tournamentWindows.Remove(tournamentWindow);
-                    WinApi.MoveWindow(tournamentWindow.Handle, availablePosition.X, availablePosition.Y, availablePosition.Width, availablePosition.Height, true);
-                    WinApi.BringWindowToTop(tournamentWindow.Handle);
+                    //MoveAndResize(tournamentWindow.Handle, availablePosition);
+                    infoForWindowsToMove.Add(new HandleRectangleWindow
+                    {
+                        Handle = tournamentWindow.Handle,
+                        RectangleWindow = availablePosition,
+                    });
                 }
 
                 // leftovers to the main window pool
@@ -289,17 +259,22 @@ namespace PsHandler.TableTiler
                 int max = availablePositions.Count;
                 if (max > otherWindows.Count) max = otherWindows.Count;
 
-                //MoveClosest(availablePositions, otherWindows);
-                MoveClosest(availablePositions.GetRange(0, max), otherWindows.GetRange(0, max));
+                infoForWindowsToMove.AddRange(MoveClosest(availablePositions.GetRange(0, max), otherWindows.GetRange(0, max)));
             }
             else
             {
-                MoveClosest(ttati.TableTile.XYWHs.ToList(), ttati.TableInfos);
+                infoForWindowsToMove.AddRange(MoveClosest(ttati.TableTile.XYWHs.ToList(), ttati.TableInfos));
             }
+
+            // move and resize windows
+            //foreach (HandleRectangleWindow info in infoForWindowsToMove) { MoveWindowBringWindowToTop(info.Handle, info.RectangleWindow); }
+            BeginDeferWindowPosDeferWindowPosEndDeferWindowPos(infoForWindowsToMove.ToArray());
         }
 
-        private static void MoveClosest(List<Rectangle> availablePositions, List<TableInfo> availableWindows)
+        private static IEnumerable<HandleRectangleWindow> MoveClosest(List<Rectangle> availablePositions, List<TableInfo> availableWindows)
         {
+            List<HandleRectangleWindow> infoForWindowsToMove = new List<HandleRectangleWindow>();
+
             while (availablePositions.Any() && availableWindows.Any())
             {
                 List<Distances> distances = new List<Distances>();
@@ -313,35 +288,86 @@ namespace PsHandler.TableTiler
 
                 availablePositions.Remove(distances[0].AvailablePosition);
                 availableWindows.Remove(distances[0].ClosestWindow);
-                MoveAndResize(distances[0].ClosestWindow.Handle, distances[0].AvailablePosition);
+                //MoveAndResize(distances[0].ClosestWindow.Handle, distances[0].AvailablePosition);
+                infoForWindowsToMove.Add(new HandleRectangleWindow
+                {
+                    Handle = distances[0].ClosestWindow.Handle,
+                    RectangleWindow = distances[0].AvailablePosition,
+                });
             }
+
+            return infoForWindowsToMove;
         }
 
-        private static void MoveAndResize(IntPtr handle, Rectangle rectangle)
+        private static void MoveWindowBringWindowToTop(IntPtr handle, Rectangle rectangle)
         {
             WinApi.MoveWindow(handle, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, true);
             WinApi.BringWindowToTop(handle);
         }
 
-        private static TableInfo ___GetClosestWindow(Rectangle availablePosition, List<TableInfo> availableWindows)
+        private static void BeginDeferWindowPosDeferWindowPosEndDeferWindowPos(HandleRectangleWindow[] infos)
         {
-            Point centerAvailablePosition = GetCenterPointOfWindow(availablePosition);
-            double minDistance = double.MaxValue;
-            TableInfo? closestWindow = null;
-
-            foreach (TableInfo availableWindow in availableWindows)
+            IntPtr pointerToMultipleWindowPositionStructure = WinApi.BeginDeferWindowPos(infos.Length);
+            foreach (HandleRectangleWindow info in infos)
             {
-                Point centerAvailableWindow = GetCenterPointOfWindow(availableWindow.CurrentRectangle);
-                double distance = GetDistanceBetweenPoints(centerAvailablePosition, centerAvailableWindow);
-                if (minDistance > distance)
+                WinApi.DeferWindowPos(pointerToMultipleWindowPositionStructure, info.Handle, IntPtr.Zero, info.RectangleWindow.X, info.RectangleWindow.Y, info.RectangleWindow.Width, info.RectangleWindow.Height, 0);
+            }
+            WinApi.EndDeferWindowPos(pointerToMultipleWindowPositionStructure);
+        }
+
+        // auto tile
+        private struct AutoTileSlot
+        {
+            public Rectangle Slot;
+            public int Id;
+            public double DistanceToTheAvailableSlot;
+        }
+
+        private static void AutoTile(Table newTable, IEnumerable<Table> oldTables)
+        {
+            // filter only enabled and autotile tabletiles
+            foreach (TableTile tableTile in GetTableTilesCopy().Where(o => o.IsEnabled && o.AutoTile).Where(tableTile => tableTile.RegexWindowClass.IsMatch(newTable.ClassName) && tableTile.RegexWindowTitle.IsMatch(newTable.Title)))
+            {
+                // get available slots
+                List<AutoTileSlot> availableAutoTileSlots = new List<AutoTileSlot>();
+                for (int i = 0; i < tableTile.XYWHs.Length; i++)
                 {
-                    minDistance = distance;
-                    closestWindow = availableWindow;
+                    Rectangle slot = tableTile.XYWHs[i];
+                    bool isFreeSlot = oldTables.All(o => (GetDistanceBetweenPoints(GetCenterPointOfWindow(slot), GetCenterPointOfWindow(o.RectangleWindows)) > 5));
+                    if (isFreeSlot)
+                    {
+                        availableAutoTileSlots.Add(new AutoTileSlot { Slot = slot, Id = i, DistanceToTheAvailableSlot = GetDistanceBetweenPoints(GetCenterPointOfWindow(slot), GetCenterPointOfWindow(newTable.RectangleWindows)) });
+                    }
+                }
+                if (availableAutoTileSlots.Any())
+                {
+                    if (tableTile.AutoTileMethod == AutoTileMethod.ToTheClosestSlot)
+                    {
+                        availableAutoTileSlots.Sort((o1, o2) =>
+                        {
+                            double d = o1.DistanceToTheAvailableSlot - o2.DistanceToTheAvailableSlot;
+                            if (d > 0) return 1;
+                            return -1;
+                        });
+                        Rectangle r = availableAutoTileSlots[0].Slot;
+                        WinApi.MoveWindow(newTable.Handle, r.X, r.Y, r.Width, r.Height, true);
+                    }
+                    if (tableTile.AutoTileMethod == AutoTileMethod.ToTheTopSlot)
+                    {
+                        availableAutoTileSlots.Sort((o1, o2) =>
+                        {
+                            double d = o1.Id - o2.Id;
+                            if (d > 0) return 1;
+                            return -1;
+                        });
+                        Rectangle r = availableAutoTileSlots[0].Slot;
+                        WinApi.MoveWindow(newTable.Handle, r.X, r.Y, r.Width, r.Height, true);
+                    }
                 }
             }
-
-            return closestWindow ?? availableWindows[0];
         }
+
+        //
 
         private static TableInfo GetClosestWindowWidhDistance(Rectangle availablePosition, List<TableInfo> availableWindows, out double distance)
         {
@@ -395,6 +421,36 @@ namespace PsHandler.TableTiler
             public Rectangle AvailablePosition;
             public TableInfo ClosestWindow;
             public double Distance;
+        }
+
+        private struct HandleRectangleWindow
+        {
+            public IntPtr Handle;
+            public Rectangle RectangleWindow;
+        }
+
+        //
+
+        public static XElement ToXElement()
+        {
+            var xElement = new XElement("TableTiles");
+            foreach (TableTile tableTile in GetTableTilesCopy())
+            {
+                xElement.Add(tableTile.ToXElement());
+            }
+            return xElement;
+        }
+
+        public static void FromXElement(XElement xElement)
+        {
+            foreach (XElement xTableTile in xElement.Elements("TableTile"))
+            {
+                TableTile tableTile = TableTile.FromXElement(xTableTile);
+                if (tableTile != null)
+                {
+                    Add(tableTile);
+                }
+            }
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:PsHandler.UI" xmlns:tb="clr-namespace:Hardcodet.Wpf.TaskbarNotification"
+        xmlns:tb="clr-namespace:Hardcodet.Wpf.TaskbarNotification"
+        xmlns:ui="clr-namespace:PsHandler.UI"
         x:Class="PsHandler.UI.WindowMain"
         UseLayoutRounding="True" Background="#FFF0F0F0"
-        Title="PsHandler" Height="400" Width="600" MinHeight="300" MinWidth="500" Icon="../Images/ps.ico">
+        Title="PsHandler" Height="400" Width="600" MinHeight="350" MinWidth="500" Icon="../Images/PsHandler.ico">
     <Window.Resources>
         <Style TargetType="{x:Type Image}">
             <Style.Triggers>
@@ -15,76 +16,75 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <tb:TaskbarIcon x:Name="TaskbarIcon_NotifyIcon" IconSource="../Images/ps.ico" />
-        <TabControl Margin="10,10,10,33">
+        <tb:TaskbarIcon x:Name="TaskbarIcon_NotifyIcon" IconSource="../Images/PsHandler.ico" />
+        <TabControl Margin="10,10,10,32">
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal" Margin="2">
-                        <Image Height="16" Width="16" Source="../Images/cog.png" />
+                        <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/poker.png" />
+                        <TextBlock Text="Tables" Margin="5,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </TabItem.Header>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <ui:UCTables Margin="0" x:Name="UCTables" />
+                </ScrollViewer>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/cog.png" />
                         <TextBlock Text="Settings" Margin="5,0,0,0" VerticalAlignment="Center" />
                     </StackPanel>
                 </TabItem.Header>
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <local:UCSettings x:Name="UCSettings" />
+                    <ui:UCSettings Margin="10" x:Name="UCSettings_Main" />
                 </ScrollViewer>
             </TabItem>
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal" Margin="2">
-                        <Image Height="16" Width="16" Source="../Images/controller.png" />
+                        <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/controller.png" />
                         <TextBlock Text="Controller" Margin="5,0,0,0" VerticalAlignment="Center" />
                     </StackPanel>
                 </TabItem.Header>
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <local:UCController x:Name="UCController" />
+                    <ui:UCController Margin="10" x:Name="UCController" />
                 </ScrollViewer>
             </TabItem>
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal" Margin="2">
-                        <Image Height="16" Width="16" Source="../Images/small_tiles.png" />
+                        <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/small_tiles.png" />
                         <TextBlock Text="HUD" Margin="5,0,0,0" VerticalAlignment="Center" />
                     </StackPanel>
                 </TabItem.Header>
-                <local:UCHud x:Name="UCHud" />
+                <ui:UCHud Margin="10" x:Name="UCHud" />
             </TabItem>
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal" Margin="2">
-                        <Image Height="16" Width="16" Source="../Images/monitor_window_3d.png" />
+                        <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/monitor_window_3d.png" />
                         <TextBlock Text="Table Tiler" VerticalAlignment="Center" Margin="5,0,0,0" />
                     </StackPanel>
                 </TabItem.Header>
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <local:UCTableTiler x:Name="UCTableTiler" />
+                    <ui:UCTableTiler Margin="10" x:Name="UCTableTiler" />
                 </ScrollViewer>
             </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/dice.png" />
+                        <TextBlock Text="Randomizer" VerticalAlignment="Center" Margin="5,0,0,0" />
+                    </StackPanel>
+                </TabItem.Header>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <ui:UCRandomizer Margin="10" x:Name="UCRandomizer" />
+                </ScrollViewer>
+            </TabItem>
+
         </TabControl>
-        <Separator VerticalAlignment="Bottom" Margin="0,0,0,26" />
-        <Grid Height="26" VerticalAlignment="Bottom">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0"/>
-                <ColumnDefinition Width="26"/>
-                <ColumnDefinition Width="1"/>
-                <ColumnDefinition Width="26"/>
-                <ColumnDefinition Width="120"/>
-                <ColumnDefinition Width="26"/>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="26"/>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Image Grid.Row="0" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="../Images/book.png" Margin="0" x:Name="Image_ImportIdle" ToolTip="Waiting for hands ..." />
-            <Image Grid.Row="0" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="../Images/book_open.png" Margin="0" x:Name="Image_ImportBusy" Visibility="Hidden" ToolTip="Importing ..." />
-            <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Margin="0,0,0,0" Grid.ColumnSpan="2">
-                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="0"/>
-            </StackPanel>
-            <Image Grid.Row="0" Grid.Column="3" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="../Images/page.png" Margin="0" x:Name="Image_Tournaments" />
-            <Label Grid.Row="0" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0" Padding="0" Content="Tournaments: 0" x:Name="Label_Tournaments" />
-            <Image Grid.Row="0" Grid.Column="5" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="../Images/page_white.png" Margin="0" x:Name="Image_Hands" />
-            <Label Grid.Row="0" Grid.Column="6" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0" Padding="0" Content="Hands: 0" x:Name="Label_Hands" />
-            <Image Grid.Row="0" Grid.Column="7" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="../Images/page_white_error.png" Margin="0" x:Name="Image_Errors" Visibility="Hidden" />
-            <Label Grid.Row="0" Grid.Column="8" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0" Padding="0" Content="Errors: 0" x:Name="Label_Errors" Visibility="Hidden" />
-        </Grid>
+        <Separator Margin="0,0,0,26" Height="1" VerticalAlignment="Bottom"/>
+        <ui:UCStatusBar VerticalAlignment="Bottom" x:Name="UcStatusBar" />
     </Grid>
 </Window>

@@ -1,14 +1,13 @@
 ﻿<Window x:Class="PsHandler.Hud.WindowBigBlind"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ui="clr-namespace:PsHandler.UI"
-        xmlns:local="clr-namespace:PsHandler.Hud"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:hud="clr-namespace:PsHandler.Hud"
+        xmlns:ui="clr-namespace:PsHandler.UI"
         Title="" SizeToContent="WidthAndHeight"
         ShowInTaskbar="False" WindowStyle="None" 
         ResizeMode="NoResize" Height="16" Focusable="False"
-        MouseDown="WindowMouseDown" LocationChanged="WindowLocationChanged" MouseUp="WindowMouseUp"
-        PreviewMouseRightButtonDown="Window_PreviewMouseRightButtonDown" PreviewMouseMove="Window_PreviewMouseMove" 
         ui:GlassEffect.IsEnabled="true" Background="Transparent">
     <Grid x:Name="StackPanelMain">
-        <local:UCLabel x:Name="UCLabel_Main"/>
+        <hud:UCLabel x:Name="UCLabel_Main"/>
     </Grid>
 </Window>

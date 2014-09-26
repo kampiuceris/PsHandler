@@ -2,112 +2,122 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Win32;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace PsHandler.PokerTypes
 {
     public class PokerTypeManager
     {
-        public static readonly List<PokerType> PokerTypes = new List<PokerType>();
-        public static readonly object Lock = new object();
+        public static readonly List<PokerType> _pokerTypes = new List<PokerType>();
+        public static readonly object _lock = new object();
+
+        public static PokerType[] GetPokerTypesCopy()
+        {
+            return _pokerTypes.ToArray();
+        }
 
         public static void Add(PokerType pokerType)
         {
-            lock (Lock)
+            lock (_lock)
             {
-                if (!PokerTypes.Any(o => o.Name.Equals(pokerType.Name)))
+                if (!_pokerTypes.Any(o => o.Name.Equals(pokerType.Name)))
                 {
-                    PokerTypes.Add(pokerType);
+                    _pokerTypes.Add(pokerType);
                 }
-                PokerTypes.Sort((o0, o1) => string.CompareOrdinal(o0.Name, o1.Name));
+                _pokerTypes.Sort((o0, o1) => string.CompareOrdinal(o0.Name, o1.Name));
             }
         }
 
         public static void Add(IEnumerable<PokerType> pokerTypes)
         {
-            lock (Lock)
+            lock (_lock)
             {
                 foreach (var pokerType in pokerTypes)
                 {
-                    if (!PokerTypes.Any(o => o.Name.Equals(pokerType.Name)))
+                    if (!_pokerTypes.Any(o => o.Name.Equals(pokerType.Name)))
                     {
-                        PokerTypes.Add(pokerType);
+                        _pokerTypes.Add(pokerType);
                     }
                 }
-                PokerTypes.Sort((o0, o1) => string.CompareOrdinal(o0.Name, o1.Name));
+                _pokerTypes.Sort((o0, o1) => string.CompareOrdinal(o0.Name, o1.Name));
             }
         }
 
         public static void Remove(PokerType pokerType)
         {
-            lock (Lock)
+            lock (_lock)
             {
-                PokerTypes.Remove(pokerType);
+                _pokerTypes.Remove(pokerType);
+            }
+        }
+
+        public static void RemoveAll()
+        {
+            lock (_lock)
+            {
+                _pokerTypes.Clear();
             }
         }
 
         public static void SeedDefaultValues()
         {
-            if (!PokerTypes.Any())
+            if (!_pokerTypes.Any())
             {
                 Add(PokerType.GetDefaultValues());
             }
         }
 
-        public static void Save()
+        public static PokerType GetPokerType(string title, string className, out int errorFlags)
         {
-            try
+            List<PokerType> possiblePokerTypes = new List<PokerType>();
+            lock (_lock)
             {
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\PokerTypes", true))
+                foreach (PokerType pokerType in _pokerTypes)
                 {
-                    if (key == null)
+                    if (pokerType.RegexWindowTitle.IsMatch(title) && pokerType.RegexWindowClass.IsMatch(className))
                     {
-                        using (RegistryKey keyPsHandler = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler", true))
-                        {
-                            keyPsHandler.CreateSubKey("PokerTypes");
-                        }
-                    }
-                }
-
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\PokerTypes", true))
-                {
-                    foreach (string valueName in key.GetValueNames())
-                    {
-                        key.DeleteValue(valueName);
-                    }
-
-                    lock (Lock)
-                    {
-                        foreach (PokerType pokerType in PokerTypes)
-                        {
-                            key.SetValue(pokerType.Name, pokerType.ToXml());
-                        }
+                        possiblePokerTypes.Add(pokerType);
                     }
                 }
             }
-            catch (Exception)
+            if (possiblePokerTypes.Count == 1)
             {
+                errorFlags = 0; // OK
+                return possiblePokerTypes[0];
             }
+            if (possiblePokerTypes.Count == 0)
+            {
+                errorFlags = 1; // Not found
+                return null;
+            }
+            if (possiblePokerTypes.Count > 1)
+            {
+                errorFlags = 2; // More than one PokerType found
+                return null;
+            }
+            errorFlags = 3; // Unknown error
+            return null;
         }
 
-        public static void Load()
+        public static XElement ToXElement()
         {
-            lock (Lock)
+            var xElement = new XElement("PokerTypes");
+            foreach (PokerType pokerType in GetPokerTypesCopy())
             {
-                PokerTypes.Clear();
+                xElement.Add(pokerType.ToXElement());
             }
+            return xElement;
+        }
 
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\PSHandler\PokerTypes", true))
+        public static void FromXElement(XElement xElement)
+        {
+            foreach (XElement xPokerType in xElement.Elements("PokerType"))
             {
-                if (key == null) return;
-
-                foreach (string valueName in key.GetValueNames())
+                PokerType pokerType = PokerType.FromXElement(xPokerType);
+                if (pokerType != null)
                 {
-                    PokerType pokerType = PokerType.FromXml(key.GetValue(valueName) as string);
-                    if (pokerType != null)
-                    {
-                        Add(pokerType);
-                    }
+                    Add(pokerType);
                 }
             }
         }

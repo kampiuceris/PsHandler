@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows;
-using PsHandler.PokerTypes;
 using System.Windows.Controls;
+using PsHandler.Custom;
+using Image = System.Windows.Controls.Image;
 
 namespace PsHandler.UI
 {
@@ -13,50 +15,6 @@ namespace PsHandler.UI
     public partial class WindowMain : Window
     {
         public bool IsClosing;
-
-        public bool Importing
-        {
-            set
-            {
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
-                {
-                    Image_ImportIdle.Visibility = value ? Visibility.Hidden : Visibility.Visible;
-                    Image_ImportBusy.Visibility = value ? Visibility.Visible : Visibility.Hidden;
-                }));
-            }
-        }
-        public int Tournaments
-        {
-            set
-            {
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
-                {
-                    Label_Tournaments.Content = "Tournaments: " + value;
-                }));
-            }
-        }
-        public int Hands
-        {
-            set
-            {
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
-                {
-                    Label_Hands.Content = "Hands: " + value;
-                }));
-            }
-        }
-        public int Errors
-        {
-            set
-            {
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
-                {
-                    Label_Errors.Content = "Errors: " + value;
-                    Label_Errors.Visibility = value == 0 ? Visibility.Hidden : Visibility.Visible;
-                    Image_Errors.Visibility = value == 0 ? Visibility.Hidden : Visibility.Visible;
-                }));
-            }
-        }
 
         public WindowMain()
         {
@@ -81,7 +39,7 @@ namespace PsHandler.UI
                     WindowState = WindowState.Minimized;
                 }
                 UCTableTiler.UpdateListView();
-                UCPokerTypes.UpdateListView();
+                UCHud.UCHudPokerTypes.UpdateListView();
             };
 
             if (CheckAndFixStartingLocation(new System.Drawing.Rectangle(Config.GuiLocationX, Config.GuiLocationY, Config.GuiWidth, Config.GuiHeight)))
@@ -137,12 +95,8 @@ namespace PsHandler.UI
                 {
                     Hide();
                 }
-                UCSettings.CheckBox_MinimizeToSystemTray.IsEnabled = false;
             }
-            else
-            {
-                UCSettings.CheckBox_MinimizeToSystemTray.IsEnabled = true;
-            }
+
             base.OnStateChanged(e);
         }
 

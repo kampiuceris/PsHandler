@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -11,9 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using PsHandler.TableTiler;
 using PsHandler.UI;
-using PsHandler.UI.ToolTips;
 
 namespace PsHandler.PokerTypes
 {
@@ -23,7 +23,7 @@ namespace PsHandler.PokerTypes
     public partial class WindowPokerTypeEdit : Window, IFilter
     {
         public PokerType PokerType;
-        public bool Saved = false;
+        public bool Saved;
         private WindowWindowsInfo _windowWindowsInfo;
 
         public WindowPokerTypeEdit(Window owner, PokerType pokerType = null)
@@ -33,83 +33,41 @@ namespace PsHandler.PokerTypes
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             PokerType = pokerType ?? new PokerType();
 
-            // IFilter hook
+            // Hook
 
-            TextBox_IncludeAnd.TextChanged += (sender, args) => UpdateFilter();
-            TextBox_IncludeOr.TextChanged += (sender, args) => UpdateFilter();
-            TextBox_ExcludeAnd.TextChanged += (sender, args) => UpdateFilter();
-            TextBox_ExcludeOr.TextChanged += (sender, args) => UpdateFilter();
-            TextBox_WindowClass.TextChanged += (sender, args) => UpdateFilter();
+            Closing += (sender, args) => { if (_windowWindowsInfo != null) { _windowWindowsInfo.Close(); } };
 
-            // seed values
+            TextBox_RegexWindowTitle.TextChanged += (sender, args) => UpdateIFilter();
+            TextBox_RegexWindowClass.TextChanged += (sender, args) => UpdateIFilter();
+
+            TextBox_LevelLength.TextChanged += (sender, args) =>
+            {
+                try
+                {
+                    TimeSpan.Parse(TextBox_LevelLength.Text);
+                    TextBox_LevelLength.Background = Brushes.Honeydew;
+                }
+                catch
+                {
+                    TextBox_LevelLength.Background = Brushes.MistyRose;
+                }
+            };
+            Loaded += (sender, args) =>
+            {
+                string text = TextBox_RegexWindowTitle.Text; TextBox_RegexWindowTitle.Text = text + "1"; TextBox_RegexWindowTitle.Text = text;
+                text = TextBox_RegexWindowClass.Text; TextBox_RegexWindowClass.Text = text + "1"; TextBox_RegexWindowClass.Text = text;
+            };
+
+            // Seed
 
             TextBox_Name.Text = PokerType.Name;
-            TextBox_LevelLengthInSeconds.Text = PokerType.LevelLengthInSeconds.ToString(CultureInfo.InvariantCulture);
-            TextBox_IncludeAnd.Text = !PokerType.IncludeAnd.Any() ? "" : PokerType.IncludeAnd.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
-            TextBox_IncludeOr.Text = !PokerType.IncludeOr.Any() ? "" : PokerType.IncludeOr.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
-            TextBox_ExcludeAnd.Text = !PokerType.ExcludeAnd.Any() ? "" : PokerType.ExcludeAnd.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
-            TextBox_ExcludeOr.Text = !PokerType.ExcludeOr.Any() ? "" : PokerType.ExcludeOr.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
-            TextBox_BuyInAndRake.Text = !PokerType.BuyInAndRake.Any() ? "" : PokerType.BuyInAndRake.Aggregate((s0, s1) => s0 + Environment.NewLine + s1);
-            TextBox_WindowClass.Text = PokerType.WindowClass;
+            TextBox_LevelLength.Text = PokerType.LevelLength.ToString();
+            TextBox_RegexWindowTitle.Text = PokerType.RegexWindowTitle == null ? "" : PokerType.RegexWindowTitle.ToString();
+            TextBox_RegexWindowClass.Text = PokerType.RegexWindowClass == null ? "" : PokerType.RegexWindowClass.ToString();
 
             // ToolTips
 
-            Image_TitleIncludeAllWords.ToolTip = new UCToolTipTitleIncludeAllWords();
-            Image_TitleIncludeAnyWords.ToolTip = new UCToolTipTitleIncludeAnyWords();
-            Image_TitleExcludeAllWords.ToolTip = new UCToolTipTitleExcludeAllWords();
-            Image_TitleExcludeAnyWords.ToolTip = new UCToolTipTitleExcludeAnyWords();
-            Image_FileNameBuyInRake.ToolTip = new UCToolTipFileNameBuyInRake();
-        }
-
-        private void Button_Close_Click(object sender, RoutedEventArgs e)
-        {
-            Saved = false;
-            Close();
-        }
-
-        private void Button_SaveAndClose_Click(object sender, RoutedEventArgs e)
-        {
-            if (TextBox_Name.Text.Length == 0)
-            {
-                MessageBox.Show(string.Format("Invalid '{0}' input.", Label_Name.Content), "Error saving", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            if (PokerTypeManager.PokerTypes.ToArray().Any(o => o.Name.ToLowerInvariant().Equals(TextBox_Name.Text.ToLowerInvariant())))
-            {
-                MessageBox.Show("Cannot save. Duplicate names.", "Error saving", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            if (!int.TryParse(TextBox_LevelLengthInSeconds.Text, out PokerType.LevelLengthInSeconds))
-            {
-                MessageBox.Show(string.Format("Invalid '{0}' input.", Label_LevelLengthInSeconds.Content), "Error saving", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            PokerType.Name = TextBox_Name.Text;
-            PokerType.IncludeAnd = TextBox_IncludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            PokerType.IncludeOr = TextBox_IncludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            PokerType.ExcludeAnd = TextBox_ExcludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            PokerType.ExcludeOr = TextBox_ExcludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            PokerType.BuyInAndRake = TextBox_BuyInAndRake.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            PokerType.WindowClass = TextBox_WindowClass.Text;
-
-            Saved = true;
-            Close();
-        }
-
-        private void TextBox_LevelLengthInSeconds_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            int seconds;
-            if (int.TryParse(TextBox_LevelLengthInSeconds.Text, out seconds))
-            {
-                Label_LevelLengthInMinutes.Content = string.Format("{0:0.#} minutes", (double)seconds / 60);
-            }
-            else
-            {
-                Label_LevelLengthInMinutes.Content = "LocationX minutes";
-            }
+            //TODO
         }
 
         private void Button_WindowsInfo_Click(object sender, RoutedEventArgs e)
@@ -119,42 +77,111 @@ namespace PsHandler.PokerTypes
             _windowWindowsInfo.Show();
         }
 
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        private void Button_SaveAndClose_Click(object sender, RoutedEventArgs e)
         {
-            if (_windowWindowsInfo != null)
+            if (TextBox_Name.Text.Length == 0)
             {
-                _windowWindowsInfo.Close();
+                WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", Label_Name.Content), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
+                return;
             }
-            base.OnClosing(e);
+            if (PokerTypeManager.GetPokerTypesCopy().Any(o => o.Name.ToLowerInvariant().Equals(TextBox_Name.Text.ToLowerInvariant())))
+            {
+                WindowMessage.ShowDialog("Cannot save. Duplicate names.", "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
+                return;
+            }
+            try
+            {
+                PokerType.LevelLength = TimeSpan.Parse(TextBox_LevelLength.Text);
+            }
+            catch
+            {
+                WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", Label_LevelLength.Content), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
+                return;
+            }
+            try
+            {
+                new Regex(TextBox_RegexWindowTitle.Text);
+            }
+            catch
+            {
+                WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", Label_RegexWindowTitle.Content), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
+                return;
+            }
+            try
+            {
+                new Regex(TextBox_RegexWindowClass.Text);
+            }
+            catch
+            {
+                WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", Label_RegexWindowClass.Content), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
+                return;
+            }
+
+            PokerType.Name = TextBox_Name.Text;
+            //PokerType.LevelLength = TimeSpan.Parse(TextBox_LevelLength.Text);
+            PokerType.RegexWindowTitle = new Regex(TextBox_RegexWindowTitle.Text);
+            PokerType.RegexWindowClass = new Regex(TextBox_RegexWindowClass.Text);
+
+            Saved = true;
+            Close();
+        }
+
+        private void Button_Close_Click(object sender, RoutedEventArgs e)
+        {
+            Saved = false;
+            Close();
         }
 
         // IFilter
 
-        private readonly object _filterLock = new object();
-        private readonly List<string> _filterIncludeAnd = new List<string>();
-        private readonly List<string> _filterIncludeOr = new List<string>();
-        private readonly List<string> _filterExcludeAnd = new List<string>();
-        private readonly List<string> _filterExcludeOr = new List<string>();
-        private string _filterWindowClass = "";
-        public List<string> FilterIncludeAnd { get { lock (_filterLock) { return _filterIncludeAnd.ToList(); } } }
-        public List<string> FilterIncludeOr { get { lock (_filterLock) { return _filterIncludeOr.ToList(); } } }
-        public List<string> FilterExcludeAnd { get { lock (_filterLock) { return _filterExcludeAnd.ToList(); } } }
-        public List<string> FilterExcludeOr { get { lock (_filterLock) { return _filterExcludeOr.ToList(); } } }
-        public string WindowClass { get { lock (_filterLock) { return _filterWindowClass; } } }
-
-        private void UpdateFilter()
+        private readonly object _iFilterLock = new object();
+        public Regex _regexWindowTitle = new Regex("");
+        public Regex _regexWindowClass = new Regex("");
+        public Regex RegexWindowTitle
         {
-            lock (_filterLock)
+            get
             {
-                _filterIncludeAnd.Clear();
-                _filterIncludeOr.Clear();
-                _filterExcludeAnd.Clear();
-                _filterExcludeOr.Clear();
-                _filterIncludeAnd.AddRange(TextBox_IncludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
-                _filterIncludeOr.AddRange(TextBox_IncludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
-                _filterExcludeAnd.AddRange(TextBox_ExcludeAnd.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
-                _filterExcludeOr.AddRange(TextBox_ExcludeOr.Text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
-                _filterWindowClass = TextBox_WindowClass.Text;
+                lock (_iFilterLock)
+                {
+                    return _regexWindowTitle;
+                }
+            }
+        }
+        public Regex RegexWindowClass
+        {
+            get
+            {
+                lock (_iFilterLock)
+                {
+                    return _regexWindowClass;
+                }
+            }
+        }
+
+        private void UpdateIFilter()
+        {
+            lock (_iFilterLock)
+            {
+                try
+                {
+                    _regexWindowTitle = new Regex(TextBox_RegexWindowTitle.Text);
+                    TextBox_RegexWindowTitle.Background = Brushes.Honeydew;
+                }
+                catch
+                {
+                    _regexWindowTitle = new Regex("");
+                    TextBox_RegexWindowTitle.Background = Brushes.MistyRose;
+                }
+                try
+                {
+                    _regexWindowClass = new Regex(TextBox_RegexWindowClass.Text);
+                    TextBox_RegexWindowClass.Background = Brushes.Honeydew;
+                }
+                catch (Exception)
+                {
+                    _regexWindowClass = new Regex("");
+                    TextBox_RegexWindowClass.Background = Brushes.MistyRose;
+                }
             }
         }
     }

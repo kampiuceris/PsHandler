@@ -1,0 +1,50 @@
+﻿<Window x:Class="PsHandler.UI.WindowMessage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        UseLayoutRounding="True" Background="#FFF0F0F0" Icon="../Images/PsHandler.ico"
+        Title="Message" SizeToContent="WidthAndHeight" MinWidth="256" MinHeight="128">
+    <Grid Margin="10">
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,29">
+            <Grid x:Name="Grid_Image" Margin="5">
+                <Image Width="32" Height="32" Source="../Images/Resources/Size32x32/cancel.png" x:Name="Image_Error" Visibility="Visible" />
+                <Image Width="32" Height="32" Source="../Images/Resources/Size32x32/information.png" x:Name="Image_Information" Visibility="Visible" />
+                <Image Width="32" Height="32" Source="../Images/Resources/Size32x32/question.png" x:Name="Image_Question" Visibility="Visible" />
+                <Image Width="32" Height="32" Source="../Images/Resources/Size32x32/warning.png" x:Name="Image_Warning" Visibility="Visible" />
+            </Grid>
+
+            <Grid x:Name="Grid_Message" Margin="5">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
+                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="" x:Name="TextBlock_Message" />
+                </ScrollViewer>
+            </Grid>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <Button VerticalAlignment="Center" x:Name="Button_OK" HorizontalAlignment="Right" Width="100" Click="Button_OK_Click">
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/accept.png" />
+                    <TextBlock Text="OK" Margin="5,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+            <Button VerticalAlignment="Center" x:Name="Button_Yes" HorizontalAlignment="Right" Width="100" Click="Button_Yes_Click">
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/accept.png" />
+                    <TextBlock Text="Yes" Margin="5,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+            <Button VerticalAlignment="Center" x:Name="Button_No" HorizontalAlignment="Right" Width="100" Click="Button_No_Click">
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/delete.png" />
+                    <TextBlock Text="No" Margin="5,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+            <Button VerticalAlignment="Center" x:Name="Button_Cancel" HorizontalAlignment="Right" Width="100" Click="Button_Cancel_Click">
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/cancel.png" />
+                    <TextBlock Text="Cancel" Margin="5,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

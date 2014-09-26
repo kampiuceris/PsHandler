@@ -1,24 +1,25 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using PsHandler.Annotations;
-using PsHandler.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using PsHandler.Custom;
 
 namespace PsHandler.UI
 {
+    public interface IFilter
+    {
+        Regex RegexWindowTitle { get; }
+        Regex RegexWindowClass { get; }
+    }
+
     /// <summary>
     /// Interaction logic for WindowWindowsInfo.xaml
     /// </summary>
@@ -78,16 +79,15 @@ namespace PsHandler.UI
             List<Info> latestInfo = (from handle in WinApi.GetWindowHWndAll().Where(handle => !Methods.IsMinimized(handle))
                                      let rect = WinApi.GetWindowRectangle(handle)
                                      select new Info
-                                        {
-                                            Handle = handle,
-                                            Class = WinApi.GetClassName(handle),
-                                            Title = WinApi.GetWindowTitle(handle),
-                                            X = rect.X,
-                                            Y = rect.Y,
-                                            Width = rect.Width,
-                                            Height = rect.Height,
-                                            WindowClass = WinApi.GetClassName(handle)
-                                        }).ToList();
+                                     {
+                                         Handle = handle,
+                                         Title = WinApi.GetWindowTitle(handle),
+                                         X = rect.X,
+                                         Y = rect.Y,
+                                         Width = rect.Width,
+                                         Height = rect.Height,
+                                         WindowClass = WinApi.GetClassName(handle)
+                                     }).ToList();
             latestInfo.Sort((o1, o2) => o1.Y - o2.Y);
             latestInfo.Sort((o1, o2) => o1.X - o2.X);
 
@@ -105,12 +105,7 @@ namespace PsHandler.UI
                     // update / add
                     foreach (var item in latestInfo)
                     {
-                        var includeAnd = _iFilter.FilterIncludeAnd.Count == 0 || _iFilter.FilterIncludeAnd.All(item.Title.Contains);
-                        var includeOr = _iFilter.FilterIncludeOr.Count == 0 || _iFilter.FilterIncludeOr.Any(item.Title.Contains);
-                        var excludeAnd = _iFilter.FilterExcludeAnd.Count == 0 || !_iFilter.FilterExcludeAnd.All(item.Title.Contains);
-                        var excludeOr = _iFilter.FilterExcludeOr.Count == 0 || !_iFilter.FilterExcludeOr.Any(item.Title.Contains);
-                        var windowClassMatch = string.IsNullOrEmpty(_iFilter.WindowClass) || _iFilter.WindowClass.Equals(item.WindowClass);
-                        if (includeAnd && includeOr && excludeAnd && excludeOr && windowClassMatch) { item.PassesFilter = true; } else { item.PassesFilter = false; }
+                        if (_iFilter.RegexWindowTitle.IsMatch(item.Title) && _iFilter.RegexWindowClass.IsMatch(item.WindowClass)) { item.PassesFilter = true; } else { item.PassesFilter = false; }
 
                         var firstOrDefault = _currentInfo.FirstOrDefault(o => o.Handle.Equals(item.Handle));
                         if (firstOrDefault != null)
@@ -230,7 +225,6 @@ namespace PsHandler.UI
     public sealed class Info : INotifyPropertyChanged
     {
         private IntPtr _handle;
-        private string _class;
         private int _x;
         private int _y;
         private int _width;
@@ -240,7 +234,6 @@ namespace PsHandler.UI
         private bool _passesFilter;
 
         public IntPtr Handle { get { return _handle; } set { _handle = value; NotifyPropertyChanged(); } }
-        public string Class { get { return _class; } set { _class = value; NotifyPropertyChanged(); } }
         public int X { get { return _x; } set { _x = value; NotifyPropertyChanged(); } }
         public int Y { get { return _y; } set { _y = value; NotifyPropertyChanged(); } }
         public int Width { get { return _width; } set { _width = value; NotifyPropertyChanged(); } }

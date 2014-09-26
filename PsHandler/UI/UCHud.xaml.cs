@@ -1,9 +1,17 @@
-﻿using PsHandler.Hud;
-using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using PsHandler.PokerTypes;
-
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace PsHandler.UI
 {
@@ -16,21 +24,22 @@ namespace PsHandler.UI
         {
             InitializeComponent();
 
-            // Hook values
+            // Seed
 
-            CheckBox_EnableHUD.Checked += (sender, args) =>
+            CheckBox_EnableHud.IsChecked = Config.EnableHud;
+
+            // Hook
+
+            CheckBox_EnableHud.Checked += (sender, args) =>
             {
                 Config.EnableHud = true;
-                HudManager.Start();
             };
-            CheckBox_EnableHUD.Unchecked += (sender, args) =>
+            CheckBox_EnableHud.Unchecked += (sender, args) =>
             {
-                HudManager.Stop();
                 Config.EnableHud = false;
             };
 
-            // start hud if needed
-            CheckBox_EnableHUD.IsChecked = Config.EnableHud;
+
         }
     }
 }
