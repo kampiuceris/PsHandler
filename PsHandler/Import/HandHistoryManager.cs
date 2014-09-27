@@ -40,6 +40,7 @@ namespace PsHandler.Import
                     try
                     {
                         UpdateTournaments();
+                        Thread.Sleep(3000);
                     }
                     catch (Exception e)
                     {
@@ -48,7 +49,6 @@ namespace PsHandler.Import
                             break;
                         }
                     }
-                    Thread.Sleep(3000);
                 }
             });
             _thread.Start();

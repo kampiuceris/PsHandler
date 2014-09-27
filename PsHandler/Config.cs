@@ -280,37 +280,44 @@ namespace PsHandler
                 XDocument xDoc = XDocument.Load(CONFIG_FILENAME);
                 XElement root = xDoc.Element("Config");
 
+                int version = int.Parse(root.Element("Version").Value);
+                if (version < 17)
+                {
+                    System.IO.File.Move("pshandler.xml", "pshandler" + version + ".xml");
+                    return -1;
+                }
+
                 // Version
 
                 VersionControl(root);
 
                 #region Settings
 
-                MinimizeToSystemTray = GetBool(root, "MinimizeToSystemTray", ref errors);
-                StartMinimized = GetBool(root, "StartMinimized", ref errors);
-                SaveGuiLocation = GetBool(root, "SaveGuiLocation", ref errors);
+                MinimizeToSystemTray = GetBool(root, "MinimizeToSystemTray", ref errors, false);
+                StartMinimized = GetBool(root, "StartMinimized", ref errors, false);
+                SaveGuiLocation = GetBool(root, "SaveGuiLocation", ref errors, false);
                 GuiLocationX = GetInt(root, "GuiLocationX", ref errors);
                 GuiLocationY = GetInt(root, "GuiLocationY", ref errors);
-                SaveGuiSize = GetBool(root, "SaveGuiSize", ref errors);
+                SaveGuiSize = GetBool(root, "SaveGuiSize", ref errors, false);
                 GuiWidth = GetInt(root, "GuiWidth", ref errors);
                 GuiHeight = GetInt(root, "GuiHeight", ref errors);
                 HotkeyExit = KeyCombination.Parse(GetString(root, "HotkeyExit", ref errors));
-                PokerStarsThemeTable = PokerStarsThemeTable.Parse(GetString(root, "PokerStarsThemeTable", ref errors));
+                PokerStarsThemeTable = PokerStarsThemeTable.Parse(GetString(root, "PokerStarsThemeTable", ref errors, new PokerStarsThemesTable.Unknown().ToString()));
                 foreach (XElement xImportFolderPath in root.Elements("ImportFolderPaths").SelectMany(o => o.Elements("ImportFolderPath"))) if (!String.IsNullOrEmpty(xImportFolderPath.Value)) ImportFolders.Add(xImportFolderPath.Value);
 
                 #endregion
 
                 #region Controller
 
-                AutoclickImBack = GetBool(root, "AutoclickImBack", ref errors);
-                AutoclickTimebank = GetBool(root, "AutoclickTimebank", ref errors);
-                AutoclickYesSeatAvailable = GetBool(root, "AutoclickYesSeatAvailable", ref errors);
-                AutocloseTournamentRegistrationPopups = GetBool(root, "AutocloseTournamentRegistrationPopups", ref errors);
-                AutocloseHM2ApplyToSimilarTablesPopups = GetBool(root, "AutocloseHM2ApplyToSimilarTablesPopups", ref errors);
+                AutoclickImBack = GetBool(root, "AutoclickImBack", ref errors, false);
+                AutoclickTimebank = GetBool(root, "AutoclickTimebank", ref errors, false);
+                AutoclickYesSeatAvailable = GetBool(root, "AutoclickYesSeatAvailable", ref errors, false);
+                AutocloseTournamentRegistrationPopups = GetBool(root, "AutocloseTournamentRegistrationPopups", ref errors, false);
+                AutocloseHM2ApplyToSimilarTablesPopups = GetBool(root, "AutocloseHM2ApplyToSimilarTablesPopups", ref errors, false);
                 HotkeyHandReplay = KeyCombination.Parse(GetString(root, "HotkeyHandReplay", ref errors));
                 HotkeyQuickPreview = KeyCombination.Parse(GetString(root, "HotkeyQuickPreview", ref errors));
-                EnableCustomTablesWindowStyle = GetBool(root, "EnableCustomTablesWindowStyle", ref errors);
-                string tableWindowStyleStr = GetString(root, "CustomTablesWindowStyle", ref errors);
+                EnableCustomTablesWindowStyle = GetBool(root, "EnableCustomTablesWindowStyle", ref errors, false);
+                string tableWindowStyleStr = GetString(root, "CustomTablesWindowStyle", ref errors, TableWindowStyle.Borderless.ToString());
                 foreach (TableWindowStyle tableWindowStyle in Enum.GetValues(typeof(TableWindowStyle)).Cast<TableWindowStyle>().Where(tableWindowStyle => tableWindowStyle.ToString().Equals(tableWindowStyleStr)))
                 {
                     CustomTablesWindowStyle = tableWindowStyle;
@@ -321,25 +328,25 @@ namespace PsHandler
 
                 #region Randomizer
 
-                EnableRandomizer = GetBool(root, "EnableRandomizer", ref errors);
-                RandomizerChance10 = GetInt(root, "RandomizerChance10", ref errors);
-                RandomizerChance20 = GetInt(root, "RandomizerChance20", ref errors);
-                RandomizerChance30 = GetInt(root, "RandomizerChance30", ref errors);
-                RandomizerChance40 = GetInt(root, "RandomizerChance40", ref errors);
-                RandomizerChance50 = GetInt(root, "RandomizerChance50", ref errors);
-                RandomizerChance60 = GetInt(root, "RandomizerChance60", ref errors);
-                RandomizerChance70 = GetInt(root, "RandomizerChance70", ref errors);
-                RandomizerChance80 = GetInt(root, "RandomizerChance80", ref errors);
-                RandomizerChance90 = GetInt(root, "RandomizerChance90", ref errors);
-                HotkeyRandomizerChance10 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance10", ref errors));
-                HotkeyRandomizerChance20 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance20", ref errors));
-                HotkeyRandomizerChance30 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance30", ref errors));
-                HotkeyRandomizerChance40 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance40", ref errors));
-                HotkeyRandomizerChance50 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance50", ref errors));
-                HotkeyRandomizerChance60 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance60", ref errors));
-                HotkeyRandomizerChance70 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance70", ref errors));
-                HotkeyRandomizerChance80 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance80", ref errors));
-                HotkeyRandomizerChance90 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance90", ref errors));
+                EnableRandomizer = GetBool(root, "EnableRandomizer", ref errors, false);
+                RandomizerChance10 = GetInt(root, "RandomizerChance10", ref errors, 10);
+                RandomizerChance20 = GetInt(root, "RandomizerChance20", ref errors, 20);
+                RandomizerChance30 = GetInt(root, "RandomizerChance30", ref errors, 30);
+                RandomizerChance40 = GetInt(root, "RandomizerChance40", ref errors, 40);
+                RandomizerChance50 = GetInt(root, "RandomizerChance50", ref errors, 50);
+                RandomizerChance60 = GetInt(root, "RandomizerChance60", ref errors, 60);
+                RandomizerChance70 = GetInt(root, "RandomizerChance70", ref errors, 70);
+                RandomizerChance80 = GetInt(root, "RandomizerChance80", ref errors, 80);
+                RandomizerChance90 = GetInt(root, "RandomizerChance90", ref errors, 90);
+                HotkeyRandomizerChance10 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance10", ref errors, new KeyCombination(Key.NumPad1, true, false, false).ToString()));
+                HotkeyRandomizerChance20 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance20", ref errors, new KeyCombination(Key.NumPad2, true, false, false).ToString()));
+                HotkeyRandomizerChance30 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance30", ref errors, new KeyCombination(Key.NumPad3, true, false, false).ToString()));
+                HotkeyRandomizerChance40 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance40", ref errors, new KeyCombination(Key.NumPad4, true, false, false).ToString()));
+                HotkeyRandomizerChance50 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance50", ref errors, new KeyCombination(Key.NumPad5, true, false, false).ToString()));
+                HotkeyRandomizerChance60 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance60", ref errors, new KeyCombination(Key.NumPad6, true, false, false).ToString()));
+                HotkeyRandomizerChance70 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance70", ref errors, new KeyCombination(Key.NumPad7, true, false, false).ToString()));
+                HotkeyRandomizerChance80 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance80", ref errors, new KeyCombination(Key.NumPad8, true, false, false).ToString()));
+                HotkeyRandomizerChance90 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance90", ref errors, new KeyCombination(Key.NumPad9, true, false, false).ToString()));
 
                 #endregion
 
@@ -347,20 +354,20 @@ namespace PsHandler
 
                 EnableHud = GetBool(root, "EnableHud", ref errors);
 
-                TableManager.EnableHudTimer = GetBool(root, "EnableHudTimer", ref errors);
-                TimerDiff = GetInt(root, "TimerDiff", ref errors);
-                TimerHHNotFound = GetString(root, "TimerHHNotFound", ref errors);
-                TimerPokerTypeNotFound = GetString(root, "TimerPokerTypeNotFound", ref errors);
-                TimerMultiplePokerTypes = GetString(root, "TimerMultiplePokerTypes", ref errors);
+                TableManager.EnableHudTimer = GetBool(root, "EnableHudTimer", ref errors, false);
+                TimerDiff = GetInt(root, "TimerDiff", ref errors, 0);
+                TimerHHNotFound = GetString(root, "TimerHHNotFound", ref errors, "HH not found");
+                TimerPokerTypeNotFound = GetString(root, "TimerPokerTypeNotFound", ref errors, "Poker Type not found");
+                TimerMultiplePokerTypes = GetString(root, "TimerMultiplePokerTypes", ref errors, "Multiple Poker Types");
 
-                TableManager.EnableHudBigBlind = GetBool(root, "EnableHudBigBlind", ref errors);
-                BigBlindShowTournamentM = GetBool(root, "BigBlindShowTournamentM", ref errors);
-                BigBlindMByPlayerCount = GetBool(root, "BigBlindMByPlayerCount", ref errors);
-                BigBlindMByTableSize = GetBool(root, "BigBlindMByTableSize", ref errors);
-                BigBlindDecimals = GetInt(root, "BigBlindDecimals", ref errors);
-                BigBlindHHNotFound = GetString(root, "BigBlindHHNotFound", ref errors);
-                BigBlindPrefix = GetString(root, "BigBlindPrefix", ref errors);
-                BigBlindPostfix = GetString(root, "BigBlindPostfix", ref errors);
+                TableManager.EnableHudBigBlind = GetBool(root, "EnableHudBigBlind", ref errors, false);
+                BigBlindShowTournamentM = GetBool(root, "BigBlindShowTournamentM", ref errors, false);
+                BigBlindMByPlayerCount = GetBool(root, "BigBlindMByPlayerCount", ref errors, true);
+                BigBlindMByTableSize = GetBool(root, "BigBlindMByTableSize", ref errors, false);
+                BigBlindDecimals = GetInt(root, "BigBlindDecimals", ref errors, 0);
+                BigBlindHHNotFound = GetString(root, "BigBlindHHNotFound", ref errors, "X");
+                BigBlindPrefix = GetString(root, "BigBlindPrefix", ref errors, "");
+                BigBlindPostfix = GetString(root, "BigBlindPostfix", ref errors, "");
 
                 #endregion
 
@@ -369,27 +376,27 @@ namespace PsHandler
                 HudTimerBackground = GetColor(root, "HudTimerBackground", ref errors, Colors.Black);
                 HudTimerForeground = GetColor(root, "HudTimerForeground", ref errors, Colors.White);
                 HudTimerFontFamily = GetFontFamily(root, "HudTimerFontFamily", ref errors, new FontFamily("Consolas"));
-                HudTimerFontWeight = GetFontWeight(root, "HudTimerFontWeight", ref errors);
-                HudTimerFontStyle = GetFontStyle(root, "HudTimerFontStyle", ref errors);
-                HudTimerFontSize = GetFloat(root, "HudTimerFontSize", ref errors);
-                HudTimerMargin = GetThickness(root, "HudTimerMargin", ref errors);
+                HudTimerFontWeight = GetFontWeight(root, "HudTimerFontWeight", ref errors, FontWeights.Normal);
+                HudTimerFontStyle = GetFontStyle(root, "HudTimerFontStyle", ref errors, FontStyles.Normal);
+                HudTimerFontSize = GetFloat(root, "HudTimerFontSize", ref errors, 15);
+                HudTimerMargin = GetThickness(root, "HudTimerMargin", ref errors, new Thickness(2, 2, 2, 2));
 
                 HudBigBlindBackground = GetColor(root, "HudBigBlindBackground", ref errors, Colors.Black);
                 HudBigBlindForeground = GetColor(root, "HudBigBlindForeground", ref errors, Colors.White);
                 HudBigBlindFontFamily = GetFontFamily(root, "HudBigBlindFontFamily", ref errors, new FontFamily("Consolas"));
-                HudBigBlindFontWeight = GetFontWeight(root, "HudBigBlindFontWeight", ref errors);
-                HudBigBlindFontStyle = GetFontStyle(root, "HudBigBlindFontStyle", ref errors);
-                HudBigBlindFontSize = GetFloat(root, "HudBigBlindFontSize", ref errors);
-                HudBigBlindMargin = GetThickness(root, "HudBigBlindMargin", ref errors);
+                HudBigBlindFontWeight = GetFontWeight(root, "HudBigBlindFontWeight", ref errors, FontWeights.Normal);
+                HudBigBlindFontStyle = GetFontStyle(root, "HudBigBlindFontStyle", ref errors, FontStyles.Normal);
+                HudBigBlindFontSize = GetFloat(root, "HudBigBlindFontSize", ref errors, 25);
+                HudBigBlindMargin = GetThickness(root, "HudBigBlindMargin", ref errors, new Thickness(2, 2, 2, 2));
                 foreach (XElement xElement in root.Elements("HudBigBlindColorsByValue")) HudBigBlindColorsByValue.AddRange(xElement.Elements("ColorByValue").Select(ColorByValue.FromXElement).Where(o => o != null));
 
                 #endregion
 
-                TableManager.HudTimerLocationLocked = GetBool(root, "HudTimerLocationLocked", ref errors);
+                TableManager.HudTimerLocationLocked = GetBool(root, "HudTimerLocationLocked", ref errors, false);
                 TableManager.FromXElementHudTimerLocations(root.Element("HudTimerLocations"), ref errors);
-                TableManager.HudBigBlindLocationLocked = GetBool(root, "HudBigBlindLocationLocked", ref errors);
+                TableManager.HudBigBlindLocationLocked = GetBool(root, "HudBigBlindLocationLocked", ref errors, false);
                 TableManager.FromXElementHudBigBlindLocations(root.Element("HudBigBlindLocations"), ref errors);
-                EnableTableTiler = GetBool(root, "EnableTableTiler", ref errors);
+                EnableTableTiler = GetBool(root, "EnableTableTiler", ref errors, false);
                 TableTileManager.FromXElement(root.Element("TableTiles"));
                 PokerTypeManager.FromXElement(root.Element("PokerTypes"));
             }
@@ -552,8 +559,8 @@ namespace PsHandler
 
             if (errors != 0)
             {
-                App.TaskbarIcon.ShowBalloonTip("Error Saving Config XML", "Some configurations weren't saved. Contact support." + Environment.NewLine + "(Program will continue after 10 seconds)", BalloonIcon.Error);
-                Thread.Sleep(10000);
+                App.TaskbarIcon.ShowBalloonTip("Error Saving Config XML", "Some configurations weren't saved. Contact support." + Environment.NewLine + "(Program will continue after 5 seconds)", BalloonIcon.Error);
+                Thread.Sleep(5000);
             }
 
             return errors;
