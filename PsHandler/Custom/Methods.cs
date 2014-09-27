@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using PsHandler.UI;
 
 namespace PsHandler.Custom
 {
@@ -135,6 +136,12 @@ namespace PsHandler.Custom
                 windowRectangle.Right - clientRectangle.Right,
                 windowRectangle.Bottom - clientRectangle.Bottom
             };
+        }
+
+        public static void DisplayException(Exception e)
+        {
+            WindowMessage.ShowDialog(e.Message, "Error", WindowMessageButtons.OK, WindowMessageImage.Error, App.WindowMain);
+            File.WriteAllText("pshandler_error_" + DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
         }
     }
 

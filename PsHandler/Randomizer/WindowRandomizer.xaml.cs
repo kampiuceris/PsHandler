@@ -104,9 +104,19 @@ namespace PsHandler.Randomizer
                         }
                         sw.Stop();
                     }
+#if (DEBUG)
                     catch (ThreadInterruptedException)
                     {
                     }
+#else
+                    catch (Exception e)
+                    {
+                        if (!(e is ThreadInterruptedException))
+                        {
+                            Methods.DisplayException(e);
+                        }
+                    }
+#endif
                     finally
                     {
                         Application.Current.Dispatcher.Invoke(() =>

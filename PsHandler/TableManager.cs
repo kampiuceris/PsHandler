@@ -150,16 +150,19 @@ namespace PsHandler
                         Thread.Sleep(DELAY_MS);
                     }
                 }
-                //catch (Exception e)
+#if (DEBUG)
                 catch (ThreadInterruptedException)
                 {
-                    // TODO release
-                    //if (!(e is ThreadInterruptedException))
-                    //{
-                    //    MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    //    System.IO.File.WriteAllText(DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
-                    //}
                 }
+#else
+                catch (Exception e)
+                {
+                    if (!(e is ThreadInterruptedException))
+                    {
+                        Methods.DisplayException(e);
+                    }
+                }
+#endif
                 finally
                 {
                     lock (_tablesLock)

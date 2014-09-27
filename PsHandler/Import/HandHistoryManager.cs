@@ -41,8 +41,12 @@ namespace PsHandler.Import
                     {
                         UpdateTournaments();
                     }
-                    catch
+                    catch (Exception e)
                     {
+                        if (e is ThreadInterruptedException)
+                        {
+                            break;
+                        }
                     }
                     Thread.Sleep(3000);
                 }
@@ -54,7 +58,7 @@ namespace PsHandler.Import
         {
             if (_thread != null)
             {
-                _thread.Abort();
+                _thread.Interrupt();
                 _tournaments.Clear();
             }
         }

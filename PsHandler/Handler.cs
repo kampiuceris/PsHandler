@@ -112,15 +112,19 @@ namespace PsHandler
                         Thread.Sleep(DELAY_MS);
                     }
                 }
+#if (DEBUG)
+                catch (ThreadInterruptedException)
+                {
+                }
+#else
                 catch (Exception e)
                 {
                     if (!(e is ThreadInterruptedException))
                     {
-                        WindowMessage.ShowDialog(e.Message, "Error", WindowMessageButtons.OK, WindowMessageImage.Error, App.WindowMain);
-                        System.IO.File.WriteAllText("PsHandler Error Log " + DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
-                        Stop();
+                        Methods.DisplayException(e);
                     }
                 }
+#endif
             });
             _threadHandler.Start();
         }
@@ -218,9 +222,19 @@ namespace PsHandler
                             Thread.Sleep(25);
                         }
                     }
+#if (DEBUG)
                     catch (ThreadInterruptedException)
                     {
                     }
+#else
+                    catch (Exception e)
+                    {
+                        if (!(e is ThreadInterruptedException))
+                        {
+                            Methods.DisplayException(e);
+                        }
+                    }
+#endif
                     finally
                     {
                         Methods.UiInvoke(() => { _windowQuickPreview.Close(); });

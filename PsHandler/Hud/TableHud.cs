@@ -48,155 +48,158 @@ namespace PsHandler.Hud
                 {
                     while (true)
                     {
-                        try
+                        string title = Table.Title, className = Table.ClassName, textboxBigBlindContent = Config.BigBlindHHNotFound, textboxTimerContent = Config.TimerHHNotFound, hero = "";
+                        decimal sb = decimal.MinValue, bb = decimal.MinValue, ante = decimal.MinValue, bigBlindMValue = 0;
+                        bool bigBlindMIsSet = false;
+                        Match match = _regexSbBb.Match(title);
+                        if (!match.Success)
                         {
-                            string title = Table.Title, className = Table.ClassName, textboxBigBlindContent = Config.BigBlindHHNotFound, textboxTimerContent = Config.TimerHHNotFound, hero = "";
-                            decimal sb = decimal.MinValue, bb = decimal.MinValue, ante = decimal.MinValue, bigBlindMValue = 0;
-                            bool bigBlindMIsSet = false;
-                            Match match = _regexSbBb.Match(title);
-                            if (!match.Success)
-                            {
-                                match = _regexSbBbAnte.Match(title);
-                                if (match.Success)
-                                {
-                                    ante = decimal.Parse(match.Groups["ante"].Value);
-                                }
-                            }
+                            match = _regexSbBbAnte.Match(title);
                             if (match.Success)
                             {
-                                sb = decimal.Parse(match.Groups["sb"].Value);
-                                bb = decimal.Parse(match.Groups["bb"].Value);
-                                long toutnamentNumber = long.Parse(match.Groups["tournament_number"].Value);
-                                hero = match.Groups["hero"].Value;
+                                ante = decimal.Parse(match.Groups["ante"].Value);
+                            }
+                        }
+                        if (match.Success)
+                        {
+                            sb = decimal.Parse(match.Groups["sb"].Value);
+                            bb = decimal.Parse(match.Groups["bb"].Value);
+                            long toutnamentNumber = long.Parse(match.Groups["tournament_number"].Value);
+                            hero = match.Groups["hero"].Value;
 
-                                Tournament tournament = App.HandHistoryManager.GetTournament(toutnamentNumber);
-                                if (tournament != null)
+                            Tournament tournament = App.HandHistoryManager.GetTournament(toutnamentNumber);
+                            if (tournament != null)
+                            {
+                                #region BigBlind
+
+                                TableSize tableSize = tournament.GetLastHandTableSize();
+                                decimal latestStack = tournament.GetLatestStack(hero);
+                                if (latestStack != decimal.MinValue)
                                 {
-                                    #region BigBlind
-
-                                    TableSize tableSize = tournament.GetLastHandTableSize();
-                                    decimal latestStack = tournament.GetLatestStack(hero);
-                                    if (latestStack != decimal.MinValue)
+                                    if (!Config.BigBlindShowTournamentM)
                                     {
-                                        if (!Config.BigBlindShowTournamentM)
-                                        {
-                                            bigBlindMIsSet = true;
-                                            bigBlindMValue = Math.Round(latestStack / bb, Config.BigBlindDecimals);
-                                        }
-                                        else
-                                        {
-                                            if (Config.BigBlindMByPlayerCount)
-                                            {
-                                                bigBlindMIsSet = true;
-                                                bigBlindMValue = Math.Round(latestStack / (sb + bb + ante * tournament.GetLastHandPlayerCountAfterHand()), Config.BigBlindDecimals);
-                                            }
-                                            else if (Config.BigBlindMByTableSize)
-                                            {
-                                                bigBlindMIsSet = true;
-                                                bigBlindMValue = Math.Round(latestStack / (sb + bb + ante * (decimal)tableSize), Config.BigBlindDecimals);
-                                            }
-                                        }
-                                        string decimalFormat = "0:0.";
-                                        for (int i = 0; i < Config.BigBlindDecimals; i++) decimalFormat += "0";
-                                        textboxBigBlindContent = Config.BigBlindPrefix + string.Format("{" + decimalFormat + "}", bigBlindMValue) + Config.BigBlindPostfix;
-                                    }
-
-                                    #endregion
-
-                                    #region Timer
-
-                                    int pokerTypeErrors = -1;
-                                    if (_pokerType == null)
-                                    {
-                                        _pokerType = PokerTypeManager.GetPokerType(title, className, out pokerTypeErrors);
-                                        if (pokerTypeErrors != 0)
-                                        {
-                                            _pokerType = null;
-                                        }
-                                    }
-                                    if (_pokerType != null)
-                                    {
-                                        DateTime dateTimeNow = DateTime.Now.AddSeconds(-Config.TimerDiff);
-                                        DateTime dateTimeNextLevel = tournament.GetFirstHandTimestamp();
-                                        while (dateTimeNextLevel < dateTimeNow) dateTimeNextLevel = dateTimeNextLevel.AddSeconds(_pokerType.LevelLength.TotalSeconds);
-                                        TimeSpan timeSpan = dateTimeNextLevel - dateTimeNow;
-                                        textboxTimerContent = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
-                                        Methods.UiInvoke(() =>
-                                        {
-                                            WindowTimer.UCLabel_Main.SetToolTip(_pokerType.Name);
-                                        });
+                                        bigBlindMIsSet = true;
+                                        bigBlindMValue = Math.Round(latestStack / bb, Config.BigBlindDecimals);
                                     }
                                     else
                                     {
-                                        if (pokerTypeErrors == 1)
+                                        if (Config.BigBlindMByPlayerCount)
                                         {
-                                            textboxTimerContent = Config.TimerPokerTypeNotFound;
+                                            bigBlindMIsSet = true;
+                                            bigBlindMValue = Math.Round(latestStack / (sb + bb + ante * tournament.GetLastHandPlayerCountAfterHand()), Config.BigBlindDecimals);
                                         }
-                                        else if (pokerTypeErrors == 2)
+                                        else if (Config.BigBlindMByTableSize)
                                         {
-                                            textboxTimerContent = Config.TimerMultiplePokerTypes;
-                                        }
-                                        else
-                                        {
-                                            textboxTimerContent = string.Format("Unknown Error");
+                                            bigBlindMIsSet = true;
+                                            bigBlindMValue = Math.Round(latestStack / (sb + bb + ante * (decimal)tableSize), Config.BigBlindDecimals);
                                         }
                                     }
-
-                                    #endregion
+                                    string decimalFormat = "0:0.";
+                                    for (int i = 0; i < Config.BigBlindDecimals; i++) decimalFormat += "0";
+                                    textboxBigBlindContent = Config.BigBlindPrefix + string.Format("{" + decimalFormat + "}", bigBlindMValue) + Config.BigBlindPostfix;
                                 }
+
+                                #endregion
+
+                                #region Timer
+
+                                int pokerTypeErrors = -1;
+                                if (_pokerType == null)
+                                {
+                                    _pokerType = PokerTypeManager.GetPokerType(title, className, out pokerTypeErrors);
+                                    if (pokerTypeErrors != 0)
+                                    {
+                                        _pokerType = null;
+                                    }
+                                }
+                                if (_pokerType != null)
+                                {
+                                    DateTime dateTimeNow = DateTime.Now.AddSeconds(-Config.TimerDiff);
+                                    DateTime dateTimeNextLevel = tournament.GetFirstHandTimestamp();
+                                    while (dateTimeNextLevel < dateTimeNow) dateTimeNextLevel = dateTimeNextLevel.AddSeconds(_pokerType.LevelLength.TotalSeconds);
+                                    TimeSpan timeSpan = dateTimeNextLevel - dateTimeNow;
+                                    textboxTimerContent = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
+                                    Methods.UiInvoke(() =>
+                                    {
+                                        WindowTimer.UCLabel_Main.SetToolTip(_pokerType.Name);
+                                    });
+                                }
+                                else
+                                {
+                                    if (pokerTypeErrors == 1)
+                                    {
+                                        textboxTimerContent = Config.TimerPokerTypeNotFound;
+                                    }
+                                    else if (pokerTypeErrors == 2)
+                                    {
+                                        textboxTimerContent = Config.TimerMultiplePokerTypes;
+                                    }
+                                    else
+                                    {
+                                        textboxTimerContent = string.Format("Unknown Error");
+                                    }
+                                }
+
+                                #endregion
                             }
-
-                            #region GUI Update
-
-                            Methods.UiInvoke(() =>
-                            {
-                                // default client size: 792 x 546
-
-                                WindowTimer.UCLabel_Main.SetText(textboxTimerContent);
-                                WindowTimer.Left = Table.RectangleClient.X + (double)Table.RectangleClient.Width * TableManager.GetHudTimerLocationX(TableSize, this);
-                                WindowTimer.Top = Table.RectangleClient.Y + (double)Table.RectangleClient.Height * TableManager.GetHudTimerLocationY(TableSize, this);
-                                WindowTimer.UCLabel_Main.SetBackground(Config.HudTimerBackground);
-                                WindowTimer.UCLabel_Main.SetForeground(Config.HudTimerForeground);
-                                WindowTimer.UCLabel_Main.SetFontFamily(Config.HudTimerFontFamily);
-                                WindowTimer.UCLabel_Main.SetFontWeight(Config.HudTimerFontWeight);
-                                WindowTimer.UCLabel_Main.SetFontStyle(Config.HudTimerFontStyle);
-                                WindowTimer.UCLabel_Main.SetFontSize(Config.HudTimerFontSize, Table.RectangleClient.Height / 546.0);
-                                WindowTimer.UCLabel_Main.SetMargin(Config.HudTimerMargin, Table.RectangleClient.Height / 546.0);
-                                WindowTimer.Opacity = TableManager.EnableHudTimer ? 1 : 0;
-
-                                WindowBigBlind.UCLabel_Main.SetText(textboxBigBlindContent);
-                                WindowBigBlind.Left = Table.RectangleClient.X + (double)Table.RectangleClient.Width * TableManager.GetHudBigBlindLocationX(TableSize, this);
-                                WindowBigBlind.Top = Table.RectangleClient.Y + (double)Table.RectangleClient.Height * TableManager.GetHudBigBlindLocationY(TableSize, this);
-                                WindowBigBlind.UCLabel_Main.SetBackground(Config.HudBigBlindBackground);
-                                WindowBigBlind.UCLabel_Main.SetForeground(ColorByValue.GetColorByValue(Config.HudBigBlindForeground, bigBlindMValue, bigBlindMIsSet ? Config.HudBigBlindColorsByValue : new List<ColorByValue>()));
-                                WindowBigBlind.UCLabel_Main.SetFontFamily(Config.HudBigBlindFontFamily);
-                                WindowBigBlind.UCLabel_Main.SetFontWeight(Config.HudBigBlindFontWeight);
-                                WindowBigBlind.UCLabel_Main.SetFontStyle(Config.HudBigBlindFontStyle);
-                                WindowBigBlind.UCLabel_Main.SetFontSize(Config.HudBigBlindFontSize, Table.RectangleClient.Height / 546.0);
-                                WindowBigBlind.UCLabel_Main.SetMargin(Config.HudBigBlindMargin, Table.RectangleClient.Height / 546.0);
-                                WindowBigBlind.Opacity = TableManager.EnableHudBigBlind ? 1 : 0;
-                            });
-
-                            #endregion
-
-                            Thread.Sleep(250);
-
-                            // Ensure visibility
-                            Methods.UiInvoke(() =>
-                            {
-                                WindowTimer.Visibility = TableManager.EnableHudTimer ? Visibility.Visible : Visibility.Collapsed;
-                                WindowBigBlind.Visibility = TableManager.EnableHudBigBlind ? Visibility.Visible : Visibility.Collapsed;
-                            });
                         }
-                        catch (ThreadInterruptedException)
+
+                        #region GUI Update
+
+                        Methods.UiInvoke(() =>
                         {
-                            break;
-                        }
+                            // default client size: 792 x 546
+
+                            WindowTimer.UCLabel_Main.SetText(textboxTimerContent);
+                            WindowTimer.Left = Table.RectangleClient.X + (double)Table.RectangleClient.Width * TableManager.GetHudTimerLocationX(TableSize, this);
+                            WindowTimer.Top = Table.RectangleClient.Y + (double)Table.RectangleClient.Height * TableManager.GetHudTimerLocationY(TableSize, this);
+                            WindowTimer.UCLabel_Main.SetBackground(Config.HudTimerBackground);
+                            WindowTimer.UCLabel_Main.SetForeground(Config.HudTimerForeground);
+                            WindowTimer.UCLabel_Main.SetFontFamily(Config.HudTimerFontFamily);
+                            WindowTimer.UCLabel_Main.SetFontWeight(Config.HudTimerFontWeight);
+                            WindowTimer.UCLabel_Main.SetFontStyle(Config.HudTimerFontStyle);
+                            WindowTimer.UCLabel_Main.SetFontSize(Config.HudTimerFontSize, Table.RectangleClient.Height / 546.0);
+                            WindowTimer.UCLabel_Main.SetMargin(Config.HudTimerMargin, Table.RectangleClient.Height / 546.0);
+                            WindowTimer.Opacity = TableManager.EnableHudTimer ? 1 : 0;
+
+                            WindowBigBlind.UCLabel_Main.SetText(textboxBigBlindContent);
+                            WindowBigBlind.Left = Table.RectangleClient.X + (double)Table.RectangleClient.Width * TableManager.GetHudBigBlindLocationX(TableSize, this);
+                            WindowBigBlind.Top = Table.RectangleClient.Y + (double)Table.RectangleClient.Height * TableManager.GetHudBigBlindLocationY(TableSize, this);
+                            WindowBigBlind.UCLabel_Main.SetBackground(Config.HudBigBlindBackground);
+                            WindowBigBlind.UCLabel_Main.SetForeground(ColorByValue.GetColorByValue(Config.HudBigBlindForeground, bigBlindMValue, bigBlindMIsSet ? Config.HudBigBlindColorsByValue : new List<ColorByValue>()));
+                            WindowBigBlind.UCLabel_Main.SetFontFamily(Config.HudBigBlindFontFamily);
+                            WindowBigBlind.UCLabel_Main.SetFontWeight(Config.HudBigBlindFontWeight);
+                            WindowBigBlind.UCLabel_Main.SetFontStyle(Config.HudBigBlindFontStyle);
+                            WindowBigBlind.UCLabel_Main.SetFontSize(Config.HudBigBlindFontSize, Table.RectangleClient.Height / 546.0);
+                            WindowBigBlind.UCLabel_Main.SetMargin(Config.HudBigBlindMargin, Table.RectangleClient.Height / 546.0);
+                            WindowBigBlind.Opacity = TableManager.EnableHudBigBlind ? 1 : 0;
+                        });
+
+                        #endregion
+
+                        Thread.Sleep(250);
+
+                        // Ensure visibility
+                        Methods.UiInvoke(() =>
+                        {
+                            WindowTimer.Visibility = TableManager.EnableHudTimer ? Visibility.Visible : Visibility.Collapsed;
+                            WindowBigBlind.Visibility = TableManager.EnableHudBigBlind ? Visibility.Visible : Visibility.Collapsed;
+                        });
                     }
                 }
-                catch
+#if (DEBUG)
+                catch (ThreadInterruptedException)
                 {
                 }
+#else
+                catch (Exception e)
+                {
+                    if (!(e is ThreadInterruptedException))
+                    {
+                        Methods.DisplayException(e);
+                    }
+                }
+#endif
                 finally
                 {
                     Methods.UiInvoke(() =>
