@@ -129,7 +129,7 @@ namespace PsHandler
                                 tablesWithoutNewTable.Remove(table);
                                 if (isNewTable && !firstCycle)
                                 {
-                                    TableTileManager.SetAutoTileTable(table, tablesWithoutNewTable);
+                                    TableTileManager.AddAutoTileTable(table);
                                 }
                             }
 
@@ -154,7 +154,7 @@ namespace PsHandler
                             if (ObserverTableManagerTableCount != null) ObserverTableManagerTableCount.SetTableCount(_tables.Count);
                         }
                         if (firstCycle) firstCycle = false;
-                        Thread.Sleep(DELAY_MS);                      
+                        Thread.Sleep(DELAY_MS);
                     }
                 }
 #if (DEBUG)
@@ -191,6 +191,11 @@ namespace PsHandler
             {
                 _thread.Interrupt();
             }
+        }
+
+        public List<Table> GetTablesCopy()
+        {
+            return _tables.ToList();
         }
 
         public void EnsureTablesStyle()

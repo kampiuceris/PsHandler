@@ -49,7 +49,7 @@ namespace PsHandler.Hud
                     while (true)
                     {
                         string title = Table.Title, className = Table.ClassName, textboxBigBlindContent = Config.BigBlindHHNotFound, textboxTimerContent = Config.TimerHHNotFound, hero = "";
-                        decimal sb = decimal.MinValue, bb = decimal.MinValue, ante = decimal.MinValue, bigBlindMValue = 0;
+                        decimal sb = decimal.MinValue, bb = decimal.MinValue, ante = 0, bigBlindMValue = 0;
                         bool bigBlindMIsSet = false;
                         Match match = _regexSbBb.Match(title);
                         if (!match.Success)

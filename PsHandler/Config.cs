@@ -96,6 +96,7 @@ namespace PsHandler
         // Table Tiler
 
         public static bool EnableTableTiler = false;
+        public static int AutoTileDelayMs = 2000;
 
         // Randomizer
 
@@ -397,6 +398,7 @@ namespace PsHandler
                 TableManager.HudBigBlindLocationLocked = GetBool(root, "HudBigBlindLocationLocked", ref errors, false);
                 TableManager.FromXElementHudBigBlindLocations(root.Element("HudBigBlindLocations"), ref errors);
                 EnableTableTiler = GetBool(root, "EnableTableTiler", ref errors, false);
+                AutoTileDelayMs = GetInt(root, "AutoTileDelayMs", ref errors, 2000);
                 TableTileManager.FromXElement(root.Element("TableTiles"));
                 PokerTypeManager.FromXElement(root.Element("PokerTypes"));
             }
@@ -526,6 +528,7 @@ namespace PsHandler
                 Set(root, "HudBigBlindLocationLocked", TableManager.HudBigBlindLocationLocked, ref errors);
                 root.Add(TableManager.ToXElementHudBigBlindLocations());
                 Set(root, "EnableTableTiler", EnableTableTiler, ref errors);
+                Set(root, "AutoTileDelayMs", AutoTileDelayMs, ref errors);
                 root.Add(TableTileManager.ToXElement());
                 root.Add(PokerTypeManager.ToXElement());
 

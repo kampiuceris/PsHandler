@@ -79,14 +79,19 @@ namespace PsHandler.TableTiler
             }
         }
 
-        // Tile mech
-
+        //
         private static bool _busy;
         private static Thread _thread;
+        // tile
         private static KeyCombination _keyCombinationPressed;
         private static readonly object _lockKeyCombination = new object();
-        private static Table _newTable;
-        private static IEnumerable<Table> _oldTables;
+        // auto tile
+        private struct AutoTileWithTimestamp
+        {
+            public Table TableToAutoTile;
+            public DateTime Added;
+        }
+        private static readonly List<AutoTileWithTimestamp> _tablesToAutoTile = new List<AutoTileWithTimestamp>();
         private static readonly object _lockAutoTile = new object();
 
         public static void SetKeyCombination(KeyCombination keyCombination)
@@ -102,14 +107,26 @@ namespace PsHandler.TableTiler
             }
         }
 
-        public static void SetAutoTileTable(Table newTable, IEnumerable<Table> oldTables)
+        public static void AddAutoTileTable(Table newTable)
         {
             if (!Config.EnableTableTiler) return;
 
             lock (_lockAutoTile)
             {
-                _newTable = newTable;
-                _oldTables = oldTables;
+                _tablesToAutoTile.RemoveAll(o => o.TableToAutoTile.Handle.Equals(newTable.Handle));
+                _tablesToAutoTile.Add(new AutoTileWithTimestamp
+                {
+                    TableToAutoTile = newTable,
+                    Added = DateTime.Now
+                });
+            }
+        }
+
+        public static void RemoveAutoTileTable(Table newTable)
+        {
+            lock (_lockAutoTile)
+            {
+                _tablesToAutoTile.RemoveAll(o => o.TableToAutoTile.Handle.Equals(newTable.Handle));
             }
         }
 
@@ -135,13 +152,11 @@ namespace PsHandler.TableTiler
                         }
                         lock (_lockAutoTile)
                         {
-                            if (_newTable != null && _oldTables != null)
+                            if (_tablesToAutoTile.Any())
                             {
-                                _busy = true;
-                                AutoTile(_newTable, _oldTables);
-                                _newTable = null;
-                                _oldTables = null;
-                                _busy = false;
+                                AutoTileWithTimestamp[] toProceed = _tablesToAutoTile.Where(autoTileWithTimestamp => autoTileWithTimestamp.Added.AddMilliseconds(Config.AutoTileDelayMs) < DateTime.Now).ToArray();
+                                foreach (var item in toProceed) _tablesToAutoTile.Remove(item);
+                                foreach (var item in toProceed) AutoTile(item.TableToAutoTile);
                             }
                         }
                     }
@@ -323,8 +338,11 @@ namespace PsHandler.TableTiler
             public double DistanceToTheAvailableSlot;
         }
 
-        private static void AutoTile(Table newTable, IEnumerable<Table> oldTables)
+        private static void AutoTile(Table newTable)
         {
+            List<Table> oldTables = App.TableManager.GetTablesCopy();
+            oldTables.RemoveAll(o => o.Handle.Equals(newTable.Handle));
+
             // filter only enabled and autotile tabletiles
             foreach (TableTile tableTile in GetTableTilesCopy().Where(o => o.IsEnabled && o.AutoTile).Where(tableTile => tableTile.RegexWindowClass.IsMatch(newTable.ClassName) && tableTile.RegexWindowTitle.IsMatch(newTable.Title)))
             {
