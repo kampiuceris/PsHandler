@@ -70,6 +70,8 @@ namespace PsHandler.Hud
                             Tournament tournament = App.HandHistoryManager.GetTournament(toutnamentNumber);
                             if (tournament != null)
                             {
+                                TableSize = tournament.GetLastHandTableSize();
+
                                 #region BigBlind
 
                                 TableSize tableSize = tournament.GetLastHandTableSize();

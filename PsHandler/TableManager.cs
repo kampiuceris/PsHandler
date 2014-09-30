@@ -92,11 +92,14 @@ namespace PsHandler
                 try
                 {
                     int timer = 0;
+                    bool firstCycle = true;
                     while (true)
                     {
                         lock (_tablesLock)
                         {
                             IntPtr[] handles = WinApi.GetWindowHandlesByClassName("PokerStarsTableFrameClass");
+
+                            // tables
                             // remove closed tables
                             foreach (Table t in _tables.Where(o => !handles.Contains(o.Handle)).ToArray())
                             {
@@ -124,7 +127,10 @@ namespace PsHandler
                                 // autotile
                                 List<Table> tablesWithoutNewTable = _tables.ToList();
                                 tablesWithoutNewTable.Remove(table);
-                                if (isNewTable) TableTileManager.SetAutoTileTable(table, tablesWithoutNewTable);
+                                if (isNewTable && !firstCycle)
+                                {
+                                    TableTileManager.SetAutoTileTable(table, tablesWithoutNewTable);
+                                }
                             }
 
                             // controller
@@ -147,7 +153,8 @@ namespace PsHandler
                             if (ObserverTableManagerTableList != null) ObserverTableManagerTableList.UpdateView(_tables);
                             if (ObserverTableManagerTableCount != null) ObserverTableManagerTableCount.SetTableCount(_tables.Count);
                         }
-                        Thread.Sleep(DELAY_MS);
+                        if (firstCycle) firstCycle = false;
+                        Thread.Sleep(DELAY_MS);                      
                     }
                 }
 #if (DEBUG)
@@ -298,7 +305,7 @@ namespace PsHandler
                 xElement.Add(new XElement("Location",
                     new XElement("TableSize", tableSize),
                     new XElement("LocationX", GetHudTimerLocationX(tableSize, null)),
-                    new XElement("LocationY", GetHudTimerLocationX(tableSize, null))
+                    new XElement("LocationY", GetHudTimerLocationY(tableSize, null))
                     ));
             }
 
@@ -314,7 +321,7 @@ namespace PsHandler
                 xElement.Add(new XElement("Location",
                     new XElement("TableSize", tableSize),
                     new XElement("LocationX", GetHudBigBlindLocationX(tableSize, null)),
-                    new XElement("LocationY", GetHudBigBlindLocationX(tableSize, null))
+                    new XElement("LocationY", GetHudBigBlindLocationY(tableSize, null))
                     ));
             }
 

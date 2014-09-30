@@ -29,7 +29,7 @@ namespace PsHandler
 
         public App()
         {
-            RegisterHook(); // TODO debuging faster
+            RegisterHook();
             Config.LoadXml();
             HandHistoryManager = new HandHistoryManager();
             TableManager = new TableManager();
@@ -44,22 +44,24 @@ namespace PsHandler
             TableManager.ObserverTableManagerTableList = WindowMain.UCTables;
             TableManager.ObserverTableManagerTableCount = WindowMain.UcStatusBar;
 
-            //ReleaseOnly(); // TODO update for release
+            ReleaseOnly();
         }
 
         public static void Quit()
         {
-            //Autoupdate.Quit(); // TODO update for release
+            Autoupdate.Quit();
 
             Handler.Stop();
             TableTileManager.Stop();
-
             HandHistoryManager.Stop();
 
-            Config.GuiLocationX = (int)WindowMain.Left;
-            Config.GuiLocationY = (int)WindowMain.Top;
-            Config.GuiWidth = (int)WindowMain.Width;
-            Config.GuiHeight = (int)WindowMain.Height;
+            Methods.UiInvoke(() =>
+            {
+                Config.GuiLocationX = (int)WindowMain.Left;
+                Config.GuiLocationY = (int)WindowMain.Top;
+                Config.GuiWidth = (int)WindowMain.Width;
+                Config.GuiHeight = (int)WindowMain.Height;
+            });
 
             Config.SaveXml();
             if (KeyboardHook != null) KeyboardHook.Enabled = false;
@@ -109,11 +111,12 @@ namespace PsHandler
         private static void ReleaseOnly()
         {
 #if DEBUG
-            //Autoupdate.CheckForUpdates(Config.UPDATE_HREF + "?v=" + Config.VERSION + "&id=" + (string.IsNullOrEmpty(Config.MACHINE_GUID) ? "" : Config.MACHINE_GUID),
-            //    Config.UPDATE_HREF, "PsHandler", "PsHandler.exe", AppDomain.CurrentDomain.BaseDirectory, WindowMain, Quit,
-            //    Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.update.png").ToBitmapSource(),
-            //    Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.cancel.png").ToBitmapSource(),
-            //    Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.update.png").ToBitmapSource());
+            return;
+            Autoupdate.CheckForUpdates(Config.UPDATE_HREF + "?v=" + Config.VERSION + "&id=" + (string.IsNullOrEmpty(Config.MACHINE_GUID) ? "" : Config.MACHINE_GUID),
+                Config.UPDATE_HREF, "PsHandler", "PsHandler.exe", AppDomain.CurrentDomain.BaseDirectory, WindowMain, Quit,
+                Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.update.png").ToBitmapSource(),
+                Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.cancel.png").ToBitmapSource(),
+                Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.update.png").ToBitmapSource());
 #else
             Autoupdate.CheckForUpdates(Config.UPDATE_HREF + "?v=" + Config.VERSION + "&id=" + (string.IsNullOrEmpty(Config.MACHINE_GUID) ? "" : Config.MACHINE_GUID),
                 Config.UPDATE_HREF, "PsHandler", "PsHandler.exe", AppDomain.CurrentDomain.BaseDirectory, WindowMain, Quit,

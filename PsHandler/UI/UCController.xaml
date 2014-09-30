@@ -18,14 +18,14 @@
         <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,81,0,0" x:Name="CheckBox_AutocloseTournamentRegistrationPopups">
             <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Autoclose tournament registration popups (PokerStars 6)" />
         </CheckBox>
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,108,0,0" x:Name="CheckBox_AutocloseHM2ApplyToSimilarTablesPopups">
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,108,0,0" x:Name="CheckBox_AutocloseHm2ApplyToSimilarTablesPopups">
             <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Autoclose HM2 &quot;Apply to similar tables?&quot; popup" />
         </CheckBox>
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" VerticalContentAlignment="Center" Margin="0,135,0,0" Content="Hand replay hotkey:" />
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" VerticalContentAlignment="Center" Margin="0,135,0,0" Content="Hand replay hotkey:" x:Name="Label_HandReplayHotkey" />
         <ui:TextBoxHotkey HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="200" VerticalContentAlignment="Center" Margin="121,135,0,0" x:Name="TextBoxHotkey_HandReplay" />
-        <Label VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="0" Margin="0,162,0,0" Height="22" HorizontalAlignment="Left" Content="Quick Preview hotkey:"/>
-        <ui:TextBoxHotkey HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="108" Margin="121,162,0,0" VerticalContentAlignment="Center" x:Name="TextBoxHotkey_QuickPreview" />
-        <Label VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="0" Margin="234,162,0,0" Height="22" HorizontalAlignment="Left" Content="(single keys only)" FontStyle="Italic"/>
+        <Label VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="0" Margin="0,162,0,0" Height="22" HorizontalAlignment="Left" Content="Quick Preview hotkey:" x:Name="Label_QuickPreviewHotkey" />
+        <ui:TextBoxHotkey HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="111" Margin="121,162,0,0" VerticalContentAlignment="Center" x:Name="TextBoxHotkey_QuickPreview" />
+        <Label VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="0" Margin="237,162,0,0" Height="22" HorizontalAlignment="Left" Content="(single key only)" FontStyle="Italic" />
         <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,189,0,0" x:Name="CheckBox_EnableCustomTablesWindowStyle">
             <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Enable custom tables window style (beta):" />
         </CheckBox>
@@ -35,5 +35,7 @@
         <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="30,233,0,0" IsEnabled="False" x:Name="RadioButton_Borderless">
             <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Borderless" />
         </RadioButton>
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Width="139" Padding="0" Content="" Margin="48,211,0,0" x:Name="Label_DisabledNoCaption" />
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Width="58" Padding="0" Content="" Margin="48,233,0,0" x:Name="Label_DisabledBorderless" />
     </Grid>
 </UserControl>

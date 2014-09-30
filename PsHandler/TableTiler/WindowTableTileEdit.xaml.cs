@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using PsHandler.UI;
+using PsHandler.UI.ToolTips;
 
 namespace PsHandler.TableTiler
 {
@@ -39,11 +41,15 @@ namespace PsHandler.TableTiler
             {
                 RadioButton_ToTheTop.IsEnabled = true;
                 RadioButton_ToTheClosest.IsEnabled = true;
+                Label_DisabledToTheTop.Visibility = Visibility.Collapsed;
+                Label_DisabledToTheClosest.Visibility = Visibility.Collapsed;
             };
             CheckBox_EnableAutoTile.Unchecked += (sender, args) =>
             {
                 RadioButton_ToTheTop.IsEnabled = false;
                 RadioButton_ToTheClosest.IsEnabled = false;
+                Label_DisabledToTheTop.Visibility = Visibility.Visible;
+                Label_DisabledToTheClosest.Visibility = Visibility.Visible;
             };
             SizeChanged += (sender, args) => UCScreenPreview_Main_Update();
             Loaded += (sender, args) =>
@@ -75,7 +81,29 @@ namespace PsHandler.TableTiler
 
             // ToolTips
 
-            //TODO
+            Label_XYWidthHeight.ToolTip = "Create slots (one per line): X Y Width Height";
+            ToolTipService.SetShowDuration(Label_XYWidthHeight, 60000);
+
+            CheckBox_SortTournamentsByStartingTime.ToolTip = "Older tournaments will target upper slots (cash tables won't be affected).";
+            ToolTipService.SetShowDuration(CheckBox_SortTournamentsByStartingTime, 60000);
+
+            Label_RegexWindowTitle.ToolTip = "Regular Expression (Regex) for window's title. You can learn and test regex at: http://rubular.com/ or any other similar site.";
+            ToolTipService.SetShowDuration(Label_RegexWindowTitle, 60000);
+
+            Label_RegexWindowClass.ToolTip = "Regular Expression (Regex) for window's class name. You can learn and test regex at: http://rubular.com/ or any other similar site.";
+            ToolTipService.SetShowDuration(Label_RegexWindowClass, 60000);
+
+            RadioButton_ToTheTop.ToolTip = new UCToolTipTableTilerAutoTileTop();
+            ToolTipService.SetShowDuration(RadioButton_ToTheTop, 60000);
+
+            RadioButton_ToTheClosest.ToolTip = new UCToolTipTableTilerAutoTileClosest();
+            ToolTipService.SetShowDuration(RadioButton_ToTheClosest, 60000);
+
+            Label_DisabledToTheTop.ToolTip = new UCToolTipTableTilerAutoTileTop();
+            ToolTipService.SetShowDuration(Label_DisabledToTheTop, 60000);
+
+            Label_DisabledToTheClosest.ToolTip = new UCToolTipTableTilerAutoTileClosest();
+            ToolTipService.SetShowDuration(Label_DisabledToTheClosest, 60000);
         }
 
         private void UCScreenPreview_Main_Update()

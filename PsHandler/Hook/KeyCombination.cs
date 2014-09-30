@@ -73,7 +73,7 @@ namespace PsHandler.Hook
                 if (!tryParse) throw new Exception("Cannot parse Key");
                 return new KeyCombination(key, bool.Parse(split[0]), bool.Parse(split[1]), bool.Parse(split[2]));
             }
-            catch (Exception)
+            catch
             {
                 return new KeyCombination(Key.None, false, false, false);
             }

@@ -9,7 +9,7 @@
         <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,0,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_EnableHudTimer">
             <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Enable Timer HUD" />
         </CheckBox>
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" Margin="0,27,0,0" VerticalContentAlignment="Center" Content="Time difference:" />
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" Margin="0,27,0,0" VerticalContentAlignment="Center" Content="Time difference (in seconds):" x:Name="Label_TimerDifference" />
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" Margin="0,54,0,0" VerticalContentAlignment="Center" Content="Message &quot;HH not found&quot;:" />
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" Margin="0,81,0,0" VerticalContentAlignment="Center" Content="Message &quot;PokerType not found&quot;:" />
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" Margin="0,108,0,0" VerticalContentAlignment="Center" Content="Message &quot;Multiple PokerTypes&quot;:" />

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using PsHandler.UI.ToolTips;
 
 namespace PsHandler.UI
 {
@@ -34,14 +35,16 @@ namespace PsHandler.UI
             CheckBox_AutoclickYesSeatAvailable.Unchecked += (sender, args) => { Config.AutoclickYesSeatAvailable = false; };
             CheckBox_AutocloseTournamentRegistrationPopups.Checked += (sender, args) => { Config.AutocloseTournamentRegistrationPopups = true; };
             CheckBox_AutocloseTournamentRegistrationPopups.Unchecked += (sender, args) => { Config.AutocloseTournamentRegistrationPopups = false; };
-            CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.Checked += (sender, args) => { Config.AutocloseHM2ApplyToSimilarTablesPopups = true; };
-            CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.Unchecked += (sender, args) => { Config.AutocloseHM2ApplyToSimilarTablesPopups = false; };
+            CheckBox_AutocloseHm2ApplyToSimilarTablesPopups.Checked += (sender, args) => { Config.AutocloseHM2ApplyToSimilarTablesPopups = true; };
+            CheckBox_AutocloseHm2ApplyToSimilarTablesPopups.Unchecked += (sender, args) => { Config.AutocloseHM2ApplyToSimilarTablesPopups = false; };
 
             CheckBox_EnableCustomTablesWindowStyle.Checked += (sender, args) =>
             {
                 Config.EnableCustomTablesWindowStyle = true;
                 RadioButton_NoCaption.IsEnabled = true;
                 RadioButton_Borderless.IsEnabled = true;
+                Label_DisabledNoCaption.Visibility = Visibility.Collapsed;
+                Label_DisabledBorderless.Visibility = Visibility.Collapsed;
                 App.TableManager.EnsureTablesStyle();
             };
             CheckBox_EnableCustomTablesWindowStyle.Unchecked += (sender, args) =>
@@ -49,6 +52,8 @@ namespace PsHandler.UI
                 Config.EnableCustomTablesWindowStyle = false;
                 RadioButton_NoCaption.IsEnabled = false;
                 RadioButton_Borderless.IsEnabled = false;
+                Label_DisabledNoCaption.Visibility = Visibility.Visible;
+                Label_DisabledBorderless.Visibility = Visibility.Visible;
                 App.TableManager.EnsureTablesStyle();
             };
 
@@ -72,7 +77,7 @@ namespace PsHandler.UI
             CheckBox_AutoclickTimebank.IsChecked = Config.AutoclickTimebank;
             CheckBox_AutoclickYesSeatAvailable.IsChecked = Config.AutoclickYesSeatAvailable;
             CheckBox_AutocloseTournamentRegistrationPopups.IsChecked = Config.AutocloseTournamentRegistrationPopups;
-            CheckBox_AutocloseHM2ApplyToSimilarTablesPopups.IsChecked = Config.AutocloseHM2ApplyToSimilarTablesPopups;
+            CheckBox_AutocloseHm2ApplyToSimilarTablesPopups.IsChecked = Config.AutocloseHM2ApplyToSimilarTablesPopups;
             TextBoxHotkey_HandReplay.KeyCombination = Config.HotkeyHandReplay;
             TextBoxHotkey_QuickPreview.RestrictedToSingeKeys = true;
             TextBoxHotkey_QuickPreview.KeyCombination = Config.HotkeyQuickPreview;
@@ -89,6 +94,41 @@ namespace PsHandler.UI
                     RadioButton_Borderless.IsChecked = true;
                     break;
             }
+
+            // ToolTips
+
+            CheckBox_AutoclickImBack.ToolTip = new UCToolTipControllerImBack();
+            ToolTipService.SetShowDuration(CheckBox_AutoclickImBack, 60000);
+
+            CheckBox_AutoclickTimebank.ToolTip = new UCToolTipControllerTimebank();
+            ToolTipService.SetShowDuration(CheckBox_AutoclickTimebank, 60000);
+
+            CheckBox_AutoclickYesSeatAvailable.ToolTip = new UCToolTipControllerSeatAvailable();
+            ToolTipService.SetShowDuration(CheckBox_AutoclickYesSeatAvailable, 60000);
+
+            CheckBox_AutocloseTournamentRegistrationPopups.ToolTip = new UCToolTipControllerTournamentRegistration();
+            ToolTipService.SetShowDuration(CheckBox_AutocloseTournamentRegistrationPopups, 60000);
+
+            CheckBox_AutocloseHm2ApplyToSimilarTablesPopups.ToolTip = new UCToolTipControllerHm2ApplyToSimilar();
+            ToolTipService.SetShowDuration(CheckBox_AutocloseHm2ApplyToSimilarTablesPopups, 60000);
+
+            Label_HandReplayHotkey.ToolTip = new UCToolTipControllerHandReplayHotkey();
+            ToolTipService.SetShowDuration(Label_HandReplayHotkey, 60000);
+
+            Label_QuickPreviewHotkey.ToolTip = new UCToolTipControllerQuickPreview();
+            ToolTipService.SetShowDuration(Label_QuickPreviewHotkey, 60000);
+
+            RadioButton_NoCaption.ToolTip = new UCToolTipControllerWindowStyleNoCaption();
+            ToolTipService.SetShowDuration(RadioButton_NoCaption, 60000);
+
+            RadioButton_Borderless.ToolTip = new UCToolTipControllerWindowStyleBorderless();
+            ToolTipService.SetShowDuration(RadioButton_Borderless, 60000);
+
+            Label_DisabledNoCaption.ToolTip = new UCToolTipControllerWindowStyleNoCaption();
+            ToolTipService.SetShowDuration(Label_DisabledNoCaption, 60000);
+
+            Label_DisabledBorderless.ToolTip = new UCToolTipControllerWindowStyleBorderless();
+            ToolTipService.SetShowDuration(Label_DisabledBorderless, 60000);
         }
     }
 }

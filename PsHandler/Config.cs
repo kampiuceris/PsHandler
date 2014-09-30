@@ -284,7 +284,7 @@ namespace PsHandler
                 if (version < 17)
                 {
                     System.IO.File.Move("pshandler.xml", "pshandler" + version + ".xml");
-                    return -1;
+                    throw new NotSupportedException("Old pshandler.xml config.");
                 }
 
                 // Version

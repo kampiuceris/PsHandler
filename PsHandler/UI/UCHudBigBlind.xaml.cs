@@ -157,7 +157,7 @@ namespace PsHandler.UI
             CheckBox_LockHudBigBlindLocation.IsChecked = TableManager.HudBigBlindLocationLocked;
             CheckBox_ShowTournamentM.IsChecked = Config.BigBlindShowTournamentM;
 
-            // ToolTips //TODO
+            // ToolTips
         }
 
         private void Button_Customize_Click(object sender, RoutedEventArgs e)
@@ -165,7 +165,7 @@ namespace PsHandler.UI
             string decimalsFormal = "";
             for (int i = 0; i < Config.BigBlindDecimals; i++) decimalsFormal += "0";
             if (decimalsFormal.Length > 0) decimalsFormal = "." + decimalsFormal;
-            string x = string.Format("{0:0" + decimalsFormal + "}", 12.3456); //TODO 12.3456 test data
+            string x = string.Format("{0:0" + decimalsFormal + "}", 12.3456); // 12.3456 test data
 
             var dialog = new WindowHudDesign(
                 App.WindowMain,

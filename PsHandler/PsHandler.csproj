@@ -162,6 +162,42 @@
     </Compile>
     <Compile Include="Custom\ScreenCapture.cs" />
     <Compile Include="UI\TextBoxHotkey.cs" />
+    <Compile Include="UI\ToolTips\UCToolTipControllerHandReplayHotkey.xaml.cs">
+      <DependentUpon>UCToolTipControllerHandReplayHotkey.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipControllerHm2ApplyToSimilar.xaml.cs">
+      <DependentUpon>UCToolTipControllerHm2ApplyToSimilar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipControllerImBack.xaml.cs">
+      <DependentUpon>UCToolTipControllerImBack.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipControllerQuickPreview.xaml.cs">
+      <DependentUpon>UCToolTipControllerQuickPreview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipControllerTimebank.xaml.cs">
+      <DependentUpon>UCToolTipControllerTimebank.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipControllerSeatAvailable.xaml.cs">
+      <DependentUpon>UCToolTipControllerSeatAvailable.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipControllerTournamentRegistration.xaml.cs">
+      <DependentUpon>UCToolTipControllerTournamentRegistration.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipControllerWindowStyleBorderless.xaml.cs">
+      <DependentUpon>UCToolTipControllerWindowStyleBorderless.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipControllerWindowStyleNoCaption.xaml.cs">
+      <DependentUpon>UCToolTipControllerWindowStyleNoCaption.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipHudTimerTimeDifference.xaml.cs">
+      <DependentUpon>UCToolTipHudTimerTimeDifference.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipTableTilerAutoTileClosest.xaml.cs">
+      <DependentUpon>UCToolTipTableTilerAutoTileClosest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ToolTips\UCToolTipTableTilerAutoTileTop.xaml.cs">
+      <DependentUpon>UCToolTipTableTilerAutoTileTop.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\UCController.xaml.cs">
       <DependentUpon>UCController.xaml</DependentUpon>
     </Compile>
@@ -258,6 +294,54 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PokerTypes\WindowPokerTypeEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipControllerHandReplayHotkey.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipControllerHm2ApplyToSimilar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipControllerImBack.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipControllerQuickPreview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipControllerTimebank.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipControllerSeatAvailable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipControllerTournamentRegistration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipControllerWindowStyleBorderless.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipControllerWindowStyleNoCaption.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipHudTimerTimeDifference.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipTableTilerAutoTileClosest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ToolTips\UCToolTipTableTilerAutoTileTop.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -484,7 +568,22 @@
     <EmbeddedResource Include="Sound\EmbeddedResources\no.wav" />
     <EmbeddedResource Include="Sound\EmbeddedResources\yes.wav" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\Resources\ToolTips\autotile_closest.png" />
+    <Resource Include="Images\Resources\ToolTips\autotile_top.png" />
+    <Resource Include="Images\Resources\ToolTips\hm2_apply_to_similar_tables.png" />
+    <Resource Include="Images\Resources\ToolTips\im_back.png" />
+    <Resource Include="Images\Resources\ToolTips\quick_preview.png" />
+    <Resource Include="Images\Resources\ToolTips\replay.png" />
+    <Resource Include="Images\Resources\ToolTips\seat_available.png" />
+    <Resource Include="Images\Resources\ToolTips\timebank.png" />
+    <Resource Include="Images\Resources\ToolTips\time_sync.png" />
+    <Resource Include="Images\Resources\ToolTips\tournament_registered.png" />
+    <Resource Include="Images\Resources\ToolTips\tournament_registration.png" />
+    <Resource Include="Images\Resources\ToolTips\tournament_unregistration.png" />
+    <Resource Include="Images\Resources\ToolTips\window_style_borderless.png" />
+    <Resource Include="Images\Resources\ToolTips\window_style_nocaption.png" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\Themes\Mercury\imback.png" />
     <EmbeddedResource Include="Images\Themes\Mercury\timebank.png" />

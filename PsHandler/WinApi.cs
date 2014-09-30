@@ -1188,12 +1188,5 @@ namespace PsHandler
             SetWindowLong(handle, GWL_STYLE, (int)dwStyle);
             SetWindowPos(handle, IntPtr.Zero, 0, 0, rect.Width, rect.Height, SetWindowPosFlags.FrameChanged | SetWindowPosFlags.IgnoreMove | SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.DoNotChangeOwnerZOrder);
         }
-
-        public static void Test(IntPtr handle)
-        {
-            SetWindowStyleNoCaption(handle);
-            Thread.Sleep(5000);
-            SetWindowStyleNormal(handle);
-        }
     }
 }

@@ -126,7 +126,7 @@ namespace PsHandler.UI
                 }
 
                 // fit grid view
-                GridView_Main.ResetColumnWidths();
+                //GridView_Main.ResetColumnWidths();
             }));
         }
 

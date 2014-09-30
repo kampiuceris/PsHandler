@@ -39,8 +39,8 @@ namespace PsHandler.Import
                 {
                     try
                     {
-                        UpdateTournaments();
                         Thread.Sleep(3000);
+                        UpdateTournaments();
                     }
                     catch (Exception e)
                     {

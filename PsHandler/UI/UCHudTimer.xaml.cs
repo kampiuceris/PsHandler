@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PsHandler.Hud;
 using PsHandler.Import;
+using PsHandler.UI.ToolTips;
 
 namespace PsHandler.UI
 {
@@ -126,7 +127,10 @@ namespace PsHandler.UI
 
             CheckBox_LockHudTimerLocation.IsChecked = TableManager.HudTimerLocationLocked;
 
-            // ToolTips //TODO
+            // ToolTips
+
+            Label_TimerDifference.ToolTip = new UCToolTipHudTimerTimeDifference();
+            ToolTipService.SetShowDuration(Label_TimerDifference, 60000);
         }
 
         private void Button_Customize_Click(object sender, RoutedEventArgs e)

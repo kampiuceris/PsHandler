@@ -86,7 +86,7 @@ namespace PsHandler.Import
 
                     hands.Add(hand);
                 }
-                catch (Exception)
+                catch
                 {
                     importErrors++;
                 }

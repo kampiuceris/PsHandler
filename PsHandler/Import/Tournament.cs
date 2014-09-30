@@ -51,7 +51,7 @@ namespace PsHandler.Import
         {
             lock (_lock)
             {
-                return !Hands.Any() ? 0 : Hands.Last().TableSize;
+                return !Hands.Any() ? TableSize.Default : Hands.Last().TableSize;
             }
         }
 

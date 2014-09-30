@@ -1,0 +1,11 @@
+﻿<UserControl x:Class="PsHandler.UI.ToolTips.UCToolTipControllerWindowStyleBorderless"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             UseLayoutRounding="True"
+             mc:Ignorable="d">
+    <StackPanel Orientation="Vertical"  Margin="10">
+        <Image HorizontalAlignment="Left" VerticalAlignment="Top" Width="871" Height="296" Source="../../Images/Resources/ToolTips/window_style_borderless.png" />
+    </StackPanel>
+</UserControl>

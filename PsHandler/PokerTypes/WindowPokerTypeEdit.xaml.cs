@@ -67,7 +67,11 @@ namespace PsHandler.PokerTypes
 
             // ToolTips
 
-            //TODO
+            Label_RegexWindowTitle.ToolTip = "Regular Expression (Regex) for window's title. You can learn and test regex at: http://rubular.com/ or any other similar site.";
+            ToolTipService.SetShowDuration(Label_RegexWindowTitle, 60000);
+
+            Label_RegexWindowClass.ToolTip = "Regular Expression (Regex) for window's class name. You can learn and test regex at: http://rubular.com/ or any other similar site.";
+            ToolTipService.SetShowDuration(Label_RegexWindowClass, 60000);
         }
 
         private void Button_WindowsInfo_Click(object sender, RoutedEventArgs e)

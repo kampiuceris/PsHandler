@@ -122,6 +122,7 @@ namespace PsHandler.TableTiler
                 {
                     try
                     {
+                        Thread.Sleep(100);
                         lock (_lockKeyCombination)
                         {
                             if (_keyCombinationPressed != null)
@@ -143,7 +144,6 @@ namespace PsHandler.TableTiler
                                 _busy = false;
                             }
                         }
-                        Thread.Sleep(100);
                     }
                     catch (Exception e)
                     {
