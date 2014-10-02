@@ -140,8 +140,11 @@ namespace PsHandler.Custom
 
         public static void DisplayException(Exception e)
         {
-            WindowMessage.ShowDialog(e.Message, "Error", WindowMessageButtons.OK, WindowMessageImage.Error, App.WindowMain);
-            File.WriteAllText("pshandler_error_" + DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
+            UiInvoke(() =>
+            {
+                WindowMessage.ShowDialog(e.Message, "Error", WindowMessageButtons.OK, WindowMessageImage.Error, App.WindowMain);
+                File.WriteAllText("pshandler_error_" + DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
+            });
         }
     }
 

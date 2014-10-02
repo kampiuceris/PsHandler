@@ -60,7 +60,7 @@ namespace PsHandler.PokerTypes
             {
                 Name = "NLHE 3-max Spin & Go Hyper-Turbo",
                 LevelLength = new TimeSpan(0, 3, 0),
-                RegexWindowTitle = new Regex(@"\ASpin & Go: (?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[3-Max, Hyper-Turbo\] - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) Spin & Go - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             });
 
