@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using System.Xml.Linq;
-using PsHandler.Hook;
 
 namespace PsHandler.TableTiler
 {

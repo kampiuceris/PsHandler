@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Threading;
-using PsHandler.Hook;
 using PsHandler.Hud;
 using PsHandler.PokerTypes;
 using PsHandler.Randomizer;
@@ -22,7 +21,7 @@ namespace PsHandler
         // Constants
 
         public const string NAME = "PsHandler";
-        public const int VERSION = 18;
+        public const int VERSION = 19;
         public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static string MACHINE_GUID = GetMachineGuid();
         public static string CONFIG_FILENAME = "pshandler.xml";

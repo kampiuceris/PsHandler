@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Windows.Forms;
 using System.Xml.Linq;
 using PsHandler.Custom;
-using PsHandler.Hook;
 using PsHandler.Import;
-using PsHandler.UI;
 
 namespace PsHandler.TableTiler
 {

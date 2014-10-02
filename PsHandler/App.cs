@@ -6,8 +6,6 @@ using System.Windows;
 using System.Windows.Forms;
 using Hardcodet.Wpf.TaskbarNotification;
 using PsHandler.Custom;
-using PsHandler.Hook;
-using PsHandler.Hook.WinApi;
 using PsHandler.Hud;
 using PsHandler.Import;
 using PsHandler.PokerTypes;
@@ -22,8 +20,7 @@ namespace PsHandler
     {
         public static WindowMain WindowMain;
         public static TaskbarIcon TaskbarIcon { get { return WindowMain.TaskbarIcon_NotifyIcon; } }
-        public static KeyboardHookListener KeyboardHook;
-        public static MouseHookListener MouseHook;
+        public static KeyboardHook KeyboardHook;
         public static HandHistoryManager HandHistoryManager;
         public static TableManager TableManager;
 
@@ -64,8 +61,7 @@ namespace PsHandler
             });
 
             Config.SaveXml();
-            if (KeyboardHook != null) KeyboardHook.Enabled = false;
-            if (KeyboardHook != null) MouseHook.Enabled = false;
+            if (KeyboardHook != null) KeyboardHook.Dispose();
 
             Config.EnableCustomTablesWindowStyle = false;
             TableManager.EnsureTablesStyle();
@@ -78,10 +74,8 @@ namespace PsHandler
 
         private static void RegisterHook()
         {
-            KeyboardHook = new KeyboardHookListener(new GlobalHooker()) { Enabled = true };
-            MouseHook = new MouseHookListener(new GlobalHooker()) { Enabled = true };
-
-            KeyboardHook.KeyDownMethods.Add(kc =>
+            KeyboardHook = new KeyboardHook();
+            KeyboardHook.KeyCombinationDownMethods.Add(kc =>
             {
                 if (kc.Equals(Config.HotkeyHandReplay))
                 {
@@ -99,7 +93,7 @@ namespace PsHandler
                 RandomizerManager.CheckKeyCombination(kc);
             });
 
-            KeyboardHook.KeyUpMethods.Add(kc =>
+            KeyboardHook.KeyCombinationUpMethods.Add(kc =>
             {
                 if (kc.Equals(Config.HotkeyQuickPreview))
                 {

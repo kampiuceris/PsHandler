@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using PsHandler.Hook;
 
 namespace PsHandler.UI
 {
@@ -51,7 +50,7 @@ namespace PsHandler.UI
                 BorderBrush = Brushes.Red;
                 if (App.KeyboardHook != null)
                 {
-                    App.KeyboardHook.KeyDownMethods.Add(TextBoxKeyDown);
+                    App.KeyboardHook.KeyCombinationDownMethods.Add(TextBoxKeyDown);
                 }
             };
 
@@ -60,7 +59,7 @@ namespace PsHandler.UI
                 BorderBrush = Brushes.DarkGray;
                 if (App.KeyboardHook != null)
                 {
-                    App.KeyboardHook.KeyDownMethods.Remove(TextBoxKeyDown);
+                    App.KeyboardHook.KeyCombinationDownMethods.Remove(TextBoxKeyDown);
                 }
             };
 

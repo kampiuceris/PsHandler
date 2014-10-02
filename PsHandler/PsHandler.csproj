@@ -70,27 +70,6 @@
     <Compile Include="Custom\Bmp.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EntryPoint.cs" />
-    <Compile Include="Hook\BaseHookListener.cs" />
-    <Compile Include="Hook\Controls\HookType.cs" />
-    <Compile Include="Hook\Controls\MouseKeyEventProvider.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Hook\KeyboardHookListener.cs" />
-    <Compile Include="Hook\KeyCombination.cs" />
-    <Compile Include="Hook\KeyEventArgsExt.cs" />
-    <Compile Include="Hook\KeyPressEventArgsExt.cs" />
-    <Compile Include="Hook\MouseEventExtArgs.cs" />
-    <Compile Include="Hook\MouseHookListener.cs" />
-    <Compile Include="Hook\WinApi\AppHooker.cs" />
-    <Compile Include="Hook\WinApi\GlobalHooker.cs" />
-    <Compile Include="Hook\WinApi\HookCallback.cs" />
-    <Compile Include="Hook\WinApi\Hooker.cs" />
-    <Compile Include="Hook\WinApi\Keyboard.cs" />
-    <Compile Include="Hook\WinApi\KeyboardHookStruct.cs" />
-    <Compile Include="Hook\WinApi\Messages.cs" />
-    <Compile Include="Hook\WinApi\Mouse.cs" />
-    <Compile Include="Hook\WinApi\MouseStructures.cs" />
-    <Compile Include="Hook\WinApi\Point.cs" />
     <Compile Include="Hud\ColorByValue.cs" />
     <Compile Include="Hud\TableHud.cs" />
     <Compile Include="Hud\UCColorByValue.xaml.cs">
@@ -117,6 +96,7 @@
     <Compile Include="Import\Hand.cs" />
     <Compile Include="Import\HandHistoryManager.cs" />
     <Compile Include="Import\Tournament.cs" />
+    <Compile Include="KeyboardHook.cs" />
     <Compile Include="PokerTypes\PokerType.cs" />
     <Compile Include="PokerTypes\PokerTypeManager.cs" />
     <Compile Include="PokerTypes\WindowPokerTypeEdit.xaml.cs">
@@ -556,10 +536,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Resources\Size16x16\zoom.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Sound\EmbeddedResources\no_old.wav" />
-    <EmbeddedResource Include="Sound\EmbeddedResources\yes_old.wav" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Resources\Size16x16\dice.png" />
