@@ -64,36 +64,44 @@ namespace PsHandler.Custom
 
         public static Bitmap GetBitmapWindowClient(IntPtr handle)
         {
-            // get te hDC of the target window
-            IntPtr hdcSrc = WinApi.GetWindowDC(handle);
-            // get the size
-            //RECT windowRect;
-            //WinApi.GetWindowRect(handle, out windowRect);
-            //int width = windowRect.Right - windowRect.Left;
-            //int height = windowRect.Bottom - windowRect.Top;
+            try
+            {
+                // get te hDC of the target window
+                IntPtr hdcSrc = WinApi.GetWindowDC(handle);
+                // get the size
+                //RECT windowRect;
+                //WinApi.GetWindowRect(handle, out windowRect);
+                //int width = windowRect.Right - windowRect.Left;
+                //int height = windowRect.Bottom - windowRect.Top;
 
-            Rectangle rw = WinApi.GetWindowRectangle(handle);
-            Rectangle rc = WinApi.GetClientRectangle(handle);
-            int width = rc.Right - rc.Left;
-            int height = rc.Bottom - rc.Top;
-            // create a device context we can copy to
-            IntPtr hdcDest = WinApi.CreateCompatibleDC(hdcSrc);
-            // create a bitmap we can copy it to,
-            // using GetDeviceCaps to get the width/height
-            IntPtr hBitmap = WinApi.CreateCompatibleBitmap(hdcSrc, width, height);
-            // select the bitmap object
-            IntPtr hOld = WinApi.SelectObject(hdcDest, hBitmap);
-            // bitblt over
-            WinApi.BitBlt(hdcDest, 0, 0, width, height, hdcSrc, rc.X - rw.X, rc.Y - rw.Y, WinApi.SRCCOPY);
-            // restore selection
-            WinApi.SelectObject(hdcDest, hOld);
-            // clean up 
-            WinApi.DeleteDC(hdcDest);
-            WinApi.ReleaseDC(handle, hdcSrc);
-            Bitmap bitmap = System.Drawing.Image.FromHbitmap(hBitmap);
-            // free up the Bitmap object
-            WinApi.DeleteObject(hBitmap);
-            return bitmap;
+                Rectangle rw = WinApi.GetWindowRectangle(handle);
+                Rectangle rc = WinApi.GetClientRectangle(handle);
+                int width = rc.Right - rc.Left;
+                int height = rc.Bottom - rc.Top;
+                // create a device context we can copy to
+                IntPtr hdcDest = WinApi.CreateCompatibleDC(hdcSrc);
+                // create a bitmap we can copy it to,
+                // using GetDeviceCaps to get the width/height
+                IntPtr hBitmap = WinApi.CreateCompatibleBitmap(hdcSrc, width, height);
+                // select the bitmap object
+                IntPtr hOld = WinApi.SelectObject(hdcDest, hBitmap);
+                // bitblt over
+                WinApi.BitBlt(hdcDest, 0, 0, width, height, hdcSrc, rc.X - rw.X, rc.Y - rw.Y, WinApi.SRCCOPY);
+                // restore selection
+                WinApi.SelectObject(hdcDest, hOld);
+                // clean up 
+                WinApi.DeleteDC(hdcDest);
+                WinApi.ReleaseDC(handle, hdcSrc);
+                Bitmap bitmap = System.Drawing.Image.FromHbitmap(hBitmap);
+                // free up the Bitmap object
+                WinApi.DeleteObject(hBitmap);
+
+                return bitmap;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public static Bitmap GetBitmapRectangleFromScreen(Rectangle rect)

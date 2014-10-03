@@ -142,9 +142,13 @@ namespace PsHandler
                                     timer = 0;
                                     foreach (IntPtr handle in handles)
                                     {
-                                        Bmp bmp = new Bmp(ScreenCapture.GetBitmapWindowClient(handle));
-                                        if (Config.AutoclickImBack) Methods.CheckButtonAndClick(bmp, Config.PokerStarsThemeTable.ButtonImBack, handle);
-                                        if (Config.AutoclickTimebank) Methods.CheckButtonAndClick(bmp, Config.PokerStarsThemeTable.ButtonTimebank, handle);
+                                        Bitmap bitmap = ScreenCapture.GetBitmapWindowClient(handle);
+                                        if (bitmap != null)
+                                        {
+                                            Bmp bmp = new Bmp(bitmap);
+                                            if (Config.AutoclickImBack) Methods.CheckButtonAndClick(bmp, Config.PokerStarsThemeTable.ButtonImBack, handle);
+                                            if (Config.AutoclickTimebank) Methods.CheckButtonAndClick(bmp, Config.PokerStarsThemeTable.ButtonTimebank, handle);
+                                        }
                                     }
                                 }
                             }

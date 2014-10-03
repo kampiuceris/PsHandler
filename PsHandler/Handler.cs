@@ -208,15 +208,18 @@ namespace PsHandler
                             if (handle != IntPtr.Zero)
                             {
                                 System.Drawing.Bitmap bitmapWindowClient = ScreenCapture.GetBitmapWindowClient(handle);
-                                Methods.UiInvoke(() =>
+                                if (bitmapWindowClient != null)
                                 {
-                                    _imageQuickPreview.Width = bitmapWindowClient.Width;
-                                    _imageQuickPreview.Height = bitmapWindowClient.Height;
-                                    _imageQuickPreview.Source = bitmapWindowClient.ToBitmapSource();
-                                    System.Drawing.Rectangle clientRectangle = WinApi.GetClientRectangle(handle);
-                                    _windowQuickPreview.Left = clientRectangle.Left;
-                                    _windowQuickPreview.Top = clientRectangle.Top;
-                                });
+                                    Methods.UiInvoke(() =>
+                                    {
+                                        _imageQuickPreview.Width = bitmapWindowClient.Width;
+                                        _imageQuickPreview.Height = bitmapWindowClient.Height;
+                                        _imageQuickPreview.Source = bitmapWindowClient.ToBitmapSource();
+                                        System.Drawing.Rectangle clientRectangle = WinApi.GetClientRectangle(handle);
+                                        _windowQuickPreview.Left = clientRectangle.Left;
+                                        _windowQuickPreview.Top = clientRectangle.Top;
+                                    });
+                                }
                             }
 
                             Thread.Sleep(25);
