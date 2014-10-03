@@ -146,7 +146,7 @@ namespace PsHandler
                 MinWidth = 320,
                 MinHeight = 200,
                 Width = 480,
-                Height = 240,
+                Height = 360,
                 ResizeMode = ResizeMode.CanResize,
                 Icon = iconWindow,
                 Title = string.Format("{0} Update", applicationName)
@@ -172,7 +172,7 @@ namespace PsHandler
 
             Label label = new Label
             {
-                Content = string.Format("Release v{0} notes:", version),
+                Content = string.Format("Release notes:"),
                 Padding = new Thickness(0),
                 VerticalAlignment = VerticalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
