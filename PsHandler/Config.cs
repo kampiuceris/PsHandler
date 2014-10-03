@@ -21,7 +21,7 @@ namespace PsHandler
         // Constants
 
         public const string NAME = "PsHandler";
-        public const int VERSION = 19;
+        public const int VERSION = 20;
         public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static string MACHINE_GUID = GetMachineGuid();
         public static string CONFIG_FILENAME = "pshandler.xml";
@@ -289,7 +289,7 @@ namespace PsHandler
 
                 // Version
 
-                VersionControl(root);
+                VersionControl(root, version);
 
                 #region Settings
 
@@ -568,37 +568,28 @@ namespace PsHandler
             return errors;
         }
 
-        public static void VersionControl(XElement root)
+        public static void VersionControl(XElement root, int version)
         {
-            // AppDataPaths -> ImportFolderPaths (v1.15 -> v1.16)
-
-            foreach (XElement xAppDataPath in root.Elements("AppDataPaths").SelectMany(o => o.Elements("AppDataPath")))
+            try
             {
-                if (!String.IsNullOrEmpty(xAppDataPath.Value))
+                if (version < 20)
                 {
-                    DirectoryInfo dirPokerStarsAppData = new DirectoryInfo(xAppDataPath.Value);
-                    if (dirPokerStarsAppData.Exists)
+                    // poker types delaut override:
+                    List<PokerType> defaultPokerTypes = PokerType.GetDefaultValues().ToList();
+                    foreach (PokerType pokerType in PokerTypeManager.GetPokerTypesCopy())
                     {
-                        DirectoryInfo[] dirsHandHistories = dirPokerStarsAppData.GetDirectories("HandHistory");
-                        foreach (DirectoryInfo dirHandHistory in dirsHandHistories)
+                        if (!defaultPokerTypes.Any(a => a.Name.Equals(pokerType.Name)))
                         {
-                            if (dirHandHistory.Exists)
-                            {
-                                DirectoryInfo[] dirPlayers = dirHandHistory.GetDirectories();
-                                foreach (DirectoryInfo dirPlayer in dirPlayers)
-                                {
-                                    if (dirPlayer.Exists)
-                                    {
-                                        ImportFolders.Add(dirPlayer.FullName);
-                                    }
-                                }
-                            }
+                            defaultPokerTypes.Add(pokerType);
                         }
                     }
+                    PokerTypeManager.RemoveAll();
+                    PokerTypeManager.Add(defaultPokerTypes);
                 }
             }
-
-            //
+            catch
+            {
+            }
         }
     }
 }
