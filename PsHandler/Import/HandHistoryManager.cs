@@ -17,12 +17,12 @@ namespace PsHandler.Import
 
     public class HandHistoryManager
     {
-        private static readonly Regex _RegexFileName = new Regex(@"HH\d{8} T(?<tn>\d{9,10})");
-        private static readonly object _lock = new object();
-        private static readonly List<Tournament> _tournaments = new List<Tournament>();
-        private static int _importErrors;
-        private static Thread _thread;
-        public static IObserverHandHistoryManager Observer;
+        private readonly Regex _RegexFileName = new Regex(@"HH\d{8} T(?<tn>\d{9,10})");
+        private readonly object _lock = new object();
+        private readonly List<Tournament> _tournaments = new List<Tournament>();
+        private int _importErrors;
+        private Thread _thread;
+        public IObserverHandHistoryManager Observer;
 
         public HandHistoryManager()
         {

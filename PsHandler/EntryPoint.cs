@@ -1,7 +1,15 @@
-﻿using System;
+﻿using System.Drawing;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using PsHandler.Custom;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Principal;
+using PsHandler.SngRegistrator;
+using PsHandler.UI;
+using Color = System.Drawing.Color;
 
 namespace PsHandler
 {
@@ -21,16 +29,19 @@ namespace PsHandler
             {
                 // relaunch the application with admin rights
                 string fileName = Assembly.GetExecutingAssembly().Location;
-                ProcessStartInfo processInfo = new ProcessStartInfo();
-                processInfo.Verb = "runas";
-                processInfo.FileName = fileName;
+                ProcessStartInfo processInfo = new ProcessStartInfo
+                {
+                    Verb = "runas",
+                    FileName = fileName
+                };
 
                 try
                 {
                     Process.Start(processInfo);
                 }
-                catch
+                catch (Exception e)
                 {
+                    WindowMessage.ShowDialog("PsHandler requires Administrative", "UAC", WindowMessageButtons.OK, WindowMessageImage.Error, null);
                 }
             }
             else
@@ -41,6 +52,8 @@ namespace PsHandler
 
         public static void Test()
         {
+            SngRegistratorManager sngRegistratorManager = new SngRegistratorManager();
+            sngRegistratorManager.Start();
         }
     }
 }

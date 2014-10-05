@@ -22,16 +22,22 @@ namespace PsHandler
         public static TaskbarIcon TaskbarIcon { get { return WindowMain.TaskbarIcon_NotifyIcon; } }
         public static KeyboardHook KeyboardHook;
         public static HandHistoryManager HandHistoryManager;
+        public static PokerTypeManager PokerTypeManager;
+        public static TableTileManager TableTileManager;
+        public static Handler Handler;
+        public static RandomizerManager RandomizerManager;
         public static TableManager TableManager;
 
         public App()
         {
             RegisterHook();
+            TableTileManager = new TableTileManager();
+            PokerTypeManager = new PokerTypeManager();
+            RandomizerManager = new RandomizerManager();
             Config.LoadXml();
             HandHistoryManager = new HandHistoryManager();
             TableManager = new TableManager();
-            TableTileManager.Start();
-            Handler.Start();
+            Handler = new Handler();
 
             WindowMain = new WindowMain();
             WindowMain.Show();

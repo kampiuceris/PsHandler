@@ -152,7 +152,7 @@ namespace PsHandler.TableTiler
                 WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", Label_Name.Content), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
                 return;
             }
-            if (TableTileManager.GetTableTilesCopy().Any(o => o.Name.ToLowerInvariant().Equals(TextBox_Name.Text.ToLowerInvariant())))
+            if (App.TableTileManager.GetTableTilesCopy().Any(o => o.Name.ToLowerInvariant().Equals(TextBox_Name.Text.ToLowerInvariant())))
             {
                 WindowMessage.ShowDialog("Cannot save. Duplicate names.", "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
                 return;

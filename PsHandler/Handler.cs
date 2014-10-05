@@ -18,9 +18,14 @@ namespace PsHandler
     {
         private const int DELAY_MS = 250;
 
-        private static Thread _threadHandler;
+        private Thread _threadHandler;
 
-        public static void Start()
+        public Handler()
+        {
+            Start();
+        }
+
+        public void Start()
         {
             _threadHandler = new Thread(() =>
             {
@@ -129,7 +134,7 @@ namespace PsHandler
             _threadHandler.Start();
         }
 
-        public static void Stop()
+        public void Stop()
         {
             if (_threadHandler != null)
             {
@@ -143,18 +148,18 @@ namespace PsHandler
             string className = WinApi.GetClassName(handle);
             if (className.Equals("PokerStarsTableFrameClass"))
             {
-                Methods.LeftMouseClickRelative(handle, Config.PokerStarsThemeTable.ButtonHandReplayX, Config.PokerStarsThemeTable.ButtonHandReplayY, false);
+                Methods.LeftMouseClickRelativeScaled(handle, Config.PokerStarsThemeTable.ButtonHandReplayX, Config.PokerStarsThemeTable.ButtonHandReplayY, false);
             }
         }
 
         // Quick Preview
 
-        private static Thread _threadQuickPreview;
-        public static bool _quickPreviewIsRunning;
-        public static Window _windowQuickPreview;
-        public static Image _imageQuickPreview;
+        private Thread _threadQuickPreview;
+        public bool _quickPreviewIsRunning;
+        public Window _windowQuickPreview;
+        public Image _imageQuickPreview;
 
-        public static void QuickPreviewStart()
+        public void QuickPreviewStart()
         {
             if (_threadQuickPreview == null || !_quickPreviewIsRunning)
             {
@@ -248,7 +253,7 @@ namespace PsHandler
             }
         }
 
-        public static void QuickPreviewStop()
+        public void QuickPreviewStop()
         {
             if (_threadQuickPreview != null)
             {

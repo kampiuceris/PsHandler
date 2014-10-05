@@ -104,6 +104,7 @@
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Randomizer\RandomizerManager.cs" />
+    <Compile Include="SngRegistrator\SngRegistratorManager.cs" />
     <Compile Include="TableManager.cs" />
     <Compile Include="TableTiler\TableTile.cs" />
     <Compile Include="TableTiler\TableTileManager.cs" />
@@ -563,6 +564,10 @@
   <ItemGroup>
     <EmbeddedResource Include="Images\Themes\Mercury\imback.png" />
     <EmbeddedResource Include="Images\Themes\Mercury\timebank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\SngRegistrator\main_lobby_off.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\main_lobby_on.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

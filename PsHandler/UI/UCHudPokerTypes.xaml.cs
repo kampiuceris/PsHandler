@@ -31,7 +31,7 @@ namespace PsHandler.UI
         {
             var listView = ListView_PokerTypes;
             listView.Items.Clear();
-            foreach (var tableTile in PokerTypeManager.GetPokerTypesCopy())
+            foreach (var tableTile in App.PokerTypeManager.GetPokerTypesCopy())
             {
                 listView.Items.Add(new ListViewItemPokerType(tableTile));
             }
@@ -57,7 +57,7 @@ namespace PsHandler.UI
             dialog.ShowDialog();
             if (dialog.Saved)
             {
-                PokerTypeManager.Add(dialog.PokerType);
+                App.PokerTypeManager.Add(dialog.PokerType);
                 UpdateListView(dialog.PokerType);
             }
         }
@@ -67,10 +67,10 @@ namespace PsHandler.UI
             ListViewItemPokerType selectedItem = ListView_PokerTypes.SelectedItem as ListViewItemPokerType;
             if (selectedItem != null)
             {
-                PokerTypeManager.Remove(selectedItem.PokerType);
+                App.PokerTypeManager.Remove(selectedItem.PokerType);
                 WindowPokerTypeEdit dialog = new WindowPokerTypeEdit(App.WindowMain, selectedItem.PokerType);
                 dialog.ShowDialog();
-                PokerTypeManager.Add(dialog.PokerType);
+                App.PokerTypeManager.Add(dialog.PokerType);
                 UpdateListView(dialog.PokerType);
             }
         }
@@ -83,7 +83,7 @@ namespace PsHandler.UI
                 WindowMessageResult windowMessageResult = WindowMessage.ShowDialog(string.Format("Do you want to delete '{0}'?", selectedItem.PokerType.Name), "Delete", WindowMessageButtons.YesNoCancel, WindowMessageImage.Question, App.WindowMain);
                 if (windowMessageResult == WindowMessageResult.Yes)
                 {
-                    PokerTypeManager.Remove(selectedItem.PokerType);
+                    App.PokerTypeManager.Remove(selectedItem.PokerType);
                     UpdateListView();
                 }
             }
@@ -113,15 +113,15 @@ namespace PsHandler.UI
 
             if (windowMessageResult == WindowMessageResult.Yes)
             {
-                foreach (PokerType pokerType in PokerTypeManager.GetPokerTypesCopy())
+                foreach (PokerType pokerType in App.PokerTypeManager.GetPokerTypesCopy())
                 {
                     if (!defaultPokerTypes.Any(a => a.Name.Equals(pokerType.Name)))
                     {
                         defaultPokerTypes.Add(pokerType);
                     }
                 }
-                PokerTypeManager.RemoveAll();
-                PokerTypeManager.Add(defaultPokerTypes);
+                App.PokerTypeManager.RemoveAll();
+                App.PokerTypeManager.Add(defaultPokerTypes);
                 UpdateListView();
             }
         }

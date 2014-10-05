@@ -129,7 +129,7 @@ namespace PsHandler
                                 tablesWithoutNewTable.Remove(table);
                                 if (isNewTable && !firstCycle)
                                 {
-                                    TableTileManager.AddAutoTileTable(table);
+                                    App.TableTileManager.AddAutoTileTable(table);
                                 }
                             }
 

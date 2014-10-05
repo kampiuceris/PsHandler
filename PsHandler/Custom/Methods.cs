@@ -47,7 +47,7 @@ namespace PsHandler.Custom
                 else
                 {
                     //Debug.Write("CLICK ");
-                    LeftMouseClickRelative(handle, button.ClickX, button.ClickY, true);
+                    LeftMouseClickRelativeScaled(handle, button.ClickX, button.ClickY, true);
                 }
             }
         }
@@ -57,7 +57,7 @@ namespace PsHandler.Custom
             return (WinApi.GetWindowLong(handle, WinApi.GWL_STYLE) & WinApi.WS_MINIMIZE) != 0;
         }
 
-        public static void LeftMouseClickRelative(IntPtr handle, double x, double y, bool checkIfMinimized)
+        public static void LeftMouseClickRelativeScaled(IntPtr handle, double x, double y, bool checkIfMinimized = false)
         {
             if (checkIfMinimized && IsMinimized(handle)) WinApi.ShowWindow(handle, WinApi.SW_RESTORE); // check if window is minimized & restore it
             var rectangle = WinApi.GetClientRectangle(handle);
@@ -69,6 +69,18 @@ namespace PsHandler.Custom
             IntPtr lParam = WinApi.GetLParam(x, y);
             WinApi.PostMessage(handle, WinApi.WM_LBUTTONDOWN, new IntPtr(WinApi.MK_LBUTTON), lParam);
             WinApi.PostMessage(handle, WinApi.WM_LBUTTONUP, IntPtr.Zero, lParam);
+        }
+
+        public static void MouseEnterLeftMouseClickMouseLeave(IntPtr handle, int x, int y)
+        {
+            const int WM_MOUSEHOVER = 0x02A1;
+            const int WM_MOUSELEAVE = 0x02A3;
+
+            IntPtr lParam = WinApi.GetLParam(x, y);
+            WinApi.PostMessage(handle, WM_MOUSEHOVER, IntPtr.Zero, IntPtr.Zero);
+            WinApi.PostMessage(handle, WinApi.WM_LBUTTONDOWN, new IntPtr(WinApi.MK_LBUTTON), lParam);
+            WinApi.PostMessage(handle, WinApi.WM_LBUTTONUP, IntPtr.Zero, lParam);
+            WinApi.PostMessage(handle, WM_MOUSELEAVE, IntPtr.Zero, IntPtr.Zero);
         }
 
         public static void AverageColor(Bmp bmp, Rectangle r, out double redAvg, out double greenAvg, out double blueAvg)
@@ -145,6 +157,34 @@ namespace PsHandler.Custom
                 WindowMessage.ShowDialog(e.Message, "Error", WindowMessageButtons.OK, WindowMessageImage.Error, App.WindowMain);
                 File.WriteAllText("pshandler_error_" + DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
             });
+        }
+
+        public static void DisplayBitmap(Bitmap bitmap, bool dialog = false)
+        {
+            //UiInvoke(() =>
+            //{
+            System.Windows.Controls.Image image = new System.Windows.Controls.Image
+            {
+                Source = bitmap.ToBitmapSource(),
+                Width = bitmap.Width,
+                Height = bitmap.Height
+            };
+            Window window = new Window
+            {
+                SizeToContent = SizeToContent.WidthAndHeight,
+                UseLayoutRounding = true,
+                Content = image,
+                ResizeMode = ResizeMode.NoResize
+            };
+            if (dialog)
+            {
+                window.ShowDialog();
+            }
+            else
+            {
+                window.Show();
+            }
+            //});
         }
     }
 
@@ -264,6 +304,11 @@ namespace PsHandler.Custom
             IntPtr handle = IntPtr.Zero;
             Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate { handle = new WindowInteropHelper(window).Handle; }));
             return handle;
+        }
+
+        public static bool IsValid(this System.Drawing.Point point)
+        {
+            return point.X != int.MinValue && point.Y != int.MinValue;
         }
     }
 }

@@ -398,17 +398,17 @@ namespace PsHandler
                 TableManager.FromXElementHudBigBlindLocations(root.Element("HudBigBlindLocations"), ref errors);
                 EnableTableTiler = GetBool(root, "EnableTableTiler", ref errors, false);
                 AutoTileDelayMs = GetInt(root, "AutoTileDelayMs", ref errors, 2000);
-                TableTileManager.FromXElement(root.Element("TableTiles"));
-                PokerTypeManager.FromXElement(root.Element("PokerTypes"));
+                App.TableTileManager.FromXElement(root.Element("TableTiles"));
+                App.PokerTypeManager.FromXElement(root.Element("PokerTypes"));
             }
             catch (Exception)
             {
                 errors++;
             }
 
-            TableTileManager.SeedDefaultValues();
-            PokerTypeManager.SeedDefaultValues();
-            RandomizerManager.SeedDefaultValues();
+            App.TableTileManager.SeedDefaultValues();
+            App.PokerTypeManager.SeedDefaultValues();
+            App.RandomizerManager.SeedDefaultValues();
 
             return errors;
         }
@@ -528,8 +528,8 @@ namespace PsHandler
                 root.Add(TableManager.ToXElementHudBigBlindLocations());
                 Set(root, "EnableTableTiler", EnableTableTiler, ref errors);
                 Set(root, "AutoTileDelayMs", AutoTileDelayMs, ref errors);
-                root.Add(TableTileManager.ToXElement());
-                root.Add(PokerTypeManager.ToXElement());
+                root.Add(App.TableTileManager.ToXElement());
+                root.Add(App.PokerTypeManager.ToXElement());
 
                 //
 
@@ -576,15 +576,15 @@ namespace PsHandler
                 {
                     // poker types delaut override:
                     List<PokerType> defaultPokerTypes = PokerType.GetDefaultValues().ToList();
-                    foreach (PokerType pokerType in PokerTypeManager.GetPokerTypesCopy())
+                    foreach (PokerType pokerType in App.PokerTypeManager.GetPokerTypesCopy())
                     {
                         if (!defaultPokerTypes.Any(a => a.Name.Equals(pokerType.Name)))
                         {
                             defaultPokerTypes.Add(pokerType);
                         }
                     }
-                    PokerTypeManager.RemoveAll();
-                    PokerTypeManager.Add(defaultPokerTypes);
+                    App.PokerTypeManager.RemoveAll();
+                    App.PokerTypeManager.Add(defaultPokerTypes);
                 }
             }
             catch

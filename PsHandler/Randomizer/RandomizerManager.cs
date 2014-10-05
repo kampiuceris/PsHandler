@@ -9,9 +9,9 @@ namespace PsHandler.Randomizer
 {
     public class RandomizerManager
     {
-        private static WindowRandomizer _windowRandomizer;
+        private WindowRandomizer _windowRandomizer;
 
-        public static void CheckKeyCombination(KeyCombination kc)
+        public void CheckKeyCombination(KeyCombination kc)
         {
             if (!Config.EnableRandomizer) return;
 
@@ -26,7 +26,7 @@ namespace PsHandler.Randomizer
             if (kc.Equals(Config.HotkeyRandomizerChance90)) { ShowRandomizer(Config.RandomizerChance90); }
         }
 
-        public static void ShowRandomizer(double value)
+        public void ShowRandomizer(double value)
         {
             if (_windowRandomizer != null)
             {
@@ -36,7 +36,7 @@ namespace PsHandler.Randomizer
             _windowRandomizer.Show();
         }
 
-        public static void SeedDefaultValues()
+        public void SeedDefaultValues()
         {
             if (Config.RandomizerChance10 == 0
                 && Config.RandomizerChance20 == 0

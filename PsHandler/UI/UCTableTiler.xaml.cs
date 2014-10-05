@@ -63,7 +63,7 @@ namespace PsHandler.UI
         {
             var listView = ListView_TableTiles;
             listView.Items.Clear();
-            foreach (var tableTile in TableTileManager.GetTableTilesCopy())
+            foreach (var tableTile in App.TableTileManager.GetTableTilesCopy())
             {
                 listView.Items.Add(new ListViewItemTableTile(tableTile));
             }
@@ -89,7 +89,7 @@ namespace PsHandler.UI
             dialog.ShowDialog();
             if (dialog.Saved)
             {
-                TableTileManager.Add(dialog.TableTile);
+                App.TableTileManager.Add(dialog.TableTile);
                 UpdateListView(dialog.TableTile);
             }
         }
@@ -99,10 +99,10 @@ namespace PsHandler.UI
             ListViewItemTableTile selectedItem = ListView_TableTiles.SelectedItem as ListViewItemTableTile;
             if (selectedItem != null)
             {
-                TableTileManager.Remove(selectedItem.TableTile);
+                App.TableTileManager.Remove(selectedItem.TableTile);
                 WindowTableTileEdit dialog = new WindowTableTileEdit(App.WindowMain, selectedItem.TableTile);
                 dialog.ShowDialog();
-                TableTileManager.Add(dialog.TableTile);
+                App.TableTileManager.Add(dialog.TableTile);
                 UpdateListView(dialog.TableTile);
             }
         }
@@ -115,7 +115,7 @@ namespace PsHandler.UI
                 WindowMessageResult result = WindowMessage.ShowDialog(string.Format("Do you want to delete '{0}'?", selectedItem.TableTile.Name), "Delete", WindowMessageButtons.YesNoCancel, WindowMessageImage.Question, App.WindowMain);
                 if (result == WindowMessageResult.Yes)
                 {
-                    TableTileManager.Remove(selectedItem.TableTile);
+                    App.TableTileManager.Remove(selectedItem.TableTile);
                     UpdateListView();
                 }
             }
@@ -150,15 +150,15 @@ namespace PsHandler.UI
 
             if (windowMessageResult == WindowMessageResult.Yes)
             {
-                foreach (TableTile tableTile in TableTileManager.GetTableTilesCopy())
+                foreach (TableTile tableTile in App.TableTileManager.GetTableTilesCopy())
                 {
                     if (!defaultTableTiles.Any(a => a.Name.Equals(tableTile.Name)))
                     {
                         defaultTableTiles.Add(tableTile);
                     }
                 }
-                TableTileManager.RemoveAll();
-                TableTileManager.Add(defaultTableTiles);
+                App.TableTileManager.RemoveAll();
+                App.TableTileManager.Add(defaultTableTiles);
                 UpdateListView();
             }
         }

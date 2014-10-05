@@ -16,15 +16,20 @@ namespace PsHandler.TableTiler
 
         private static readonly Regex _regexTournamentNumber = new Regex(@".+Tournament (?<tournament_number>\d+) .+");
 
-        private static readonly object _lockTableTiles = new object();
-        private static readonly List<TableTile> _tableTiles = new List<TableTile>();
+        private readonly object _lockTableTiles = new object();
+        private readonly List<TableTile> _tableTiles = new List<TableTile>();
 
-        public static TableTile[] GetTableTilesCopy()
+        public TableTileManager()
+        {
+            Start();
+        }
+
+        public TableTile[] GetTableTilesCopy()
         {
             return _tableTiles.ToArray();
         }
 
-        public static void Add(TableTile tableTile)
+        public void Add(TableTile tableTile)
         {
             lock (_lockTableTiles)
             {
@@ -36,7 +41,7 @@ namespace PsHandler.TableTiler
             }
         }
 
-        public static void Add(IEnumerable<TableTile> tableTiles)
+        public void Add(IEnumerable<TableTile> tableTiles)
         {
             lock (_lockTableTiles)
             {
@@ -51,7 +56,7 @@ namespace PsHandler.TableTiler
             }
         }
 
-        public static void Remove(TableTile tableTile)
+        public void Remove(TableTile tableTile)
         {
             lock (_lockTableTiles)
             {
@@ -59,7 +64,7 @@ namespace PsHandler.TableTiler
             }
         }
 
-        public static void RemoveAll()
+        public void RemoveAll()
         {
             lock (_lockTableTiles)
             {
@@ -67,7 +72,7 @@ namespace PsHandler.TableTiler
             }
         }
 
-        public static void SeedDefaultValues()
+        public void SeedDefaultValues()
         {
             if (!_tableTiles.Any())
             {
@@ -76,21 +81,21 @@ namespace PsHandler.TableTiler
         }
 
         //
-        private static bool _busy;
-        private static Thread _thread;
+        private bool _busy;
+        private Thread _thread;
         // tile
-        private static KeyCombination _keyCombinationPressed;
-        private static readonly object _lockKeyCombination = new object();
+        private KeyCombination _keyCombinationPressed;
+        private readonly object _lockKeyCombination = new object();
         // auto tile
         private struct AutoTileWithTimestamp
         {
             public Table TableToAutoTile;
             public DateTime Added;
         }
-        private static readonly List<AutoTileWithTimestamp> _tablesToAutoTile = new List<AutoTileWithTimestamp>();
-        private static readonly object _lockAutoTile = new object();
+        private readonly List<AutoTileWithTimestamp> _tablesToAutoTile = new List<AutoTileWithTimestamp>();
+        private readonly object _lockAutoTile = new object();
 
-        public static void SetKeyCombination(KeyCombination keyCombination)
+        public void SetKeyCombination(KeyCombination keyCombination)
         {
             if (!Config.EnableTableTiler) return;
 
@@ -103,7 +108,7 @@ namespace PsHandler.TableTiler
             }
         }
 
-        public static void AddAutoTileTable(Table newTable)
+        public void AddAutoTileTable(Table newTable)
         {
             if (!Config.EnableTableTiler) return;
 
@@ -118,7 +123,7 @@ namespace PsHandler.TableTiler
             }
         }
 
-        public static void RemoveAutoTileTable(Table newTable)
+        public void RemoveAutoTileTable(Table newTable)
         {
             lock (_lockAutoTile)
             {
@@ -126,7 +131,7 @@ namespace PsHandler.TableTiler
             }
         }
 
-        public static void Start()
+        public void Start()
         {
             Stop();
             _thread = new Thread(() =>
@@ -168,7 +173,7 @@ namespace PsHandler.TableTiler
             _thread.Start();
         }
 
-        public static void Stop()
+        public void Stop()
         {
             if (_thread != null)
             {
@@ -178,7 +183,7 @@ namespace PsHandler.TableTiler
 
         // private Tile mech
 
-        private static void Tile(KeyCombination kc)
+        private void Tile(KeyCombination kc)
         {
             // collect info
 
@@ -334,7 +339,7 @@ namespace PsHandler.TableTiler
             public double DistanceToTheAvailableSlot;
         }
 
-        private static void AutoTile(Table newTable)
+        private void AutoTile(Table newTable)
         {
             List<Table> oldTables = App.TableManager.GetTablesCopy();
             oldTables.RemoveAll(o => o.Handle.Equals(newTable.Handle));
@@ -445,7 +450,7 @@ namespace PsHandler.TableTiler
 
         //
 
-        public static XElement ToXElement()
+        public XElement ToXElement()
         {
             var xElement = new XElement("TableTiles");
             foreach (TableTile tableTile in GetTableTilesCopy())
@@ -455,7 +460,7 @@ namespace PsHandler.TableTiler
             return xElement;
         }
 
-        public static void FromXElement(XElement xElement)
+        public void FromXElement(XElement xElement)
         {
             foreach (XElement xTableTile in xElement.Elements("TableTile"))
             {

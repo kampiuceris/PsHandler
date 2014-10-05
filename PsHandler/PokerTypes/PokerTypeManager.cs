@@ -9,15 +9,15 @@ namespace PsHandler.PokerTypes
 {
     public class PokerTypeManager
     {
-        public static readonly List<PokerType> _pokerTypes = new List<PokerType>();
-        public static readonly object _lock = new object();
+        public readonly List<PokerType> _pokerTypes = new List<PokerType>();
+        public readonly object _lock = new object();
 
-        public static PokerType[] GetPokerTypesCopy()
+        public PokerType[] GetPokerTypesCopy()
         {
             return _pokerTypes.ToArray();
         }
 
-        public static void Add(PokerType pokerType)
+        public void Add(PokerType pokerType)
         {
             lock (_lock)
             {
@@ -29,7 +29,7 @@ namespace PsHandler.PokerTypes
             }
         }
 
-        public static void Add(IEnumerable<PokerType> pokerTypes)
+        public void Add(IEnumerable<PokerType> pokerTypes)
         {
             lock (_lock)
             {
@@ -44,7 +44,7 @@ namespace PsHandler.PokerTypes
             }
         }
 
-        public static void Remove(PokerType pokerType)
+        public void Remove(PokerType pokerType)
         {
             lock (_lock)
             {
@@ -52,7 +52,7 @@ namespace PsHandler.PokerTypes
             }
         }
 
-        public static void RemoveAll()
+        public void RemoveAll()
         {
             lock (_lock)
             {
@@ -60,7 +60,7 @@ namespace PsHandler.PokerTypes
             }
         }
 
-        public static void SeedDefaultValues()
+        public void SeedDefaultValues()
         {
             if (!_pokerTypes.Any())
             {
@@ -68,7 +68,7 @@ namespace PsHandler.PokerTypes
             }
         }
 
-        public static PokerType GetPokerType(string title, string className, out int errorFlags)
+        public PokerType GetPokerType(string title, string className, out int errorFlags)
         {
             List<PokerType> possiblePokerTypes = new List<PokerType>();
             lock (_lock)
@@ -100,7 +100,7 @@ namespace PsHandler.PokerTypes
             return null;
         }
 
-        public static XElement ToXElement()
+        public XElement ToXElement()
         {
             var xElement = new XElement("PokerTypes");
             foreach (PokerType pokerType in GetPokerTypesCopy())
@@ -110,7 +110,7 @@ namespace PsHandler.PokerTypes
             return xElement;
         }
 
-        public static void FromXElement(XElement xElement)
+        public void FromXElement(XElement xElement)
         {
             foreach (XElement xPokerType in xElement.Elements("PokerType"))
             {

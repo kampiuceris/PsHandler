@@ -88,7 +88,7 @@ namespace PsHandler.PokerTypes
                 WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", Label_Name.Content), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
                 return;
             }
-            if (PokerTypeManager.GetPokerTypesCopy().Any(o => o.Name.ToLowerInvariant().Equals(TextBox_Name.Text.ToLowerInvariant())))
+            if (App.PokerTypeManager.GetPokerTypesCopy().Any(o => o.Name.ToLowerInvariant().Equals(TextBox_Name.Text.ToLowerInvariant())))
             {
                 WindowMessage.ShowDialog("Cannot save. Duplicate names.", "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
                 return;

@@ -108,7 +108,7 @@ namespace PsHandler.Hud
                                 int pokerTypeErrors = -1;
                                 if (_pokerType == null)
                                 {
-                                    _pokerType = PokerTypeManager.GetPokerType(title, className, out pokerTypeErrors);
+                                    _pokerType = App.PokerTypeManager.GetPokerType(title, className, out pokerTypeErrors);
                                     if (pokerTypeErrors != 0)
                                     {
                                         _pokerType = null;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -24,6 +25,8 @@ namespace PsHandler
         public const int WM_SYSCOMMAND = 0x0112;
         public const int SC_CLOSE = 0xF060;
         public const int WM_SIZE = 0x0005;
+        public const uint WM_GETTEXTLENGTH = 0x000E;
+        public const uint WM_GETTEXT = 0x000D;
         //
         public static uint MF_BYPOSITION = 0x400;
         public static uint MF_REMOVE = 0x1000;
@@ -1003,6 +1006,10 @@ namespace PsHandler
         public static extern bool IsWindow(IntPtr hWnd);
 
         [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsWindowEnabled(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
         public static extern bool IsWindowVisible(IntPtr hWnd);
 
         [DllImport("User32.dll")]
@@ -1023,6 +1030,9 @@ namespace PsHandler
         [DllImport("user32.dll")]
         public static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, [Out] StringBuilder lParam);
+
         [DllImport("user32.dll")]
         public static extern IntPtr SetCapture(IntPtr hWnd);
 
@@ -1032,8 +1042,11 @@ namespace PsHandler
         [DllImport("user32.dll")]
         public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport("user32.dll")]
         public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, SetWindowPosFlags uFlags);
+
+        [DllImport("user32.dll")]
+        public static extern bool SetWindowText(IntPtr hwnd, String lpString);
 
         //
 
@@ -1065,6 +1078,13 @@ namespace PsHandler
             RECT rect;
             GetClientRect(hwnd, out rect);
             return new Rectangle(lp.X, lp.Y, rect.Width, rect.Height);
+        }
+
+        public static System.Drawing.Rectangle GetClientRectangleRelativeTo(IntPtr hwndChild, IntPtr hwndParent)
+        {
+            Rectangle crChild = GetClientRectangle(hwndChild);
+            Rectangle crParent = GetClientRectangle(hwndParent);
+            return new Rectangle(crChild.X - crParent.X, crChild.Y - crParent.Y, crChild.Width, crChild.Height);
         }
 
         public static IntPtr GetLParam(int x, int y)
@@ -1111,16 +1131,71 @@ namespace PsHandler
             return new System.Drawing.Rectangle(rect.Left, rect.Top, rect.Right - rect.Left, rect.Bottom - rect.Top);
         }
 
+        public static string GetWindowTextRaw(IntPtr hwnd)
+        {
+            // Allocate correct string length first
+            int length = (int)SendMessage(hwnd, WM_GETTEXTLENGTH, IntPtr.Zero, IntPtr.Zero);
+            StringBuilder sb = new StringBuilder(length + 1);
+            SendMessage(hwnd, WM_GETTEXT, (IntPtr)sb.Capacity, sb);
+            return sb.ToString();
+        }
+
         public static string GetWindowTitle(IntPtr hwnd)
         {
-            StringBuilder lpWindowText = new StringBuilder((int)byte.MaxValue);
+            StringBuilder lpWindowText = new StringBuilder(byte.MaxValue);
             GetWindowText(hwnd, lpWindowText, lpWindowText.Capacity + 1);
             return lpWindowText.ToString();
         }
 
-        public static IntPtr FindChildWindow(IntPtr hwndParent, string lpszClass, string lpszTitle)
+        public static IntPtr ___FindChildWindow(IntPtr hwndParent, string lpszClass, string lpszTitle)
         {
             return FindChildWindow(hwndParent, IntPtr.Zero, lpszClass, lpszTitle);
+        }
+
+        public static IntPtr FindChildWindow(IntPtr hwndParent, string lpszClass, string lpszTitle)
+        {
+            IntPtr child = IntPtr.Zero;
+            while (true)
+            {
+                IntPtr newChild = FindWindowEx(hwndParent, child, lpszClass, "");
+                if (newChild != IntPtr.Zero)
+                {
+                    string rawText = GetWindowTextRaw(newChild);
+                    if (lpszTitle.Equals(rawText))
+                    {
+                        return newChild;
+                    }
+                    child = newChild;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return IntPtr.Zero;
+        }
+
+        public static IntPtr FindChildWindow(IntPtr hwndParent, string lpszClass, IEnumerable<string> possibleTitles)
+        {
+            IntPtr child = IntPtr.Zero;
+            while (true)
+            {
+                IntPtr newChild = FindWindowEx(hwndParent, child, lpszClass, "");
+                if (newChild != IntPtr.Zero)
+                {
+                    string rawText = GetWindowTextRaw(newChild);
+                    if (possibleTitles.Contains(rawText))
+                    {
+                        return newChild;
+                    }
+                    child = newChild;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return IntPtr.Zero;
         }
 
         public static IntPtr FindChildWindow(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszTitle)
@@ -1139,6 +1214,26 @@ namespace PsHandler
                 }
             }
             return num;
+        }
+
+        public static List<IntPtr> FindAllChildWindowByClass(IntPtr hwndParent, string lpszClass)
+        {
+            List<IntPtr> children = new List<IntPtr>();
+            IntPtr child = IntPtr.Zero;
+            while (true)
+            {
+                IntPtr newChild = FindWindowEx(hwndParent, child, lpszClass, "");
+                if (newChild != IntPtr.Zero)
+                {
+                    children.Add(newChild);
+                    child = newChild;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return children;
         }
 
         public static void SetClientRectangle(IntPtr hwnd, UIntPtr dwStyle, Rectangle r, bool bMenu)
