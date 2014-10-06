@@ -29,17 +29,17 @@ namespace PsHandler.UI
 
             // Seed
 
-            TextBox_AutoTileDelayMs.Text = Config.AutoTileDelayMs.ToString(CultureInfo.InvariantCulture);
+            TextBox_AutoTileCheckingTimeMs.Text = Config.AutoTileCheckingTimeMs.ToString(CultureInfo.InvariantCulture);
 
             // Hook values
 
             CheckBox_EnableTableTimer.Checked += (sender, args) => { Config.EnableTableTiler = true; };
             CheckBox_EnableTableTimer.Unchecked += (sender, args) => { Config.EnableTableTiler = false; };
-            TextBox_AutoTileDelayMs.TextChanged += (sender, args) =>
+            TextBox_AutoTileCheckingTimeMs.TextChanged += (sender, args) =>
             {
                 try
                 {
-                    Config.AutoTileDelayMs = int.Parse(TextBox_AutoTileDelayMs.Text);
+                    Config.AutoTileCheckingTimeMs = int.Parse(TextBox_AutoTileCheckingTimeMs.Text);
                     if (Config.BigBlindDecimals > 5000) Config.BigBlindDecimals = 5000;
                     if (Config.BigBlindDecimals < 0) Config.BigBlindDecimals = 0;
                 }
@@ -50,13 +50,13 @@ namespace PsHandler.UI
 
             // ToolTips
 
-            Label_AutoTileDelay.ToolTip = "Auto tile delay is required for window's title to complete changing after that table opens." + Environment.NewLine +
-                "Delay is required for filters who use window's title (usually tournaments). Recomended: 2000 (2 second).";
-            ToolTipService.SetShowDuration(Label_AutoTileDelay, 60000);
+            Label_AutoTileCheckingTime.ToolTip = "When new table opens its title changes few times in first seconds." + Environment.NewLine +
+                "Therefore Table Tiler constantly checks for given time until it finds matching auto " + Environment.NewLine +
+                "tile config or removes the new table from queue. Recomended: 3000 (3 second).";
+            ToolTipService.SetShowDuration(Label_AutoTileCheckingTime, 60000);
 
             // start table tiler if needed
             CheckBox_EnableTableTimer.IsChecked = Config.EnableTableTiler;
-
         }
 
         public void UpdateListView(TableTile tableTileToSelect = null)

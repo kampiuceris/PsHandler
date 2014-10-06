@@ -9,8 +9,8 @@
         <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" x:Name="CheckBox_EnableTableTimer">
             <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Enable Table Tiler" />
         </CheckBox>
-        <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Content="Autotile delay (ms):" Margin="0,27,0,0" x:Name="Label_AutoTileDelay" />
-        <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Padding="0" Width="60" Margin="107,27,0,0" AcceptsReturn="False" x:Name="TextBox_AutoTileDelayMs" />
+        <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Content="Autotile checking time (ms):" Margin="0,27,0,0" x:Name="Label_AutoTileCheckingTime" />
+        <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Padding="0" Width="60" Margin="152,27,0,0" AcceptsReturn="False" x:Name="TextBox_AutoTileCheckingTimeMs" />
 
         <Grid Margin="0,54,0,0">
             <ListView x:Name="ListView_TableTiles" SelectionMode="Single" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,0,145,0" MouseDoubleClick="ListView_TableTilerConfigs_OnMouseDoubleClick" >

@@ -64,6 +64,14 @@ namespace PsHandler.Custom
             LeftMouseClick(handle, (int)Math.Round(rectangle.Width * x, 0), (int)Math.Round(rectangle.Height * y, 0));
         }
 
+        public static void LeftMouseClickMiddle(IntPtr handle)
+        {
+            Rectangle clientRectangle = WinApi.GetClientRectangle(handle);
+            IntPtr lParam = WinApi.GetLParam(clientRectangle.Width / 2, clientRectangle.Height / 2);
+            WinApi.PostMessage(handle, WinApi.WM_LBUTTONDOWN, new IntPtr(WinApi.MK_LBUTTON), lParam);
+            WinApi.PostMessage(handle, WinApi.WM_LBUTTONUP, IntPtr.Zero, lParam);
+        }
+
         public static void LeftMouseClick(IntPtr handle, int x, int y)
         {
             IntPtr lParam = WinApi.GetLParam(x, y);
@@ -73,14 +81,21 @@ namespace PsHandler.Custom
 
         public static void MouseEnterLeftMouseClickMouseLeave(IntPtr handle, int x, int y)
         {
-            const int WM_MOUSEHOVER = 0x02A1;
-            const int WM_MOUSELEAVE = 0x02A3;
-
             IntPtr lParam = WinApi.GetLParam(x, y);
-            WinApi.PostMessage(handle, WM_MOUSEHOVER, IntPtr.Zero, IntPtr.Zero);
+            WinApi.PostMessage(handle, WinApi.WM_MOUSEHOVER, IntPtr.Zero, IntPtr.Zero);
             WinApi.PostMessage(handle, WinApi.WM_LBUTTONDOWN, new IntPtr(WinApi.MK_LBUTTON), lParam);
             WinApi.PostMessage(handle, WinApi.WM_LBUTTONUP, IntPtr.Zero, lParam);
-            WinApi.PostMessage(handle, WM_MOUSELEAVE, IntPtr.Zero, IntPtr.Zero);
+            WinApi.PostMessage(handle, WinApi.WM_MOUSELEAVE, IntPtr.Zero, IntPtr.Zero);
+        }
+
+        public static void MouseEnterLeftMouseClickMiddleMouseLeave(IntPtr handle)
+        {
+            Rectangle clientRectangle = WinApi.GetClientRectangle(handle);
+            IntPtr lParam = WinApi.GetLParam(clientRectangle.Width / 2, clientRectangle.Height / 2);
+            WinApi.PostMessage(handle, WinApi.WM_MOUSEHOVER, IntPtr.Zero, IntPtr.Zero);
+            WinApi.PostMessage(handle, WinApi.WM_LBUTTONDOWN, new IntPtr(WinApi.MK_LBUTTON), lParam);
+            WinApi.PostMessage(handle, WinApi.WM_LBUTTONUP, IntPtr.Zero, lParam);
+            WinApi.PostMessage(handle, WinApi.WM_MOUSELEAVE, IntPtr.Zero, IntPtr.Zero);
         }
 
         public static void AverageColor(Bmp bmp, Rectangle r, out double redAvg, out double greenAvg, out double blueAvg)

@@ -15,6 +15,8 @@ namespace PsHandler
 
         public const int WM_LBUTTONDOWN = 0x0201;
         public const int WM_LBUTTONUP = 0x0202;
+        public const int WM_MOUSEHOVER = 0x02A1;
+        public const int WM_MOUSELEAVE = 0x02A3;
         public const int BM_CLICK = 0x00F5;
         public const int MK_LBUTTON = 0x0001;
         public const int GWL_STYLE = -16;
@@ -1226,6 +1228,29 @@ namespace PsHandler
                 if (newChild != IntPtr.Zero)
                 {
                     children.Add(newChild);
+                    child = newChild;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return children;
+        }
+
+        public static List<IntPtr> FindAllChildWindow(IntPtr hwndParent, string lpszClass, string lpszTitle)
+        {
+            List<IntPtr> children = new List<IntPtr>();
+            IntPtr child = IntPtr.Zero;
+            while (true)
+            {
+                IntPtr newChild = FindWindowEx(hwndParent, child, lpszClass, "");
+                if (newChild != IntPtr.Zero)
+                {
+                    if (lpszTitle.Equals(GetWindowTextRaw(newChild)))
+                    {
+                        children.Add(newChild);
+                    }
                     child = newChild;
                 }
                 else

@@ -100,7 +100,7 @@ namespace PsHandler
         // Table Tiler
 
         public static bool EnableTableTiler = false;
-        public static int AutoTileDelayMs = 2000;
+        public static int AutoTileCheckingTimeMs = 3000;
 
         // Randomizer
 
@@ -430,7 +430,7 @@ namespace PsHandler
                 TableManager.HudBigBlindLocationLocked = GetBool(root, "HudBigBlindLocationLocked", ref exceptions, "LoadXml() HudBigBlindLocationLocked", false);
                 TableManager.FromXElementHudBigBlindLocations(root.Element("HudBigBlindLocations"), ref exceptions, "LoadXml()");
                 EnableTableTiler = GetBool(root, "EnableTableTiler", ref exceptions, "LoadXml() EnableTableTiler", false);
-                AutoTileDelayMs = GetInt(root, "AutoTileDelayMs", ref exceptions, "LoadXml() AutoTileDelayMs", 2000);
+                AutoTileCheckingTimeMs = GetInt(root, "AutoTileCheckingTimeMs", ref exceptions, "LoadXml() AutoTileCheckingTimeMs", 3000);
                 App.TableTileManager.FromXElement(root.Element("TableTiles"), ref exceptions, "LoadXml()");
                 App.PokerTypeManager.FromXElement(root.Element("PokerTypes"), ref exceptions, "LoadXml()");
             }
@@ -439,22 +439,22 @@ namespace PsHandler
                 exceptions.Add(new ExceptionPsHandler(e, "LoadXml() Main Exception"));
             }
 
-            if (exceptions.Any())
-            {
-                StringBuilder sb = new StringBuilder();
-                foreach (ExceptionPsHandler e in exceptions)
-                {
-                    sb.AppendLine("Header:");
-                    sb.AppendLine(e.Header);
-                    sb.AppendLine("Exception:");
-                    sb.AppendLine(e.Exception.ToString());
-                    sb.AppendLine();
-                    sb.AppendLine();
-                }
-                string fileName = "pshandler_error_" + DateTime.Now.Ticks + ".log";
-                File.WriteAllText(fileName, sb.ToString());
-                WindowMessage.ShowDialog("Some configurations weren't loaded." + Environment.NewLine + Environment.NewLine + "Log file: " + fileName, "Error Loading Config XML", WindowMessageButtons.OK, WindowMessageImage.Error, App.WindowMain, WindowStartupLocation.CenterScreen);
-            }
+            //if (exceptions.Any())
+            //{
+            //    StringBuilder sb = new StringBuilder();
+            //    foreach (ExceptionPsHandler e in exceptions)
+            //    {
+            //        sb.AppendLine("Header:");
+            //        sb.AppendLine(e.Header);
+            //        sb.AppendLine("Exception:");
+            //        sb.AppendLine(e.Exception.ToString());
+            //        sb.AppendLine();
+            //        sb.AppendLine();
+            //    }
+            //    string fileName = "pshandler_error_" + DateTime.Now.Ticks + ".log";
+            //    File.WriteAllText(fileName, sb.ToString());
+            //    WindowMessage.ShowDialog("Some configurations weren't loaded." + Environment.NewLine + Environment.NewLine + "Log file: " + fileName, "Error Loading Config XML", WindowMessageButtons.OK, WindowMessageImage.Error, App.WindowMain, WindowStartupLocation.CenterScreen);
+            //}
 
             return exceptions;
         }
@@ -581,7 +581,7 @@ namespace PsHandler
                 Set(root, "HudBigBlindLocationLocked", TableManager.HudBigBlindLocationLocked, ref exceptions, "SaveXml() HudBigBlindLocationLocked");
                 root.Add(TableManager.ToXElementHudBigBlindLocations());
                 Set(root, "EnableTableTiler", EnableTableTiler, ref exceptions, "SaveXml() EnableTableTiler");
-                Set(root, "AutoTileDelayMs", AutoTileDelayMs, ref exceptions, "SaveXml() AutoTileDelayMs");
+                Set(root, "AutoTileCheckingTimeMs", AutoTileCheckingTimeMs, ref exceptions, "SaveXml() AutoTileCheckingTimeMs");
                 root.Add(App.TableTileManager.ToXElement());
                 root.Add(App.PokerTypeManager.ToXElement());
 

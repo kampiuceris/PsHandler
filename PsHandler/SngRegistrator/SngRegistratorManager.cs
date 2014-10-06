@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Hardcodet.Wpf.TaskbarNotification;
 using PsHandler.Custom;
 
 namespace PsHandler.SngRegistrator
@@ -13,18 +14,38 @@ namespace PsHandler.SngRegistrator
     public class SngRegistratorManager
     {
         private Thread _thread;
-        private readonly Bmp _bmpMainLobbyOffHighConrast;
-        private readonly Bmp _bmpMainLobbyOnHighConrast;
+        private readonly Bmp _bmpMainLobbyOn;
+        private readonly Bmp _bmpMainLobbyOff;
+        private readonly Bmp _bmpMainLobbyOffHover;
+        private readonly Bmp _bmpMainLobbyPressed;
+        private IntPtr _handleWindowPokerStarsLobby;
+        private IntPtr _handleSelectorLobbySelector;
+        private IntPtr _handleSelectorMainLobbySelector;
 
         public SngRegistratorManager()
         {
-            using (Bitmap bitmapMainLobbyOff = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.main_lobby_off.png"))
+            _handleWindowPokerStarsLobby = WinApi.FindWindow("#32770", "PokerStars Lobby");
+            if (_handleWindowPokerStarsLobby.Equals(IntPtr.Zero)) throw new NotSupportedException("Cannot find Window 'PokerStars Lobby'.");
+            _handleSelectorLobbySelector = WinApi.FindChildWindow(_handleWindowPokerStarsLobby, "PokerStarsSelectorClass", "lobby-selector");
+            if (_handleSelectorLobbySelector.Equals(IntPtr.Zero)) throw new NotSupportedException("Cannot find Selector 'Lobby Selector'.");
+            _handleSelectorMainLobbySelector = WinApi.FindChildWindow(_handleWindowPokerStarsLobby, "PokerStarsSelectorClass", "main-lobby-selector");
+            if (_handleSelectorMainLobbySelector.Equals(IntPtr.Zero)) throw new NotSupportedException("Cannot find Selector 'Main Lobby Selector'.");
+
+            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.main_lobby_on.png"))
             {
-                _bmpMainLobbyOffHighConrast = new Bmp(bitmapMainLobbyOff).ToHighContrast();
+                _bmpMainLobbyOn = new Bmp(bitmap);
             }
-            using (Bitmap bitmapMainLobbyOn = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.main_lobby_on.png"))
+            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.main_lobby_off.png"))
             {
-                _bmpMainLobbyOnHighConrast = new Bmp(bitmapMainLobbyOn).ToHighContrast();
+                _bmpMainLobbyOff = new Bmp(bitmap);
+            }
+            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.main_lobby_off_hover.png"))
+            {
+                _bmpMainLobbyOffHover = new Bmp(bitmap);
+            }
+            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.main_lobby_pressed.png"))
+            {
+                _bmpMainLobbyPressed = new Bmp(bitmap);
             }
         }
 
@@ -44,34 +65,8 @@ namespace PsHandler.SngRegistrator
             //{
             while (true)
             {
-                IntPtr handlePokerStarsLobby = WinApi.FindWindow("#32770", "PokerStars Lobby");
-                Bmp bmpPokerStarsLobby, bmpPokerStarsLobbyHighContrast;
-                using (Bitmap bitmapPokerStarsLobby = ScreenCapture.GetBitmapWindowClient(handlePokerStarsLobby))
-                {
-                    bmpPokerStarsLobby = new Bmp(bitmapPokerStarsLobby);
-                    bmpPokerStarsLobbyHighContrast = bmpPokerStarsLobby.ToHighContrastClone();
-                }
-                IntPtr handleLobbySelector = WinApi.FindChildWindow(handlePokerStarsLobby, "PokerStarsSelectorClass", new[] { "lobby-selector", "Quick Seat", "Main Lobby", "Favorites", "News" });
-                if (handleLobbySelector == IntPtr.Zero) throw new NotSupportedException("Cannot find 'Lobby Slector' handle.");
-
-                Rectangle crrLobbySelector = WinApi.GetClientRectangleRelativeTo(handleLobbySelector, handlePokerStarsLobby);
-                Bmp bmpLobbySelectorHighContrast = bmpPokerStarsLobbyHighContrast.CutRectangle(crrLobbySelector);
-
-                Point pointMainLobbyOnHighConrast = FindBmp(bmpLobbySelectorHighContrast, _bmpMainLobbyOnHighConrast, 1);
-                if (!pointMainLobbyOnHighConrast.IsValid())
-                {
-                    Point pointMainLobbyOffHighConrast = FindBmp(bmpLobbySelectorHighContrast, _bmpMainLobbyOffHighConrast, 1);
-                    if (pointMainLobbyOffHighConrast.IsValid())
-                    {
-                        Methods.MouseEnterLeftMouseClickMouseLeave(handleLobbySelector,
-                            pointMainLobbyOffHighConrast.X + _bmpMainLobbyOffHighConrast.Width / 2,
-                            pointMainLobbyOffHighConrast.Y + _bmpMainLobbyOffHighConrast.Height / 2);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Cannot find 'Main Lobby' button.");
-                    }
-                }
+                EnsureSelectorLobbySelectorMainLobbyOpened();
+                EnsureSelectorMainLobbySelectorSitAndGoOpened();
 
                 Thread.Sleep(100);
                 // break;
@@ -80,9 +75,101 @@ namespace PsHandler.SngRegistrator
             //_thread.Start();
         }
 
+        private Bmp GetBmpWindowPokerStarsMainLobby()
+        {
+            Bmp bmpPokerStarsLobby;
+            using (Bitmap bitmapPokerStarsLobby = ScreenCapture.GetBitmapWindowClient(_handleWindowPokerStarsLobby))
+            {
+                bmpPokerStarsLobby = new Bmp(bitmapPokerStarsLobby);
+            }
+            return bmpPokerStarsLobby;
+        }
+
+        private void EnsureSelectorLobbySelectorMainLobbyOpened()
+        {
+            DateTime started = DateTime.Now;
+            while (true)
+            {
+                Bmp bmpSelectorLobbySelector = GetBmpWindowPokerStarsMainLobby().CutRectangle(WinApi.GetClientRectangleRelativeTo(_handleSelectorLobbySelector, _handleWindowPokerStarsLobby));
+                Point point;
+                // check if is on
+                point = FindBmp(bmpSelectorLobbySelector, _bmpMainLobbyOn);
+                if (point.IsValid())
+                {
+                    break;
+                }
+                // check if is off
+                point = FindBmp(bmpSelectorLobbySelector, _bmpMainLobbyOff);
+                if (point.IsValid())
+                {
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorLobbySelector, point.X, point.Y);
+                    continue;
+                }
+                // check if is hover
+                point = FindBmp(bmpSelectorLobbySelector, _bmpMainLobbyOffHover);
+                if (point.IsValid())
+                {
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorLobbySelector, point.X, point.Y);
+                    continue;
+                }
+                // check if is pressed
+                point = FindBmp(bmpSelectorLobbySelector, _bmpMainLobbyPressed);
+                if (point.IsValid())
+                {
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorLobbySelector, point.X, point.Y);
+                    continue;
+                }
+
+                if ((DateTime.Now - started).TotalSeconds < 5) throw new NotSupportedException("Cannot open 'Main Lobby'.");
+            }
+        }
+
+        private void EnsureSelectorMainLobbySelectorSitAndGoOpened()
+        {
+            DateTime started = DateTime.Now;
+            while (true)
+            {
+                Bmp bmpSelectorMainLobbySelector = GetBmpWindowPokerStarsMainLobby().CutRectangle(WinApi.GetClientRectangleRelativeTo(_handleSelectorMainLobbySelector, _handleWindowPokerStarsLobby));
+
+                Methods.DisplayBitmap(bmpSelectorMainLobbySelector.ToBitmap(), true);
+
+                Point point;
+                // check if is on
+                point = FindBmp(bmpSelectorMainLobbySelector, _bmpMainLobbyOn);
+                if (point.IsValid())
+                {
+                    break;
+                }
+                // check if is off
+                point = FindBmp(bmpSelectorMainLobbySelector, _bmpMainLobbyOff);
+                if (point.IsValid())
+                {
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorMainLobbySelector, point.X, point.Y);
+                    continue;
+                }
+                // check if is hover
+                point = FindBmp(bmpSelectorMainLobbySelector, _bmpMainLobbyOffHover);
+                if (point.IsValid())
+                {
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorMainLobbySelector, point.X, point.Y);
+                    continue;
+                }
+                // check if is pressed
+                point = FindBmp(bmpSelectorMainLobbySelector, _bmpMainLobbyPressed);
+                if (point.IsValid())
+                {
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorMainLobbySelector, point.X, point.Y);
+                    continue;
+                }
+
+                if ((DateTime.Now - started).TotalSeconds < 5) throw new NotSupportedException("Cannot open 'Main Lobby'.");
+            }
+        }
+
+
         //
 
-        public static Point FindBmp(Bmp bmpSource, Bmp bmpTarget, double accuracy, int xSourceStarting = 0, int ySourceStarting = 0)
+        public static Point FindBmp(Bmp bmpSource, Bmp bmpTarget, double accuracy = 1.0, int xSourceStarting = 0, int ySourceStarting = 0)
         {
             int totalPixelsToCheck = bmpTarget.Width * bmpTarget.Height;
             int minPixelsToMatch = (int)Math.Round(totalPixelsToCheck * accuracy);

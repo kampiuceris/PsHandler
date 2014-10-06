@@ -157,9 +157,17 @@ namespace PsHandler.TableTiler
                         {
                             if (_tablesToAutoTile.Any())
                             {
-                                AutoTileWithTimestamp[] toProceed = _tablesToAutoTile.Where(autoTileWithTimestamp => autoTileWithTimestamp.Added.AddMilliseconds(Config.AutoTileDelayMs) < DateTime.Now).ToArray();
-                                foreach (var item in toProceed) _tablesToAutoTile.Remove(item);
-                                foreach (var item in toProceed) AutoTile(item.TableToAutoTile);
+                                List<AutoTileWithTimestamp> toRemove = new List<AutoTileWithTimestamp>();
+                                foreach (var item in _tablesToAutoTile)
+                                {
+                                    bool autoTileSucessful = AutoTile(item.TableToAutoTile);
+                                    if (autoTileSucessful)
+                                    {
+                                        toRemove.Add(item);
+                                    }
+                                }
+                                toRemove.AddRange(_tablesToAutoTile.Where(o => o.Added.AddMilliseconds(Config.AutoTileCheckingTimeMs) < DateTime.Now));
+                                foreach (var item in toRemove) _tablesToAutoTile.Remove(item);
                             }
                         }
                     }
@@ -341,11 +349,12 @@ namespace PsHandler.TableTiler
             public double DistanceToTheAvailableSlot;
         }
 
-        private void AutoTile(Table newTable)
+        private bool AutoTile(Table newTable)
         {
             List<Table> oldTables = App.TableManager.GetTablesCopy();
             oldTables.RemoveAll(o => o.Handle.Equals(newTable.Handle));
 
+            bool autoTileSuccessful = false;
             // filter only enabled and autotile tabletiles
             foreach (TableTile tableTile in GetTableTilesCopy().Where(o => o.IsEnabled && o.AutoTile).Where(tableTile => tableTile.RegexWindowClass.IsMatch(newTable.ClassName) && tableTile.RegexWindowTitle.IsMatch(newTable.Title)))
             {
@@ -372,6 +381,7 @@ namespace PsHandler.TableTiler
                         });
                         Rectangle r = availableAutoTileSlots[0].Slot;
                         WinApi.MoveWindow(newTable.Handle, r.X, r.Y, r.Width, r.Height, true);
+                        autoTileSuccessful = true;
                     }
                     if (tableTile.AutoTileMethod == AutoTileMethod.ToTheTopSlot)
                     {
@@ -383,9 +393,12 @@ namespace PsHandler.TableTiler
                         });
                         Rectangle r = availableAutoTileSlots[0].Slot;
                         WinApi.MoveWindow(newTable.Handle, r.X, r.Y, r.Width, r.Height, true);
+                        autoTileSuccessful = true;
                     }
                 }
             }
+
+            return autoTileSuccessful;
         }
 
         //

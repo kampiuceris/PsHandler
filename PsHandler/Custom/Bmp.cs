@@ -204,6 +204,11 @@ namespace PsHandler.Custom
             return BytesToBitmap_Unsafe(bmp.GetBytesBGRA(), bmp.Width, bmp.Height);
         }
 
+        public Bitmap ToBitmap()
+        {
+            return BytesToBitmap_Unsafe(GetBytesBGRA(), Width, Height);
+        }
+
         public static Bmp BitmapToBmp(Bitmap bitmap)
         {
             return new Bmp(bitmap);
