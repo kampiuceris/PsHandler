@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml.Linq;
@@ -25,7 +26,7 @@ namespace PsHandler
         // Constants
 
         public const string NAME = "PsHandler";
-        public const int VERSION = 20;
+        public const int VERSION = 21;
         public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static string MACHINE_GUID = GetMachineGuid();
         public static string CONFIG_FILENAME = "pshandler.xml";
@@ -163,7 +164,7 @@ namespace PsHandler
             catch (Exception e)
             {
                 exceptions.Add(new ExceptionPsHandler(e, exceptionHeader));
-                return null;
+                return defaultValue;
             }
         }
 
@@ -292,6 +293,11 @@ namespace PsHandler
         public static IEnumerable<ExceptionPsHandler> LoadXml()
         {
             List<ExceptionPsHandler> exceptions = new List<ExceptionPsHandler>();
+            if (!File.Exists(CONFIG_FILENAME))
+            {
+                return exceptions;
+            }
+
             try
             {
                 XDocument xDoc = XDocument.Load(CONFIG_FILENAME);
@@ -433,12 +439,21 @@ namespace PsHandler
                 exceptions.Add(new ExceptionPsHandler(e, "LoadXml() Main Exception"));
             }
 
-            App.TableTileManager.SeedDefaultValues();
-            App.PokerTypeManager.SeedDefaultValues();
-
             if (exceptions.Any())
             {
-                WindowMessage.ShowDialog("Some configurations weren't loaded. Contact support.", "Error Loading Config XML", WindowMessageButtons.OK, WindowMessageImage.Error, App.WindowMain, WindowStartupLocation.CenterScreen);
+                StringBuilder sb = new StringBuilder();
+                foreach (ExceptionPsHandler e in exceptions)
+                {
+                    sb.AppendLine("Header:");
+                    sb.AppendLine(e.Header);
+                    sb.AppendLine("Exception:");
+                    sb.AppendLine(e.Exception.ToString());
+                    sb.AppendLine();
+                    sb.AppendLine();
+                }
+                string fileName = "pshandler_error_" + DateTime.Now.Ticks + ".log";
+                File.WriteAllText(fileName, sb.ToString());
+                WindowMessage.ShowDialog("Some configurations weren't loaded." + Environment.NewLine + Environment.NewLine + "Log file: " + fileName, "Error Loading Config XML", WindowMessageButtons.OK, WindowMessageImage.Error, App.WindowMain, WindowStartupLocation.CenterScreen);
             }
 
             return exceptions;
@@ -599,7 +614,19 @@ namespace PsHandler
 
             if (exceptions.Any())
             {
-                WindowMessage.ShowDialog("Some configurations weren't saved. Contact support.", "Error Saving Config XML", WindowMessageButtons.OK, WindowMessageImage.Error, App.WindowMain, WindowStartupLocation.CenterScreen);
+                StringBuilder sb = new StringBuilder();
+                foreach (ExceptionPsHandler e in exceptions)
+                {
+                    sb.AppendLine("Header:");
+                    sb.AppendLine(e.Header);
+                    sb.AppendLine("Exception:");
+                    sb.AppendLine(e.Exception.ToString());
+                    sb.AppendLine();
+                    sb.AppendLine();
+                }
+                string fileName = "pshandler_error_" + DateTime.Now.Ticks + ".log";
+                File.WriteAllText(fileName, sb.ToString());
+                WindowMessage.ShowDialog("Some configurations weren't saved." + Environment.NewLine + Environment.NewLine + "Log file: " + fileName, "Error Saving Config XML", WindowMessageButtons.OK, WindowMessageImage.Error, App.WindowMain, WindowStartupLocation.CenterScreen);
             }
 
             return exceptions;

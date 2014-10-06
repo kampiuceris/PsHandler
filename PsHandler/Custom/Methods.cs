@@ -154,8 +154,9 @@ namespace PsHandler.Custom
         {
             UiInvoke(() =>
             {
-                WindowMessage.ShowDialog(e.Message, "Error", WindowMessageButtons.OK, WindowMessageImage.Error, owner, windowStartupLocation);
-                File.WriteAllText("pshandler_error_" + DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
+                string fileName = "pshandler_error_" + DateTime.Now.Ticks + ".log";
+                File.WriteAllText(fileName, e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
+                WindowMessage.ShowDialog(e.Message + Environment.NewLine + Environment.NewLine + "Log file: " + fileName, "Error", WindowMessageButtons.OK, WindowMessageImage.Error, owner, windowStartupLocation);
             });
         }
 
