@@ -40,8 +40,8 @@ namespace PsHandler.UI
                 try
                 {
                     Config.AutoTileCheckingTimeMs = int.Parse(TextBox_AutoTileCheckingTimeMs.Text);
-                    if (Config.BigBlindDecimals > 5000) Config.BigBlindDecimals = 5000;
-                    if (Config.BigBlindDecimals < 0) Config.BigBlindDecimals = 0;
+                    if (Config.AutoTileCheckingTimeMs > 10000) Config.AutoTileCheckingTimeMs = 10000;
+                    if (Config.AutoTileCheckingTimeMs < 0) Config.AutoTileCheckingTimeMs = 0;
                 }
                 catch
                 {
