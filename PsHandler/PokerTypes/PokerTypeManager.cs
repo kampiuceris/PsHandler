@@ -110,11 +110,11 @@ namespace PsHandler.PokerTypes
             return xElement;
         }
 
-        public void FromXElement(XElement xElement)
+        public void FromXElement(XElement xElement, ref List<ExceptionPsHandler> exceptions, string exceptionHeader)
         {
             foreach (XElement xPokerType in xElement.Elements("PokerType"))
             {
-                PokerType pokerType = PokerType.FromXElement(xPokerType);
+                PokerType pokerType = PokerType.FromXElement(xPokerType, ref exceptions, exceptionHeader);
                 if (pokerType != null)
                 {
                     Add(pokerType);

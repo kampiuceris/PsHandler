@@ -113,7 +113,7 @@ namespace PsHandler.Randomizer
                     {
                         if (!(e is ThreadInterruptedException))
                         {
-                            Methods.DisplayException(e);
+                            Methods.DisplayException(e, App.WindowMain, WindowStartupLocation.CenterOwner);
                         }
                     }
 #endif

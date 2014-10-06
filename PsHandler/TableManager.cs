@@ -83,6 +83,11 @@ namespace PsHandler
         public IObserverTableManagerTableList ObserverTableManagerTableList;
         public IObserverTableManagerTableCount ObserverTableManagerTableCount;
 
+        public TableManager()
+        {
+            Start();
+        }
+
         public void Start()
         {
             Stop();
@@ -170,7 +175,7 @@ namespace PsHandler
                 {
                     if (!(e is ThreadInterruptedException))
                     {
-                        Methods.DisplayException(e);
+                        Methods.DisplayException(e, App.WindowMain, WindowStartupLocation.CenterOwner);
                     }
                 }
 #endif
@@ -337,7 +342,7 @@ namespace PsHandler
             return xElement;
         }
 
-        public static void FromXElementHudTimerLocations(XElement xElement, ref int errors)
+        public static void FromXElementHudTimerLocations(XElement xElement, ref List<ExceptionPsHandler> exceptions, string exceptionHeader)
         {
             foreach (XElement xlocation in xElement.Elements("Location"))
             {
@@ -347,14 +352,14 @@ namespace PsHandler
                     SetHudTimerLocationX(tableSize, float.Parse(xlocation.Element("LocationX").Value), null);
                     SetHudTimerLocationY(tableSize, float.Parse(xlocation.Element("LocationY").Value), null);
                 }
-                catch
+                catch (Exception e)
                 {
-                    errors++;
+                    exceptions.Add(new ExceptionPsHandler(e, exceptionHeader + " Tablemanager.FromXElementHudTimerLocations() Location XElement:" + Environment.NewLine + xlocation));
                 }
             }
         }
 
-        public static void FromXElementHudBigBlindLocations(XElement xElement, ref int errors)
+        public static void FromXElementHudBigBlindLocations(XElement xElement, ref List<ExceptionPsHandler> exceptions, string exceptionHeader)
         {
             foreach (XElement xlocation in xElement.Elements("Location"))
             {
@@ -364,9 +369,9 @@ namespace PsHandler
                     SetHudBigBlindLocationX(tableSize, float.Parse(xlocation.Element("LocationX").Value), null);
                     SetHudBigBlindLocationY(tableSize, float.Parse(xlocation.Element("LocationY").Value), null);
                 }
-                catch
+                catch (Exception e)
                 {
-                    errors++;
+                    exceptions.Add(new ExceptionPsHandler(e, exceptionHeader + " Tablemanager.FromXElementHudBigBlindLocations() Location XElement:" + Environment.NewLine + xlocation));
                 }
             }
         }

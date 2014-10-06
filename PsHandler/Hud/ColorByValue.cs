@@ -63,7 +63,7 @@ namespace PsHandler.Hud
                     );
         }
 
-        public static ColorByValue FromXElement(XElement xElement)
+        public static ColorByValue FromXElement(XElement xElement, ref List<ExceptionPsHandler> exceptions, string exceptionHeader)
         {
             try
             {
@@ -74,10 +74,11 @@ namespace PsHandler.Hud
                     Color = (Color)ColorConverter.ConvertFromString(xElement.Element("Color").Value)
                 };
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                exceptions.Add(new ExceptionPsHandler(e, exceptionHeader));
                 return null;
             }
-        } 
+        }
     }
 }

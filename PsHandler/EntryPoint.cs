@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System.ComponentModel;
+using System.Drawing;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using PsHandler.Custom;
@@ -41,7 +43,14 @@ namespace PsHandler
                 }
                 catch (Exception e)
                 {
-                    WindowMessage.ShowDialog("PsHandler requires Administrative", "UAC", WindowMessageButtons.OK, WindowMessageImage.Error, null);
+                    if (e is Win32Exception)
+                    {
+                        WindowMessage.ShowDialog("PsHandler requires administrative privileges to run." + Environment.NewLine + "Program will quit.", "UAC", WindowMessageButtons.OK, WindowMessageImage.Error, null, WindowStartupLocation.CenterScreen);
+                    }
+                    else
+                    {
+                        Methods.DisplayException(e, null, WindowStartupLocation.CenterScreen);
+                    }
                 }
             }
             else

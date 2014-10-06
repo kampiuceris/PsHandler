@@ -126,7 +126,7 @@ namespace PsHandler
                 {
                     if (!(e is ThreadInterruptedException))
                     {
-                        Methods.DisplayException(e);
+                        Methods.DisplayException(e, App.WindowMain, WindowStartupLocation.CenterOwner);
                     }
                 }
 #endif
@@ -239,7 +239,7 @@ namespace PsHandler
                     {
                         if (!(e is ThreadInterruptedException))
                         {
-                            Methods.DisplayException(e);
+                            Methods.DisplayException(e, App.WindowMain, WindowStartupLocation.CenterOwner);
                         }
                     }
 #endif

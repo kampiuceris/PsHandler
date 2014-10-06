@@ -36,7 +36,7 @@ namespace PsHandler.Randomizer
             _windowRandomizer.Show();
         }
 
-        public void SeedDefaultValues()
+        public void ___SeedDefaultValues_Obsolete()
         {
             if (Config.RandomizerChance10 == 0
                 && Config.RandomizerChance20 == 0

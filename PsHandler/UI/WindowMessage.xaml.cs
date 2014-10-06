@@ -47,15 +47,15 @@ namespace PsHandler.UI
     {
         public WindowMessageResult Result = WindowMessageResult.None;
 
-        public WindowMessage(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner)
+        public WindowMessage(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner, WindowStartupLocation windowStartupLocation)
         {
             InitializeComponent();
 
             if (owner != null)
             {
                 Owner = owner;
-                WindowStartupLocation = WindowStartupLocation.CenterOwner;
             }
+            WindowStartupLocation = windowStartupLocation;
 
             Title = title;
             TextBlock_Message.Text = message;
@@ -140,16 +140,16 @@ namespace PsHandler.UI
 
         //
 
-        public static WindowMessageResult Show(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner)
+        public static WindowMessageResult Show(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner, WindowStartupLocation windowStartupLocation = WindowStartupLocation.CenterOwner)
         {
-            WindowMessage windowMessage = new WindowMessage(message, title, buttons, image, owner);
+            WindowMessage windowMessage = new WindowMessage(message, title, buttons, image, owner, windowStartupLocation);
             ((Window)windowMessage).Show();
             return windowMessage.Result;
         }
 
-        public static WindowMessageResult ShowDialog(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner)
+        public static WindowMessageResult ShowDialog(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner, WindowStartupLocation windowStartupLocation = WindowStartupLocation.CenterOwner)
         {
-            WindowMessage windowMessage = new WindowMessage(message, title, buttons, image, owner);
+            WindowMessage windowMessage = new WindowMessage(message, title, buttons, image, owner, windowStartupLocation);
             ((Window)windowMessage).ShowDialog();
             return windowMessage.Result;
         }

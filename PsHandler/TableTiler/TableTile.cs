@@ -110,7 +110,7 @@ namespace PsHandler.TableTiler
                                 );
         }
 
-        public static TableTile FromXElement(XElement xElement)
+        public static TableTile FromXElement(XElement xElement, ref List<ExceptionPsHandler> exceptions, string exceptionHeader)
         {
             try
             {
@@ -129,11 +129,11 @@ namespace PsHandler.TableTiler
                         string[] s = o.Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                         return new Rectangle(int.Parse(s[0]), int.Parse(s[1]), int.Parse(s[2]), int.Parse(s[3]));
                     }).ToArray(),
-
                 };
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                exceptions.Add(new ExceptionPsHandler(e, exceptionHeader + " TableTile.FromXElement() xElement:" + Environment.NewLine + xElement));
                 return null;
             }
         }

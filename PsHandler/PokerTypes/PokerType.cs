@@ -141,7 +141,7 @@ namespace PsHandler.PokerTypes
                                     );
         }
 
-        public static PokerType FromXElement(XElement xElement)
+        public static PokerType FromXElement(XElement xElement, ref List<ExceptionPsHandler> exceptions, string exceptionHeader)
         {
             try
             {
@@ -153,8 +153,9 @@ namespace PsHandler.PokerTypes
                     RegexWindowClass = new Regex(xElement.Element("RegexWindowClass").Value),
                 };
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                exceptions.Add(new ExceptionPsHandler(e, exceptionHeader + " PokerType.FromXElement() xElement:" + Environment.NewLine + xElement));
                 return null;
             }
         }

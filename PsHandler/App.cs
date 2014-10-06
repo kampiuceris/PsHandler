@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
@@ -34,15 +35,16 @@ namespace PsHandler
             TableTileManager = new TableTileManager();
             PokerTypeManager = new PokerTypeManager();
             RandomizerManager = new RandomizerManager();
-            Config.LoadXml();
             HandHistoryManager = new HandHistoryManager();
-            TableManager = new TableManager();
             Handler = new Handler();
+            TableManager = new TableManager();
+
+            Config.LoadXml();
 
             WindowMain = new WindowMain();
             WindowMain.Show();
 
-            TableManager.Start();
+
             HandHistoryManager.Observer = WindowMain.UcStatusBar;
             TableManager.ObserverTableManagerTableList = WindowMain.UCTables;
             TableManager.ObserverTableManagerTableCount = WindowMain.UcStatusBar;

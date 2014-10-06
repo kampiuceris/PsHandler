@@ -150,11 +150,11 @@ namespace PsHandler.Custom
             };
         }
 
-        public static void DisplayException(Exception e)
+        public static void DisplayException(Exception e, Window owner, WindowStartupLocation windowStartupLocation)
         {
             UiInvoke(() =>
             {
-                WindowMessage.ShowDialog(e.Message, "Error", WindowMessageButtons.OK, WindowMessageImage.Error, App.WindowMain);
+                WindowMessage.ShowDialog(e.Message, "Error", WindowMessageButtons.OK, WindowMessageImage.Error, owner, windowStartupLocation);
                 File.WriteAllText("pshandler_error_" + DateTime.Now.Ticks + ".log", e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
             });
         }

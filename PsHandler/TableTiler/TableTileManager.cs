@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -134,6 +135,7 @@ namespace PsHandler.TableTiler
         public void Start()
         {
             Stop();
+
             _thread = new Thread(() =>
             {
                 while (true)
@@ -460,11 +462,11 @@ namespace PsHandler.TableTiler
             return xElement;
         }
 
-        public void FromXElement(XElement xElement)
+        public void FromXElement(XElement xElement, ref List<ExceptionPsHandler> exceptions, string exceptionHeader)
         {
             foreach (XElement xTableTile in xElement.Elements("TableTile"))
             {
-                TableTile tableTile = TableTile.FromXElement(xTableTile);
+                TableTile tableTile = TableTile.FromXElement(xTableTile, ref exceptions, exceptionHeader);
                 if (tableTile != null)
                 {
                     Add(tableTile);
