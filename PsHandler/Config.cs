@@ -439,6 +439,9 @@ namespace PsHandler
                 exceptions.Add(new ExceptionPsHandler(e, "LoadXml() Main Exception"));
             }
 
+            App.PokerTypeManager.SeedDefaultValues();
+            App.TableTileManager.SeedDefaultValues();
+
             //if (exceptions.Any())
             //{
             //    StringBuilder sb = new StringBuilder();
