@@ -293,11 +293,6 @@ namespace PsHandler
         public static IEnumerable<ExceptionPsHandler> LoadXml()
         {
             List<ExceptionPsHandler> exceptions = new List<ExceptionPsHandler>();
-            if (!File.Exists(CONFIG_FILENAME))
-            {
-                return exceptions;
-            }
-
             try
             {
                 XDocument xDoc = XDocument.Load(CONFIG_FILENAME);
