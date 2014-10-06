@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Media;
 using PsHandler.Custom;
 using PsHandler.UI;
-using System.Windows.Controls;
+using Brushes = System.Windows.Media.Brushes;
+using Image = System.Windows.Controls.Image;
 
 namespace PsHandler
 {
@@ -47,39 +48,27 @@ namespace PsHandler
                                         {
                                             if (windowTitle.Equals("Tournament Registration"))
                                             {
-                                                IntPtr buttonOkToClick = WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "");
-                                                if (buttonOkToClick.Equals(IntPtr.Zero))
+                                                // button "OK"
+                                                IntPtr handleButton = WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "OK");
+                                                // button "Confirm"
+                                                if (handleButton.Equals(IntPtr.Zero))
                                                 {
-                                                    buttonOkToClick = WinApi.FindChildWindow(handle, "Button", "OK");
+                                                    handleButton = WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "Confirm");
                                                 }
-                                                if (!buttonOkToClick.Equals(IntPtr.Zero))
+                                                // Ctrl + S -> button "Close"
+                                                if (handleButton.Equals(IntPtr.Zero))
                                                 {
-                                                    var rect = WinApi.GetWindowRectangle(buttonOkToClick);
-                                                    //Debug.WriteLine(string.Format("{0},{1} {2}x{3}", rect.LocationX, rect.LocationY, rect.Width, rect.Height));
-
-                                                    // 85x28 = "OK" button decorated
-                                                    // 77x24 = "OK" button undecorated
-                                                    // 133x28 = "Show Lobby" button decorated
-                                                    // 98x28 = "Close" button decorated
-
-                                                    if ((rect.Width == 85 && rect.Height == 28) || (rect.Width == 77 && rect.Height == 28))
-                                                    // Registration "OK" (decorated) || Unregister "OK" (decorated) (2014-06-25 update)
+                                                    IntPtr handleButtonShowLobby = WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "Show Lobby");
+                                                    if (!handleButtonShowLobby.Equals(IntPtr.Zero))
                                                     {
-                                                        Methods.LeftMouseClick(buttonOkToClick, 5, 5);
+                                                        handleButton = WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "Close");
                                                     }
-                                                    else if (rect.Width == 133 && rect.Height == 28) // "Show Lobby"
-                                                    {
-                                                        IntPtr childAfter = buttonOkToClick;
-                                                        buttonOkToClick = WinApi.FindChildWindow(handle, childAfter, "PokerStarsButtonClass", "");
-                                                        if (buttonOkToClick != IntPtr.Zero)
-                                                        {
-                                                            rect = WinApi.GetWindowRectangle(buttonOkToClick);
-                                                            if (rect.Width == 98 && rect.Height == 28) // "Close"
-                                                            {
-                                                                Methods.LeftMouseClick(buttonOkToClick, 5, 5);
-                                                            }
-                                                        }
-                                                    }
+                                                }
+                                                // click if possible
+                                                if (!handleButton.Equals(IntPtr.Zero))
+                                                {
+                                                    Rectangle r = WinApi.GetClientRectangle(handleButton);
+                                                    Methods.LeftMouseClick(handleButton, r.Width / 2, r.Height / 2);
                                                 }
                                             }
                                         }
@@ -87,10 +76,12 @@ namespace PsHandler
                                         {
                                             if (windowTitle.Equals("Seat Available"))
                                             {
-                                                IntPtr buttonYes = WinApi.FindChildWindow(handle, "Button", "Yes");
-                                                if (!buttonYes.Equals(IntPtr.Zero))
+                                                IntPtr handleButton = WinApi.FindChildWindow(handle, "Button", "Yes");
+                                                // click if possible
+                                                if (!handleButton.Equals(IntPtr.Zero))
                                                 {
-                                                    Methods.LeftMouseClick(buttonYes, 5, 5);
+                                                    Rectangle r = WinApi.GetClientRectangle(handleButton);
+                                                    Methods.LeftMouseClick(handleButton, r.Width / 2, r.Height / 2);
                                                 }
                                             }
                                         }

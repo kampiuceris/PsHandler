@@ -16,7 +16,7 @@
             <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Autoclick &quot;Yes&quot; on waiting list &quot;Seat Available&quot; popup" />
         </CheckBox>
         <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,81,0,0" x:Name="CheckBox_AutocloseTournamentRegistrationPopups">
-            <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Autoclose tournament registration popups (PokerStars 6)" />
+            <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Autoclose tournament registration popups" />
         </CheckBox>
         <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,108,0,0" x:Name="CheckBox_AutocloseHm2ApplyToSimilarTablesPopups">
             <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Autoclose HM2 &quot;Apply to similar tables?&quot; popup" />

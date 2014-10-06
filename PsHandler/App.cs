@@ -32,6 +32,7 @@ namespace PsHandler
         public App()
         {
             RegisterHook();
+
             TableTileManager = new TableTileManager();
             PokerTypeManager = new PokerTypeManager();
             RandomizerManager = new RandomizerManager();
@@ -43,7 +44,6 @@ namespace PsHandler
 
             WindowMain = new WindowMain();
             WindowMain.Show();
-
 
             HandHistoryManager.Observer = WindowMain.UcStatusBar;
             TableManager.ObserverTableManagerTableList = WindowMain.UCTables;
