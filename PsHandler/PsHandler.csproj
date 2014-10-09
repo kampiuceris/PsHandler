@@ -607,6 +607,35 @@
     <EmbeddedResource Include="Images\SngRegistrator\main_lobby_on.png" />
     <EmbeddedResource Include="Images\SngRegistrator\main_lobby_pressed.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\SngRegistrator\t_button_collapse_on.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\t_button_collapse_on_hover.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\t_button_collapse_on_pressed.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\t_button_expand_on.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\t_button_expand_on_hover.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\t_button_expand_on_pressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\SngRegistrator\t_games_view_off.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\t_games_view_off_hover.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\t_games_view_off_pressed.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\t_games_view_on.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\t_games_view_on_pressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\SngRegistrator\t_filters_off.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\t_filters_off_hover.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\t_filters_off_pressed.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\t_filters_on.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\t_filters_on_hover.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\t_filters_on_pressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\SngRegistrator\sng_off.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\sng_off_hover.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\sng_off_pressed.png" />
+    <EmbeddedResource Include="Images\SngRegistrator\sng_on.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

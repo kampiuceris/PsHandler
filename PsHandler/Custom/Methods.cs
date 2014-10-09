@@ -4,9 +4,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using PsHandler.UI;
 
@@ -77,6 +79,12 @@ namespace PsHandler.Custom
             IntPtr lParam = WinApi.GetLParam(x, y);
             WinApi.PostMessage(handle, WinApi.WM_LBUTTONDOWN, new IntPtr(WinApi.MK_LBUTTON), lParam);
             WinApi.PostMessage(handle, WinApi.WM_LBUTTONUP, IntPtr.Zero, lParam);
+        }
+
+        public static void LeftMouseDoubleClick(IntPtr handle, int x, int y)
+        {
+            IntPtr lParam = WinApi.GetLParam(x, y);
+            WinApi.PostMessage(handle, WinApi.WM_LBUTTONDBLCLK, IntPtr.Zero, lParam);
         }
 
         public static void MouseEnterLeftMouseClickMouseLeave(IntPtr handle, int x, int y)
@@ -190,7 +198,8 @@ namespace PsHandler.Custom
                 SizeToContent = SizeToContent.WidthAndHeight,
                 UseLayoutRounding = true,
                 Content = image,
-                ResizeMode = ResizeMode.NoResize
+                ResizeMode = ResizeMode.NoResize,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 255, 0))
             };
             if (dialog)
             {

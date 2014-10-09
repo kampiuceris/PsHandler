@@ -1,17 +1,12 @@
 ﻿using System.ComponentModel;
-using System.Drawing;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using PsHandler.Custom;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Principal;
 using PsHandler.SngRegistrator;
 using PsHandler.UI;
-using Color = System.Drawing.Color;
 
 namespace PsHandler
 {
@@ -20,10 +15,11 @@ namespace PsHandler
         [STAThreadAttribute]
         public static void Main()
         {
+
             System.Globalization.CultureInfo.DefaultThreadCurrentCulture = new System.Globalization.CultureInfo("en-US");
             System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = new System.Globalization.CultureInfo("en-US");
 
-            //Test(); return;
+            Test(); return;
 
             WindowsPrincipal pricipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
             bool hasAdministrativeRight = pricipal.IsInRole(WindowsBuiltInRole.Administrator);

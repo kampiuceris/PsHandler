@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 
 namespace PsHandler
 {
@@ -13,10 +12,20 @@ namespace PsHandler
     {
         // WIN API
 
+        public const int WM_KEYDOWN = 0x0100;
+        public const int WM_KEYUP = 0x0101;
+        public const int WM_CHAR = 0x0102;
+        public const uint MAPVK_VK_TO_VSC = 0x00;
+        public const uint MAPVK_VSC_TO_VK = 0x01;
+        public const uint MAPVK_VK_TO_CHAR = 0x02;
+        public const uint MAPVK_VSC_TO_VK_EX = 0x03;
+        public const uint MAPVK_VK_TO_VSC_EX = 0x04;
+
         public const int WM_LBUTTONDOWN = 0x0201;
         public const int WM_LBUTTONUP = 0x0202;
         public const int WM_MOUSEHOVER = 0x02A1;
         public const int WM_MOUSELEAVE = 0x02A3;
+        public const int WM_LBUTTONDBLCLK = 0x0203;
         public const int BM_CLICK = 0x00F5;
         public const int MK_LBUTTON = 0x0001;
         public const int GWL_STYLE = -16;
@@ -1018,7 +1027,7 @@ namespace PsHandler
         public static extern bool MoveWindow(IntPtr hWnd, int x, int y, int width, int height, bool redraw);
 
         [DllImport("user32.dll")]
-        public static extern bool PostMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
+        public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
@@ -1307,6 +1316,23 @@ namespace PsHandler
 
             SetWindowLong(handle, GWL_STYLE, (int)dwStyle);
             SetWindowPos(handle, IntPtr.Zero, 0, 0, rect.Width, rect.Height, SetWindowPosFlags.FrameChanged | SetWindowPosFlags.IgnoreMove | SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.DoNotChangeOwnerZOrder);
+        }
+
+        //
+
+        public static void KeyType(IntPtr handle, System.Windows.Input.Key key)
+        {
+            PostMessage(handle, WM_CHAR, new IntPtr(System.Windows.Input.KeyInterop.VirtualKeyFromKey(key)), IntPtr.Zero);
+        }
+
+        public static void KeyDown(IntPtr handle, System.Windows.Input.Key key)
+        {
+            PostMessage(handle, WM_KEYDOWN, new IntPtr(System.Windows.Input.KeyInterop.VirtualKeyFromKey(key)), IntPtr.Zero);
+        }
+
+        public static void KeyUp(IntPtr handle, System.Windows.Input.Key key)
+        {
+            PostMessage(handle, WM_KEYUP, new IntPtr(System.Windows.Input.KeyInterop.VirtualKeyFromKey(key)), IntPtr.Zero);
         }
     }
 }
