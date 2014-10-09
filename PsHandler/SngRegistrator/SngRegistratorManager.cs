@@ -19,13 +19,12 @@ namespace PsHandler.SngRegistrator
     {
         private Thread _thread;
         private IntPtr _handleWindowPokerStarsLobby;
+        private IntPtr _handleWindowSngTournamentFilter;
         private IntPtr _handleSelectorLobbySelector;
         private IntPtr _handleSelectorMainLobbySelector;
-        private IntPtr _handleButtonExpand;
-        private IntPtr _handleButtonCollapse;
+        private IntPtr _handleSelectorMainLobbyTabSelectorSitgo;
         private IntPtr _handleButtonGamesView;
-        private IntPtr _handleButtonFilter;
-        private IntPtr _handleQuickFilter;
+        private IntPtr _handleButtonSngTournamentFilter;
         private readonly Bmp _bmpMainLobbyOn;
         private readonly Bmp _bmpMainLobbyOff;
         private readonly Bmp _bmpMainLobbyOffHover;
@@ -34,24 +33,15 @@ namespace PsHandler.SngRegistrator
         private readonly Bmp _bmpSngOff;
         private readonly Bmp _bmpSngOffHover;
         private readonly Bmp _bmpSngOffPressed;
-        private readonly Bmp _bmpTransparentExpandOn;
-        private readonly Bmp _bmpTransparentExpandOnHover;
-        private readonly Bmp _bmpTransparentExpandOnPressed;
-        private readonly Bmp _bmpTransparentCollapseOn;
-        private readonly Bmp _bmpTransparentCollapseOnHover;
-        private readonly Bmp _bmpTransparentCollapseOnPressed;
+        private readonly Bmp _bmpSngAllOn;
+        private readonly Bmp _bmpSngAllOff;
+        private readonly Bmp _bmpSngAllOffHover;
+        private readonly Bmp _bmpSngAllOffPressed;
         private readonly Bmp _bmpTransparentGamesViewOn;
         private readonly Bmp _bmpTransparentGamesViewOnPressed;
         private readonly Bmp _bmpTransparentGamesViewOff;
         private readonly Bmp _bmpTransparentGamesViewOffHover;
         private readonly Bmp _bmpTransparentGamesViewOffPressed;
-        private readonly Bmp _bmpTransparentFilterOn;
-        private readonly Bmp _bmpTransparentFilterOnHover;
-        private readonly Bmp _bmpTransparentFilterOnPressed;
-        private readonly Bmp _bmpTransparentFilterOff;
-        private readonly Bmp _bmpTransparentFilterOffHover;
-        private readonly Bmp _bmpTransparentFilterOffPressed;
-
 
         public SngRegistratorManager()
         {
@@ -89,29 +79,21 @@ namespace PsHandler.SngRegistrator
                 _bmpSngOffPressed = new Bmp(bitmap);
             }
 
-            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.t_button_collapse_on.png"))
+            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.sng_all_on.png"))
             {
-                _bmpTransparentCollapseOn = new Bmp(bitmap);
+                _bmpSngAllOn = new Bmp(bitmap);
             }
-            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.t_button_collapse_on_hover.png"))
+            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.sng_all_off.png"))
             {
-                _bmpTransparentCollapseOnHover = new Bmp(bitmap);
+                _bmpSngAllOff = new Bmp(bitmap);
             }
-            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.t_button_collapse_on_pressed.png"))
+            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.sng_all_off_hover.png"))
             {
-                _bmpTransparentCollapseOnPressed = new Bmp(bitmap);
+                _bmpSngAllOffHover = new Bmp(bitmap);
             }
-            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.t_button_expand_on.png"))
+            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.sng_all_off_pressed.png"))
             {
-                _bmpTransparentExpandOn = new Bmp(bitmap);
-            }
-            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.t_button_expand_on_hover.png"))
-            {
-                _bmpTransparentExpandOnHover = new Bmp(bitmap);
-            }
-            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.t_button_expand_on_pressed.png"))
-            {
-                _bmpTransparentExpandOnPressed = new Bmp(bitmap);
+                _bmpSngAllOffPressed = new Bmp(bitmap);
             }
 
             using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.t_games_view_on.png"))
@@ -134,31 +116,6 @@ namespace PsHandler.SngRegistrator
             {
                 _bmpTransparentGamesViewOffPressed = new Bmp(bitmap);
             }
-
-            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.t_filters_on.png"))
-            {
-                _bmpTransparentFilterOn = new Bmp(bitmap);
-            }
-            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.t_filters_on_hover.png"))
-            {
-                _bmpTransparentFilterOnHover = new Bmp(bitmap);
-            }
-            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.t_filters_on_pressed.png"))
-            {
-                _bmpTransparentFilterOnPressed = new Bmp(bitmap);
-            }
-            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.t_filters_off.png"))
-            {
-                _bmpTransparentFilterOff = new Bmp(bitmap);
-            }
-            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.t_filters_off_hover.png"))
-            {
-                _bmpTransparentFilterOffHover = new Bmp(bitmap);
-            }
-            using (Bitmap bitmap = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.SngRegistrator.t_filters_off_pressed.png"))
-            {
-                _bmpTransparentFilterOffPressed = new Bmp(bitmap);
-            }
         }
 
         public void Stop()
@@ -179,12 +136,11 @@ namespace PsHandler.SngRegistrator
             //{
             while (true)
             {
-                //EnsureGamesView();
-                //EnsureFiltersOff();
+                EnsureGamesView();
+                EnsureSngTournamentFilter();
 
                 //Methods.DisplayBitmap(GetBmpWindowPokerStarsLobby().CutRectangle(WinApi.GetClientRectangleRelativeTo(_handleQuickFilter, _handleWindowPokerStarsLobby)).ToBitmap(), true);
-                EnsureMainLobby();
-                EnsureSitAndGo();
+
                 Thread.Sleep(100);
             }
             //});
@@ -204,11 +160,21 @@ namespace PsHandler.SngRegistrator
 
             EnsureMainLobby();
             EnsureSitAndGo();
-            //SetHandlesButtonsExpandColapse();
-            //EnsureCollapsed();
-            //SetHandleButtonGamesView();
-            //SetHandleButtonFilters();
-            //SetHandleQuickFilter();
+
+            IntPtr[] possibleHandles = WinApi.FindAllChildWindow(_handleWindowPokerStarsLobby, "PokerStarsSelectorClass", "main-lobby-tab-selector-sitgo").Where(o => WinApi.IsWindowVisible(o)).ToArray();
+            if (possibleHandles.Length != 1)
+                throw new NotSupportedException("Cannot find Selector 'Main Lobby Tab Selector Sitgo'.");
+            else
+                _handleSelectorMainLobbyTabSelectorSitgo = possibleHandles[0];
+
+            EnsureSitAndGoAll();
+            SetHandleButtonGamesView();
+            EnsureGamesView();
+
+            _handleButtonSngTournamentFilter = WinApi.FindChildWindow(_handleWindowPokerStarsLobby, "PokerStarsButtonClass", "Sit & Go Tournament Filter");
+            if (_handleButtonSngTournamentFilter.Equals(IntPtr.Zero)) throw new NotSupportedException("Cannot find Button 'Sit & Go Tournament Filter'.");
+
+            EnsureSngTournamentFilter();
         }
 
         private void EnsureMainLobby()
@@ -216,39 +182,35 @@ namespace PsHandler.SngRegistrator
             DateTime started = DateTime.Now;
             while (true)
             {
+                if ((DateTime.Now - started).TotalSeconds > 5) throw new NotSupportedException("Cannot open 'Main Lobby'.");
                 Thread.Sleep(100);
 
-                Bmp bmpSelectorLobbySelector = GetBmpWindowPokerStarsLobby().CutRectangle(WinApi.GetClientRectangleRelativeTo(_handleSelectorLobbySelector, _handleWindowPokerStarsLobby));
-                Point point;
-                // check if is on
-                point = FindBmp(bmpSelectorLobbySelector, _bmpMainLobbyOn);
-                if (point.IsValid())
-                {
-                    break;
-                }
-                // check if is off
-                point = FindBmp(bmpSelectorLobbySelector, _bmpMainLobbyOff);
-                if (point.IsValid())
-                {
-                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorLobbySelector, point.X, point.Y);
-                    continue;
-                }
-                // check if is hover
-                point = FindBmp(bmpSelectorLobbySelector, _bmpMainLobbyOffHover);
-                if (point.IsValid())
-                {
-                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorLobbySelector, point.X, point.Y);
-                    continue;
-                }
-                // check if is pressed
-                point = FindBmp(bmpSelectorLobbySelector, _bmpMainLobbyPressed);
-                if (point.IsValid())
-                {
-                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorLobbySelector, point.X, point.Y);
-                    continue;
-                }
+                Bmp bmp = GetBmpWindowPokerStarsLobby().CutRectangle(WinApi.GetClientRectangleRelativeTo(_handleSelectorLobbySelector, _handleWindowPokerStarsLobby));
 
-                if ((DateTime.Now - started).TotalSeconds > 5) throw new NotSupportedException("Cannot open 'Main Lobby'.");
+                Point point;
+                point = FindBmp(bmp, _bmpMainLobbyOn);
+                if (point.IsValid())
+                {
+                    return;
+                }
+                point = FindBmp(bmp, _bmpMainLobbyOff);
+                if (point.IsValid())
+                {
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorLobbySelector, point.X, point.Y);
+                    continue;
+                }
+                point = FindBmp(bmp, _bmpMainLobbyOffHover);
+                if (point.IsValid())
+                {
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorLobbySelector, point.X, point.Y);
+                    continue;
+                }
+                point = FindBmp(bmp, _bmpMainLobbyPressed);
+                if (point.IsValid())
+                {
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorLobbySelector, point.X, point.Y);
+                    continue;
+                }
             }
         }
 
@@ -257,134 +219,85 @@ namespace PsHandler.SngRegistrator
             DateTime started = DateTime.Now;
             while (true)
             {
-                Thread.Sleep(100);
-
-                Bmp bmpSelectorMainLobbySelector = GetBmpWindowPokerStarsLobby().CutRectangle(WinApi.GetClientRectangleRelativeTo(_handleSelectorMainLobbySelector, _handleWindowPokerStarsLobby));
-
-                Point point;
-                // check if is on
-                point = FindBmp(bmpSelectorMainLobbySelector, _bmpSngOn, 0.95, 0.95);
-                if (point.IsValid())
-                {
-                    break;
-                }
-                // check if is off
-                point = FindBmp(bmpSelectorMainLobbySelector, _bmpSngOff, 0.95, 0.95);
-                if (point.IsValid())
-                {
-                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorMainLobbySelector, point.X, point.Y);
-                    continue;
-                }
-                // check if is hover
-                point = FindBmp(bmpSelectorMainLobbySelector, _bmpSngOffHover, 0.95, 0.95);
-                if (point.IsValid())
-                {
-                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorMainLobbySelector, point.X, point.Y);
-                    continue;
-                }
-                // check if is pressed
-                point = FindBmp(bmpSelectorMainLobbySelector, _bmpSngOffPressed, 0.95, 0.95);
-                if (point.IsValid())
-                {
-                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorMainLobbySelector, point.X, point.Y);
-                    continue;
-                }
-
                 if ((DateTime.Now - started).TotalSeconds > 5) throw new NotSupportedException("Cannot open 'Sit & Go'.");
-            }
-        }
-
-        private void EnsureCollapsed()
-        {
-            DateTime started = DateTime.Now;
-
-            while (!WinApi.IsWindowVisible(_handleButtonExpand))
-            {
                 Thread.Sleep(100);
 
-                if (!WinApi.IsWindowVisible(_handleButtonCollapse))
+                if (!WinApi.IsWindowVisible(_handleSelectorMainLobbySelector))
                 {
                     EnsureMainLobby();
-                    EnsureSitAndGo();
+                    continue;
                 }
 
-                if (WinApi.IsWindowVisible(_handleButtonCollapse))
-                {
-                    Methods.MouseEnterLeftMouseClickMiddleMouseLeave(_handleButtonCollapse);
-                }
-                else if (WinApi.IsWindowVisible(_handleButtonExpand))
+                Bmp bmp = GetBmpWindowPokerStarsLobby().CutRectangle(WinApi.GetClientRectangleRelativeTo(_handleSelectorMainLobbySelector, _handleWindowPokerStarsLobby));
+
+                Point point;
+                point = FindBmp(bmp, _bmpSngOn, 0.95, 0.95);
+                if (point.IsValid())
                 {
                     return;
                 }
-                else
+                point = FindBmp(bmp, _bmpSngOff, 0.95, 0.95);
+                if (point.IsValid())
                 {
-                    throw new NotSupportedException("Cannot ensure 'Collapsed' state.");
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorMainLobbySelector, point.X, point.Y);
+                    continue;
                 }
-
-                if ((DateTime.Now - started).TotalSeconds > 5) throw new NotSupportedException("Ensure 'Collapsed' state timeout.");
+                point = FindBmp(bmp, _bmpSngOffHover, 0.95, 0.95);
+                if (point.IsValid())
+                {
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorMainLobbySelector, point.X, point.Y);
+                    continue;
+                }
+                point = FindBmp(bmp, _bmpSngOffPressed, 0.95, 0.95);
+                if (point.IsValid())
+                {
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorMainLobbySelector, point.X, point.Y);
+                    continue;
+                }
             }
         }
 
-        private void EnsureMainLobbySitAndGoCollapsed()
+        private void EnsureSitAndGoAll()
         {
-            EnsureMainLobby();
-            EnsureSitAndGo();
-            EnsureCollapsed();
-        }
-
-
-        //
-
-        private void SetHandlesButtonsExpandColapse()
-        {
-            Thread.Sleep(100);
-
-            _handleButtonExpand = FindButtonExpand();
-            _handleButtonCollapse = FindButtonCollapse();
-            if (_handleButtonExpand == IntPtr.Zero && _handleButtonCollapse == IntPtr.Zero)
+            DateTime started = DateTime.Now;
+            while (true)
             {
-                throw new NotSupportedException("Cannot find buttons 'Expand'/'Collapse'.");
-            }
-            if (_handleButtonExpand != IntPtr.Zero)
-            {
-                Methods.MouseEnterLeftMouseClickMiddleMouseLeave(_handleButtonExpand);
+                if ((DateTime.Now - started).TotalSeconds > 5) throw new NotSupportedException("Cannot open 'Sit & Go -> All' tab.");
                 Thread.Sleep(100);
-                _handleButtonCollapse = FindButtonCollapse();
-                if (_handleButtonCollapse == IntPtr.Zero)
+
+                if (!WinApi.IsWindowVisible(_handleSelectorMainLobbyTabSelectorSitgo))
                 {
-                    throw new NotSupportedException("Cannot find button 'Collapse'.");
+                    EnsureSitAndGo();
+                    continue;
                 }
-                else
+
+                Bmp bmp = GetBmpWindowPokerStarsLobby().CutRectangle(WinApi.GetClientRectangleRelativeTo(_handleSelectorMainLobbyTabSelectorSitgo, _handleWindowPokerStarsLobby));
+
+                Point point;
+                point = FindBmp(bmp, _bmpSngAllOn, 0.95, 0.95);
+                if (point.IsValid())
                 {
-                    Methods.MouseEnterLeftMouseClickMiddleMouseLeave(_handleButtonCollapse);
+                    return;
+                }
+                point = FindBmp(bmp, _bmpSngAllOff, 0.95, 0.95);
+                if (point.IsValid())
+                {
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorMainLobbyTabSelectorSitgo, point.X, point.Y);
+                    continue;
+                }
+                point = FindBmp(bmp, _bmpSngAllOffHover, 0.95, 0.95);
+                if (point.IsValid())
+                {
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorMainLobbyTabSelectorSitgo, point.X, point.Y);
+                    continue;
+                }
+                point = FindBmp(bmp, _bmpSngAllOffPressed, 0.95, 0.95);
+                if (point.IsValid())
+                {
+                    Methods.MouseEnterLeftMouseClickMouseLeave(_handleSelectorMainLobbyTabSelectorSitgo, point.X, point.Y);
+                    continue;
                 }
             }
-            else
-            {
-                Methods.MouseEnterLeftMouseClickMiddleMouseLeave(_handleButtonCollapse);
-                Thread.Sleep(100);
-                _handleButtonExpand = FindButtonExpand();
-                if (_handleButtonExpand == IntPtr.Zero)
-                {
-                    throw new NotSupportedException("Cannot find button 'Expand'.");
-                }
-            }
-        }
-
-        private IntPtr FindButtonExpand()
-        {
-            return FindElementInPokerStarsLobby("PokerStarsButtonClass", "", true,
-                       new Size(_bmpTransparentExpandOn.Width, _bmpTransparentExpandOn.Height), 1.0,
-                       new Rectangle((WinApi.GetClientRectangle(_handleWindowPokerStarsLobby).Width - 60 - _bmpTransparentExpandOn.Width) / 2 - 20, 150, 140, 35), 1,
-                       new List<Bmp> { _bmpTransparentExpandOn, _bmpTransparentExpandOnHover, _bmpTransparentExpandOnPressed }, 0.99, 0.99);
-        }
-
-        private IntPtr FindButtonCollapse()
-        {
-            return FindElementInPokerStarsLobby("PokerStarsButtonClass", "", true,
-                       new Size(_bmpTransparentCollapseOn.Width, _bmpTransparentCollapseOn.Height), 1.0,
-                       new Rectangle((WinApi.GetClientRectangle(_handleWindowPokerStarsLobby).Width - 60 - _bmpTransparentExpandOn.Width) / 2 - 20, 270, 140, 35), 1,
-                       new List<Bmp> { _bmpTransparentCollapseOn, _bmpTransparentCollapseOnHover, _bmpTransparentCollapseOnPressed }, 0.99, 0.99);
         }
 
         private void SetHandleButtonGamesView()
@@ -403,50 +316,17 @@ namespace PsHandler.SngRegistrator
             }
         }
 
-        private void SetHandleButtonFilters()
-        {
-            if (_handleButtonFilter == IntPtr.Zero)
-            {
-                Thread.Sleep(100);
-                _handleButtonFilter = FindElementInPokerStarsLobby("PokerStarsButtonClass", "", true,
-                       new Size(_bmpTransparentFilterOn.Width, _bmpTransparentFilterOn.Height), 1.0,
-                       new Rectangle(WinApi.GetClientRectangle(_handleWindowPokerStarsLobby).Width - 125, 120, 60, 50), 1,
-                       new List<Bmp> { _bmpTransparentFilterOn, _bmpTransparentFilterOnHover, _bmpTransparentFilterOnPressed, _bmpTransparentFilterOff, _bmpTransparentFilterOffHover, _bmpTransparentFilterOffPressed }, 0.99, 0.99);
-                if (_handleButtonFilter == IntPtr.Zero)
-                {
-                    throw new NotSupportedException("Cannot find 'Filters' button");
-                }
-            }
-        }
-
-        private void SetHandleQuickFilter()
-        {
-            if (_handleQuickFilter == IntPtr.Zero)
-            {
-                Thread.Sleep(100);
-                var handles = WinApi.FindAllChildWindowByClass(_handleWindowPokerStarsLobby, "PokerStarsFilterClass").Where(o => WinApi.IsWindowVisible(o) && WinApi.GetClientRectangle(o).Size.Equals(new Size(105, 15))).ToArray();
-                if (handles.Length == 1)
-                {
-                    _handleQuickFilter = handles[0];
-                }
-                else
-                {
-                    throw new NotSupportedException("Cannot find 'Quick Filter' textbox.");
-                }
-            }
-        }
-
-        //
-
         private void EnsureGamesView()
         {
             DateTime started = DateTime.Now;
             while (true)
             {
+                if ((DateTime.Now - started).TotalSeconds > 5) throw new NotSupportedException("Ensure 'Games View' timeout.");
                 Thread.Sleep(100);
+
                 if (!WinApi.IsWindowVisible(_handleButtonGamesView))
                 {
-                    EnsureMainLobbySitAndGoCollapsed();
+                    EnsureSitAndGoAll();
                     continue;
                 }
 
@@ -456,7 +336,7 @@ namespace PsHandler.SngRegistrator
                 {
                     return;
                 }
-                else if (FindBmp(bmp, _bmpTransparentGamesViewOnPressed, 0.99, 0.99).IsValid())
+                if (FindBmp(bmp, _bmpTransparentGamesViewOnPressed, 0.99, 0.99).IsValid())
                 {
                     Methods.MouseEnterLeftMouseClickMiddleMouseLeave(_handleButtonGamesView);
                 }
@@ -472,51 +352,40 @@ namespace PsHandler.SngRegistrator
                 {
                     Methods.MouseEnterLeftMouseClickMiddleMouseLeave(_handleButtonGamesView);
                 }
-
-                if ((DateTime.Now - started).TotalSeconds > 5) throw new NotSupportedException("Ensure 'Games View' timeout.");
             }
         }
 
-        private void EnsureFiltersOff()
+        private void EnsureSngTournamentFilter()
         {
             DateTime started = DateTime.Now;
             while (true)
             {
-                Thread.Sleep(100);
-                if (!WinApi.IsWindowVisible(_handleButtonFilter))
+                if (!WinApi.IsWindowVisible(_handleWindowSngTournamentFilter))
                 {
-                    EnsureMainLobbySitAndGoCollapsed();
+                    _handleWindowSngTournamentFilter = IntPtr.Zero;
+                }
+                if (!_handleWindowSngTournamentFilter.Equals(IntPtr.Zero))
+                {
+                    return;
+                }
+
+                if ((DateTime.Now - started).TotalSeconds > 5) throw new NotSupportedException("Cannot find/open Window 'Sit & Go Tournament Filter'.");
+                Thread.Sleep(100);
+
+                if (!WinApi.IsWindowVisible(_handleButtonSngTournamentFilter))
+                {
+                    EnsureSitAndGoAll();
                     continue;
                 }
 
-                Bmp bmp = GetBmpWindowPokerStarsLobby().CutRectangle(WinApi.GetClientRectangleRelativeTo(_handleButtonFilter, _handleWindowPokerStarsLobby));
-
-                if (FindBmp(bmp, _bmpTransparentFilterOff, 0.99, 0.99).IsValid())
+                _handleWindowSngTournamentFilter = GetWindowSngTournamentFilter();
+                if (_handleWindowSngTournamentFilter.Equals(IntPtr.Zero))
                 {
-                    return;
+                    Methods.MouseEnterLeftMouseClickMiddleMouseLeave(_handleButtonSngTournamentFilter);
+                    Thread.Sleep(100);
+                    _handleWindowSngTournamentFilter = GetWindowSngTournamentFilter();
+                    continue;
                 }
-                else if (FindBmp(bmp, _bmpTransparentFilterOffHover, 0.99, 0.99).IsValid())
-                {
-                    return;
-                }
-                else if (FindBmp(bmp, _bmpTransparentFilterOffPressed, 0.99, 0.99).IsValid())
-                {
-                    return;
-                }
-                else if (FindBmp(bmp, _bmpTransparentFilterOn, 0.99, 0.99).IsValid())
-                {
-                    Methods.MouseEnterLeftMouseClickMiddleMouseLeave(_handleButtonFilter);
-                }
-                else if (FindBmp(bmp, _bmpTransparentFilterOnHover, 0.99, 0.99).IsValid())
-                {
-                    Methods.MouseEnterLeftMouseClickMiddleMouseLeave(_handleButtonFilter);
-                }
-                else if (FindBmp(bmp, _bmpTransparentFilterOnPressed, 0.99, 0.99).IsValid())
-                {
-                    Methods.MouseEnterLeftMouseClickMiddleMouseLeave(_handleButtonFilter);
-                }
-
-                if ((DateTime.Now - started).TotalSeconds > 5) throw new NotSupportedException("Ensure 'Filters off' timeout.");
             }
         }
 
@@ -532,6 +401,22 @@ namespace PsHandler.SngRegistrator
             return bmpPokerStarsLobby;
         }
 
+        private IntPtr GetWindowSngTournamentFilter()
+        {
+            uint processId;
+            WinApi.GetWindowThreadProcessId(_handleWindowPokerStarsLobby, out processId);
+            foreach (IntPtr handle in WinApi.EnumerateProcessWindowHandles((int)processId).Where(o => WinApi.GetClassName(o).Equals("#32770") && WinApi.IsWindowVisible(o) && WinApi.GetWindowTitle(o).Equals("")))
+            {
+                if (!WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "Fifty50").Equals(IntPtr.Zero)
+                    && !WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "6-Max").Equals(IntPtr.Zero)
+                    && !WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "FPP").Equals(IntPtr.Zero)
+                    && !WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "Turbo").Equals(IntPtr.Zero))
+                {
+                    return handle;
+                }
+            }
+            return IntPtr.Zero;
+        }
 
         private IntPtr FindElementInPokerStarsLobby(string className, string title, bool isVisible, Size size, double sizeAccuracy, Rectangle areaToSearch, double areaToSearchAccuracy, List<Bmp> bmps, double bmpsMatchAccuracy, double bmpsColorAccuracy)
         {
