@@ -124,6 +124,7 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Randomizer\RandomizerManager.cs" />
     <Compile Include="SngRegistrator\SngRegistratorManager.cs" />
+    <Compile Include="SngRegistrator\SngTournamentFilterManager.cs" />
     <Compile Include="TableManager.cs" />
     <Compile Include="TableTiler\TableTile.cs" />
     <Compile Include="TableTiler\TableTileManager.cs" />
