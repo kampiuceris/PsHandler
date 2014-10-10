@@ -235,7 +235,7 @@ namespace PsHandler
             }
         }
 
-        //
+        // config variables
 
         public static bool EnableHudTimer { set; get; }
         public static bool EnableHudBigBlind { set; get; }

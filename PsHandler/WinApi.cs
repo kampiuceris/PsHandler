@@ -1285,40 +1285,39 @@ namespace PsHandler
         // WINDOW WS_OVERLAPPEDWINDOW: 802, 578
         // CLIENT WS_THICKFRAME: 802, 556
 
+        public const uint WINDOW_STYLE_NORMAL = WindowStyles.WS_CAPTION | WindowStyles.WS_VISIBLE | WindowStyles.WS_CLIPSIBLINGS | WindowStyles.WS_CLIPCHILDREN
+            | WindowStyles.WS_SYSMENU | WindowStyles.WS_THICKFRAME | WindowStyles.WS_OVERLAPPED | WindowStyles.WS_MINIMIZEBOX | WindowStyles.WS_MAXIMIZEBOX; // 0x16cf0000;
+        public const uint WINDOW_EX_STYLE_NORMAL = WindowStyles.WS_EX_LEFT | WindowStyles.WS_EX_LTRREADING | WindowStyles.WS_EX_RIGHTSCROLLBAR | WindowStyles.WS_EX_WINDOWEDGE; //0x00000100;
+        public const uint WINDOW_STYLE_NOCAPTION = WindowStyles.WS_SIZEBOX | WindowStyles.WS_THICKFRAME | WindowStyles.WS_TABSTOP | WindowStyles.WS_VISIBLE | WindowStyles.WS_CLIPSIBLINGS | WindowStyles.WS_CLIPCHILDREN;
+        public const uint WINDOW_STYLE_BORDERLESS = WindowStyles.WS_TABSTOP | WindowStyles.WS_VISIBLE | WindowStyles.WS_CLIPSIBLINGS | WindowStyles.WS_CLIPCHILDREN;
+
         public static void SetWindowStyleNormal(IntPtr handle)
         {
-            uint dwStyle = WindowStyles.WS_OVERLAPPEDWINDOW | WindowStyles.WS_TABSTOP | WindowStyles.WS_VISIBLE;
-
-            Rectangle clientRectangle = GetClientRectangle(handle);
-            RECT rect = new RECT(clientRectangle);
-            AdjustWindowRect(ref rect, (UIntPtr)dwStyle, false);
-
-            SetWindowLong(handle, GWL_STYLE, (int)dwStyle);
-            SetWindowPos(handle, IntPtr.Zero, 0, 0, rect.Width, rect.Height, SetWindowPosFlags.FrameChanged | SetWindowPosFlags.IgnoreMove | SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.DoNotChangeOwnerZOrder);
+            EnsureWindowGwlStyleGwlExStyle(handle, WINDOW_STYLE_NORMAL, WINDOW_EX_STYLE_NORMAL);
         }
 
         public static void SetWindowStyleNoCaption(IntPtr handle)
         {
-            uint dwStyle = WindowStyles.WS_SIZEBOX | WindowStyles.WS_TABSTOP | WindowStyles.WS_VISIBLE;
-
-            Rectangle clientRectangle = GetClientRectangle(handle);
-            RECT rect = new RECT(clientRectangle);
-            AdjustWindowRect(ref rect, (UIntPtr)dwStyle, false);
-
-            SetWindowLong(handle, GWL_STYLE, (int)dwStyle);
-            SetWindowPos(handle, IntPtr.Zero, 0, 0, rect.Width, rect.Height, SetWindowPosFlags.FrameChanged | SetWindowPosFlags.IgnoreMove | SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.DoNotChangeOwnerZOrder);
+            EnsureWindowGwlStyleGwlExStyle(handle, WINDOW_STYLE_NOCAPTION, WINDOW_EX_STYLE_NORMAL);
         }
 
         public static void SetWindowStyleNone(IntPtr handle)
         {
-            uint dwStyle = WindowStyles.WS_TABSTOP | WindowStyles.WS_VISIBLE;
+            EnsureWindowGwlStyleGwlExStyle(handle, WINDOW_STYLE_BORDERLESS, WINDOW_EX_STYLE_NORMAL);
+        }
 
-            Rectangle clientRectangle = GetClientRectangle(handle);
-            RECT rect = new RECT(clientRectangle);
-            AdjustWindowRect(ref rect, (UIntPtr)dwStyle, false);
+        public static void EnsureWindowGwlStyleGwlExStyle(IntPtr handle, uint gwlStyle, uint gwExlStyle)
+        {
+            if (GetWindowLong(handle, GWL_STYLE) != gwlStyle || GetWindowLong(handle, GWL_EXSTYLE) != gwExlStyle)
+            {
+                Rectangle clientRectangle = GetClientRectangle(handle);
+                RECT rect = new RECT(clientRectangle);
+                AdjustWindowRect(ref rect, (UIntPtr)gwlStyle, false);
 
-            SetWindowLong(handle, GWL_STYLE, (int)dwStyle);
-            SetWindowPos(handle, IntPtr.Zero, 0, 0, rect.Width, rect.Height, SetWindowPosFlags.FrameChanged | SetWindowPosFlags.IgnoreMove | SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.DoNotChangeOwnerZOrder);
+                SetWindowLong(handle, GWL_STYLE, (int)gwlStyle);
+                SetWindowLong(handle, GWL_EXSTYLE, (int)gwExlStyle);
+                SetWindowPos(handle, IntPtr.Zero, 0, 0, rect.Width, rect.Height, SetWindowPosFlags.FrameChanged | SetWindowPosFlags.IgnoreMove | SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.DoNotChangeOwnerZOrder);
+            }
         }
 
         //
