@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using PsHandler.Custom;
 using System;
@@ -18,6 +19,19 @@ namespace PsHandler
 
             System.Globalization.CultureInfo.DefaultThreadCurrentCulture = new System.Globalization.CultureInfo("en-US");
             System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = new System.Globalization.CultureInfo("en-US");
+
+            try
+            {
+                FileInfo fi = new FileInfo(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+                if (!fi.Name.Equals("PsHandler.exe") && !fi.Name.Equals("PsHandler.vshost.exe"))
+                {
+                    WindowMessage.ShowDialog("Executable file name '" + fi.Name + "' is not default (default: 'PsHandler.exe')." + Environment.NewLine + "Program will quit now.", "Incorrect File Name", WindowMessageButtons.OK, WindowMessageImage.Error, null, WindowStartupLocation.CenterScreen);
+                    return;
+                }
+            }
+            catch
+            {
+            }
 
             //Test(); return;
 
@@ -41,7 +55,7 @@ namespace PsHandler
                 {
                     if (e is Win32Exception)
                     {
-                        WindowMessage.ShowDialog("PsHandler requires administrative privileges to run." + Environment.NewLine + "Program will quit.", "UAC", WindowMessageButtons.OK, WindowMessageImage.Error, null, WindowStartupLocation.CenterScreen);
+                        WindowMessage.ShowDialog("PsHandler requires administrative privileges to run." + Environment.NewLine + "Program will quit now.", "UAC", WindowMessageButtons.OK, WindowMessageImage.Error, null, WindowStartupLocation.CenterScreen);
                     }
                     else
                     {
