@@ -44,6 +44,8 @@ namespace PsHandler.Import
         public long HandNumber;
         public long TournamentNumber;
         public DateTime Timestamp;
+        public TimeZone TimeZone;
+        public DateTime TimestampUtc;
         public Player[] Players;
         public Player[] PlayersAfterHand;
         public TableSize TableSize;
@@ -102,7 +104,7 @@ namespace PsHandler.Import
 
         //
 
-        public static Regex RegexHeader = new Regex(@"\APokerStars Hand #(?<hand_id>\d+): Tournament #(?<tournament_id>\d+),.+- (?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[.+");
+        public static Regex RegexHeader = new Regex(@"\APokerStars Hand #(?<hand_id>\d+): Tournament #(?<tournament_id>\d+),.+- (?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z");
         public static Regex RegexSeatMaxButton = new Regex(@"\ATable '\d+ \d+' (?<table_size>\d+)-max Seat #(?<button_seat>\d+) is the button");
         public static Regex RegexSeat = new Regex(@"Seat \d{1,2}: (?<name>.+) \((?<stack>\d+) in chips\)");
         public static Regex RegexAnte = new Regex(@"(?<name>.+): posts the ante (?<amount>\d+)");
@@ -126,13 +128,15 @@ namespace PsHandler.Import
             {
                 hand.HandNumber = long.Parse(match.Groups["hand_id"].Value);
                 hand.TournamentNumber = long.Parse(match.Groups["tournament_id"].Value);
-                int year = int.Parse(match.Groups["year"].Value);
-                int month = int.Parse(match.Groups["month"].Value);
-                int day = int.Parse(match.Groups["day"].Value);
-                int hour = int.Parse(match.Groups["hour"].Value);
-                int minute = int.Parse(match.Groups["minute"].Value);
-                int second = int.Parse(match.Groups["second"].Value);
+                int year = int.Parse(match.Groups["year_et"].Value);
+                int month = int.Parse(match.Groups["month_et"].Value);
+                int day = int.Parse(match.Groups["day_et"].Value);
+                int hour = int.Parse(match.Groups["hour_et"].Value);
+                int minute = int.Parse(match.Groups["minute_et"].Value);
+                int second = int.Parse(match.Groups["second_et"].Value);
+                hand.TimeZone = TimeZones.AllTimeZones.First(o => o.Code.Equals(match.Groups["timezone_et"].Value));
                 hand.Timestamp = new DateTime(year, month, day, hour, minute, second);
+                hand.TimestampUtc = hand.Timestamp - hand.TimeZone.TimeDifference;
                 return;
             }
 

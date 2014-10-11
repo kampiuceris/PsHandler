@@ -116,10 +116,13 @@ namespace PsHandler.Hud
                                 }
                                 if (_pokerType != null)
                                 {
-                                    DateTime dateTimeNow = DateTime.Now.AddSeconds(-Config.TimerDiff);
-                                    DateTime dateTimeNextLevel = tournament.GetFirstHandTimestamp();
-                                    while (dateTimeNextLevel < dateTimeNow) dateTimeNextLevel = dateTimeNextLevel.AddSeconds(_pokerType.LevelLength.TotalSeconds);
-                                    TimeSpan timeSpan = dateTimeNextLevel - dateTimeNow;
+                                    DateTime dateTimeUtcNow = DateTime.UtcNow.AddSeconds(-Config.TimerDiff);
+                                    DateTime dateTimeUtcNextLevel = tournament.GetFirstHandTimestampUtc();
+                                    while (dateTimeUtcNextLevel < dateTimeUtcNow)
+                                    {
+                                        dateTimeUtcNextLevel = dateTimeUtcNextLevel + _pokerType.LevelLength;
+                                    }
+                                    TimeSpan timeSpan = dateTimeUtcNextLevel - dateTimeUtcNow;
                                     textboxTimerContent = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
                                     Methods.UiInvoke(() =>
                                     {

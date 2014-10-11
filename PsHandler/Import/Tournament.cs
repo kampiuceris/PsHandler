@@ -16,11 +16,27 @@ namespace PsHandler.Import
         public List<Hand> Hands = new List<Hand>();
         private readonly object _lock = new object();
 
+        public DateTime GetFirstHandTimestampUtc()
+        {
+            lock (_lock)
+            {
+                return Hands[0].TimestampUtc;
+            }
+        }
+
         public DateTime GetFirstHandTimestamp()
         {
             lock (_lock)
             {
                 return Hands[0].Timestamp;
+            }
+        }
+
+        public TimeZone GetFirstHandTimeZone()
+        {
+            lock (_lock)
+            {
+                return Hands[0].TimeZone;
             }
         }
 

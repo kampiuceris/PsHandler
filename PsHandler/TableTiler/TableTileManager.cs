@@ -218,7 +218,7 @@ namespace PsHandler.TableTiler
                                 Tournament tournament = App.HandHistoryManager.GetTournament(ti.TournamentNumber);
                                 if (tournament != null)
                                 {
-                                    ti.FirstHandTimestamp = tournament.GetFirstHandTimestamp();
+                                    ti.FirstHandTimestamp = tournament.GetFirstHandTimestampUtc();
                                 }
                                 else
                                 {
