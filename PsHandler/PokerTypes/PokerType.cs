@@ -23,35 +23,35 @@ namespace PsHandler.PokerTypes
             {
                 Name = "NLHE 10-max Fifty50 Regular",
                 LevelLength = new TimeSpan(0, 6, 0),
-                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[Fifty50\] - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[Fifty50\][ ]+- Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             });
             pokerTypesDefault.Add(new PokerType
             {
                 Name = "NLHE 10-max Fifty50 Turbo",
                 LevelLength = new TimeSpan(0, 3, 0),
-                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[Turbo, Fifty50\] - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[Turbo, Fifty50\][ ]+- Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             });
             pokerTypesDefault.Add(new PokerType
             {
                 Name = "NLHE 2-max 2 Players Regular",
                 LevelLength = new TimeSpan(0, 6, 0),
-                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[HU, 2 Players\] - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[HU, 2 Players\][ ]+- Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             });
             pokerTypesDefault.Add(new PokerType
             {
                 Name = "NLHE 2-max 2 Players Turbo",
                 LevelLength = new TimeSpan(0, 3, 0),
-                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[HU, Turbo, 2 Players\] - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[HU, Turbo, 2 Players\][ ]+- Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             });
             pokerTypesDefault.Add(new PokerType
             {
                 Name = "NLHE 2-max 2 Players Hyper-Turbo",
                 LevelLength = new TimeSpan(0, 2, 0),
-                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[HU, Hyper-Turbo, 2 Players\] - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[HU, Hyper-Turbo, 2 Players\][ ]+- Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             });
 
@@ -60,7 +60,7 @@ namespace PsHandler.PokerTypes
             {
                 Name = "NLHE 3-max Spin & Go Hyper-Turbo",
                 LevelLength = new TimeSpan(0, 3, 0),
-                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) Spin & Go - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) Spin & Go[ ]+- Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             });
 
@@ -69,55 +69,55 @@ namespace PsHandler.PokerTypes
             {
                 Name = "NLHE 6-max",
                 LevelLength = new TimeSpan(0, 10, 0),
-                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[6-Max\] - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[6-Max\][ ]+- Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             });
             pokerTypesDefault.Add(new PokerType
             {
                 Name = "NLHE 6-max Turbo",
                 LevelLength = new TimeSpan(0, 5, 0),
-                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[6-Max, Turbo\] - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[6-Max, Turbo\][ ]+- Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             });
             pokerTypesDefault.Add(new PokerType
             {
                 Name = "NLHE 6-max Hyper-Turbo",
                 LevelLength = new TimeSpan(0, 2, 0),
-                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[6-Max, Hyper-Turbo\] - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[6-Max, Hyper-Turbo\][ ]+- Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             });
             pokerTypesDefault.Add(new PokerType
             {
                 Name = "NLHE 9-max Regular",
                 LevelLength = new TimeSpan(0, 10, 0),
-                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em[ ]+- Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             }); pokerTypesDefault.Add(new PokerType
             {
                 Name = "NLHE 9-max Turbo",
                 LevelLength = new TimeSpan(0, 5, 0),
-                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[Turbo\] - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[Turbo\][ ]+- Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             });
             pokerTypesDefault.Add(new PokerType
             {
                 Name = "NLHE 9-max Hyper-Turbo",
                 LevelLength = new TimeSpan(0, 2, 0),
-                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[Hyper-Turbo\] - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[Hyper-Turbo\][ ]+- Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             });
             pokerTypesDefault.Add(new PokerType
             {
                 Name = "NLHE 9-max Knockout Regular",
                 LevelLength = new TimeSpan(0, 10, 0),
-                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[Knockout\] - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[Knockout\][ ]+- Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             });
             pokerTypesDefault.Add(new PokerType
             {
                 Name = "NLHE 9-max Knockout Turbo",
                 LevelLength = new TimeSpan(0, 5, 0),
-                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[Turbo, Knockout\] - Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
+                RegexWindowTitle = new Regex(@"\A(?<currency>\$|€|£)(?<buyin>.+) NL Hold'em \[Turbo, Knockout\][ ]+- Blinds (?<blinds>.+) - Tournament (?<tournament>\d+) Table (?<table>\d)"),
                 RegexWindowClass = new Regex(@"\APokerStarsTableFrameClass\z"),
             });
             pokerTypesDefault.Add(new PokerType
