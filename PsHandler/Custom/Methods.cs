@@ -106,7 +106,7 @@ namespace PsHandler.Custom
             WinApi.PostMessage(handle, WinApi.WM_MOUSELEAVE, IntPtr.Zero, IntPtr.Zero);
         }
 
-        public static void AverageColor(Bmp bmp, Rectangle r, out double redAvg, out double greenAvg, out double blueAvg)
+        public static void AverageColor(Bmp bmp, Rectangle r, out double avgRed, out double avgGreen, out double avgBlue)
         {
             long redSum = 0, greenSum = 0, blueSum = 0;
             for (int y = r.Y; y < r.Y + r.Height; y++)
@@ -118,9 +118,9 @@ namespace PsHandler.Custom
                     blueSum += bmp.GetPixelB(x, y);
                 }
             }
-            redAvg = (double)redSum / (r.Width * r.Height);
-            greenAvg = (double)greenSum / (r.Width * r.Height);
-            blueAvg = (double)blueSum / (r.Width * r.Height);
+            avgRed = (double)redSum / (r.Width * r.Height);
+            avgGreen = (double)greenSum / (r.Width * r.Height);
+            avgBlue = (double)blueSum / (r.Width * r.Height);
         }
 
         public static bool CompareColors(double r0, double g0, double b0, double r1, double g1, double b1, double maxDifferenceR, double maxDifferenceG, double maxDifferenceB)

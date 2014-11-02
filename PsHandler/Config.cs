@@ -634,7 +634,7 @@ namespace PsHandler
         {
             try
             {
-                if (version < 20)
+                if (version < 23)
                 {
                     // poker types delaut override:
                     List<PokerType> defaultPokerTypes = PokerType.GetDefaultValues().ToList();
