@@ -29,6 +29,8 @@ namespace PsHandler.UI
 
             CheckBox_AutoclickImBack.Checked += (sender, args) => { Config.AutoclickImBack = true; };
             CheckBox_AutoclickImBack.Unchecked += (sender, args) => { Config.AutoclickImBack = false; };
+            CheckBox_AutoclickImBackDisableDuringBreaks.Checked += (sender, args) => { Config.AutoclickImBackDisableDuringBreaks = true; };
+            CheckBox_AutoclickImBackDisableDuringBreaks.Unchecked += (sender, args) => { Config.AutoclickImBackDisableDuringBreaks = false; };
             CheckBox_AutoclickTimebank.Checked += (sender, args) => { Config.AutoclickTimebank = true; };
             CheckBox_AutoclickTimebank.Unchecked += (sender, args) => { Config.AutoclickTimebank = false; };
             CheckBox_AutoclickYesSeatAvailable.Checked += (sender, args) => { Config.AutoclickYesSeatAvailable = true; };
@@ -37,6 +39,9 @@ namespace PsHandler.UI
             CheckBox_AutocloseTournamentRegistrationPopups.Unchecked += (sender, args) => { Config.AutocloseTournamentRegistrationPopups = false; };
             CheckBox_AutocloseHm2ApplyToSimilarTablesPopups.Checked += (sender, args) => { Config.AutocloseHM2ApplyToSimilarTablesPopups = true; };
             CheckBox_AutocloseHm2ApplyToSimilarTablesPopups.Unchecked += (sender, args) => { Config.AutocloseHM2ApplyToSimilarTablesPopups = false; };
+
+            CheckBox_AutoclickImBack.Checked += (sender, args) => CheckBox_AutoclickImBackDisableDuringBreaks.IsEnabled = true;
+            CheckBox_AutoclickImBack.Unchecked += (sender, args) => CheckBox_AutoclickImBackDisableDuringBreaks.IsEnabled = false;
 
             CheckBox_EnableCustomTablesWindowStyle.Checked += (sender, args) =>
             {
@@ -74,6 +79,7 @@ namespace PsHandler.UI
             // Seed
 
             CheckBox_AutoclickImBack.IsChecked = Config.AutoclickImBack;
+            CheckBox_AutoclickImBackDisableDuringBreaks.IsChecked = Config.AutoclickImBackDisableDuringBreaks;
             CheckBox_AutoclickTimebank.IsChecked = Config.AutoclickTimebank;
             CheckBox_AutoclickYesSeatAvailable.IsChecked = Config.AutoclickYesSeatAvailable;
             CheckBox_AutocloseTournamentRegistrationPopups.IsChecked = Config.AutocloseTournamentRegistrationPopups;
@@ -99,6 +105,10 @@ namespace PsHandler.UI
 
             CheckBox_AutoclickImBack.ToolTip = new UCToolTipControllerImBack();
             ToolTipService.SetShowDuration(CheckBox_AutoclickImBack, 60000);
+
+            CheckBox_AutoclickImBackDisableDuringBreaks.ToolTip = "During final table breaks when there are few people left, \"I'm Ready\" button might appear.\n" +
+                                                                  "It is similar to \"I'm Back\" button and might be clicked. This is due to method used for button recognition (average color matching).";
+            ToolTipService.SetShowDuration(CheckBox_AutoclickImBackDisableDuringBreaks, 60000);
 
             CheckBox_AutoclickTimebank.ToolTip = new UCToolTipControllerTimebank();
             ToolTipService.SetShowDuration(CheckBox_AutoclickTimebank, 60000);

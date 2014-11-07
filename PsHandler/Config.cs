@@ -26,7 +26,7 @@ namespace PsHandler
         // Constants
 
         public const string NAME = "PsHandler";
-        public const int VERSION = 23;
+        public const int VERSION = 24;
         public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static string MACHINE_GUID = GetMachineGuid();
         public static string CONFIG_FILENAME = "pshandler.xml";
@@ -53,6 +53,7 @@ namespace PsHandler
         // Controller
 
         public static bool AutoclickImBack = false;
+        public static bool AutoclickImBackDisableDuringBreaks = true;
         public static bool AutoclickTimebank = false;
         public static bool AutoclickYesSeatAvailable = false;
         public static bool AutocloseTournamentRegistrationPopups = false;
@@ -330,6 +331,7 @@ namespace PsHandler
                 #region Controller
 
                 AutoclickImBack = GetBool(root, "AutoclickImBack", ref exceptions, "LoadXml() AutoclickImBack", false);
+                AutoclickImBackDisableDuringBreaks = GetBool(root, "AutoclickImBackDisableDuringBreaks", ref exceptions, "LoadXml() AutoclickImBackDisableDuringBreaks", true);
                 AutoclickTimebank = GetBool(root, "AutoclickTimebank", ref exceptions, "LoadXml() AutoclickTimebank", false);
                 AutoclickYesSeatAvailable = GetBool(root, "AutoclickYesSeatAvailable", ref exceptions, "LoadXml() AutoclickYesSeatAvailable", false);
                 AutocloseTournamentRegistrationPopups = GetBool(root, "AutocloseTournamentRegistrationPopups", ref exceptions, "LoadXml() AutocloseTournamentRegistrationPopups", false);
@@ -492,6 +494,7 @@ namespace PsHandler
                 #region Controller
 
                 Set(root, "AutoclickImBack", AutoclickImBack, ref exceptions, "SaveXml() AutoclickImBack");
+                Set(root, "AutoclickImBackDisableDuringBreaks", AutoclickImBackDisableDuringBreaks, ref exceptions, "SaveXml() AutoclickImBackDisableDuringBreaks");
                 Set(root, "AutoclickTimebank", AutoclickTimebank, ref exceptions, "SaveXml() AutoclickTimebank");
                 Set(root, "AutoclickYesSeatAvailable", AutoclickYesSeatAvailable, ref exceptions, "SaveXml() AutoclickYesSeatAvailable");
                 Set(root, "AutocloseTournamentRegistrationPopups", AutocloseTournamentRegistrationPopups, ref exceptions, "SaveXml() AutocloseTournamentRegistrationPopups");

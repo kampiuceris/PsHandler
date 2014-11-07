@@ -151,7 +151,13 @@ namespace PsHandler
                                         if (bitmap != null)
                                         {
                                             Bmp bmp = new Bmp(bitmap);
-                                            if (Config.AutoclickImBack) Methods.CheckButtonAndClick(bmp, Config.PokerStarsThemeTable.ButtonImBack, handle);
+                                            if (Config.AutoclickImBack)
+                                            {
+                                                if (!Config.AutoclickImBackDisableDuringBreaks || (Config.AutoclickImBackDisableDuringBreaks && DateTime.Now.Minute < 55))
+                                                {
+                                                    Methods.CheckButtonAndClick(bmp, Config.PokerStarsThemeTable.ButtonImBack, handle);
+                                                }
+                                            }
                                             if (Config.AutoclickTimebank) Methods.CheckButtonAndClick(bmp, Config.PokerStarsThemeTable.ButtonTimebank, handle);
                                         }
                                     }
