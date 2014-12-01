@@ -57,9 +57,9 @@ namespace PsHandler
             TableManager = new TableManager();
 
             Config.LoadXml();
-
             WindowMain = new WindowMain();
             WindowMain.Show();
+            CheckGnuGplV3Agreement();
 
             HandHistoryManager.Observer = WindowMain.UcStatusBar;
             TableManager.ObserverTableManagerTableList = WindowMain.UCTables;
@@ -141,6 +141,23 @@ namespace PsHandler
                 Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.cancel.png").ToBitmapSource(),
                 Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.update.png").ToBitmapSource());
 #endif
+        }
+
+        private static void CheckGnuGplV3Agreement()
+        {
+            if (!Config.GnuGplV3Agreement)
+            {
+                var dialog = new WindowGNUGeneralPublicLicense(WindowMain);
+                dialog.ShowDialog();
+                if (dialog.Agrees)
+                {
+                    Config.GnuGplV3Agreement = true;
+                }
+                else
+                {
+                    Quit();
+                }
+            }
         }
     }
 }

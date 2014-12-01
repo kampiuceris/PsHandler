@@ -51,6 +51,10 @@ namespace PsHandler
         public static System.Drawing.Size POKERSTARS_TABLE_CLIENT_SIZE_MIN = new System.Drawing.Size(475, 327);
         public static System.Drawing.Size POKERSTARS_TABLE_CLIENT_SIZE_DEFAULT = new System.Drawing.Size(792, 546);
 
+        // GNU
+
+        public static bool GnuGplV3Agreement = false;
+
         // Settings
 
         public static List<string> ImportFolders = new List<string>();
@@ -326,6 +330,8 @@ namespace PsHandler
 
                 VersionControl(root, version);
 
+                GnuGplV3Agreement = GetBool(root, "GnuGplV3Agreement", ref exceptions, "LoadXml() GnuGplV3Agreement", false);
+
                 #region Settings
 
                 MinimizeToSystemTray = GetBool(root, "MinimizeToSystemTray", ref exceptions, "LoadXml() MinimizeToSystemTray", false);
@@ -455,23 +461,6 @@ namespace PsHandler
             App.PokerTypeManager.SeedDefaultValues();
             App.TableTileManager.SeedDefaultValues();
 
-            //if (exceptions.Any())
-            //{
-            //    StringBuilder sb = new StringBuilder();
-            //    foreach (ExceptionPsHandler e in exceptions)
-            //    {
-            //        sb.AppendLine("Header:");
-            //        sb.AppendLine(e.Header);
-            //        sb.AppendLine("Exception:");
-            //        sb.AppendLine(e.Exception.ToString());
-            //        sb.AppendLine();
-            //        sb.AppendLine();
-            //    }
-            //    string fileName = "pshandler_error_" + DateTime.Now.Ticks + ".log";
-            //    File.WriteAllText(fileName, sb.ToString());
-            //    WindowMessage.ShowDialog("Some configurations weren't loaded." + Environment.NewLine + Environment.NewLine + "Log file: " + fileName, "Error Loading Config XML", WindowMessageButtons.OK, WindowMessageImage.Error, App.WindowMain, WindowStartupLocation.CenterScreen);
-            //}
-
             return exceptions;
         }
 
@@ -487,6 +476,7 @@ namespace PsHandler
                 // Version
 
                 Set(root, "Version", VERSION, ref exceptions, "SaveXml() Version");
+                Set(root, "GnuGplV3Agreement", GnuGplV3Agreement, ref exceptions, "SaveXml() GnuGplV3Agreement");
 
                 #region Settings
 

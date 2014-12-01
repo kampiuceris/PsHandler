@@ -233,6 +233,9 @@
     <Compile Include="UI\UCTableTiler.xaml.cs">
       <DependentUpon>UCTableTiler.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\WindowGNUGeneralPublicLicense.xaml.cs">
+      <DependentUpon>WindowGNUGeneralPublicLicense.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\WindowMain.xaml.cs">
       <DependentUpon>WindowMain.xaml</DependentUpon>
     </Compile>
@@ -388,6 +391,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\UCTableTiler.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\WindowGNUGeneralPublicLicense.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -627,6 +634,9 @@
     <EmbeddedResource Include="Images\SngRegistrator\sng_all_off_hover.png" />
     <EmbeddedResource Include="Images\SngRegistrator\sng_all_off_pressed.png" />
     <EmbeddedResource Include="Images\SngRegistrator\sng_all_on.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\gnu.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

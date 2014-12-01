@@ -1,0 +1,26 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="PsHandler.UI.WindowGNUGeneralPublicLicense"
+        Title="The GNU General Public License v3.0" Background="#FFF0F0F0" 
+        Height="600" Width="800" MinHeight="240" MinWidth="640"
+        Icon="../Images/PsHandler.ico" UseLayoutRounding="True">
+    <Grid>
+        <Border BorderThickness="1" BorderBrush="LightGray" Margin="10,10,10,39">
+            <WebBrowser x:Name="WebBrowser_Main" />
+        </Border>
+        <Button VerticalAlignment="Bottom" x:Name="Button_IAgree" HorizontalAlignment="Right" Width="100" Margin="0,0,115,10" Click="Button_IAgree_Click">
+            <StackPanel Orientation="Horizontal" Margin="2">
+                <Image Height="16" Width="16" Source="/PsHandler;component/Images/Resources/Size16x16/accept.png" />
+                <TextBlock Text="I Agree" Margin="5,0,0,0" VerticalAlignment="Center" />
+            </StackPanel>
+        </Button>
+        <Button VerticalAlignment="Bottom" x:Name="Button_Cancel" HorizontalAlignment="Right" Width="100" Margin="0,0,10,10" Click="Button_Cancel_Click">
+            <StackPanel Orientation="Horizontal" Margin="2">
+                <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/cancel.png" />
+                <TextBlock Text="Cancel" Margin="5,0,0,0" VerticalAlignment="Center" />
+            </StackPanel>
+        </Button>
+        <Label Padding="0" VerticalContentAlignment="Center" Content="Do you agree to use PsHandler under this license? " HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Height="24" Width="270"/>
+    </Grid>
+</Window>
