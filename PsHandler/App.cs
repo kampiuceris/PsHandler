@@ -86,8 +86,6 @@ namespace PsHandler
             HandHistoryManager.Stop();
             if (KeyboardHook != null) KeyboardHook.Dispose();
 
-            Config.EnableCustomTablesWindowStyle = false;
-            TableManager.EnsureTablesStyle();
             TableManager.Stop();
 
             //close gui

@@ -59,36 +59,6 @@ namespace PsHandler.UI
             CheckBox_AutoclickImBack.Checked += (sender, args) => CheckBox_AutoclickImBackDisableDuringBreaks.IsEnabled = true;
             CheckBox_AutoclickImBack.Unchecked += (sender, args) => CheckBox_AutoclickImBackDisableDuringBreaks.IsEnabled = false;
 
-            CheckBox_EnableCustomTablesWindowStyle.Checked += (sender, args) =>
-            {
-                Config.EnableCustomTablesWindowStyle = true;
-                RadioButton_NoCaption.IsEnabled = true;
-                RadioButton_Borderless.IsEnabled = true;
-                Label_DisabledNoCaption.Visibility = Visibility.Collapsed;
-                Label_DisabledBorderless.Visibility = Visibility.Collapsed;
-                App.TableManager.EnsureTablesStyle();
-            };
-            CheckBox_EnableCustomTablesWindowStyle.Unchecked += (sender, args) =>
-            {
-                Config.EnableCustomTablesWindowStyle = false;
-                RadioButton_NoCaption.IsEnabled = false;
-                RadioButton_Borderless.IsEnabled = false;
-                Label_DisabledNoCaption.Visibility = Visibility.Visible;
-                Label_DisabledBorderless.Visibility = Visibility.Visible;
-                App.TableManager.EnsureTablesStyle();
-            };
-
-            RadioButton_NoCaption.Checked += (sender, args) =>
-            {
-                Config.CustomTablesWindowStyle = Config.TableWindowStyle.NoCaption;
-                App.TableManager.EnsureTablesStyle();
-            };
-            RadioButton_Borderless.Checked += (sender, args) =>
-            {
-                Config.CustomTablesWindowStyle = Config.TableWindowStyle.Borderless;
-                App.TableManager.EnsureTablesStyle();
-            };
-
             TextBoxHotkey_HandReplay.TextChanged += (sender, args) => { Config.HotkeyHandReplay = TextBoxHotkey_HandReplay.KeyCombination; };
             TextBoxHotkey_QuickPreview.TextChanged += (sender, args) => { Config.HotkeyQuickPreview = TextBoxHotkey_QuickPreview.KeyCombination; };
 
@@ -103,19 +73,6 @@ namespace PsHandler.UI
             TextBoxHotkey_HandReplay.KeyCombination = Config.HotkeyHandReplay;
             TextBoxHotkey_QuickPreview.RestrictedToSingeKeys = true;
             TextBoxHotkey_QuickPreview.KeyCombination = Config.HotkeyQuickPreview;
-
-            CheckBox_EnableCustomTablesWindowStyle.IsChecked = Config.EnableCustomTablesWindowStyle;
-            switch (Config.CustomTablesWindowStyle)
-            {
-                case Config.TableWindowStyle.NoCaption:
-                    RadioButton_NoCaption.IsChecked = true;
-                    RadioButton_Borderless.IsChecked = false;
-                    break;
-                case Config.TableWindowStyle.Borderless:
-                    RadioButton_NoCaption.IsChecked = false;
-                    RadioButton_Borderless.IsChecked = true;
-                    break;
-            }
 
             // ToolTips
 
@@ -143,18 +100,6 @@ namespace PsHandler.UI
 
             Label_QuickPreviewHotkey.ToolTip = new UCToolTipControllerQuickPreview();
             ToolTipService.SetShowDuration(Label_QuickPreviewHotkey, 60000);
-
-            RadioButton_NoCaption.ToolTip = new UCToolTipControllerWindowStyleNoCaption();
-            ToolTipService.SetShowDuration(RadioButton_NoCaption, 60000);
-
-            RadioButton_Borderless.ToolTip = new UCToolTipControllerWindowStyleBorderless();
-            ToolTipService.SetShowDuration(RadioButton_Borderless, 60000);
-
-            Label_DisabledNoCaption.ToolTip = new UCToolTipControllerWindowStyleNoCaption();
-            ToolTipService.SetShowDuration(Label_DisabledNoCaption, 60000);
-
-            Label_DisabledBorderless.ToolTip = new UCToolTipControllerWindowStyleBorderless();
-            ToolTipService.SetShowDuration(Label_DisabledBorderless, 60000);
         }
     }
 }

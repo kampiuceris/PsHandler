@@ -79,10 +79,6 @@ namespace PsHandler
         public static bool AutocloseTournamentRegistrationPopups = false;
         public static bool AutocloseHM2ApplyToSimilarTablesPopups = false;
         public static KeyCombination HotkeyHandReplay = new KeyCombination(Key.None, false, false, false);
-        //
-        public static bool EnableCustomTablesWindowStyle = false;
-        public enum TableWindowStyle { NoCaption, Borderless };
-        public static TableWindowStyle CustomTablesWindowStyle = TableWindowStyle.Borderless;
 
         // HUD
 
@@ -360,13 +356,6 @@ namespace PsHandler
                 AutocloseHM2ApplyToSimilarTablesPopups = GetBool(root, "AutocloseHM2ApplyToSimilarTablesPopups", ref exceptions, "LoadXml() AutocloseHM2ApplyToSimilarTablesPopups", false);
                 HotkeyHandReplay = KeyCombination.Parse(GetString(root, "HotkeyHandReplay", ref exceptions, "LoadXml() HotkeyHandReplay"));
                 HotkeyQuickPreview = KeyCombination.Parse(GetString(root, "HotkeyQuickPreview", ref exceptions, "LoadXml() HotkeyQuickPreview"));
-                EnableCustomTablesWindowStyle = GetBool(root, "EnableCustomTablesWindowStyle", ref exceptions, "LoadXml() EnableCustomTablesWindowStyle", false);
-                string tableWindowStyleStr = GetString(root, "CustomTablesWindowStyle", ref exceptions, "LoadXml() CustomTablesWindowStyle", TableWindowStyle.Borderless.ToString());
-                foreach (TableWindowStyle tableWindowStyle in Enum.GetValues(typeof(TableWindowStyle)).Cast<TableWindowStyle>().Where(tableWindowStyle => tableWindowStyle.ToString().Equals(tableWindowStyleStr)))
-                {
-                    CustomTablesWindowStyle = tableWindowStyle;
-                    break;
-                }
 
                 #endregion
 
@@ -507,8 +496,6 @@ namespace PsHandler
                 Set(root, "AutocloseHM2ApplyToSimilarTablesPopups", AutocloseHM2ApplyToSimilarTablesPopups, ref exceptions, "SaveXml() AutocloseHM2ApplyToSimilarTablesPopups");
                 Set(root, "HotkeyHandReplay", HotkeyHandReplay, ref exceptions, "SaveXml() HotkeyHandReplay");
                 Set(root, "HotkeyQuickPreview", HotkeyQuickPreview, ref exceptions, "SaveXml() HotkeyQuickPreview");
-                Set(root, "EnableCustomTablesWindowStyle", EnableCustomTablesWindowStyle, ref exceptions, "SaveXml() EnableCustomTablesWindowStyle");
-                Set(root, "CustomTablesWindowStyle", CustomTablesWindowStyle, ref exceptions, "SaveXml() CustomTablesWindowStyle");
 
                 #endregion
 

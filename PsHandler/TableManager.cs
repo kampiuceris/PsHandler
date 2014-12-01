@@ -16,21 +16,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Windows;
 using System.Xml.Linq;
-using PsHandler.Annotations;
 using PsHandler.Custom;
 using PsHandler.Hud;
-using PsHandler.TableTiler;
-using PsHandler.UI;
 using PsHandler.Import;
 
 namespace PsHandler
@@ -136,7 +128,6 @@ namespace PsHandler
                                 if (table == null)
                                 {
                                     table = new Table(handle) { ClassName = "PokerStarsTableFrameClass" };
-                                    EnsureTableStyle(table);
                                     _tables.Add(table);
                                     isNewTable = true;
                                 }
@@ -227,34 +218,6 @@ namespace PsHandler
         public List<Table> GetTablesCopy()
         {
             return _tables.ToList();
-        }
-
-        public void EnsureTablesStyle()
-        {
-            foreach (Table table in _tables.ToArray())
-            {
-                EnsureTableStyle(table);
-            }
-        }
-
-        private void EnsureTableStyle(Table table)
-        {
-            if (Config.EnableCustomTablesWindowStyle)
-            {
-                switch (Config.CustomTablesWindowStyle)
-                {
-                    case Config.TableWindowStyle.NoCaption:
-                        WinApi.SetWindowStyleNoCaption(table.Handle);
-                        break;
-                    case Config.TableWindowStyle.Borderless:
-                        WinApi.SetWindowStyleNone(table.Handle);
-                        break;
-                }
-            }
-            else
-            {
-                WinApi.SetWindowStyleNormal(table.Handle);
-            }
         }
 
         // config variables

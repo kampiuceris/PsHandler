@@ -29,16 +29,5 @@
         <Label VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="0" Margin="0,189,0,0" Height="22" HorizontalAlignment="Left" Content="Quick Preview hotkey:" x:Name="Label_QuickPreviewHotkey" />
         <ui:TextBoxHotkey HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="111" Margin="121,189,0,0" VerticalContentAlignment="Center" x:Name="TextBoxHotkey_QuickPreview" />
         <Label VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="0" Margin="237,189,0,0" Height="22" HorizontalAlignment="Left" Content="(single key only)" FontStyle="Italic" />
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="0,216,0,0" x:Name="CheckBox_EnableCustomTablesWindowStyle">
-            <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Enable custom tables window style (beta):" />
-        </CheckBox>
-        <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="30,238,0,0" IsEnabled="False" x:Name="RadioButton_NoCaption">
-            <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="No caption (experimental)" />
-        </RadioButton>
-        <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" Margin="30,260,0,0" IsEnabled="False" x:Name="RadioButton_Borderless">
-            <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Borderless" />
-        </RadioButton>
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Width="139" Padding="0" Content="" Margin="48,238,0,0" x:Name="Label_DisabledNoCaption" />
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Width="58" Padding="0" Content="" Margin="48,260,0,0" x:Name="Label_DisabledBorderless" />
     </Grid>
 </UserControl>
