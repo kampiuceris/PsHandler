@@ -59,7 +59,8 @@ namespace PsHandler
             Config.LoadXml();
             WindowMain = new WindowMain();
             WindowMain.Show();
-            CheckGnuGplV3Agreement();
+
+            if (!CheckGnuGplV3Agreement()) return;
 
             HandHistoryManager.Observer = WindowMain.UcStatusBar;
             TableManager.ObserverTableManagerTableList = WindowMain.UCTables;
@@ -141,7 +142,7 @@ namespace PsHandler
 #endif
         }
 
-        private static void CheckGnuGplV3Agreement()
+        private static bool CheckGnuGplV3Agreement()
         {
             if (!Config.GnuGplV3Agreement)
             {
@@ -150,12 +151,15 @@ namespace PsHandler
                 if (dialog.Agrees)
                 {
                     Config.GnuGplV3Agreement = true;
+                    return true;
                 }
                 else
                 {
                     Quit();
+                    return false;
                 }
             }
+            return true;
         }
     }
 }
