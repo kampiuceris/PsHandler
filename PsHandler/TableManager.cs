@@ -20,6 +20,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Windows;
 using System.Xml.Linq;
 using PsHandler.Custom;
 using PsHandler.Hud;
