@@ -7,8 +7,8 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PokerStars Handler")]
-[assembly: AssemblyDescription("PokerStars software helper")]
+[assembly: AssemblyTitle("PsHandler")]
+[assembly: AssemblyDescription("Poker Software Helping Tool")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("PsHandler")]
