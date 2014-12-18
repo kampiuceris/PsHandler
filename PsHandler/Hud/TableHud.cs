@@ -43,8 +43,8 @@ namespace PsHandler.Hud
         public WindowTimer WindowTimer;
         public WindowBigBlind WindowBigBlind;
         //
-        private static readonly Regex _regexSbBb = new Regex(@".+Blinds .{0,1}(?<sb>[\d\.]+)\/.{0,1}(?<bb>[\d\.]+) - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
-        private static readonly Regex _regexSbBbAnte = new Regex(@".+Blinds .{0,1}(?<sb>[\d\.]+)\/.{0,1}(?<bb>[\d\.]+) Ante .{0,1}(?<ante>[\d\.]+) - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
+        private static readonly Regex _regexSbBb = new Regex(@".+Blinds \$?(?<sb>[\d\.]+)\/\$?(?<bb>[\d\.]+) - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
+        private static readonly Regex _regexSbBbAnte = new Regex(@".+Blinds \$?(?<sb>[\d\.]+)\/\$?(?<bb>[\d\.]+) Ante \$?(?<ante>[\d\.]+) - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
 
 
         public TableHud(Table table)
@@ -94,27 +94,34 @@ namespace PsHandler.Hud
                                 decimal latestStack = tournament.GetLatestStack(hero);
                                 if (latestStack != decimal.MinValue)
                                 {
-                                    if (!Config.BigBlindShowTournamentM)
+                                    if (bb != 0)
                                     {
-                                        bigBlindMIsSet = true;
-                                        bigBlindMValue = Math.Round(latestStack / bb, Config.BigBlindDecimals);
+                                        if (!Config.BigBlindShowTournamentM)
+                                        {
+                                            bigBlindMIsSet = true;
+                                            bigBlindMValue = Math.Round(latestStack / bb, Config.BigBlindDecimals);
+                                        }
+                                        else
+                                        {
+                                            if (Config.BigBlindMByPlayerCount)
+                                            {
+                                                bigBlindMIsSet = true;
+                                                bigBlindMValue = Math.Round(latestStack / (sb + bb + ante * tournament.GetLastHandPlayerCountAfterHand()), Config.BigBlindDecimals);
+                                            }
+                                            else if (Config.BigBlindMByTableSize)
+                                            {
+                                                bigBlindMIsSet = true;
+                                                bigBlindMValue = Math.Round(latestStack / (sb + bb + ante * (decimal)tableSize), Config.BigBlindDecimals);
+                                            }
+                                        }
+                                        string decimalFormat = "0:0.";
+                                        for (int i = 0; i < Config.BigBlindDecimals; i++) decimalFormat += "0";
+                                        textboxBigBlindContent = Config.BigBlindPrefix + string.Format("{" + decimalFormat + "}", bigBlindMValue) + Config.BigBlindPostfix;
                                     }
                                     else
                                     {
-                                        if (Config.BigBlindMByPlayerCount)
-                                        {
-                                            bigBlindMIsSet = true;
-                                            bigBlindMValue = Math.Round(latestStack / (sb + bb + ante * tournament.GetLastHandPlayerCountAfterHand()), Config.BigBlindDecimals);
-                                        }
-                                        else if (Config.BigBlindMByTableSize)
-                                        {
-                                            bigBlindMIsSet = true;
-                                            bigBlindMValue = Math.Round(latestStack / (sb + bb + ante * (decimal)tableSize), Config.BigBlindDecimals);
-                                        }
+                                        textboxBigBlindContent = "Error calculating BB";
                                     }
-                                    string decimalFormat = "0:0.";
-                                    for (int i = 0; i < Config.BigBlindDecimals; i++) decimalFormat += "0";
-                                    textboxBigBlindContent = Config.BigBlindPrefix + string.Format("{" + decimalFormat + "}", bigBlindMValue) + Config.BigBlindPostfix;
                                 }
 
                                 #endregion
