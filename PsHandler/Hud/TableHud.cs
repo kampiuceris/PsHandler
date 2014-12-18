@@ -43,9 +43,7 @@ namespace PsHandler.Hud
         public WindowTimer WindowTimer;
         public WindowBigBlind WindowBigBlind;
         //
-        private static readonly Regex _regexSbBb = new Regex(@".+Blinds \$?(?<sb>[\d\.]+)\/\$?(?<bb>[\d\.]+) - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
-        private static readonly Regex _regexSbBbAnte = new Regex(@".+Blinds \$?(?<sb>[\d\.]+)\/\$?(?<bb>[\d\.]+) Ante \$?(?<ante>[\d\.]+) - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
-
+        private static readonly Regex _regexTitle = new Regex(@".+Blinds \$?(?<sb>[\d\.]+)\/\$?(?<bb>[\d\.]+)( Ante \$?(?<ante>[\d\.]+))? - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
 
         public TableHud(Table table)
         {
@@ -67,19 +65,16 @@ namespace PsHandler.Hud
                         string title = Table.Title, className = Table.ClassName, textboxBigBlindContent = Config.BigBlindHHNotFound, textboxTimerContent = Config.TimerHHNotFound, hero = "";
                         decimal sb = decimal.MinValue, bb = decimal.MinValue, ante = 0, bigBlindMValue = 0;
                         bool bigBlindMIsSet = false;
-                        Match match = _regexSbBb.Match(title);
-                        if (!match.Success)
-                        {
-                            match = _regexSbBbAnte.Match(title);
-                            if (match.Success)
-                            {
-                                ante = decimal.Parse(match.Groups["ante"].Value);
-                            }
-                        }
+                        Match match = _regexTitle.Match(title);
                         if (match.Success)
                         {
                             sb = decimal.Parse(match.Groups["sb"].Value);
                             bb = decimal.Parse(match.Groups["bb"].Value);
+                            var groupAnte = match.Groups["ante"];
+                            if (groupAnte.Success)
+                            {
+                                ante = decimal.Parse(groupAnte.Value);
+                            }
                             long toutnamentNumber = long.Parse(match.Groups["tournament_number"].Value);
                             hero = match.Groups["hero"].Value;
 
