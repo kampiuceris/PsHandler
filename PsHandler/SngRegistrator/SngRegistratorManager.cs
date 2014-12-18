@@ -1,4 +1,20 @@
-﻿using System;
+﻿// PsHandler - poker software helping tool.
+// Copyright (C) 2014  kampiuceris
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -19,7 +35,6 @@ namespace PsHandler.SngRegistrator
     {
         private Thread _thread;
         private IntPtr _handleWindowPokerStarsLobby;
-        private IntPtr _handleWindowSngTournamentFilter;
         private IntPtr _handleSelectorLobbySelector;
         private IntPtr _handleSelectorMainLobbySelector;
         private IntPtr _handleSelectorMainLobbyTabSelectorSitgo;
@@ -42,6 +57,7 @@ namespace PsHandler.SngRegistrator
         private readonly Bmp _bmpTransparentGamesViewOff;
         private readonly Bmp _bmpTransparentGamesViewOffHover;
         private readonly Bmp _bmpTransparentGamesViewOffPressed;
+        private readonly SngTournamentFilterManager SngTournamentFilterManager = new SngTournamentFilterManager();
 
         public SngRegistratorManager()
         {
@@ -136,8 +152,9 @@ namespace PsHandler.SngRegistrator
             //{
             while (true)
             {
-                EnsureGamesView();
-                EnsureSngTournamentFilter();
+                EnsureGamesViewOn();
+                SngTournamentFilterManager.EnsureSngTournamentFilterOn(_handleWindowPokerStarsLobby, _handleButtonSngTournamentFilter, EnsureSitAndGoAllOn);
+                SngTournamentFilterManager.Test();
 
                 //Methods.DisplayBitmap(GetBmpWindowPokerStarsLobby().CutRectangle(WinApi.GetClientRectangleRelativeTo(_handleQuickFilter, _handleWindowPokerStarsLobby)).ToBitmap(), true);
 
@@ -158,8 +175,8 @@ namespace PsHandler.SngRegistrator
             _handleSelectorMainLobbySelector = WinApi.FindChildWindow(_handleWindowPokerStarsLobby, "PokerStarsSelectorClass", "main-lobby-selector");
             if (_handleSelectorMainLobbySelector.Equals(IntPtr.Zero)) throw new NotSupportedException("Cannot find Selector 'Main Lobby Selector'.");
 
-            EnsureMainLobby();
-            EnsureSitAndGo();
+            EnsureMainLobbyOn();
+            EnsureSitAndGoOn();
 
             IntPtr[] possibleHandles = WinApi.FindAllChildWindow(_handleWindowPokerStarsLobby, "PokerStarsSelectorClass", "main-lobby-tab-selector-sitgo").Where(o => WinApi.IsWindowVisible(o)).ToArray();
             if (possibleHandles.Length != 1)
@@ -167,23 +184,28 @@ namespace PsHandler.SngRegistrator
             else
                 _handleSelectorMainLobbyTabSelectorSitgo = possibleHandles[0];
 
-            EnsureSitAndGoAll();
+            EnsureSitAndGoAllOn();
             SetHandleButtonGamesView();
-            EnsureGamesView();
+            EnsureGamesViewOn();
 
             _handleButtonSngTournamentFilter = WinApi.FindChildWindow(_handleWindowPokerStarsLobby, "PokerStarsButtonClass", "Sit & Go Tournament Filter");
             if (_handleButtonSngTournamentFilter.Equals(IntPtr.Zero)) throw new NotSupportedException("Cannot find Button 'Sit & Go Tournament Filter'.");
 
-            EnsureSngTournamentFilter();
+            SngTournamentFilterManager.EnsureSngTournamentFilterOn(_handleWindowPokerStarsLobby, _handleButtonSngTournamentFilter, EnsureSitAndGoAllOn);
         }
 
-        private void EnsureMainLobby()
+        private void EnsureMainLobbyOn()
         {
             DateTime started = DateTime.Now;
             while (true)
             {
                 if ((DateTime.Now - started).TotalSeconds > 5) throw new NotSupportedException("Cannot open 'Main Lobby'.");
                 Thread.Sleep(100);
+
+                if (Methods.IsMinimized(_handleWindowPokerStarsLobby))
+                {
+                    WinApi.ShowWindow(_handleWindowPokerStarsLobby, WinApi.SW_RESTORE);
+                }
 
                 Bmp bmp = GetBmpWindowPokerStarsLobby().CutRectangle(WinApi.GetClientRectangleRelativeTo(_handleSelectorLobbySelector, _handleWindowPokerStarsLobby));
 
@@ -214,7 +236,7 @@ namespace PsHandler.SngRegistrator
             }
         }
 
-        private void EnsureSitAndGo()
+        private void EnsureSitAndGoOn()
         {
             DateTime started = DateTime.Now;
             while (true)
@@ -224,7 +246,7 @@ namespace PsHandler.SngRegistrator
 
                 if (!WinApi.IsWindowVisible(_handleSelectorMainLobbySelector))
                 {
-                    EnsureMainLobby();
+                    EnsureMainLobbyOn();
                     continue;
                 }
 
@@ -257,7 +279,7 @@ namespace PsHandler.SngRegistrator
             }
         }
 
-        private void EnsureSitAndGoAll()
+        private void EnsureSitAndGoAllOn()
         {
             DateTime started = DateTime.Now;
             while (true)
@@ -267,7 +289,7 @@ namespace PsHandler.SngRegistrator
 
                 if (!WinApi.IsWindowVisible(_handleSelectorMainLobbyTabSelectorSitgo))
                 {
-                    EnsureSitAndGo();
+                    EnsureSitAndGoOn();
                     continue;
                 }
 
@@ -316,7 +338,7 @@ namespace PsHandler.SngRegistrator
             }
         }
 
-        private void EnsureGamesView()
+        private void EnsureGamesViewOn()
         {
             DateTime started = DateTime.Now;
             while (true)
@@ -326,7 +348,7 @@ namespace PsHandler.SngRegistrator
 
                 if (!WinApi.IsWindowVisible(_handleButtonGamesView))
                 {
-                    EnsureSitAndGoAll();
+                    EnsureSitAndGoAllOn();
                     continue;
                 }
 
@@ -355,40 +377,6 @@ namespace PsHandler.SngRegistrator
             }
         }
 
-        private void EnsureSngTournamentFilter()
-        {
-            DateTime started = DateTime.Now;
-            while (true)
-            {
-                if (!WinApi.IsWindowVisible(_handleWindowSngTournamentFilter))
-                {
-                    _handleWindowSngTournamentFilter = IntPtr.Zero;
-                }
-                if (!_handleWindowSngTournamentFilter.Equals(IntPtr.Zero))
-                {
-                    return;
-                }
-
-                if ((DateTime.Now - started).TotalSeconds > 5) throw new NotSupportedException("Cannot find/open Window 'Sit & Go Tournament Filter'.");
-                Thread.Sleep(100);
-
-                if (!WinApi.IsWindowVisible(_handleButtonSngTournamentFilter))
-                {
-                    EnsureSitAndGoAll();
-                    continue;
-                }
-
-                _handleWindowSngTournamentFilter = GetWindowSngTournamentFilter();
-                if (_handleWindowSngTournamentFilter.Equals(IntPtr.Zero))
-                {
-                    Methods.MouseEnterLeftMouseClickMiddleMouseLeave(_handleButtonSngTournamentFilter);
-                    Thread.Sleep(100);
-                    _handleWindowSngTournamentFilter = GetWindowSngTournamentFilter();
-                    continue;
-                }
-            }
-        }
-
         //
 
         private Bmp GetBmpWindowPokerStarsLobby()
@@ -401,22 +389,6 @@ namespace PsHandler.SngRegistrator
             return bmpPokerStarsLobby;
         }
 
-        private IntPtr GetWindowSngTournamentFilter()
-        {
-            uint processId;
-            WinApi.GetWindowThreadProcessId(_handleWindowPokerStarsLobby, out processId);
-            foreach (IntPtr handle in WinApi.EnumerateProcessWindowHandles((int)processId).Where(o => WinApi.GetClassName(o).Equals("#32770") && WinApi.IsWindowVisible(o) && WinApi.GetWindowTitle(o).Equals("")))
-            {
-                if (!WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "Fifty50").Equals(IntPtr.Zero)
-                    && !WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "6-Max").Equals(IntPtr.Zero)
-                    && !WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "FPP").Equals(IntPtr.Zero)
-                    && !WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "Turbo").Equals(IntPtr.Zero))
-                {
-                    return handle;
-                }
-            }
-            return IntPtr.Zero;
-        }
 
         private IntPtr FindElementInPokerStarsLobby(string className, string title, bool isVisible, Size size, double sizeAccuracy, Rectangle areaToSearch, double areaToSearchAccuracy, List<Bmp> bmps, double bmpsMatchAccuracy, double bmpsColorAccuracy)
         {

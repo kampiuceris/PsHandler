@@ -39,6 +39,16 @@ namespace PsHandler.Import
         Max10,
     }
 
+    // Level
+
+    public class Level
+    {
+        public decimal Ante;
+        public decimal SmallBlind;
+        public decimal BigBlind;
+        public bool IsAnteDefined;
+    }
+
     // Player
 
     public class Player
@@ -66,6 +76,7 @@ namespace PsHandler.Import
         public Player[] PlayersAfterHand;
         public TableSize TableSize;
         public short ButtonSeat;
+        public Level Level;
 
         private readonly List<Player> _players = new List<Player>();
         private bool _smallBlindCollectPots;
@@ -120,7 +131,7 @@ namespace PsHandler.Import
 
         //
 
-        public static Regex RegexHeader = new Regex(@"\APokerStars Hand #(?<hand_id>\d+): Tournament #(?<tournament_id>\d+),.+- (?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z");
+        public static Regex RegexHeader = new Regex(@"\APokerStars Hand #(?<hand_id>\d+): Tournament #(?<tournament_id>\d+),.+ Level (?<level_number>(I|V|X|L|C|D|M))+ \((?<level_sb>\d+)\/(?<level_bb>\d+)\) - (?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z");
         public static Regex RegexSeatMaxButton = new Regex(@"\ATable '\d+ \d+' (?<table_size>\d+)-max Seat #(?<button_seat>\d+) is the button");
         public static Regex RegexSeat = new Regex(@"Seat \d{1,2}: (?<name>.+) \((?<stack>\d+) in chips\)");
         public static Regex RegexAnte = new Regex(@"(?<name>.+): posts the ante (?<amount>\d+)");
@@ -153,6 +164,12 @@ namespace PsHandler.Import
                 hand.TimeZone = TimeZones.AllTimeZones.First(o => o.Code.Equals(match.Groups["timezone_et"].Value));
                 hand.Timestamp = new DateTime(year, month, day, hour, minute, second);
                 hand.TimestampUtc = hand.Timestamp - hand.TimeZone.TimeDifference;
+                hand.Level = new Level
+                {
+                    SmallBlind = int.Parse(match.Groups["level_sb"].Value),
+                    BigBlind = int.Parse(match.Groups["level_bb"].Value),
+                    IsAnteDefined = false,
+                };
                 return;
             }
 

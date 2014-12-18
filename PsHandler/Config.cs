@@ -42,7 +42,7 @@ namespace PsHandler
         // Constants
 
         public const string NAME = "PsHandler";
-        public const int VERSION = 24;
+        public const int VERSION = 25;
         public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static string MACHINE_GUID = GetMachineGuid();
         public static string CONFIG_FILENAME = "pshandler.xml";
@@ -84,6 +84,7 @@ namespace PsHandler
 
         public static bool EnableHud = false;
         public static int TimerDiff = 0;
+        public static bool TimerShowHandCount = false;
         public static string TimerHHNotFound = "HH not found";
         public static string TimerPokerTypeNotFound = "Poker Type not found";
         public static string TimerMultiplePokerTypes = "Multiple Poker Types";
@@ -389,6 +390,7 @@ namespace PsHandler
 
                 TableManager.EnableHudTimer = GetBool(root, "EnableHudTimer", ref exceptions, "LoadXml() EnableHudTimer", false);
                 TimerDiff = GetInt(root, "TimerDiff", ref exceptions, "LoadXml() TimerDiff", 0);
+                TimerShowHandCount = GetBool(root, "TimerShowHandCount", ref exceptions, "LoadXml() TimerShowHandCount", false);
                 TimerHHNotFound = GetString(root, "TimerHHNotFound", ref exceptions, "LoadXml() TimerHHNotFound", "HH not found");
                 TimerPokerTypeNotFound = GetString(root, "TimerPokerTypeNotFound", ref exceptions, "LoadXml() TimerPokerTypeNotFound", "Poker Type not found");
                 TimerMultiplePokerTypes = GetString(root, "TimerMultiplePokerTypes", ref exceptions, "LoadXml() TimerMultiplePokerTypes", "Multiple Poker Types");
@@ -529,6 +531,7 @@ namespace PsHandler
 
                 Set(root, "EnableHudTimer", TableManager.EnableHudTimer, ref exceptions, "SaveXml() EnableHudTimer");
                 Set(root, "TimerDiff", TimerDiff, ref exceptions, "SaveXml() TimerDiff");
+                Set(root, "TimerShowHandCount", TimerShowHandCount, ref exceptions, "SaveXml() TimerShowHandCount");
                 Set(root, "TimerHHNotFound", TimerHHNotFound, ref exceptions, "SaveXml() TimerHHNotFound");
                 Set(root, "TimerPokerTypeNotFound", TimerPokerTypeNotFound, ref exceptions, "SaveXml() TimerPokerTypeNotFound");
                 Set(root, "TimerMultiplePokerTypes", TimerMultiplePokerTypes, ref exceptions, "SaveXml() TimerMultiplePokerTypes");

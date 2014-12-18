@@ -94,6 +94,16 @@ namespace PsHandler.UI
 
             CheckBox_EnableHudTimer.Checked += (sender, args) => { TableManager.EnableHudTimer = true; };
             CheckBox_EnableHudTimer.Unchecked += (sender, args) => { TableManager.EnableHudTimer = false; };
+            CheckBox_ShowHandCount.Checked += (sender, args) =>
+            {
+                Config.TimerShowHandCount = true;
+                TextBox_TimerDiff.IsEnabled = false;
+            };
+            CheckBox_ShowHandCount.Unchecked += (sender, args) =>
+            {
+                Config.TimerShowHandCount = false;
+                TextBox_TimerDiff.IsEnabled = true;
+            };
             TextBox_TimerDiff.TextChanged += (sender, args) => int.TryParse(TextBox_TimerDiff.Text, out Config.TimerDiff);
             TextBox_TimerHHNotFound.TextChanged += (sender, args) => Config.TimerHHNotFound = TextBox_TimerHHNotFound.Text;
             TextBox_TimerPokerTypeNotFound.TextChanged += (sender, args) => Config.TimerPokerTypeNotFound = TextBox_TimerPokerTypeNotFound.Text;
@@ -142,11 +152,15 @@ namespace PsHandler.UI
             // hook needed init values
 
             CheckBox_LockHudTimerLocation.IsChecked = TableManager.HudTimerLocationLocked;
+            CheckBox_ShowHandCount.IsChecked = Config.TimerShowHandCount;
 
             // ToolTips
 
             Label_TimerDifference.ToolTip = new UCToolTipHudTimerTimeDifference();
             ToolTipService.SetShowDuration(Label_TimerDifference, 60000);
+
+            CheckBox_ShowHandCount.ToolTip = "Shows hand count from the level start. This is useful for Hyper Turbo Sat players where levels increase by hand count instead of time.";
+            ToolTipService.SetShowDuration(CheckBox_ShowHandCount, 60000);
         }
 
         private void Button_Customize_Click(object sender, RoutedEventArgs e)

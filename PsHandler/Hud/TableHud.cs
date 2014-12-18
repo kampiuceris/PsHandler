@@ -121,44 +121,51 @@ namespace PsHandler.Hud
 
                                 #region Timer
 
-                                int pokerTypeErrors = -1;
-                                if (_pokerType == null)
+                                if (!Config.TimerShowHandCount)
                                 {
-                                    _pokerType = App.PokerTypeManager.GetPokerType(title, className, out pokerTypeErrors);
-                                    if (pokerTypeErrors != 0)
+                                    int pokerTypeErrors = -1;
+                                    if (_pokerType == null)
                                     {
-                                        _pokerType = null;
+                                        _pokerType = App.PokerTypeManager.GetPokerType(title, className, out pokerTypeErrors);
+                                        if (pokerTypeErrors != 0)
+                                        {
+                                            _pokerType = null;
+                                        }
                                     }
-                                }
-                                if (_pokerType != null)
-                                {
-                                    DateTime dateTimeUtcNow = DateTime.UtcNow.AddSeconds(-Config.TimerDiff);
-                                    DateTime dateTimeUtcNextLevel = tournament.GetFirstHandTimestampUtc();
-                                    while (dateTimeUtcNextLevel < dateTimeUtcNow)
+                                    if (_pokerType != null)
                                     {
-                                        dateTimeUtcNextLevel = dateTimeUtcNextLevel + _pokerType.LevelLength;
-                                    }
-                                    TimeSpan timeSpan = dateTimeUtcNextLevel - dateTimeUtcNow;
-                                    textboxTimerContent = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
-                                    Methods.UiInvoke(() =>
-                                    {
-                                        WindowTimer.UCLabel_Main.SetToolTip(_pokerType.Name);
-                                    });
-                                }
-                                else
-                                {
-                                    if (pokerTypeErrors == 1)
-                                    {
-                                        textboxTimerContent = Config.TimerPokerTypeNotFound;
-                                    }
-                                    else if (pokerTypeErrors == 2)
-                                    {
-                                        textboxTimerContent = Config.TimerMultiplePokerTypes;
+                                        DateTime dateTimeUtcNow = DateTime.UtcNow.AddSeconds(-Config.TimerDiff);
+                                        DateTime dateTimeUtcNextLevel = tournament.GetFirstHandTimestampUtc();
+                                        while (dateTimeUtcNextLevel < dateTimeUtcNow)
+                                        {
+                                            dateTimeUtcNextLevel = dateTimeUtcNextLevel + _pokerType.LevelLength;
+                                        }
+                                        TimeSpan timeSpan = dateTimeUtcNextLevel - dateTimeUtcNow;
+                                        textboxTimerContent = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
+                                        Methods.UiInvoke(() =>
+                                        {
+                                            WindowTimer.UCLabel_Main.SetToolTip(_pokerType.Name);
+                                        });
                                     }
                                     else
                                     {
-                                        textboxTimerContent = string.Format("Unknown Error");
+                                        if (pokerTypeErrors == 1)
+                                        {
+                                            textboxTimerContent = Config.TimerPokerTypeNotFound;
+                                        }
+                                        else if (pokerTypeErrors == 2)
+                                        {
+                                            textboxTimerContent = Config.TimerMultiplePokerTypes;
+                                        }
+                                        else
+                                        {
+                                            textboxTimerContent = string.Format("Unknown Error");
+                                        }
                                     }
+                                }
+                                else
+                                {
+                                    textboxTimerContent = string.Format("{0}", tournament.CountLevelHands(sb, bb) + 1);
                                 }
 
                                 #endregion

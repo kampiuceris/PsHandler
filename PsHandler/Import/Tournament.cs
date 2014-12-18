@@ -114,6 +114,14 @@ namespace PsHandler.Import
             }
         }
 
+        public int CountLevelHands(decimal smallBlind, decimal bigBlind)
+        {
+            lock (_lock)
+            {
+                return Hands.Count(o => o.Level.SmallBlind == smallBlind && o.Level.BigBlind == bigBlind);
+            }
+        }
+
         public override string ToString()
         {
             return string.Format("Tournament: {0}, Hands: {1}", TournamentNumber, Hands.Count);
