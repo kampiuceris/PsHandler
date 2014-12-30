@@ -43,7 +43,7 @@ namespace PsHandler.Hud
         public WindowTimer WindowTimer;
         public WindowBigBlind WindowBigBlind;
         //
-        private static readonly Regex _regexTitle = new Regex(@".+Blinds \$?(?<sb>[\d\.]+)\/\$?(?<bb>[\d\.]+)( Ante \$?(?<ante>[\d\.]+))? - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
+        private static readonly Regex _regexTitle = new Regex(@".+Blinds (\$|€|£)?(?<sb>[\d\.]+)\/(\$|€|£)?(?<bb>[\d\.]+)( Ante (\$|€|£)?(?<ante>[\d\.]+))? - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
 
         public TableHud(Table table)
         {
