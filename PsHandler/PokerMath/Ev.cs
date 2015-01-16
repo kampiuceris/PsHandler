@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace PsHandler.Replayer
+namespace PsHandler.PokerMath
 {
     public class Ev
     {

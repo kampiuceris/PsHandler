@@ -1,0 +1,9 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:PsHandler.Replayer.UI" x:Class="PsHandler.Replayer.UI.WindowReplayer"
+        Title="Hand" Background="WhiteSmoke" Icon="../../Images/PsHandler.ico">
+    <Grid>
+        <local:UcReplayer x:Name="UcReplayerMain"/>
+    </Grid>
+</Window>

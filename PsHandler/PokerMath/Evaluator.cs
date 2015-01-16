@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PsHandler.Replayer
+namespace PsHandler.PokerMath
 {
     public class Evaluator : IDisposable
     {

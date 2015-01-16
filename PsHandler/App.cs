@@ -27,6 +27,7 @@ using PsHandler.Hud;
 using PsHandler.Import;
 using PsHandler.PokerTypes;
 using PsHandler.Randomizer;
+using PsHandler.Replayer.UI;
 using PsHandler.TableTiler;
 using PsHandler.UI;
 using Application = System.Windows.Application;
@@ -47,6 +48,9 @@ namespace PsHandler
 
         public App()
         {
+            new WindowReplayer().Show();
+            return;
+
             RegisterHook();
 
             TableTileManager = new TableTileManager();
