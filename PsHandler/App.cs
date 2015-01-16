@@ -48,7 +48,8 @@ namespace PsHandler
 
         public App()
         {
-            new WindowReplayer().Show();
+            var w = new WindowReplayer();
+            w.Show();
             return;
 
             RegisterHook();

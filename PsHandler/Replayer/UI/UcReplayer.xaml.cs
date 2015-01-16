@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using PsHandler.PokerMath;
 
 namespace PsHandler.Replayer.UI
 {
@@ -23,16 +28,23 @@ namespace PsHandler.Replayer.UI
                 new GradientStop{ Color = (Color)ColorConverter.ConvertFromString("#EE292929"), Offset = 1 },
             }
         };
-        Rectangle[] RectanglesPlayers = new Rectangle[0];
-        Viewbox[] ViewboxesPlayerNames = new Viewbox[0];
-        TextBlock[] TextBlocksPlayerNames = new TextBlock[0];
-        Viewbox[] ViewboxesPlayerStacks = new Viewbox[0];
-        TextBlock[] TextBlocksPlayerStacks = new TextBlock[0];
-        Viewbox[] ViewboxesPlayerBets = new Viewbox[0];
-        TextBlock[] TextBlocksPlayerBets = new TextBlock[0];
-        Canvas[] CanvasPlayerBets = new Canvas[0];
-        int CurrentChipsSize = 0;
-
+        UcButton UcButton;
+        int ButtonSeat = 0;
+        Viewbox ViewboxPot;
+        TextBlock TextBlockPot;
+        Rectangle[] RectanglesPlayers;
+        Viewbox[] ViewboxesPlayerNames;
+        TextBlock[] TextBlocksPlayerNames;
+        Viewbox[] ViewboxesPlayerStacks;
+        TextBlock[] TextBlocksPlayerStacks;
+        Viewbox[] ViewboxesPlayerBets;
+        TextBlock[] TextBlocksPlayerBets;
+        Canvas[] CanvasPlayerBets;
+        int CurrentChipsSize;
+        //
+        PokerMath.Table Table = new PokerMath.Table();
+        PokerMath.PokerHand PokerHand = new PokerHand();
+        int PreferredSeat = 4;
         //
 
         public UcReplayer()
@@ -41,15 +53,19 @@ namespace PsHandler.Replayer.UI
             Init();
             SizeChanged += (sender, args) => Update();
             Loaded += (sender, args) => Update();
+            Loaded += (sender, args) => ReplayHand(PokerMath.PokerData.FromText(System.IO.File.ReadAllText(@"C:\Users\WinWork\Desktop\test.txt")).PokerHands[0]);
         }
 
         private void Init()
         {
+            // button
+            UcButton = new UcButton();
+            CanvasTable.Children.Add(UcButton);
+
             // player rectangle
             RectanglesPlayers = new Rectangle[10];
             for (int i = 0; i < 10; i++)
             {
-
                 var r = new Rectangle
                 {
                     Fill = RectanglePlayerFill,
@@ -72,7 +88,6 @@ namespace PsHandler.Replayer.UI
                 var tb = new TextBlock
                 {
                     Foreground = Brushes.White,
-                    Text = "Player " + i, //TODO
                 };
                 TextBlocksPlayerNames[i] = tb;
                 var vb = new Viewbox
@@ -81,11 +96,11 @@ namespace PsHandler.Replayer.UI
                 };
                 ViewboxesPlayerNames[i] = vb;
                 CanvasTable.Children.Add(vb);
+
                 // player stack
                 tb = new TextBlock
                 {
-                    Foreground = Brushes.White,
-                    Text = 1500.ToString(), //TODO
+                    Foreground = Brushes.GreenYellow,
                 };
                 TextBlocksPlayerStacks[i] = tb;
                 vb = new Viewbox
@@ -106,11 +121,11 @@ namespace PsHandler.Replayer.UI
                 Canvas c = new Canvas();
                 CanvasPlayerBets[customZOrder[i]] = c;
                 CanvasTable.Children.Add(c);
-                SetBet(customZOrder[i], 50 * (i + 1), 0); //TODO
+
                 // player bet
                 var tb = new TextBlock
                 {
-                    Foreground = Brushes.White,
+                    Foreground = Brushes.Honeydew,
                 };
                 TextBlocksPlayerBets[customZOrder[i]] = tb;
                 var vb = new Viewbox
@@ -120,17 +135,96 @@ namespace PsHandler.Replayer.UI
                 ViewboxesPlayerBets[customZOrder[i]] = vb;
                 CanvasTable.Children.Add(vb);
             }
+
+            // pot
+            TextBlockPot = new TextBlock
+            {
+                Foreground = Brushes.GreenYellow,
+            };
+            ViewboxPot = new Viewbox
+            {
+                Child = TextBlockPot
+            };
+            CanvasTable.Children.Add(ViewboxPot);
         }
 
         //
 
-        public void SetBet(int seat, decimal value, int size)
+        private void CleanTable()
         {
+            for (int i = 0; i < 10; i++)
+            {
+                SetPlayerVisible(i, false);
+                UcButton.Visibility = Visibility.Collapsed;
+                SetPlayerBet(i, 0);
+            }
+        }
+
+        public void ReplayHand(PokerHand pokerHand)
+        {
+            CleanTable();
+            PokerHand = pokerHand;
+            Table.LoadHand(pokerHand);
+            Table.ToDoCommandsBeginning();
+            VisualizeHandState();
+        }
+
+        private void VisualizeHandState()
+        {
+            for (int i = 0; i < PokerHand.Seats.Length; i++)
+            {
+                var player = PokerHand.Seats[i];
+                if (player == null)
+                {
+                    SetPlayerVisible(MapToPreferredSeat(i), false);
+                }
+                else
+                {
+                    ButtonSeat = PokerHand.ButtonSeat;
+                    UcButton.Visibility = ButtonSeat > 0 ? Visibility.Visible : Visibility.Collapsed;
+                    SetPlayerVisible(MapToPreferredSeat(i), true);
+                    TextBlocksPlayerNames[MapToPreferredSeat(i)].Text = player.PlayerName;
+                    TextBlocksPlayerStacks[MapToPreferredSeat(i)].Text = string.Format("{0}", player.Stack);
+                    SetPlayerBet(MapToPreferredSeat(i), player.Bet);
+                    TextBlockPot.Text = string.Format("Pot: {0:0.##}", Table.TotalPot);
+                }
+            }
+
+            Update();
+        }
+
+        private void SetPlayerVisible(int seat, bool isVisible)
+        {
+            RectanglesPlayers[seat].Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+            ViewboxesPlayerNames[seat].Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+            ViewboxesPlayerStacks[seat].Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+            ViewboxesPlayerBets[seat].Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+            CanvasPlayerBets[seat].Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public void SetPlayerBet(int seat, decimal value, int size = -1)
+        {
+            if (size == -1)
+            {
+                size = Converter.GetSize(ActualWidth);
+            }
             CanvasPlayerBets[seat].Children.Clear();
             foreach (var ucChip in UcChip.GetUcChips(value, size))
             {
                 CanvasPlayerBets[seat].Children.Add(ucChip);
             }
+        }
+
+        private int MapToPreferredSeat(int seat)
+        {
+            var dealtTo = PokerHand.PokerCommands.OfType<PokerCommands.DealtTo>();
+            if (!dealtTo.Any())
+            {
+                return seat;
+            }
+            var hero = dealtTo.ElementAt(0).Player;
+            var neededOffset = PreferredSeat - hero.SeatNumber;
+            return (seat + neededOffset) % 10;
         }
 
         //
@@ -143,6 +237,8 @@ namespace PsHandler.Replayer.UI
                 UpdatePlayerRectangle(width, height);
                 UpdatePlayerNameStack(width, height);
                 UpdatePlayerBets(width, height);
+                UpdateButton(width, height);
+                UpdatePot(width, height);
             }
             catch
             {
@@ -195,7 +291,7 @@ namespace PsHandler.Replayer.UI
                 // ensure chips size
                 if (CurrentChipsSize != size)
                 {
-                    SetBet(i, totalAmount, size);
+                    SetPlayerBet(i, totalAmount, size);
                 }
                 // chips
                 for (int j = 0; j < CanvasPlayerBets[i].Children.Count; j++)
@@ -214,18 +310,59 @@ namespace PsHandler.Replayer.UI
                 // text
                 TextBlocksPlayerBets[i].Text = string.Format("{0:0.##}", totalAmount);
                 ViewboxesPlayerBets[i].ToolTip = TextBlocksPlayerBets[i].Text;
-                ViewboxesPlayerBets[i].Height = Converter.DEFAULT_CHIPS_SIZES[size].Y * 0.7;
-                Canvas.SetTop(ViewboxesPlayerBets[i], betXy.Y - ViewboxesPlayerBets[i].Height * 0.7);
+                ViewboxesPlayerBets[i].Height = Converter.DEFAULT_CHIPS_SIZES[size].Y * 0.8;
+                ViewboxesPlayerBets[i].UpdateLayout();
+                Canvas.SetTop(ViewboxesPlayerBets[i], betXy.Y - Converter.DEFAULT_CHIPS_SIZES[size].Y * 0.65);
                 if (i < 5)
                 {
                     Canvas.SetLeft(ViewboxesPlayerBets[i], betXy.X - Converter.DEFAULT_CHIPS_SIZES[size].X * 0.7 - ViewboxesPlayerBets[i].ActualWidth);
-                    
                 }
                 else
                 {
                     Canvas.SetLeft(ViewboxesPlayerBets[i], betXy.X + Converter.DEFAULT_CHIPS_SIZES[size].X * 0.7);
                 }
+                ViewboxesPlayerBets[i].Visibility = totalAmount > 0 ? Visibility.Visible : Visibility.Collapsed;
             }
+
+            CurrentChipsSize = size;
+        }
+
+        private void UpdateButton(double width, double height)
+        {
+            int size = Converter.GetSize(width);
+            if (UcButton.Size != size)
+            {
+                UcButton.Children.Clear();
+                UcButton.Children.Add(UcButton.GetButtonImage(size));
+                UcButton.Width = Converter.DEFAULT_CHIPS_SIZES[size].X;
+                UcButton.Height = Converter.DEFAULT_CHIPS_SIZES[size].Y;
+            }
+
+            Point buttonXy = Converter.GetButtonXY(width, height, ButtonSeat);
+            Canvas.SetLeft(UcButton, buttonXy.X - Converter.DEFAULT_CHIPS_SIZES[size].X / 2);
+            Canvas.SetTop(UcButton, buttonXy.Y - Converter.DEFAULT_CHIPS_SIZES[size].Y / 2);
+        }
+
+        private void UpdatePot(double width, double height)
+        {
+            Point potXy = Converter.GetPotXY(width, height);
+            ViewboxPot.Height = height * 0.04;
+            ViewboxPot.UpdateLayout();
+            Canvas.SetLeft(ViewboxPot, potXy.X - ViewboxPot.ActualWidth / 2);
+            Canvas.SetTop(ViewboxPot, potXy.Y - ViewboxPot.ActualHeight / 2);
+        }
+        //
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Table.UnDoCommand();
+            VisualizeHandState();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            Table.ToDoCommand();
+            VisualizeHandState();
         }
     }
 }

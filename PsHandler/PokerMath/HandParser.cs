@@ -426,7 +426,7 @@ namespace PsHandler.PokerMath
         public Player[] Seats;
         public List<PokerCommand> PokerCommands = new List<PokerCommand>();
 
-        public Ev Ev;
+        public object Ev;
 
         public static PokerHand FromHandHistory(string handHistoryText)
         {

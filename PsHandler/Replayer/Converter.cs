@@ -25,6 +25,7 @@ namespace PsHandler.Replayer
             new Point(16, 92), 
             new Point(166, 11), 
         };
+        public static Point DEFAULT_POT_XY = new Point(397, 36);
         public static Point[] DEFAULT_BUTTON_XY =
         {
             new Point(486, 77), 
@@ -117,6 +118,11 @@ namespace PsHandler.Replayer
             return new Point(DEFAULT_PLAYER_XY[playerIndex].X / DEFAULT_TABLE_SIZE.X * tableWidth, DEFAULT_PLAYER_XY[playerIndex].Y / DEFAULT_TABLE_SIZE.Y * tableHeigh);
         }
 
+        public static Point GetPotXY(double tableWidth, double tableHeigh)
+        {
+            return new Point(DEFAULT_POT_XY.X / DEFAULT_TABLE_SIZE.X * tableWidth, DEFAULT_POT_XY.Y / DEFAULT_TABLE_SIZE.Y * tableHeigh);
+        }
+
         public static Point GetButtonXY(double tableWidth, double tableHeigh, int playerIndex)
         {
             return new Point(DEFAULT_BUTTON_XY[playerIndex].X / DEFAULT_TABLE_SIZE.X * tableWidth, DEFAULT_BUTTON_XY[playerIndex].Y / DEFAULT_TABLE_SIZE.Y * tableHeigh);
@@ -136,7 +142,7 @@ namespace PsHandler.Replayer
                     return i;
                 }
             }
-            return 6;
+            return 7;
         }
 
         public static double GetChipsGap(int size)

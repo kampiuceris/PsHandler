@@ -13,5 +13,7 @@
         </Grid.Background>
         <Image Source="../../Images/Resources/Replayer/felt.png" Stretch="Fill"/>
         <Canvas x:Name="CanvasTable"/>
+        <Button Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <Button Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="75,0,0,0" Click="Button_Click_1"/>
     </Grid>
 </UserControl>

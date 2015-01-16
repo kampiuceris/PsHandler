@@ -126,6 +126,7 @@
     <Compile Include="PokerMath\Ev.cs" />
     <Compile Include="PokerMath\Evaluator.cs" />
     <Compile Include="PokerMath\HandParser.cs" />
+    <Compile Include="Replayer\UcButton.cs" />
     <Compile Include="Replayer\UI\UcChip.cs" />
     <Compile Include="Replayer\UI\UcReplayer.xaml.cs">
       <DependentUpon>UcReplayer.xaml</DependentUpon>
@@ -658,29 +659,6 @@
     <EmbeddedResource Include="Resources\gnu.html" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip-d.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip000001.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip000005.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip000025.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip0001.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip0005.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip0025.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip0100.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip0500.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip1000.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip100000.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip1000000.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip100000000.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip1000000000.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip25000.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip25000000.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip25000000000.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip5000.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip500000.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip5000000.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip500000000.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chip5000000000.png" />
-    <Resource Include="Images\Resources\Replayer\Chips\0\chipone.png" />
     <Resource Include="Images\Resources\Replayer\Chips\1\chip-d.png" />
     <Resource Include="Images\Resources\Replayer\Chips\1\chip000001.png" />
     <Resource Include="Images\Resources\Replayer\Chips\1\chip000005.png" />
@@ -819,9 +797,60 @@
     <Resource Include="Images\Resources\Replayer\Chips\6\chip500000000.png" />
     <Resource Include="Images\Resources\Replayer\Chips\6\chip5000000000.png" />
     <Resource Include="Images\Resources\Replayer\Chips\6\chipone.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip-d.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip000001.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip000005.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip000025.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip0001.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip0005.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip0025.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip0100.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip0500.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip1000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip100000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip1000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip100000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip1000000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip25000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip25000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip25000000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip5000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip500000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip5000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip500000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chip5000000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\7\chipone.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Resources\Replayer\felt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip-d.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip000001.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip000005.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip000025.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip0001.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip0005.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip0025.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip0100.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip0500.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip1000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip100000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip1000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip100000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip1000000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip25000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip25000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip25000000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip5000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip500000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip5000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip500000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chip5000000000.png" />
+    <Resource Include="Images\Resources\Replayer\Chips\0\chipone.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Replayer\back.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
