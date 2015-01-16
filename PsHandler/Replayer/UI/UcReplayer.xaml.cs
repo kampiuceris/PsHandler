@@ -28,6 +28,8 @@ namespace PsHandler.Replayer.UI
         TextBlock[] TextBlocksPlayerNames = new TextBlock[0];
         Viewbox[] ViewboxesPlayerStacks = new Viewbox[0];
         TextBlock[] TextBlocksPlayerStacks = new TextBlock[0];
+        Viewbox[] ViewboxesPlayerBets = new Viewbox[0];
+        TextBlock[] TextBlocksPlayerBets = new TextBlock[0];
         Canvas[] CanvasPlayerBets = new Canvas[0];
         int CurrentChipsSize = 0;
 
@@ -48,7 +50,7 @@ namespace PsHandler.Replayer.UI
             for (int i = 0; i < 10; i++)
             {
 
-                Rectangle r = new Rectangle
+                var r = new Rectangle
                 {
                     Fill = RectanglePlayerFill,
                     Stroke = RectanglePlayerStroke,
@@ -62,17 +64,18 @@ namespace PsHandler.Replayer.UI
             TextBlocksPlayerNames = new TextBlock[10];
             ViewboxesPlayerStacks = new Viewbox[10];
             TextBlocksPlayerStacks = new TextBlock[10];
+            ViewboxesPlayerBets = new Viewbox[10];
+            TextBlocksPlayerBets = new TextBlock[10];
             for (int i = 0; i < 10; i++)
             {
                 // player name
-                TextBlock tb = new TextBlock
+                var tb = new TextBlock
                 {
                     Foreground = Brushes.White,
-                    FontWeight = FontWeights.Bold,
                     Text = "Player " + i, //TODO
                 };
                 TextBlocksPlayerNames[i] = tb;
-                Viewbox vb = new Viewbox
+                var vb = new Viewbox
                 {
                     Child = tb
                 };
@@ -82,7 +85,6 @@ namespace PsHandler.Replayer.UI
                 tb = new TextBlock
                 {
                     Foreground = Brushes.White,
-                    FontWeight = FontWeights.Bold,
                     Text = 1500.ToString(), //TODO
                 };
                 TextBlocksPlayerStacks[i] = tb;
@@ -92,16 +94,31 @@ namespace PsHandler.Replayer.UI
                 };
                 ViewboxesPlayerStacks[i] = vb;
                 CanvasTable.Children.Add(vb);
+
             }
 
             // player bets
+            int[] customZOrder = { 9, 0, 8, 1, 7, 2, 6, 3, 5, 4 };
             CanvasPlayerBets = new Canvas[10];
             for (int i = 0; i < 10; i++)
             {
+                // chips
                 Canvas c = new Canvas();
-                CanvasPlayerBets[i] = c;
+                CanvasPlayerBets[customZOrder[i]] = c;
                 CanvasTable.Children.Add(c);
-                SetBet(i, 25 * i + 25, 0); //TODO
+                SetBet(customZOrder[i], 50 * (i + 1), 0); //TODO
+                // player bet
+                var tb = new TextBlock
+                {
+                    Foreground = Brushes.White,
+                };
+                TextBlocksPlayerBets[customZOrder[i]] = tb;
+                var vb = new Viewbox
+                {
+                    Child = tb
+                };
+                ViewboxesPlayerBets[customZOrder[i]] = vb;
+                CanvasTable.Children.Add(vb);
             }
         }
 
@@ -170,12 +187,17 @@ namespace PsHandler.Replayer.UI
         private void UpdatePlayerBets(double width, double height)
         {
             int size = Converter.GetSize(width);
-            EnsureChipsSize(width, height);
-
             double gap = Converter.GetChipsGap(size);
 
             for (int i = 0; i < 10; i++)
             {
+                decimal totalAmount = CanvasPlayerBets[i].Children.OfType<UcChip>().Sum(a => a.Value);
+                // ensure chips size
+                if (CurrentChipsSize != size)
+                {
+                    SetBet(i, totalAmount, size);
+                }
+                // chips
                 for (int j = 0; j < CanvasPlayerBets[i].Children.Count; j++)
                 {
                     Canvas.SetLeft(CanvasPlayerBets[i].Children[j], 0);
@@ -188,18 +210,20 @@ namespace PsHandler.Replayer.UI
                 Point canvasXY = new Point(betXy.X - CanvasPlayerBets[i].Width / 2, betXy.Y - CanvasPlayerBets[i].Height);
                 Canvas.SetLeft(CanvasPlayerBets[i], canvasXY.X);
                 Canvas.SetTop(CanvasPlayerBets[i], canvasXY.Y);
-            }
-        }
 
-        private void EnsureChipsSize(double width, double height)
-        {
-            int size = Converter.GetSize(width);
-            if (CurrentChipsSize != size)
-            {
-                for (int i = 0; i < 10; i++)
+                // text
+                TextBlocksPlayerBets[i].Text = string.Format("{0:0.##}", totalAmount);
+                ViewboxesPlayerBets[i].ToolTip = TextBlocksPlayerBets[i].Text;
+                ViewboxesPlayerBets[i].Height = Converter.DEFAULT_CHIPS_SIZES[size].Y * 0.7;
+                Canvas.SetTop(ViewboxesPlayerBets[i], betXy.Y - ViewboxesPlayerBets[i].Height * 0.7);
+                if (i < 5)
                 {
-                    decimal totalAmount = CanvasPlayerBets[i].Children.OfType<UcChip>().Sum(a => a.Value);
-                    SetBet(i, totalAmount, size);
+                    Canvas.SetLeft(ViewboxesPlayerBets[i], betXy.X - Converter.DEFAULT_CHIPS_SIZES[size].X * 0.7 - ViewboxesPlayerBets[i].ActualWidth);
+                    
+                }
+                else
+                {
+                    Canvas.SetLeft(ViewboxesPlayerBets[i], betXy.X + Converter.DEFAULT_CHIPS_SIZES[size].X * 0.7);
                 }
             }
         }

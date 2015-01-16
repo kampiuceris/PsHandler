@@ -50,8 +50,6 @@ namespace PsHandler.Replayer.UI
             Source = new BitmapImage(new Uri(uri, UriKind.Relative));
             Width = Converter.DEFAULT_CHIPS_SIZES[size].X;
             Height = Converter.DEFAULT_CHIPS_SIZES[size].Y;
-
-            UseLayoutRounding = true;
         }
 
         public static List<UcChip> GetUcChips(decimal totalAmount, int size)

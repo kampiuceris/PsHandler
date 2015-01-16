@@ -61,6 +61,7 @@ namespace PsHandler.Replayer
         };
         public static double[] DEFAULT_MAX_TABLE_WIDTH_SIZES =
         {
+            474,
             518,
             614,
             728,
@@ -71,6 +72,7 @@ namespace PsHandler.Replayer
         public static double[] DEFAULT_CHIPS_GAP =
         {
             2,
+            2,
             3,
             3,
             4,
@@ -80,6 +82,7 @@ namespace PsHandler.Replayer
         };
         public static Point[] DEFAULT_CHIPS_SIZES =
         {
+            new Point(11,10),
             new Point(16,15),
             new Point(18,17),
             new Point(20,18),
