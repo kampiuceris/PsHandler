@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace PsHandler.PokerMath
 {
@@ -30,7 +31,6 @@ namespace PsHandler.PokerMath
         public ExpectedValueStreetByStreet EvStreetByStreet;
         public ExpectedValueStreetByStreet EvStreetByStreetFullInfo;
 
-        private readonly Evaluator _evaluator;
         private readonly PokerHand _pokerHand;
         private readonly Table _table;
         private string[] _communityCards;
@@ -38,13 +38,12 @@ namespace PsHandler.PokerMath
         private string _communityCardsTurn;
         private string _communityCardsRiver;
 
-        public Ev(PokerHand pokerHand, decimal[] icmPayouts, decimal prizePool, PokerEnums.Currency currency, Evaluator evaluator)
+        public Ev(PokerHand pokerHand, decimal[] icmPayouts, decimal prizePool, PokerEnums.Currency currency)
         {
             _pokerHand = pokerHand;
             IcmPayouts = icmPayouts;
             PrizePool = prizePool;
             Currency = currency;
-            _evaluator = evaluator;
 
             _table = new Table();
             _table.LoadHand(pokerHand);
@@ -246,7 +245,7 @@ namespace PsHandler.PokerMath
                 Street street = Street.Preflop;
                 ExpectedValue ev = new ExpectedValue { Street = street };
                 ExpectedValue evFullInfo = new ExpectedValue { Street = street };
-                CalculateEv(_evaluator, _table, street, _communityCards, potsPreflop, stacksBeforeCollection[0], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
+                CalculateEv(_table, street, _communityCards, potsPreflop, stacksBeforeCollection[0], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
                 EvStreetByStreet.Evs.Add(ev);
                 EvStreetByStreetFullInfo.Evs.Add(evFullInfo);
             }
@@ -255,7 +254,7 @@ namespace PsHandler.PokerMath
                 Street street = Street.Flop;
                 ExpectedValue ev = new ExpectedValue { Street = street };
                 ExpectedValue evFullInfo = new ExpectedValue { Street = street };
-                CalculateEv(_evaluator, _table, street, _communityCards, potsFlop, stacksBeforeCollection[1], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
+                CalculateEv(_table, street, _communityCards, potsFlop, stacksBeforeCollection[1], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
                 EvStreetByStreet.Evs.Add(ev);
                 EvStreetByStreetFullInfo.Evs.Add(evFullInfo);
             }
@@ -264,7 +263,7 @@ namespace PsHandler.PokerMath
                 Street street = Street.Turn;
                 ExpectedValue ev = new ExpectedValue { Street = street };
                 ExpectedValue evFullInfo = new ExpectedValue { Street = street };
-                CalculateEv(_evaluator, _table, street, _communityCards, potsTurn, stacksBeforeCollection[2], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
+                CalculateEv(_table, street, _communityCards, potsTurn, stacksBeforeCollection[2], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
                 EvStreetByStreet.Evs.Add(ev);
                 EvStreetByStreetFullInfo.Evs.Add(evFullInfo);
             }
@@ -273,7 +272,7 @@ namespace PsHandler.PokerMath
                 Street street = Street.River;
                 ExpectedValue ev = new ExpectedValue { Street = street };
                 ExpectedValue evFullInfo = new ExpectedValue { Street = street };
-                CalculateEv(_evaluator, _table, street, _communityCards, potsRiver, stacksBeforeCollection[3], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
+                CalculateEv(_table, street, _communityCards, potsRiver, stacksBeforeCollection[3], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
                 EvStreetByStreet.Evs.Add(ev);
                 EvStreetByStreetFullInfo.Evs.Add(evFullInfo);
             }
@@ -397,7 +396,7 @@ namespace PsHandler.PokerMath
             for (int i = 0; i < _table.PlayerCount; i++) stacksBeforeCollection[i] = _table.Players[i].Stack;
 
             // calculate ev
-            CalculateEv(_evaluator, _table, EvRegularAllInStreet, _communityCards, pots, stacksBeforeCollection, StacksHandStart, IcmsHandEnd, IcmPayouts, ref EvRegular, ref EvRegularFullInfo);
+            CalculateEv(_table, EvRegularAllInStreet, _communityCards, pots, stacksBeforeCollection, StacksHandStart, IcmsHandEnd, IcmPayouts, ref EvRegular, ref EvRegularFullInfo);
 
             // get weight
             EvRegular.Weight = new double[_table.PlayerCount];
@@ -409,7 +408,7 @@ namespace PsHandler.PokerMath
             }
         }
 
-        private static void CalculateEv(Evaluator evaluator, Table table, Street street, string[] communityCards, List<Pot> pots, decimal[] stacksBeforeCollection, decimal[] stacksHandStart, double[] icmsHandEnd, decimal[] icmPayouts, ref ExpectedValue evRegular, ref ExpectedValue evRegularFullInfo)
+        private static void CalculateEv(Table table, Street street, string[] communityCards, List<Pot> pots, decimal[] stacksBeforeCollection, decimal[] stacksHandStart, double[] icmsHandEnd, decimal[] icmPayouts, ref ExpectedValue evRegular, ref ExpectedValue evRegularFullInfo)
         {
             // get all possible players
             var players = pots.First(o => o.Players.Count == pots.Max(oo => oo.Players.Count)).Players;
@@ -436,8 +435,8 @@ namespace PsHandler.PokerMath
             }
 
             // evaluate
-            var evaluation = evaluator.Evaluate(pockets, Evaluator.GetMaskCards(communityCardsOnAllInStreet), Evaluator.GetMaskCards(new string[0]));
-            var evaluationFullInfo = evaluator.Evaluate(pockets, Evaluator.GetMaskCards(communityCardsOnAllInStreet), Evaluator.GetMaskCards(deadCards.ToArray()));
+            var evaluation = Hand.Evaluate(pockets, communityCardsOnAllInStreet, new string[0]);
+            var evaluationFullInfo = Hand.Evaluate(pockets, communityCardsOnAllInStreet, deadCards.ToArray());
 
             // save scenarios
             evRegular.ScenarioPlaces = new int[evaluation.Scenarios.Length][];

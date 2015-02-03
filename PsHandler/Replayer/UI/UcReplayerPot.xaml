@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="PsHandler.Replayer.UI.UcReplayerPot"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" x:Name="StackPanel_Chips" />
+            <Viewbox Height="18">
+                <TextBlock VerticalAlignment="Bottom" Foreground="#FFFFF6CF" Padding="0" Margin="0" x:Name="TextBlock_Amount" />
+            </Viewbox>
+        </StackPanel>
+    </Grid>
+</UserControl>

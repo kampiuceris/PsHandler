@@ -893,7 +893,8 @@ namespace PsHandler.PokerMath
             if (match.Success)
             {
                 var player = pokerHand.Seats.First(o => o != null && o.PlayerName.Equals(match.Groups["player_name"].Value));
-                player.PocketCards = new[] { match.Groups["card0"].Value, match.Groups["card1"].Value };
+                var cards = new[] { match.Groups["card0"].Value, match.Groups["card1"].Value };
+                player.PocketCards = cards;
                 player.IsHero = true;
 
                 pokerHand.PokerCommands.Add(new PokerCommands.DealtTo(text, player));
@@ -909,6 +910,7 @@ namespace PsHandler.PokerMath
             if (match.Success)
             {
                 var player = pokerHand.Seats.First(o => o != null && o.PlayerName.Equals(match.Groups["player_name"].Value));
+                bool foldAndShow = true;
                 if (match.Groups["card1"].Success)
                 {
                     player.PocketCards = new[] { match.Groups["card0"].Value, match.Groups["card1"].Value };
@@ -917,7 +919,11 @@ namespace PsHandler.PokerMath
                 {
                     player.PocketCards = new[] { match.Groups["card0"].Value };
                 }
-                pokerHand.PokerCommands.Add(new PokerCommands.Fold(text, player));
+                else
+                {
+                    foldAndShow = false;
+                }
+                pokerHand.PokerCommands.Add(new PokerCommands.Fold(text, player, foldAndShow));
 
                 return true;
             }
@@ -1028,6 +1034,12 @@ namespace PsHandler.PokerMath
             match = RegexCollectFromPot.Match(text);
             if (match.Success)
             {
+                if (!pokerHand.PokerCommands.Any(a => a is PokerCommands.FinalizePots))
+                {
+                    pokerHand.PokerCommands.Add(new PokerCommands.CollectPots(Street.Preflop));
+                    pokerHand.PokerCommands.Add(new PokerCommands.FinalizePots());
+                }
+
                 var player = pokerHand.Seats.First(o => o != null && o.PlayerName.Equals(match.Groups["player_name"].Value));
                 decimal amount = decimal.Parse(match.Groups["amount"].Value);
 
@@ -1044,7 +1056,7 @@ namespace PsHandler.PokerMath
             if (match.Success)
             {
                 var player = pokerHand.Seats.First(o => o != null && o.PlayerName.Equals(match.Groups["player_name"].Value));
-                pokerHand.PokerCommands.Add(new PokerCommands.Fold(text, player));
+                pokerHand.PokerCommands.Add(new PokerCommands.Fold(text, player, true));
 
                 return true;
             }
@@ -1186,6 +1198,10 @@ namespace PsHandler.PokerMath
 
         public void LoadHand(PokerHand pokerHand)
         {
+            ToDo.Clear();
+            UnDo.Clear();
+            Pots.Clear();
+            PotsStreetByStreet.Clear();
             Seats = pokerHand.Seats;
             Players = Seats.Where(o => o != null).ToArray();
             TableSize = pokerHand.TableSize;
@@ -1673,11 +1689,13 @@ namespace PsHandler.PokerMath
         public class Fold : PokerCommand
         {
             public readonly Player Player;
+            public readonly bool FoldAndShow;
 
-            public Fold(string commandText, Player player)
+            public Fold(string commandText, Player player, bool foldAndShow)
                 : base(commandText)
             {
                 Player = player;
+                FoldAndShow = foldAndShow;
             }
 
             public override void Exec(Table table)

@@ -2,8 +2,13 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:PsHandler.Replayer.UI" x:Class="PsHandler.Replayer.UI.WindowReplayer"
-        Title="Hand" Background="WhiteSmoke" Icon="../../Images/PsHandler.ico" UseLayoutRounding="True">
+        Title="Hand" Background="WhiteSmoke" Icon="../../Images/PsHandler.ico" Width="800" Height="600" MinWidth="200">
     <Grid>
-        <local:UcReplayer x:Name="UcReplayerMain"/>
+        <Viewbox VerticalAlignment="Top">
+            <local:UcReplayerTable x:Name="UcReplayerTable_Main" />
+        </Viewbox>
+        <ScrollViewer Margin="10,401,10,10" x:Name="ScrollViewer_Chat" >
+            <TextBlock TextWrapping="Wrap" Text="" x:Name="TextBlock_Chat" />
+        </ScrollViewer>
     </Grid>
 </Window>

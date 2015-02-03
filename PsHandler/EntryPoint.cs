@@ -22,6 +22,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Principal;
+using PsHandler.PokerMath;
 using PsHandler.SngRegistrator;
 using PsHandler.UI;
 

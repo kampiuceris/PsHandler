@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using PsHandler.PokerMath;
 
 namespace PsHandler.Replayer.UI
 {
@@ -22,8 +24,22 @@ namespace PsHandler.Replayer.UI
         public WindowReplayer()
         {
             InitializeComponent();
-            Width = 792 + 8 + 8;
-            Height = 396 + 31 + 8;
+
+            KeyDown += (sender, args) =>
+            {
+                if (args.Key == Key.Left)
+                {
+                    UcReplayerTable_Main.UndoCommand();
+                }
+                if (args.Key == Key.Right)
+                {
+                    UcReplayerTable_Main.DoCommand();
+                }
+                if (args.Key == Key.Up)
+                {
+                    UcReplayerTable_Main.ReplayHand(PokerHand.FromHandHistory(Clipboard.GetText()));
+                }
+            };
         }
     }
 }

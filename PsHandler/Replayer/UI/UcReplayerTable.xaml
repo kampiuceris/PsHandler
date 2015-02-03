@@ -1,0 +1,82 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PsHandler.Replayer.UI" x:Class="PsHandler.Replayer.UI.UcReplayerTable" 
+             mc:Ignorable="d" UseLayoutRounding="True">
+
+    <!-- UserControl.Resourcess -->
+
+    <UserControl.Resources>
+        <Style TargetType="{x:Type local:UcReplayerPlayer}" x:Key="StyleUcPlayer">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+        <Style TargetType="{x:Type Image}" x:Key="StyleImageCommunityCard">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Width" Value="50" />
+            <Setter Property="Height" Value="70" />
+        </Style>
+        <Style TargetType="{x:Type local:UcReplayerPlayerBetRight}" x:Key="StyleUcPlayerBetRight">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+        </Style>
+        <Style TargetType="{x:Type local:UcReplayerPlayerBetLeft}" x:Key="StyleUcPlayerBetLeft">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Width="792" Height="396">
+        <Grid.Background>
+            <RadialGradientBrush>
+                <GradientStop Color="#FF6C6C6C" Offset="0"/>
+                <GradientStop Color="#FF343434" Offset="1"/>
+            </RadialGradientBrush>
+        </Grid.Background>
+
+        <Image Source="../../Images/Resources/Replayer/felt.png" />
+
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Width="100" Height="22" Margin="0,35,0,0">
+            <Rectangle Fill="#FF272727" StrokeThickness="1" Stroke="#FF292929" RadiusX="3" RadiusY="3" />
+            <Viewbox>
+                <TextBlock Foreground="#FFABFA9c" Padding="2" Text="Pot: 0" x:Name="TextBlock_PotTotal"/>
+            </Viewbox>
+        </Grid>
+
+        <local:UcReplayerPlayer Style="{StaticResource StyleUcPlayer}" Margin="485,1,0,0" x:Name="UcPlayer0" />
+        <local:UcReplayerPlayer Style="{StaticResource StyleUcPlayer}" Margin="634,82,0,0" x:Name="UcPlayer1" />
+        <local:UcReplayerPlayer Style="{StaticResource StyleUcPlayer}" Margin="644,176,0,0" x:Name="UcPlayer2" />
+        <local:UcReplayerPlayer Style="{StaticResource StyleUcPlayer}" Margin="634,264,0,0" x:Name="UcPlayer3" />
+        <local:UcReplayerPlayer Style="{StaticResource StyleUcPlayer}" Margin="434,325,0,0" x:Name="UcPlayer4" />
+        <local:UcReplayerPlayer Style="{StaticResource StyleUcPlayer}" Margin="217,325,0,0" x:Name="UcPlayer5" />
+        <local:UcReplayerPlayer Style="{StaticResource StyleUcPlayer}" Margin="16,265,0,0" x:Name="UcPlayer6" />
+        <local:UcReplayerPlayer Style="{StaticResource StyleUcPlayer}" Margin="6,176,0,0" x:Name="UcPlayer7" />
+        <local:UcReplayerPlayer Style="{StaticResource StyleUcPlayer}" Margin="16,82,0,0" x:Name="UcPlayer8" />
+        <local:UcReplayerPlayer Style="{StaticResource StyleUcPlayer}" Margin="166,1,0,0" x:Name="UcPlayer9" />
+
+        <Image Style="{StaticResource StyleImageCommunityCard}" Source="../../Images/Resources/Replayer/Cards/back.png" Margin="268,144,0,0" x:Name="Image_CommunityCard0" />
+        <Image Style="{StaticResource StyleImageCommunityCard}" Source="../../Images/Resources/Replayer/Cards/back.png" Margin="322,144,0,0" x:Name="Image_CommunityCard1" />
+        <Image Style="{StaticResource StyleImageCommunityCard}" Source="../../Images/Resources/Replayer/Cards/back.png" Margin="376,144,0,0" x:Name="Image_CommunityCard2" />
+        <Image Style="{StaticResource StyleImageCommunityCard}" Source="../../Images/Resources/Replayer/Cards/back.png" Margin="430,144,0,0" x:Name="Image_CommunityCard3" />
+        <Image Style="{StaticResource StyleImageCommunityCard}" Source="../../Images/Resources/Replayer/Cards/back.png" Margin="484,144,0,0" x:Name="Image_CommunityCard4" />
+
+        <Image HorizontalAlignment="Left" VerticalAlignment="Top" Width="22" Height="20" Source="../../Images/Resources/Replayer/Chips/chip-d.png" Margin="0,0,0,0" x:Name="Image_Button" />
+
+        <local:UcReplayerPot HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,150" x:Name="UcPot_Main" />
+
+        <local:UcReplayerPlayerBetRight Style="{StaticResource StyleUcPlayerBetRight}" Margin="0,0,279,280" x:Name="UcPlayerBet0" />
+        <local:UcReplayerPlayerBetRight Style="{StaticResource StyleUcPlayerBetRight}" Margin="0,0,198,253" x:Name="UcPlayerBet1" />
+        <local:UcReplayerPlayerBetRight Style="{StaticResource StyleUcPlayerBetRight}" Margin="0,0,185,167" x:Name="UcPlayerBet2" />
+        <local:UcReplayerPlayerBetRight Style="{StaticResource StyleUcPlayerBetRight}" Margin="0,0,205,124" x:Name="UcPlayerBet3" />
+        <local:UcReplayerPlayerBetRight Style="{StaticResource StyleUcPlayerBetRight}" Margin="0,0,299,103" x:Name="UcPlayerBet4" />
+        <local:UcReplayerPlayerBetLeft Style="{StaticResource StyleUcPlayerBetLeft}" Margin="311,0,0,103" x:Name="UcPlayerBet5" />
+        <local:UcReplayerPlayerBetLeft Style="{StaticResource StyleUcPlayerBetLeft}" Margin="204,0,0,124" x:Name="UcPlayerBet6" />
+        <local:UcReplayerPlayerBetLeft Style="{StaticResource StyleUcPlayerBetLeft}" Margin="184,0,0,167" x:Name="UcPlayerBet7" />
+        <local:UcReplayerPlayerBetLeft Style="{StaticResource StyleUcPlayerBetLeft}" Margin="197,0,0,253" x:Name="UcPlayerBet8" />
+        <local:UcReplayerPlayerBetLeft Style="{StaticResource StyleUcPlayerBetLeft}" Margin="282,0,0,280" x:Name="UcPlayerBet9" />
+
+    </Grid>
+</UserControl>
