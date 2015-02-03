@@ -20,6 +20,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using PsHandler.Custom;
 using Image = System.Windows.Controls.Image;
 
@@ -91,7 +92,7 @@ namespace PsHandler.UI
             miExit.Click += (sender, args) => Close();
             miExit.Icon = new Image
             {
-                Source = Methods.GetEmbeddedResourceBitmap(string.Format("PsHandler.Images.EmbeddedResources.Size16x16.door_out.png")).ToBitmapSource(),
+                Source = new BitmapImage(new Uri(string.Format(@"/PsHandler;component/Images/Resources/Size16x16/door_out.png"), UriKind.Relative)),
                 Width = 16,
                 Height = 16,
                 Margin = new Thickness(5, 0, 0, 0)

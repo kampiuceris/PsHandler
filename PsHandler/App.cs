@@ -47,38 +47,8 @@ namespace PsHandler
 
         public App()
         {
-            //var pokerHand = PokerHand.FromHandHistory(File.ReadAllText(@"C:\Users\WinWork\Desktop\test.txt"));
-            //pokerHand.Ev = new Ev(pokerHand, new[] { 0.6m, 0.1m, 0.1m, 0.1m, 0.1m }, pokerHand.BuyIn * pokerHand.TableSize, pokerHand.Currency);
-
             WindowReplayer = new WindowReplayer();
             WindowReplayer.Show();
-
-            //new Thread(() =>
-            //{
-            //    var filePaths = Directory.GetFiles(@"C:\HM2Archive\PokerStars\2014", "*.txt", SearchOption.AllDirectories).Where(a => a.Contains("HH") || a.Contains("TS")).ToArray();
-            //    foreach (var filePath in filePaths)
-            //    {
-            //        var pokerData = PokerData.FromText(File.ReadAllText(filePath));
-            //        foreach (var pokerHand in pokerData.PokerHands)
-            //        {
-            //            Current.Dispatcher.Invoke(() =>
-            //            {
-            //                WindowReplayer.UcReplayerTable_Main.ReplayHand(pokerHand);
-            //                WindowReplayer.UcReplayerTable_Main._table.UnDoCommandsAll();
-            //            });
-            //            while (WindowReplayer.UcReplayerTable_Main._table.ToDo.Any())
-            //            {
-            //                Current.Dispatcher.Invoke(() =>
-            //                {
-            //                    WindowReplayer.UcReplayerTable_Main.DoCommand();
-            //                });
-            //                Thread.Sleep(0);
-            //            }
-            //            Debug.WriteLine(pokerHand.TournamentNumber + " " + pokerHand.HandNumber);
-            //        }
-            //        Debug.WriteLine(new FileInfo(filePath).Name);
-            //    }
-            //}).Start();
 
             return;
 

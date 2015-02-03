@@ -86,7 +86,7 @@ namespace PsHandler.UI
         public TableInfo(Table table)
         {
             Table = table;
-            _imageSource = Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.poker.png").ToBitmapSource();
+            _imageSource = new BitmapImage(new Uri(string.Format(@"/PsHandler;component/Images/Resources/Size16x16/poker.png"), UriKind.Relative));
         }
 
         public void Update()

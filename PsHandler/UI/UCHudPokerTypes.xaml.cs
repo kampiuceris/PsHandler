@@ -160,7 +160,7 @@ namespace PsHandler.UI
 
             Image image = new Image
             {
-                Source = Methods.GetEmbeddedResourceBitmap(string.Format("PsHandler.Images.EmbeddedResources.Size16x16.tag_blue.png")).ToBitmapSource(),
+                Source = new BitmapImage(new Uri(string.Format(@"/PsHandler;component/Images/Resources/Size16x16/tag_blue.png"), UriKind.Relative)),
                 Width = 16,
                 Height = 16,
                 Margin = new Thickness(0, 0, 0, 0)

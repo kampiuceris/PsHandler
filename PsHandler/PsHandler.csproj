@@ -522,13 +522,10 @@
     <Resource Include="Images\Resources\Size16x16\folder_delete.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\update.png" />
+    <Resource Include="Images\Resources\Size16x16\update.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\door_out.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\cancel.png" />
+    <Resource Include="Images\Resources\Size16x16\door_out.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\PsHandler.ico" />
@@ -541,9 +538,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Resources\Size16x16\poker.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\poker.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Resources\Size16x16\page.png" />
@@ -578,9 +572,6 @@
     <Resource Include="Images\Resources\Size16x16\tile_edit.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\application_cascade.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\Resources\Size16x16\chips.png" />
     <Resource Include="Images\Resources\Size16x16\three_tags.png" />
     <Resource Include="Images\Resources\Size16x16\time.png" />
@@ -591,7 +582,7 @@
     <Resource Include="Images\Resources\Size16x16\tag_blue_edit.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\EmbeddedResources\Size16x16\tag_blue.png" />
+    <Resource Include="Images\Resources\Size16x16\tag_blue.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Resources\Size16x16\delete.png" />
@@ -774,7 +765,25 @@
     <Resource Include="Images\Resources\Replayer\Chips\chip-d.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Resources\Size16x16\range.png" />
+    <Resource Include="Images\Resources\Size16x16\resultset_next.png" />
+    <Resource Include="Images\Resources\Size16x16\resultset_previous.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size32x32\resultset_next.png" />
+    <Resource Include="Images\Resources\Size32x32\resultset_previous.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\calculator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size32x32\resultset_first.png" />
+    <Resource Include="Images\Resources\Size32x32\resultset_last.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\text_document.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\clipboard_invoice.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
