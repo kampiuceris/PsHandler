@@ -117,9 +117,10 @@
     <Compile Include="Import\Tournament.cs" />
     <Compile Include="KeyboardHook.cs" />
     <Compile Include="PokerMath\Ev.cs" />
-    <Compile Include="PokerMath\HandAnalysis.cs" />
-    <Compile Include="PokerMath\HandEvaluator.cs" />
-    <Compile Include="PokerMath\HandIterator.cs" />
+    <Compile Include="PokerMath\EvaluationAndScenarios.cs" />
+    <Compile Include="PokerMath\Evaluator\HandAnalysis.cs" />
+    <Compile Include="PokerMath\Evaluator\HandEvaluator.cs" />
+    <Compile Include="PokerMath\Evaluator\HandIterator.cs" />
     <Compile Include="PokerTypes\PokerType.cs" />
     <Compile Include="PokerTypes\PokerTypeManager.cs" />
     <Compile Include="PokerTypes\WindowPokerTypeEdit.xaml.cs">

@@ -213,6 +213,21 @@ namespace PsHandler.Custom
             }
             //});
         }
+
+        public static string GetClipboardText()
+        {
+            var text = Clipboard.GetText();
+            if (string.IsNullOrEmpty(text))
+            {
+                return "";
+            }
+            return text;
+        }
+
+        public static void SetClipboardText(string text)
+        {
+            Clipboard.SetText(text);
+        }
     }
 
     public static class ExtensionMethods

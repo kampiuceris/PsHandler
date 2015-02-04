@@ -443,6 +443,7 @@ namespace PsHandler.PokerMath
         public List<PokerCommand> PokerCommands = new List<PokerCommand>();
 
         public object Ev;
+        public bool Showdown;
 
         public static PokerHand FromHandHistory(string handHistoryText)
         {
@@ -687,7 +688,7 @@ namespace PsHandler.PokerMath
 
         private static bool AnalyzeLine(string text, PokerHand pokerHand)
         {
-            if (text.Equals("*** SHOW DOWN ***")) { pokerHand.PokerCommands.Add(new PokerCommands.CollectPots(Street.River)); pokerHand.PokerCommands.Add(new PokerCommands.FinalizePots()); return true; }
+            if (text.Equals("*** SHOW DOWN ***")) { pokerHand.PokerCommands.Add(new PokerCommands.CollectPots(Street.River)); pokerHand.PokerCommands.Add(new PokerCommands.FinalizePots()); pokerHand.Showdown = true; return true; }
             if (text.Equals("*** HOLE CARDS ***")) return true;
             if (text.Equals("*** SUMMARY ***")) return true;
             if (text.StartsWith("Board [")) return true;
@@ -1379,7 +1380,7 @@ namespace PsHandler.PokerMath
 
         public virtual void Undo(Table table)
         {
-            table.Log("[UnDo] " + CommandText);
+            table.Log("[Undo] " + CommandText);
         }
     }
 
@@ -1387,7 +1388,8 @@ namespace PsHandler.PokerMath
     {
         Unknown,
         Preflop,
-        Flop, Turn,
+        Flop,
+        Turn,
         River
     }
 

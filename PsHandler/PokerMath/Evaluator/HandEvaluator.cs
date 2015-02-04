@@ -18,7 +18,7 @@ using System;
 using System.Diagnostics;
 using System.Text;
 
-namespace PsHandler.PokerMath
+namespace PsHandler.PokerMath.Evaluator
 {
     #region Hand Class
     /// <example>

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace PsHandler.PokerMath
+namespace PsHandler.PokerMath.Evaluator
 {
     public partial class Hand : IComparable
     {

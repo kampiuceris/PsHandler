@@ -63,7 +63,7 @@ namespace PsHandler.UI
     {
         public WindowMessageResult Result = WindowMessageResult.None;
 
-        public WindowMessage(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner, WindowStartupLocation windowStartupLocation)
+        public WindowMessage(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner, WindowStartupLocation windowStartupLocation, FontFamily fontFamily = null)
         {
             InitializeComponent();
 
@@ -128,6 +128,11 @@ namespace PsHandler.UI
                     Button_OK.Visibility = Visibility.Visible;
                     break;
             }
+
+            if (fontFamily != null)
+            {
+                TextBlock_Message.FontFamily = fontFamily;
+            }
         }
 
         private void Button_OK_Click(object sender, RoutedEventArgs e)
@@ -156,16 +161,16 @@ namespace PsHandler.UI
 
         //
 
-        public static WindowMessageResult Show(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner, WindowStartupLocation windowStartupLocation = WindowStartupLocation.CenterOwner)
+        public static WindowMessageResult Show(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner, WindowStartupLocation windowStartupLocation = WindowStartupLocation.CenterOwner, FontFamily fontFamily = null)
         {
-            WindowMessage windowMessage = new WindowMessage(message, title, buttons, image, owner, windowStartupLocation);
+            WindowMessage windowMessage = new WindowMessage(message, title, buttons, image, owner, windowStartupLocation, fontFamily);
             ((Window)windowMessage).Show();
             return windowMessage.Result;
         }
 
-        public static WindowMessageResult ShowDialog(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner, WindowStartupLocation windowStartupLocation = WindowStartupLocation.CenterOwner)
+        public static WindowMessageResult ShowDialog(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner, WindowStartupLocation windowStartupLocation = WindowStartupLocation.CenterOwner, FontFamily fontFamily = null)
         {
-            WindowMessage windowMessage = new WindowMessage(message, title, buttons, image, owner, windowStartupLocation);
+            WindowMessage windowMessage = new WindowMessage(message, title, buttons, image, owner, windowStartupLocation, fontFamily);
             ((Window)windowMessage).ShowDialog();
             return windowMessage.Result;
         }

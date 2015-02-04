@@ -20,7 +20,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace PsHandler.PokerMath
+namespace PsHandler.PokerMath.Evaluator
 {
     public partial class Hand : IComparable
     {
@@ -29,23 +29,11 @@ namespace PsHandler.PokerMath
 
         #region Evaluation
 
-        public static EvaluationPocket Evaluate(Pocket[] pockets, string[] boardStr, string[] deadStr)
+        public static EvaluationPocket Evaluate(string[][] pocketCardsStr, string[] boardStr, string[] deadStr)
         {
-            string[] pocketsStr = new string[pockets.Length];
-            for (int p = 0; p < pockets.Length; p++)
-            {
-                pocketsStr[p] = pockets[p].ToString();
-            }
-            return Evaluate(pocketsStr, boardStr.Aggregate("", (a, b) => a + b), deadStr.Aggregate("", (a, b) => a + b));
-        }
+            int pocketsCount = pocketCardsStr.GetLength(0);
 
-        public static EvaluationPocket Evaluate(string[] pocketsStr, string boardStr = null, string deadStr = null)
-        {
-            if (boardStr == null) boardStr = "";
-            if (deadStr == null) deadStr = "";
-            int pocketsCount = pocketsStr.Length;
-
-            int totalBoards = Eval(pocketsStr, boardStr, deadStr);
+            int totalBoards = Eval(pocketCardsStr, boardStr, deadStr);
 
             ScenarioNode root = new ScenarioNode();
             int[] values = new int[pocketsCount];
@@ -58,19 +46,15 @@ namespace PsHandler.PokerMath
                 root.Add(ScenarioNode.Normalize(values), 1);
             }
 
-            return new EvaluationPocket(
-                Pocket.FromString(pocketsStr.Aggregate("", (a, b) => a + b)),
-                Masking.GetMaskCards(boardStr),
-                Masking.GetMaskCards(deadStr),
-                root.CollectScenarios());
+            return new EvaluationPocket(pocketCardsStr, boardStr, deadStr, root.CollectScenarios());
         }
 
-        private static int Eval(string[] pockets, string board, string dead)
+        private static int Eval(string[][] pocketCardsStr, IEnumerable<string> boardStr, IEnumerable<string> deadStr)
         {
-            int pocketsCount = pockets.Length;
+            int pocketsCount = pocketCardsStr.GetLength(0);
             ulong[] pocketmasks = new ulong[pocketsCount];
-            int count = 0, bestcount;
-            ulong boardmask = 0UL, deadcards_mask = 0UL, deadcards = Hand.ParseHand(dead, ref count);
+            int count = 0;
+            ulong boardmask, deadcards_mask = 0UL, deadcards = ParseHand(deadStr.Aggregate("", (a, b) => a + b), ref count);
 
             int totalHands = 0;
             deadcards_mask |= deadcards;
@@ -79,14 +63,14 @@ namespace PsHandler.PokerMath
             for (int i = 0; i < pocketsCount; i++)
             {
                 count = 0;
-                pocketmasks[i] = Hand.ParseHand(pockets[i], "", ref count);
+                pocketmasks[i] = Hand.ParseHand(pocketCardsStr[i].Aggregate("", (a, b) => a + b), "", ref count);
                 if (count != 2) throw new ArgumentException("There must be two pocket cards."); // Must have 2 cards in each pocket card set.
                 deadcards_mask |= pocketmasks[i];
             }
 
             // Read board cards
             count = 0;
-            boardmask = Hand.ParseHand("", board, ref count);
+            boardmask = Hand.ParseHand("", boardStr.Aggregate("", (a, b) => a + b), ref count);
 
             // Iterate through all board possiblities that doesn't include any pocket cards.
             foreach (ulong boardhand in Hands(boardmask, deadcards_mask, 5))
@@ -1012,274 +996,6 @@ namespace PsHandler.PokerMath
                 sb.Append(UnmaskCard(i));
             }
             return sb.ToString();
-        }
-    }
-
-    #endregion
-
-    #region Pocket / PocketRange
-
-    public class Pocket
-    {
-        public int Card0;
-        public int Card1;
-
-        public Pocket(string pocketCardsStr)
-        {
-            Card0 = Masking.GetMaskCard(pocketCardsStr[0], pocketCardsStr[1]);
-            Card1 = Masking.GetMaskCard(pocketCardsStr[2], pocketCardsStr[3]);
-        }
-
-        public Pocket(string[] pocketCardsStr)
-        {
-            Card0 = Masking.GetMaskCard(pocketCardsStr[0][0], pocketCardsStr[0][1]);
-            Card1 = Masking.GetMaskCard(pocketCardsStr[1][0], pocketCardsStr[1][1]);
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0}{1}", Masking.UnmaskCard(Card0), Masking.UnmaskCard(Card1));
-        }
-
-        public static Pocket[] FromString(string pocketCardsStr)
-        {
-            pocketCardsStr = pocketCardsStr.Replace(" ", "");
-            Pocket[] pockets = new Pocket[pocketCardsStr.Length / 4];
-            for (int i = 0; i < pockets.Length; i++)
-            {
-                pockets[i] = new Pocket(pocketCardsStr.Substring(i * 4, 4));
-            }
-            return pockets;
-        }
-    }
-
-    public class PocketRange
-    {
-        public Pocket[] Pockets;
-
-        public PocketRange(Pocket[] pockets)
-        {
-            Pockets = pockets;
-        }
-
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (var pocket in Pockets)
-            {
-                sb.Append(Masking.UnmaskCard(pocket.Card0) + Masking.UnmaskCard(pocket.Card1) + " ");
-            }
-            return sb.ToString().TrimEnd(' ');
-        }
-    }
-
-    #endregion
-
-    #region Evaluation / EvaluationPocket / EvaluationRange
-
-    public class Evaluation
-    {
-        public int PlayerCount;
-        public int[] BoardCards;
-        public int[] DeadCards;
-        public Scenario[] Scenarios;
-        public long TotalBoardsEvaluated;
-        public double[] Odds;
-
-        public Evaluation(int playerCount, Scenario[] scenarios)
-        {
-            PlayerCount = playerCount;
-            Scenarios = scenarios;
-            TotalBoardsEvaluated = Scenarios.Sum(o => o.Count);
-            CalculateOdds();
-        }
-
-        private void CalculateOdds()
-        {
-            Odds = new double[PlayerCount];
-            foreach (var handEnding in Scenarios)
-            {
-                int winnerCount = handEnding.Places.Count(o => o == 0);
-                for (int i = 0; i < handEnding.Places.Length; i++)
-                {
-                    if (handEnding.Places[i] == 0)
-                    {
-                        Odds[i] += (double)handEnding.Count / winnerCount;
-                    }
-                }
-            }
-            for (int i = 0; i < Odds.Length; i++)
-            {
-                Odds[i] = Odds[i] / TotalBoardsEvaluated;
-            }
-        }
-    }
-
-    public class EvaluationPocket : Evaluation
-    {
-        public Pocket[] Pockets;
-
-        public EvaluationPocket(Pocket[] pockets, int[] boardCards, int[] deadCards, Scenario[] scenarios)
-            : base(pockets.Length, scenarios)
-        {
-            Pockets = pockets;
-            BoardCards = boardCards;
-            DeadCards = deadCards;
-        }
-    }
-
-    public class EvaluationRange : Evaluation
-    {
-        public PocketRange[] PocketRanges;
-
-        public EvaluationRange(PocketRange[] pocketRanges, int[] boardCards, int[] deadCards, Scenario[] scenarios)
-            : base(pocketRanges.Length, scenarios)
-        {
-            PocketRanges = pocketRanges;
-            BoardCards = boardCards;
-            DeadCards = deadCards;
-        }
-    }
-
-    #endregion
-
-    #region Scenario / ScenarioNode
-
-    public class Scenario
-    {
-        public int[] Places = null;
-        public long Count = 0;
-
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            for (int i = 0; i < Places.Length; i++)
-            {
-                sb.Append(string.Format("{0,-3}", Places[i]));
-            }
-
-            return string.Format("{0}, {1}", Count, sb);
-        }
-    }
-
-    internal class ScenarioNode
-    {
-        private ScenarioNode[] _children;
-        public int[] Places;
-        public long Count = 0;
-
-        public void Add(int[] places, int index, long count)
-        {
-            if (index == places.Length)
-            {
-                if (Places == null)
-                {
-                    Places = places.Clone() as int[];
-                }
-                Count += count;
-            }
-            else
-            {
-                if (_children == null)
-                {
-                    _children = new ScenarioNode[places.Length];
-                }
-                if (_children[places[index]] == null)
-                {
-                    _children[places[index]] = new ScenarioNode();
-                }
-                _children[places[index]].Add(places, index + 1, count);
-            }
-        }
-
-        public void Add(int[] places, long count)
-        {
-            Add(places, 0, count);
-        }
-
-        public void Add(int[] places)
-        {
-            Add(places, 0, 1);
-        }
-
-        public List<ScenarioNode> CollectLeafs()
-        {
-            var leafs = new List<ScenarioNode>();
-            CollectLeafs(ref leafs);
-            //leafs.Sort((o0, o1) => o1.Count - o0.Count);
-            leafs.Sort((o0, o1) => o1.Count > o0.Count ? 1 : o1.Count < o0.Count ? -1 : 0);
-            return leafs;
-        }
-
-        private void CollectLeafs(ref List<ScenarioNode> leafs)
-        {
-            if (Count > 0)
-            {
-                leafs.Add(this);
-            }
-            else if (_children != null)
-            {
-                foreach (var child in _children)
-                {
-                    if (child != null)
-                    {
-                        child.CollectLeafs(ref leafs);
-                    }
-                }
-            }
-        }
-
-        public static int[] Normalize(int[] values)
-        {
-            int[] places = new int[values.Length];
-            int currentPlace = 0, lessThan = int.MaxValue, maxValue;
-            bool wasFound = true;
-
-            while (wasFound)
-            {
-                // find max value
-                maxValue = 0;
-                for (int i = 0; i < values.Length; i++)
-                {
-                    if (values[i] > maxValue && values[i] < lessThan)
-                    {
-                        maxValue = values[i];
-                    }
-                }
-                // check if not found to break loop
-                if (maxValue == 0)
-                {
-                    wasFound = false;
-                }
-                // if found set places
-                if (wasFound)
-                {
-                    for (int i = 0; i < values.Length; i++)
-                    {
-                        if (values[i] == maxValue)
-                        {
-                            places[i] = currentPlace;
-                        }
-                    }
-                    currentPlace++;
-                    lessThan = maxValue;
-                }
-            }
-
-            return places;
-        }
-
-        public Scenario[] CollectScenarios()
-        {
-            // collect leafs
-            List<ScenarioNode> leafs = CollectLeafs();
-            Scenario[] scenarios = new Scenario[leafs.Count];
-            for (int i = 0; i < leafs.Count; i++)
-            {
-                scenarios[i] = new Scenario { Places = leafs[i].Places, Count = leafs[i].Count };
-            }
-            return scenarios;
         }
     }
 

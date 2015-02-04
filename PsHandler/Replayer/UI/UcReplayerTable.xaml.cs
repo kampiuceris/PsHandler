@@ -1,19 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+﻿// PsHandler - poker software helping tool.
+// Copyright (C) 2014  kampiuceris
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using PsHandler.PokerMath;
 
 namespace PsHandler.Replayer.UI
@@ -26,9 +31,9 @@ namespace PsHandler.Replayer.UI
         private readonly UcReplayerPlayer[] _ucReplayerPlayers = new UcReplayerPlayer[10];
         private readonly IReplayerBet[] _ucReplayerPlayerBets = new IReplayerBet[10];
         private readonly Image[] _imageCommunityCards = new Image[10];
-        private PokerHand _pokerHand = new PokerHand();
-        public PokerMath.Table _table = new PokerMath.Table();
-        public int PreferredSeat = 4;
+        public PokerHand PokerHand = new PokerHand();
+        public PokerMath.Table Table = new PokerMath.Table();
+        public int PreferredSeat = 4; // TODO
 
         public UcReplayerTable()
         {
@@ -63,13 +68,11 @@ namespace PsHandler.Replayer.UI
             _imageCommunityCards[4] = Image_CommunityCard4;
 
             CleanTable();
-
-            Loaded += (sender, args) => ReplayHand(PokerData.FromText(File.ReadAllText(@"C:\Users\WinWork\Desktop\test.txt")).PokerHands[0]); //TODO
         }
 
         //
 
-        private void CleanTable()
+        public void CleanTable()
         {
             for (int i = 0; i < 10; i++)
             {
@@ -87,7 +90,7 @@ namespace PsHandler.Replayer.UI
 
         private int MapToPreferredSeat(int seat)
         {
-            var dealtTo = _pokerHand.PokerCommands.OfType<PokerCommands.DealtTo>();
+            var dealtTo = PokerHand.PokerCommands.OfType<PokerCommands.DealtTo>();
             if (!dealtTo.Any())
             {
                 return seat;
@@ -191,19 +194,23 @@ namespace PsHandler.Replayer.UI
         public void ReplayHand(PokerHand pokerHand)
         {
             CleanTable();
-            _pokerHand = pokerHand;
-            _table.LoadHand(_pokerHand);
-            GoToPreflop();
+            PokerHand = pokerHand;
+
+            if (PokerHand != null)
+            {
+                Table.LoadHand(PokerHand);
+                GoToPreflop();
+            }
         }
 
         private void VisualizeHandState()
         {
             // players
-            for (int i = 0; i < _pokerHand.Seats.Length; i++)
+            for (int i = 0; i < PokerHand.Seats.Length; i++)
             {
                 var mappedId = MapToPreferredSeat(i);
 
-                var player = _pokerHand.Seats[i];
+                var player = PokerHand.Seats[i];
                 if (player == null)
                 {
                     SetPlayerVisible(mappedId, false);
@@ -220,35 +227,35 @@ namespace PsHandler.Replayer.UI
 
                     if (player.IsHero)
                     {
-                        SetPlayerCards(mappedId, _table.UnDo.Any(a => a is PokerCommands.DealtTo) ? player.PocketCards : null);
+                        SetPlayerCards(mappedId, Table.UnDo.Any(a => a is PokerCommands.DealtTo) ? player.PocketCards : null);
                     }
                     else
                     {
-                        SetPlayerCards(mappedId, _table.UnDo.OfType<PokerCommands.Shows>().Any(a => a.Player == player) ? player.PocketCards : null);
+                        SetPlayerCards(mappedId, Table.UnDo.OfType<PokerCommands.Shows>().Any(a => a.Player == player) ? player.PocketCards : null);
                     }
                 }
             }
 
             // button
-            SetButton(MapToPreferredSeat(_pokerHand.ButtonSeat));
+            SetButton(MapToPreferredSeat(PokerHand.ButtonSeat));
 
             // pot + pot total
-            var potsTotal = _table.Pots.Sum(a => a.Amount);
-            var potsAlreadyCollected = _table.UnDo.OfType<PokerCommands.CollectFromPot>().Sum(a => a.Amount);
+            var potsTotal = Table.Pots.Sum(a => a.Amount);
+            var potsAlreadyCollected = Table.UnDo.OfType<PokerCommands.CollectFromPot>().Sum(a => a.Amount);
             SetPot(potsTotal - potsAlreadyCollected);
             SetPotTotal(potsTotal - potsAlreadyCollected + _ucReplayerPlayerBets.Sum(a => a.GetAmount()));
 
             // community cards
             for (int i = 0; i < 5; i++) SetCommunityCard(i, null);
-            foreach (var flop in _table.UnDo.OfType<PokerCommands.Flop>()) for (int i = 0; i < flop.FlopCards.Length; i++) SetCommunityCard(i, flop.FlopCards[i]);
-            foreach (var turn in _table.UnDo.OfType<PokerCommands.Turn>()) SetCommunityCard(3, turn.TurnCard);
-            foreach (var river in _table.UnDo.OfType<PokerCommands.River>()) SetCommunityCard(4, river.RiverCard);
+            foreach (var flop in Table.UnDo.OfType<PokerCommands.Flop>()) for (int i = 0; i < flop.FlopCards.Length; i++) SetCommunityCard(i, flop.FlopCards[i]);
+            foreach (var turn in Table.UnDo.OfType<PokerCommands.Turn>()) SetCommunityCard(3, turn.TurnCard);
+            foreach (var river in Table.UnDo.OfType<PokerCommands.River>()) SetCommunityCard(4, river.RiverCard);
 
             // next action glow
             foreach (var ucReplayerPlayer in _ucReplayerPlayers) ucReplayerPlayer.SetActionGlow(false);
-            if (_table.ToDo.Any())
+            if (Table.ToDo.Any())
             {
-                var pokerCommand = _table.ToDo.First();
+                var pokerCommand = Table.ToDo.First();
                 if (pokerCommand is PokerCommands.Fold) _ucReplayerPlayers[MapToPreferredSeat(((PokerCommands.Fold)pokerCommand).Player.SeatNumber)].SetActionGlow(true);
                 if (pokerCommand is PokerCommands.Check) _ucReplayerPlayers[MapToPreferredSeat(((PokerCommands.Check)pokerCommand).Player.SeatNumber)].SetActionGlow(true);
                 if (pokerCommand is PokerCommands.Call) _ucReplayerPlayers[MapToPreferredSeat(((PokerCommands.Call)pokerCommand).Player.SeatNumber)].SetActionGlow(true);
@@ -289,17 +296,17 @@ namespace PsHandler.Replayer.UI
 
         public void DoCommand()
         {
-            while (_table.ToDo.Any() && (_table.ToDo[0] is PokerCommands.CollectPots || _table.ToDo[0] is PokerCommands.FinalizePots))
+            while (Table.ToDo.Any() && (Table.ToDo[0] is PokerCommands.CollectPots || Table.ToDo[0] is PokerCommands.FinalizePots))
             {
-                _table.ToDoCommand();
+                Table.ToDoCommand();
             }
-            _table.ToDoCommand();
+            Table.ToDoCommand();
             VisualizeHandState();
-            PostCommandVisualFixes(_table.UnDo.FirstOrDefault());
+            PostCommandVisualFixes(Table.UnDo.FirstOrDefault());
 
             if (App.WindowReplayer != null)
             {
-                var pokerCommand = _table.UnDo.FirstOrDefault(a => !(a is PokerCommands.CollectPots) && !(a is PokerCommands.FinalizePots));
+                var pokerCommand = Table.UnDo.FirstOrDefault(a => !(a is PokerCommands.CollectPots) && !(a is PokerCommands.FinalizePots));
                 if (pokerCommand != null)
                 {
                     App.WindowReplayer.TextBlock_Chat.Text = string.Format("[Do] {0}", pokerCommand.CommandText);
@@ -309,17 +316,17 @@ namespace PsHandler.Replayer.UI
 
         public void UndoCommand()
         {
-            _table.UnDoCommand();
-            while (_table.UnDo.Any() && (_table.UnDo[0] is PokerCommands.CollectPots || _table.UnDo[0] is PokerCommands.FinalizePots))
+            Table.UnDoCommand();
+            while (Table.UnDo.Any() && (Table.UnDo[0] is PokerCommands.CollectPots || Table.UnDo[0] is PokerCommands.FinalizePots))
             {
-                _table.UnDoCommand();
+                Table.UnDoCommand();
             }
             VisualizeHandState();
-            PostCommandVisualFixes(_table.UnDo.FirstOrDefault());
+            PostCommandVisualFixes(Table.UnDo.FirstOrDefault());
 
             if (App.WindowReplayer != null)
             {
-                var pokerCommand = _table.ToDo.FirstOrDefault(a => !(a is PokerCommands.CollectPots) && !(a is PokerCommands.FinalizePots));
+                var pokerCommand = Table.ToDo.FirstOrDefault(a => !(a is PokerCommands.CollectPots) && !(a is PokerCommands.FinalizePots));
                 if (pokerCommand != null)
                 {
                     App.WindowReplayer.TextBlock_Chat.Text = string.Format("[Undo] {0}", pokerCommand.CommandText);
@@ -329,7 +336,7 @@ namespace PsHandler.Replayer.UI
 
         public void DoCommandAll()
         {
-            while (_table.ToDo.Any())
+            while (Table.ToDo.Any())
             {
                 DoCommand();
             }
@@ -337,7 +344,7 @@ namespace PsHandler.Replayer.UI
 
         public void UndoCommandAll()
         {
-            while (_table.UnDo.Any())
+            while (Table.UnDo.Any())
             {
                 UndoCommand();
             }
@@ -346,9 +353,9 @@ namespace PsHandler.Replayer.UI
         public void GoToPreflop()
         {
             UndoCommandAll();
-            while (_table.ToDo.Any())
+            while (Table.ToDo.Any())
             {
-                var pokerCommand = _table.ToDo.First();
+                var pokerCommand = Table.ToDo.First();
                 if (pokerCommand is PokerCommands.Fold || pokerCommand is PokerCommands.Call || pokerCommand is PokerCommands.Raise)
                 {
                     break;
@@ -360,10 +367,10 @@ namespace PsHandler.Replayer.UI
         public void GoToFlop()
         {
             UndoCommandAll();
-            while (_table.ToDo.Any())
+            while (Table.ToDo.Any())
             {
                 DoCommand();
-                if (_table.UnDo.Any() && _table.UnDo.First() is PokerCommands.Flop)
+                if (Table.UnDo.Any() && Table.UnDo.First() is PokerCommands.Flop)
                 {
                     break;
                 }
@@ -373,10 +380,10 @@ namespace PsHandler.Replayer.UI
         public void GoToTurn()
         {
             UndoCommandAll();
-            while (_table.ToDo.Any())
+            while (Table.ToDo.Any())
             {
                 DoCommand();
-                if (_table.UnDo.Any() && _table.UnDo.First() is PokerCommands.Turn)
+                if (Table.UnDo.Any() && Table.UnDo.First() is PokerCommands.Turn)
                 {
                     break;
                 }
@@ -386,10 +393,10 @@ namespace PsHandler.Replayer.UI
         public void GoToRiver()
         {
             UndoCommandAll();
-            while (_table.ToDo.Any())
+            while (Table.ToDo.Any())
             {
                 DoCommand();
-                if (_table.UnDo.Any() && _table.UnDo.First() is PokerCommands.River)
+                if (Table.UnDo.Any() && Table.UnDo.First() is PokerCommands.River)
                 {
                     break;
                 }

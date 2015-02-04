@@ -1,21 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿// PsHandler - poker software helping tool.
+// Copyright (C) 2014  kampiuceris
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using PsHandler.Custom;
 using PsHandler.PokerMath;
+using PsHandler.UI;
 
 namespace PsHandler.Replayer.UI
 {
@@ -95,16 +99,34 @@ namespace PsHandler.Replayer.UI
 
         private void Button_HandHistory_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-        private void Button_CalculateEv_Click(object sender, RoutedEventArgs e)
-        {
-
+            var pokerHand = UcReplayerTable_Main.PokerHand;
+            if (pokerHand != null)
+            {
+                WindowMessage.Show(pokerHand.HandHistory, "Hand History", WindowMessageButtons.OK, WindowMessageImage.None, this, WindowStartupLocation.CenterScreen);
+            }
         }
 
         private void Button_PasteFromClipboard_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                UcReplayerTable_Main.ReplayHand(PokerHand.FromHandHistory(Methods.GetClipboardText()));
+            }
+            catch
+            {
+                UcReplayerTable_Main.ReplayHand(null);
+            }
+        }
 
+        private void Button_CalculateEv_Click(object sender, RoutedEventArgs e)
+        {
+            var pokerHand = UcReplayerTable_Main.PokerHand;
+            if (pokerHand != null)
+            {
+                var tempPokerHand = PokerHand.FromHandHistory(pokerHand.HandHistory);
+                var tempEv = new Ev(tempPokerHand, new[] { 0.6m, 0.1m, 0.1m, 0.1m, 0.1m }, tempPokerHand.BuyIn * tempPokerHand.TableSize, tempPokerHand.Currency, PokerMath.Evaluator.Hand.Evaluate);
+                WindowMessage.Show(tempEv.ToString(), "Expected Value Analysis", WindowMessageButtons.OK, WindowMessageImage.None, this, WindowStartupLocation.CenterScreen, new FontFamily("Consolas"));
+            }
         }
 
         private void Button_GoToPreflop_Click(object sender, RoutedEventArgs e)

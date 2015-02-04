@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -38,7 +37,6 @@ namespace PsHandler.PokerMath
         public string[] PlayerNames;
         public int HeroId;
         public string[][] PocketCards;
-        public bool[] HandVisibleAtShowdown;
 
         public Street EvRegularAllInStreet;
         public ExpectedValue EvRegular;
@@ -46,6 +44,8 @@ namespace PsHandler.PokerMath
         public ExpectedValueStreetByStreet EvStreetByStreet;
         public ExpectedValueStreetByStreet EvStreetByStreetFullInfo;
 
+        public delegate EvaluationPocket Evaluate(string[][] pocketCardsStr, string[] boardCardsStr, string[] deadCardsStr);
+        private readonly Evaluate _evaluate;
         private readonly PokerHand _pokerHand;
         private readonly Table _table;
         private string[] _communityCards;
@@ -53,19 +53,20 @@ namespace PsHandler.PokerMath
         private string _communityCardsTurn;
         private string _communityCardsRiver;
 
-        public Ev(PokerHand pokerHand, decimal[] icmPayouts, decimal prizePool, PokerEnums.Currency currency)
+        public Ev(PokerHand pokerHand, decimal[] icmPayouts, decimal prizePool, PokerEnums.Currency currency, Evaluate evaluate)
         {
             _pokerHand = pokerHand;
             IcmPayouts = icmPayouts;
             PrizePool = prizePool;
             Currency = currency;
+            _evaluate = evaluate;
 
             _table = new Table();
             _table.LoadHand(pokerHand);
 
             InitInfo();
 
-            if (pokerHand.PokerCommands.Any(o => o is PokerCommands.FinalizePots))
+            if (pokerHand.Showdown)
             {
                 CalculateEvStreetByStreet();
 
@@ -75,8 +76,6 @@ namespace PsHandler.PokerMath
                     CalculateEvRegular();
                 }
             }
-
-            Debug.WriteLine(ToString());
         }
 
         private void InitInfo()
@@ -131,12 +130,10 @@ namespace PsHandler.PokerMath
             // playernames + pockets + pockets visibility
             PlayerNames = new string[_table.PlayerCount];
             PocketCards = new string[_table.PlayerCount][];
-            HandVisibleAtShowdown = new bool[_table.PlayerCount];
             for (int i = 0; i < _table.PlayerCount; i++)
             {
                 PlayerNames[i] = _table.Players[i].PlayerName;
                 PocketCards[i] = _table.Players[i].PocketCards;
-                HandVisibleAtShowdown[i] = _table.Players[i].IsInPlay;
                 if (_table.Players[i].IsHero) HeroId = i;
             }
         }
@@ -260,7 +257,7 @@ namespace PsHandler.PokerMath
                 Street street = Street.Preflop;
                 ExpectedValue ev = new ExpectedValue { Street = street };
                 ExpectedValue evFullInfo = new ExpectedValue { Street = street };
-                CalculateEv(_table, street, _communityCards, potsPreflop, stacksBeforeCollection[0], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
+                CalculateEv(_evaluate, _table, street, _communityCards, potsPreflop, stacksBeforeCollection[0], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
                 EvStreetByStreet.Evs.Add(ev);
                 EvStreetByStreetFullInfo.Evs.Add(evFullInfo);
             }
@@ -269,7 +266,7 @@ namespace PsHandler.PokerMath
                 Street street = Street.Flop;
                 ExpectedValue ev = new ExpectedValue { Street = street };
                 ExpectedValue evFullInfo = new ExpectedValue { Street = street };
-                CalculateEv(_table, street, _communityCards, potsFlop, stacksBeforeCollection[1], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
+                CalculateEv(_evaluate, _table, street, _communityCards, potsFlop, stacksBeforeCollection[1], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
                 EvStreetByStreet.Evs.Add(ev);
                 EvStreetByStreetFullInfo.Evs.Add(evFullInfo);
             }
@@ -278,7 +275,7 @@ namespace PsHandler.PokerMath
                 Street street = Street.Turn;
                 ExpectedValue ev = new ExpectedValue { Street = street };
                 ExpectedValue evFullInfo = new ExpectedValue { Street = street };
-                CalculateEv(_table, street, _communityCards, potsTurn, stacksBeforeCollection[2], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
+                CalculateEv(_evaluate, _table, street, _communityCards, potsTurn, stacksBeforeCollection[2], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
                 EvStreetByStreet.Evs.Add(ev);
                 EvStreetByStreetFullInfo.Evs.Add(evFullInfo);
             }
@@ -287,7 +284,7 @@ namespace PsHandler.PokerMath
                 Street street = Street.River;
                 ExpectedValue ev = new ExpectedValue { Street = street };
                 ExpectedValue evFullInfo = new ExpectedValue { Street = street };
-                CalculateEv(_table, street, _communityCards, potsRiver, stacksBeforeCollection[3], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
+                CalculateEv(_evaluate, _table, street, _communityCards, potsRiver, stacksBeforeCollection[3], StacksHandStart, IcmsHandEnd, IcmPayouts, ref ev, ref evFullInfo);
                 EvStreetByStreet.Evs.Add(ev);
                 EvStreetByStreetFullInfo.Evs.Add(evFullInfo);
             }
@@ -411,7 +408,7 @@ namespace PsHandler.PokerMath
             for (int i = 0; i < _table.PlayerCount; i++) stacksBeforeCollection[i] = _table.Players[i].Stack;
 
             // calculate ev
-            CalculateEv(_table, EvRegularAllInStreet, _communityCards, pots, stacksBeforeCollection, StacksHandStart, IcmsHandEnd, IcmPayouts, ref EvRegular, ref EvRegularFullInfo);
+            CalculateEv(_evaluate, _table, EvRegularAllInStreet, _communityCards, pots, stacksBeforeCollection, StacksHandStart, IcmsHandEnd, IcmPayouts, ref EvRegular, ref EvRegularFullInfo);
 
             // get weight
             EvRegular.Weight = new double[_table.PlayerCount];
@@ -423,7 +420,9 @@ namespace PsHandler.PokerMath
             }
         }
 
-        private static void CalculateEv(Table table, Street street, string[] communityCards, List<Pot> pots, decimal[] stacksBeforeCollection, decimal[] stacksHandStart, double[] icmsHandEnd, decimal[] icmPayouts, ref ExpectedValue evRegular, ref ExpectedValue evRegularFullInfo)
+        private static void CalculateEv(Evaluate evaluate, Table table, Street street, string[] communityCards, List<Pot> pots,
+            decimal[] stacksBeforeCollection, decimal[] stacksHandStart, double[] icmsHandEnd, decimal[] icmPayouts,
+            ref ExpectedValue ev, ref ExpectedValue evFullInfo)
         {
             // get all possible players
             var players = pots.First(o => o.Players.Count == pots.Max(oo => oo.Players.Count)).Players;
@@ -433,8 +432,8 @@ namespace PsHandler.PokerMath
             for (int i = 0; i < players.Count; i++) dicScenarioIndexToPlayer.Add(i, players[i]);
 
             // get pockets
-            Pocket[] pockets = new Pocket[players.Count];
-            for (int i = 0; i < players.Count; i++) pockets[i] = new Pocket(players[i].PocketCards);
+            string[][] pocketCardsStr = new string[players.Count][];
+            for (int i = 0; i < players.Count; i++) pocketCardsStr[i] = (players[i].PocketCards);
 
             // get all other known cards (dead cards)
             List<string> deadCards = new List<string>();
@@ -450,110 +449,110 @@ namespace PsHandler.PokerMath
             }
 
             // evaluate
-            var evaluation = Hand.Evaluate(pockets, communityCardsOnAllInStreet, new string[0]);
-            var evaluationFullInfo = Hand.Evaluate(pockets, communityCardsOnAllInStreet, deadCards.ToArray());
+            var evaluation = evaluate(pocketCardsStr, communityCardsOnAllInStreet, new string[0]);
+            var evaluationFullInfo = evaluate(pocketCardsStr, communityCardsOnAllInStreet, deadCards.ToArray());
 
             // save scenarios
-            evRegular.ScenarioPlaces = new int[evaluation.Scenarios.Length][];
-            evRegularFullInfo.ScenarioPlaces = new int[evaluationFullInfo.Scenarios.Length][];
-            for (int i = 0; i < evaluation.Scenarios.Length; i++) evRegular.ScenarioPlaces[i] = evaluation.Scenarios[i].Places;
-            for (int i = 0; i < evaluationFullInfo.Scenarios.Length; i++) evRegularFullInfo.ScenarioPlaces[i] = evaluationFullInfo.Scenarios[i].Places;
+            ev.ScenarioPlaces = new int[evaluation.Scenarios.Length][];
+            evFullInfo.ScenarioPlaces = new int[evaluationFullInfo.Scenarios.Length][];
+            for (int i = 0; i < evaluation.Scenarios.Length; i++) ev.ScenarioPlaces[i] = evaluation.Scenarios[i].Places;
+            for (int i = 0; i < evaluationFullInfo.Scenarios.Length; i++) evFullInfo.ScenarioPlaces[i] = evaluationFullInfo.Scenarios[i].Places;
 
             // set odds (visual purpose)
-            evRegular.Odds = new double[table.PlayerCount];
-            evRegularFullInfo.Odds = new double[table.PlayerCount];
+            ev.Odds = new double[table.PlayerCount];
+            evFullInfo.Odds = new double[table.PlayerCount];
             for (int i = 0; i < table.PlayerCount; i++)
             {
-                evRegular.Odds[i] = double.NaN;
-                evRegularFullInfo.Odds[i] = double.NaN;
+                ev.Odds[i] = double.NaN;
+                evFullInfo.Odds[i] = double.NaN;
             }
             for (int i = 0; i < evaluation.Odds.Length; i++)
             {
-                evRegular.Odds[Array.IndexOf(table.Players, players[i])] = evaluation.Odds[i];
+                ev.Odds[Array.IndexOf(table.Players, players[i])] = evaluation.Odds[i];
             }
             for (int i = 0; i < evaluationFullInfo.Odds.Length; i++)
             {
-                evRegularFullInfo.Odds[Array.IndexOf(table.Players, players[i])] = evaluationFullInfo.Odds[i];
+                evFullInfo.Odds[Array.IndexOf(table.Players, players[i])] = evaluationFullInfo.Odds[i];
             }
 
             // get probabilities/stacks/icms for scenarios
-            evRegular.ScenarioProbabilities = new double[evaluation.Scenarios.Length];
-            evRegularFullInfo.ScenarioProbabilities = new double[evaluationFullInfo.Scenarios.Length];
-            evRegular.ScenarioStacks = new decimal[evaluation.Scenarios.Length][];
-            evRegularFullInfo.ScenarioStacks = new decimal[evaluationFullInfo.Scenarios.Length][];
-            evRegular.ScenarioIcms = new double[evaluation.Scenarios.Length][];
-            evRegularFullInfo.ScenarioIcms = new double[evaluationFullInfo.Scenarios.Length][];
-            evRegular.IcmsEv = new double[table.PlayerCount];
-            evRegularFullInfo.IcmsEv = new double[table.PlayerCount];
+            ev.ScenarioProbabilities = new double[evaluation.Scenarios.Length];
+            evFullInfo.ScenarioProbabilities = new double[evaluationFullInfo.Scenarios.Length];
+            ev.ScenarioStacks = new decimal[evaluation.Scenarios.Length][];
+            evFullInfo.ScenarioStacks = new decimal[evaluationFullInfo.Scenarios.Length][];
+            ev.ScenarioIcms = new double[evaluation.Scenarios.Length][];
+            evFullInfo.ScenarioIcms = new double[evaluationFullInfo.Scenarios.Length][];
+            ev.IcmsEv = new double[table.PlayerCount];
+            evFullInfo.IcmsEv = new double[table.PlayerCount];
 
             // regular
             for (int i = 0; i < evaluation.Scenarios.Length; i++)
             {
-                evRegular.ScenarioProbabilities[i] = (double)evaluation.Scenarios[i].Count / evaluation.TotalBoardsEvaluated;
-                evRegular.ScenarioStacks[i] = (decimal[])stacksBeforeCollection.Clone();
+                ev.ScenarioProbabilities[i] = (double)evaluation.Scenarios[i].Count / evaluation.TotalBoardsEvaluated;
+                ev.ScenarioStacks[i] = (decimal[])stacksBeforeCollection.Clone();
 
                 foreach (var pot in pots)
                 {
                     List<Player> playersInPot = FindWinnersAmongPlayers(evaluation.Scenarios[i], pot.Players, dicScenarioIndexToPlayer);
-                    foreach (var player in playersInPot) evRegular.ScenarioStacks[i][Array.IndexOf(table.Players, player)] += pot.Amount / playersInPot.Count;
+                    foreach (var player in playersInPot) ev.ScenarioStacks[i][Array.IndexOf(table.Players, player)] += pot.Amount / playersInPot.Count;
                 }
 
-                evRegular.ScenarioIcms[i] = Icm.GetEquity(evRegular.ScenarioStacks[i], stacksHandStart, icmPayouts);
+                ev.ScenarioIcms[i] = Icm.GetEquity(ev.ScenarioStacks[i], stacksHandStart, icmPayouts);
                 for (int j = 0; j < table.PlayerCount; j++)
                 {
-                    evRegular.IcmsEv[j] += evRegular.ScenarioIcms[i][j] * evRegular.ScenarioProbabilities[i];
+                    ev.IcmsEv[j] += ev.ScenarioIcms[i][j] * ev.ScenarioProbabilities[i];
                 }
             }
 
             // regular full info
             for (int i = 0; i < evaluationFullInfo.Scenarios.Length; i++)
             {
-                evRegularFullInfo.ScenarioProbabilities[i] = (double)evaluationFullInfo.Scenarios[i].Count / evaluationFullInfo.TotalBoardsEvaluated;
-                evRegularFullInfo.ScenarioStacks[i] = (decimal[])stacksBeforeCollection.Clone();
+                evFullInfo.ScenarioProbabilities[i] = (double)evaluationFullInfo.Scenarios[i].Count / evaluationFullInfo.TotalBoardsEvaluated;
+                evFullInfo.ScenarioStacks[i] = (decimal[])stacksBeforeCollection.Clone();
 
                 foreach (var pot in pots)
                 {
                     List<Player> playersInPot = FindWinnersAmongPlayers(evaluationFullInfo.Scenarios[i], pot.Players, dicScenarioIndexToPlayer);
-                    foreach (var player in playersInPot) evRegularFullInfo.ScenarioStacks[i][Array.IndexOf(table.Players, player)] += pot.Amount / playersInPot.Count;
+                    foreach (var player in playersInPot) evFullInfo.ScenarioStacks[i][Array.IndexOf(table.Players, player)] += pot.Amount / playersInPot.Count;
                 }
 
-                evRegularFullInfo.ScenarioIcms[i] = Icm.GetEquity(evRegularFullInfo.ScenarioStacks[i], stacksHandStart, icmPayouts);
+                evFullInfo.ScenarioIcms[i] = Icm.GetEquity(evFullInfo.ScenarioStacks[i], stacksHandStart, icmPayouts);
                 for (int j = 0; j < table.PlayerCount; j++)
                 {
-                    evRegularFullInfo.IcmsEv[j] += evRegularFullInfo.ScenarioIcms[i][j] * evRegularFullInfo.ScenarioProbabilities[i];
+                    evFullInfo.IcmsEv[j] += evFullInfo.ScenarioIcms[i][j] * evFullInfo.ScenarioProbabilities[i];
                 }
             }
 
             // get icm diff expected value
-            evRegular.IcmsDiffEv = new double[table.PlayerCount];
-            evRegularFullInfo.IcmsDiffEv = new double[table.PlayerCount];
+            ev.IcmsDiffEv = new double[table.PlayerCount];
+            evFullInfo.IcmsDiffEv = new double[table.PlayerCount];
             for (int i = 0; i < table.PlayerCount; i++)
             {
-                evRegular.IcmsDiffEv[i] = evRegular.IcmsEv[i] - icmsHandEnd[i];
-                evRegularFullInfo.IcmsDiffEv[i] = evRegularFullInfo.IcmsEv[i] - icmsHandEnd[i];
+                ev.IcmsDiffEv[i] = ev.IcmsEv[i] - icmsHandEnd[i];
+                evFullInfo.IcmsDiffEv[i] = evFullInfo.IcmsEv[i] - icmsHandEnd[i];
             }
 
             // get chips ev
-            evRegular.ChipsEv = new decimal[table.PlayerCount];
-            evRegularFullInfo.ChipsEv = new decimal[table.PlayerCount];
+            ev.ChipsEv = new decimal[table.PlayerCount];
+            evFullInfo.ChipsEv = new decimal[table.PlayerCount];
             for (int s = 0; s < evaluation.Scenarios.Length; s++)
             {
                 for (int p = 0; p < table.PlayerCount; p++)
                 {
-                    evRegular.ChipsEv[p] += evRegular.ScenarioStacks[s][p] * (decimal)evRegular.ScenarioProbabilities[s];
+                    ev.ChipsEv[p] += ev.ScenarioStacks[s][p] * (decimal)ev.ScenarioProbabilities[s];
                 }
             }
             for (int s = 0; s < evaluationFullInfo.Scenarios.Length; s++)
             {
                 for (int p = 0; p < table.PlayerCount; p++)
                 {
-                    evRegularFullInfo.ChipsEv[p] += evRegularFullInfo.ScenarioStacks[s][p] * (decimal)evRegularFullInfo.ScenarioProbabilities[s];
+                    evFullInfo.ChipsEv[p] += evFullInfo.ScenarioStacks[s][p] * (decimal)evFullInfo.ScenarioProbabilities[s];
                 }
             }
             for (int p = 0; p < table.PlayerCount; p++)
             {
-                evRegular.ChipsEv[p] = Math.Round(evRegular.ChipsEv[p], 5);
-                evRegularFullInfo.ChipsEv[p] = Math.Round(evRegular.ChipsEv[p], 5);
+                ev.ChipsEv[p] = Math.Round(ev.ChipsEv[p], 5);
+                evFullInfo.ChipsEv[p] = Math.Round(ev.ChipsEv[p], 5);
             }
         }
 
@@ -589,39 +588,38 @@ namespace PsHandler.PokerMath
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendLine(string.Format("BuyIng: {0} {1:0.00}", _pokerHand.Currency, _pokerHand.TotalBuyIn));
+            sb.AppendLine("---------------------------------------------------");
+            sb.AppendLine();
+            sb.AppendLine(string.Format("Total BuyIn: {0} {1:0.00}", _pokerHand.Currency, _pokerHand.TotalBuyIn));
             sb.AppendLine(string.Format("Prize Pool: {0} {1:0.00}", _pokerHand.Currency, PrizePool));
             StringBuilder sbPayouts = new StringBuilder(); foreach (var icmPayout in IcmPayouts) sbPayouts.Append(string.Format("{0:0.#####}, ", icmPayout)); sb.AppendLine(string.Format("Icm Payouts = {{ {0} }}", sbPayouts.ToString().TrimEnd(' ', ',')));
             sb.AppendLine();
 
             if (EvRegular != null)
             {
-                sb.AppendLine("### Regular Ev ###").AppendLine();
+                sb.AppendLine("--------- Regular Ev ---------").AppendLine();
                 sb.AppendLine(ToString(EvRegular));
-                sb.AppendLine();
             }
 
             if (EvRegularFullInfo != null)
             {
-                sb.AppendLine("### Regular Ev (Full Info) ###").AppendLine();
+                sb.AppendLine("--------- Regular Ev (Full Info) ---------").AppendLine();
                 sb.AppendLine(ToString(EvRegularFullInfo));
-                sb.AppendLine();
             }
 
             if (EvStreetByStreet != null)
             {
-                sb.AppendLine("### Street By Street Ev ###").AppendLine();
+                sb.AppendLine("--------- Street By Street Ev ---------").AppendLine();
                 sb.AppendLine(ToString(EvStreetByStreet));
-                sb.AppendLine();
             }
 
             if (EvStreetByStreetFullInfo != null)
             {
-                sb.AppendLine("### Street By Street Ev (Full Info) ###").AppendLine();
+                sb.AppendLine("--------- Street By Street Ev (Full Info) ---------").AppendLine();
                 sb.AppendLine(ToString(EvStreetByStreetFullInfo));
-                sb.AppendLine();
             }
 
+            sb.AppendLine("---------------------------------------------------");
             return sb.ToString();
         }
 
@@ -633,17 +631,15 @@ namespace PsHandler.PokerMath
             {
                 string pocketStr = ""; if (PocketCards[i] != null) pocketStr = PocketCards[i].Where(o => o != null).Aggregate(pocketStr, (current, pocketCard) => current + (pocketCard + " ")); pocketStr = pocketStr.TrimEnd(' ');
 
-                sb.AppendLine(string.Format("{0,-15} {3,-5}{6,-2}{4,-7} {1}{2:0.00} {5}",
-                    PlayerNames[i], EvRegular.IcmsDiffEv[i] > 0 ? "+" : "",
+                sb.AppendLine(string.Format("{0,-15} {3,-6} {4,-7} {1}{2:0.00} {5}",
+                    PlayerNames[i],
+                    EvRegular.IcmsDiffEv[i] > 0 ? "+" : "",
                     ev.IcmsDiffEv[i] * (double)PrizePool,
                     pocketStr,
                     double.IsNaN(EvRegular.Odds[i]) ? "" : string.Format("{0:0.00%}", ev.Odds[i]),
-                    i == HeroId ? "(Hero)" : "",
-                    string.IsNullOrEmpty(pocketStr) ? "" : HandVisibleAtShowdown[i] ? "" : " *"
+                    i == HeroId ? "(Hero)" : ""
                     ));
             }
-
-            sb.AppendLine();
 
             return sb.ToString();
         }
@@ -656,17 +652,15 @@ namespace PsHandler.PokerMath
             {
                 string pocketStr = ""; if (PocketCards[i] != null) pocketStr = PocketCards[i].Where(o => o != null).Aggregate(pocketStr, (current, pocketCard) => current + (pocketCard + " ")); pocketStr = pocketStr.TrimEnd(' ');
 
-                sb.AppendLine(string.Format("{0,-15} {3,-5}{6,-2}{4,-7} {1}{2:0.00} {5}",
-                    PlayerNames[i], EvStreetByStreet.IcmsDiffEv[i] > 0 ? "+" : "",
+                sb.AppendLine(string.Format("{0,-15} {3,-6} {4,-7} {1}{2:0.00} {5}",
+                    PlayerNames[i],
+                    EvStreetByStreet.IcmsDiffEv[i] > 0 ? "+" : "",
                     evsbs.IcmsDiffEv[i] * (double)PrizePool,
                     pocketStr,
                     "",
-                    i == HeroId ? "(Hero)" : "",
-                    string.IsNullOrEmpty(pocketStr) ? "" : HandVisibleAtShowdown[i] ? "" : " *"
+                    i == HeroId ? "(Hero)" : ""
                     ));
             }
-
-            sb.AppendLine();
 
             return sb.ToString();
         }
