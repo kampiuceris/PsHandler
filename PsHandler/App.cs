@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Windows.Media.Imaging;
 using Hardcodet.Wpf.TaskbarNotification;
 using PsHandler.Custom;
 using PsHandler.Import;
@@ -47,10 +48,9 @@ namespace PsHandler
 
         public App()
         {
-            WindowReplayer = new WindowReplayer();
-            WindowReplayer.Show();
-
-            return;
+            //WindowReplayer = new WindowReplayer();
+            //WindowReplayer.Show();
+            //return;
 
             RegisterHook();
 
@@ -135,15 +135,17 @@ namespace PsHandler
 #if DEBUG
             //Autoupdate.CheckForUpdates(Config.UPDATE_HREF + "?v=" + Config.VERSION + "&id=" + (string.IsNullOrEmpty(Config.MACHINE_GUID) ? "" : Config.MACHINE_GUID),
             //    Config.UPDATE_HREF, "PsHandler", "PsHandler.exe", AppDomain.CurrentDomain.BaseDirectory, WindowMain, Quit,
-            //    Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.update.png").ToBitmapSource(),
-            //    Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.cancel.png").ToBitmapSource(),
-            //    Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.update.png").ToBitmapSource());
+            //    new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/update.png", UriKind.Absolute)),
+            //    new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/cancel.png", UriKind.Absolute)),
+            //    new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/update.png", UriKind.Absolute))
+            //    );
+
 #else
             Autoupdate.CheckForUpdates(Config.UPDATE_HREF + "?v=" + Config.VERSION + "&id=" + (string.IsNullOrEmpty(Config.MACHINE_GUID) ? "" : Config.MACHINE_GUID),
                 Config.UPDATE_HREF, "PsHandler", "PsHandler.exe", AppDomain.CurrentDomain.BaseDirectory, WindowMain, Quit,
-                Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.update.png").ToBitmapSource(),
-                Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.cancel.png").ToBitmapSource(),
-                Methods.GetEmbeddedResourceBitmap("PsHandler.Images.EmbeddedResources.Size16x16.update.png").ToBitmapSource());
+                new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/update.png", UriKind.Absolute)),
+                new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/cancel.png", UriKind.Absolute)),
+                new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/update.png", UriKind.Absolute))
 #endif
         }
 

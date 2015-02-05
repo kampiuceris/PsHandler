@@ -26,6 +26,7 @@ using System.Windows;
 using System.Windows.Media;
 using PsHandler.Custom;
 using PsHandler.Import;
+using PsHandler.PokerMath;
 using PsHandler.PokerTypes;
 
 namespace PsHandler.Hud
@@ -33,7 +34,7 @@ namespace PsHandler.Hud
     public class TableHud : IDisposable
     {
         private readonly Thread _thread;
-        public TableSize TableSize = TableSize.Default;
+        public PokerEnums.TableSize TableSize = PokerEnums.TableSize.Default;
         public long TournamentNumber = -1;
         public long LastHandNumber = -1;
         public decimal Sb, Bb, Ante;
@@ -85,7 +86,7 @@ namespace PsHandler.Hud
 
                                 #region BigBlind
 
-                                TableSize tableSize = tournament.GetLastHandTableSize();
+                                var tableSize = tournament.GetLastHandTableSize();
                                 decimal latestStack = tournament.GetLatestStack(hero);
                                 if (latestStack != decimal.MinValue)
                                 {
@@ -137,7 +138,7 @@ namespace PsHandler.Hud
                                     if (_pokerType != null)
                                     {
                                         DateTime dateTimeUtcNow = DateTime.UtcNow.AddSeconds(-Config.TimerDiff);
-                                        DateTime dateTimeUtcNextLevel = tournament.GetFirstHandTimestampUtc();
+                                        DateTime dateTimeUtcNextLevel = tournament.GetFirstHandTimestampET();
                                         while (dateTimeUtcNextLevel < dateTimeUtcNow)
                                         {
                                             dateTimeUtcNextLevel = dateTimeUtcNextLevel + _pokerType.LevelLength;

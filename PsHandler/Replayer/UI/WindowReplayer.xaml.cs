@@ -147,7 +147,7 @@ namespace PsHandler.Replayer.UI
         {
             try
             {
-                UcReplayerTable_Main.ReplayHand(PokerHand.FromHandHistory(Methods.GetClipboardText()));
+                UcReplayerTable_Main.ReplayHand(PokerHand.Parse(Methods.GetClipboardText()));
             }
             catch
             {
@@ -160,15 +160,15 @@ namespace PsHandler.Replayer.UI
             var payouts = GetPayouts();
             if (payouts == null)
             {
-                WindowMessage.ShowDialog("Invalid payouts.", "Error", WindowMessageButtons.OK, WindowMessageImage.Error, this, WindowStartupLocation.CenterOwner);
+                WindowMessage.ShowDialog("Invalid payouts.", "Error", WindowMessageButtons.OK, WindowMessageImage.Error, this);
                 return;
             }
 
             var pokerHand = UcReplayerTable_Main.PokerHand;
             if (pokerHand != null)
             {
-                var tempPokerHand = PokerHand.FromHandHistory(pokerHand.HandHistory);
-                var tempEv = new Ev(tempPokerHand, payouts, tempPokerHand.BuyIn * tempPokerHand.TableSize, tempPokerHand.Currency, PokerMath.Evaluator.Hand.Evaluate);
+                var tempPokerHand = PokerHand.Parse(pokerHand.HandHistory);
+                var tempEv = new Ev(tempPokerHand, payouts, tempPokerHand.BuyIn * (int)tempPokerHand.TableSize, tempPokerHand.Currency, PokerMath.Evaluator.Hand.Evaluate);
                 WindowMessage.Show(tempEv.ToString(), "Expected Value Analysis", WindowMessageButtons.OK, WindowMessageImage.None, this, WindowStartupLocation.CenterOwner, new FontFamily("Consolas"));
             }
         }

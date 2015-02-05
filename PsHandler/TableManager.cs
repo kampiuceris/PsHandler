@@ -25,6 +25,7 @@ using System.Xml.Linq;
 using PsHandler.Custom;
 using PsHandler.Hud;
 using PsHandler.Import;
+using PsHandler.PokerMath;
 
 namespace PsHandler
 {
@@ -229,14 +230,14 @@ namespace PsHandler
         public static bool HudBigBlindLocationLocked { set; get; }
 
         // Default, Max10, Max9, Max8, Max7,  Max6, Max4, Max2
-        public static float[] HudTimerLocationX = new float[Enum.GetNames(typeof(TableSize)).Length];
-        public static float[] HudTimerLocationY = new float[Enum.GetNames(typeof(TableSize)).Length];
-        public static float[] HudBigBlindLocationX = new float[Enum.GetNames(typeof(TableSize)).Length];
-        public static float[] HudBigBlindLocationY = new float[Enum.GetNames(typeof(TableSize)).Length];
+        public static float[] HudTimerLocationX = new float[Enum.GetNames(typeof(PokerEnums.TableSize)).Length];
+        public static float[] HudTimerLocationY = new float[Enum.GetNames(typeof(PokerEnums.TableSize)).Length];
+        public static float[] HudBigBlindLocationX = new float[Enum.GetNames(typeof(PokerEnums.TableSize)).Length];
+        public static float[] HudBigBlindLocationY = new float[Enum.GetNames(typeof(PokerEnums.TableSize)).Length];
 
         // Timer
 
-        public static void SetHudTimerLocationX(TableSize tableSize, float value, object sender)
+        public static void SetHudTimerLocationX(PokerEnums.TableSize tableSize, float value, object sender)
         {
             if (value > 5) value = 5; if (value < -5) value = -5;
             HudTimerLocationX[(int)tableSize] = value;
@@ -245,7 +246,7 @@ namespace PsHandler
                 App.WindowMain.UCHud.UCHudTimer.TextBoxesLocationX[(int)tableSize].Text = HudTimerLocationX[(int)tableSize].ToString(CultureInfo.InvariantCulture);
             }
         }
-        public static void SetHudTimerLocationY(TableSize tableSize, float value, object sender)
+        public static void SetHudTimerLocationY(PokerEnums.TableSize tableSize, float value, object sender)
         {
             if (value > 5) value = 5; if (value < -5) value = -5;
             HudTimerLocationY[(int)tableSize] = value;
@@ -254,18 +255,18 @@ namespace PsHandler
                 App.WindowMain.UCHud.UCHudTimer.TextBoxesLocationY[(int)tableSize].Text = HudTimerLocationY[(int)tableSize].ToString(CultureInfo.InvariantCulture);
             }
         }
-        public static float GetHudTimerLocationX(TableSize tableSize, object sender)
+        public static float GetHudTimerLocationX(PokerEnums.TableSize tableSize, object sender)
         {
             return HudTimerLocationX[(int)tableSize];
         }
-        public static float GetHudTimerLocationY(TableSize tableSize, object sender)
+        public static float GetHudTimerLocationY(PokerEnums.TableSize tableSize, object sender)
         {
             return HudTimerLocationY[(int)tableSize];
         }
 
         // BigBlind
 
-        public static void SetHudBigBlindLocationX(TableSize tableSize, float value, object sender)
+        public static void SetHudBigBlindLocationX(PokerEnums.TableSize tableSize, float value, object sender)
         {
             if (value > 5) value = 5; if (value < -5) value = -5;
             HudBigBlindLocationX[(int)tableSize] = value;
@@ -274,7 +275,7 @@ namespace PsHandler
                 App.WindowMain.UCHud.UCHudBigBlind.TextBoxesLocationX[(int)tableSize].Text = HudBigBlindLocationX[(int)tableSize].ToString(CultureInfo.InvariantCulture);
             }
         }
-        public static void SetHudBigBlindLocationY(TableSize tableSize, float value, object sender)
+        public static void SetHudBigBlindLocationY(PokerEnums.TableSize tableSize, float value, object sender)
         {
             if (value > 5) value = 5; if (value < -5) value = -5;
             HudBigBlindLocationY[(int)tableSize] = value;
@@ -283,11 +284,11 @@ namespace PsHandler
                 App.WindowMain.UCHud.UCHudBigBlind.TextBoxesLocationY[(int)tableSize].Text = HudBigBlindLocationY[(int)tableSize].ToString(CultureInfo.InvariantCulture);
             }
         }
-        public static float GetHudBigBlindLocationX(TableSize tableSize, object sender)
+        public static float GetHudBigBlindLocationX(PokerEnums.TableSize tableSize, object sender)
         {
             return HudBigBlindLocationX[(int)tableSize];
         }
-        public static float GetHudBigBlindLocationY(TableSize tableSize, object sender)
+        public static float GetHudBigBlindLocationY(PokerEnums.TableSize tableSize, object sender)
         {
             return HudBigBlindLocationY[(int)tableSize];
         }
@@ -300,7 +301,7 @@ namespace PsHandler
         {
             var xElement = new XElement("HudTimerLocations");
 
-            foreach (TableSize tableSize in Enum.GetValues(typeof(TableSize)))
+            foreach (PokerEnums.TableSize tableSize in Enum.GetValues(typeof(PokerEnums.TableSize)))
             {
                 xElement.Add(new XElement("Location",
                     new XElement("TableSize", tableSize),
@@ -316,7 +317,7 @@ namespace PsHandler
         {
             var xElement = new XElement("HudBigBlindLocations");
 
-            foreach (TableSize tableSize in Enum.GetValues(typeof(TableSize)))
+            foreach (PokerEnums.TableSize tableSize in Enum.GetValues(typeof(PokerEnums.TableSize)))
             {
                 xElement.Add(new XElement("Location",
                     new XElement("TableSize", tableSize),
@@ -334,7 +335,7 @@ namespace PsHandler
             {
                 try
                 {
-                    TableSize tableSize = Enum.GetValues(typeof(TableSize)).Cast<TableSize>().FirstOrDefault(ts => ts.ToString().Equals(xlocation.Element("TableSize").Value));
+                    var tableSize = Enum.GetValues(typeof(PokerEnums.TableSize)).Cast<PokerEnums.TableSize>().FirstOrDefault(ts => ts.ToString().Equals(xlocation.Element("TableSize").Value));
                     SetHudTimerLocationX(tableSize, float.Parse(xlocation.Element("LocationX").Value), null);
                     SetHudTimerLocationY(tableSize, float.Parse(xlocation.Element("LocationY").Value), null);
                 }
@@ -351,7 +352,7 @@ namespace PsHandler
             {
                 try
                 {
-                    TableSize tableSize = Enum.GetValues(typeof(TableSize)).Cast<TableSize>().FirstOrDefault(ts => ts.ToString().Equals(xlocation.Element("TableSize").Value));
+                    var tableSize = Enum.GetValues(typeof(PokerEnums.TableSize)).Cast<PokerEnums.TableSize>().FirstOrDefault(ts => ts.ToString().Equals(xlocation.Element("TableSize").Value));
                     SetHudBigBlindLocationX(tableSize, float.Parse(xlocation.Element("LocationX").Value), null);
                     SetHudBigBlindLocationY(tableSize, float.Parse(xlocation.Element("LocationY").Value), null);
                 }

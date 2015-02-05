@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using PsHandler.Custom;
+using PsHandler.PokerMath;
 
 namespace PsHandler.Import
 {
@@ -108,9 +109,9 @@ namespace PsHandler.Import
                         {
                             lock (_lock)
                             {
-                                int importErrors;
-                                List<Hand> hands = Hand.Parse(File.ReadAllText(fi.FullName), out importErrors); // import time 
-                                _importErrors += importErrors;
+                                PokerData pokerData = PokerData.FromText(File.ReadAllText(fi.FullName));
+                                List<Hand> hands = pokerData.PokerHands.Select(pokerHand => Hand.Parse(pokerHand.HandHistory)).Where(hand => hand != null).ToList();
+                                _importErrors += pokerData.ErrorHandHistories.Count;
                                 _tournaments.Add(new Tournament { TournamentNumber = tournamentNumber, FileInfo = fi, Hands = hands, LastLength = fi.Length });
                             }
                         }
@@ -134,9 +135,9 @@ namespace PsHandler.Import
             tournament.FileInfo = new FileInfo(tournament.FileInfo.FullName);
             if (tournament.FileInfo.Length > tournament.LastLength)
             {
-                int importErrors;
-                List<Hand> hands = Hand.Parse(Methods.ReadSeek(tournament.FileInfo.FullName, tournament.LastLength), out importErrors);
-                _importErrors += importErrors;
+                PokerData pokerData = PokerData.FromText(Methods.ReadSeek(tournament.FileInfo.FullName, tournament.LastLength));
+                List<Hand> hands = pokerData.PokerHands.Select(pokerHand => Hand.Parse(pokerHand.HandHistory)).Where(hand => hand != null).ToList();
+                _importErrors += pokerData.ErrorHandHistories.Count;
                 tournament.LastLength = tournament.FileInfo.Length;
                 tournament.AddHands(hands);
             }

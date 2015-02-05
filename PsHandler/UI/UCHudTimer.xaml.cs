@@ -31,6 +31,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PsHandler.Hud;
 using PsHandler.Import;
+using PsHandler.PokerMath;
 using PsHandler.UI.ToolTips;
 
 namespace PsHandler.UI
@@ -86,8 +87,8 @@ namespace PsHandler.UI
 
             for (int i = 0; i < TextBoxesLocationX.Length; i++)
             {
-                TextBoxesLocationX[i].Text = TableManager.GetHudTimerLocationX((TableSize)i, TextBoxesLocationX[i]).ToString(CultureInfo.InvariantCulture);
-                TextBoxesLocationY[i].Text = TableManager.GetHudTimerLocationY((TableSize)i, TextBoxesLocationY[i]).ToString(CultureInfo.InvariantCulture);
+                TextBoxesLocationX[i].Text = TableManager.GetHudTimerLocationX((PokerEnums.TableSize)i, TextBoxesLocationX[i]).ToString(CultureInfo.InvariantCulture);
+                TextBoxesLocationY[i].Text = TableManager.GetHudTimerLocationY((PokerEnums.TableSize)i, TextBoxesLocationY[i]).ToString(CultureInfo.InvariantCulture);
             }
 
             // Hook values
@@ -136,7 +137,7 @@ namespace PsHandler.UI
                     float f;
                     if (float.TryParse(TextBoxesLocationX[i1].Text, out f))
                     {
-                        TableManager.SetHudTimerLocationX((TableSize)i1, f, TextBoxesLocationX[i1]);
+                        TableManager.SetHudTimerLocationX((PokerEnums.TableSize)i1, f, TextBoxesLocationX[i1]);
                     }
                 };
                 TextBoxesLocationY[i].TextChanged += (sender, args) =>
@@ -144,7 +145,7 @@ namespace PsHandler.UI
                     float f;
                     if (float.TryParse(TextBoxesLocationY[i1].Text, out f))
                     {
-                        TableManager.SetHudTimerLocationY((TableSize)i1, f, TextBoxesLocationY[i1]);
+                        TableManager.SetHudTimerLocationY((PokerEnums.TableSize)i1, f, TextBoxesLocationY[i1]);
                     }
                 };
             }

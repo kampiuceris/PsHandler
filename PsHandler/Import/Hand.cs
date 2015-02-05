@@ -17,28 +17,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Shapes;
+using PsHandler.PokerMath;
 
 namespace PsHandler.Import
 {
-    // SeatMax
-
-    public enum TableSize
-    {
-        Default,
-        Max1,
-        Max2,
-        Max3,
-        Max4,
-        Max5,
-        Max6,
-        Max7,
-        Max8,
-        Max9,
-        Max10,
-    }
-
     // Level
 
     public class Level
@@ -49,257 +34,108 @@ namespace PsHandler.Import
         public bool IsAnteDefined;
     }
 
-    // Player
-
-    public class Player
-    {
-        public string Name;
-        public decimal Stack;
-        public decimal Bet;
-
-        public override string ToString()
-        {
-            return string.Format("{0} {1} ({2})", Name, Stack, Bet);
-        }
-    }
-
     // Hand
 
-    public class Hand
+    public class Hand : PokerHand
     {
-        public long HandNumber;
-        public long TournamentNumber;
-        public DateTime Timestamp;
-        public TimeZone TimeZone;
-        public DateTime TimestampUtc;
-        public Player[] Players;
-        public Player[] PlayersAfterHand;
-        public TableSize TableSize;
-        public short ButtonSeat;
         public Level Level;
+        public string[] PlayerNames;
+        public decimal[] StacksAfterHand;
 
-        private readonly List<Player> _players = new List<Player>();
-        private bool _smallBlindCollectPots;
-
-        public static List<Hand> Parse(string text, out int importErrors)
+        public Hand(string handHistoryText)
+            : base(handHistoryText)
         {
-            List<Hand> hands = new List<Hand>();
-
-            string[] handsText = text.Split(new[] { "PokerStars Ha" }, StringSplitOptions.RemoveEmptyEntries);
-            List<string> handHistories = new List<string>();
-            for (int i = 0; i < handsText.Length; i++)
+            Level = new Level { SmallBlind = LevelSmallBlind, BigBlind = LevelBigBlind, Ante = LevelAnte, IsAnteDefined = true };
+            var table = new PokerMath.Table();
+            table.LoadHand(this);
+            table.ToDoCommandsAll();
+            PlayerNames = new string[table.PlayerCount];
+            StacksAfterHand = new decimal[table.PlayerCount];
+            for (int i = 0; i < table.PlayerCount; i++)
             {
-                if (handsText[i].StartsWith("nd #"))
-                {
-                    handHistories.Add("PokerStars Ha" + handsText[i]);
-                }
+                PlayerNames[i] = table.Players[i].PlayerName;
+                StacksAfterHand[i] = table.Players[i].Stack;
             }
+        }
 
+        public new static Hand Parse(string handHistoryText)
+        {
+            try { return new Hand(handHistoryText); }
+            catch { return null; }
+        }
+
+        public static List<Hand> ___Parse(string text, out int importErrors)
+        {
             importErrors = 0;
+            var hands = new List<Hand>();
 
-            foreach (string ht in handHistories)
+            string[] handHistories, tournamentSummaries;
+            GetHandHistoriesTournamentSummaries(text, out handHistories, out tournamentSummaries);
+            foreach (var handHistory in handHistories)
             {
-                try
+                var hand = Parse(handHistory);
+                if (hand != null)
                 {
-                    string[] lines = ht.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                    Hand hand = new Hand();
-
-                    foreach (string line in lines)
-                    {
-                        AnalyzeLine(line, ref hand);
-                    }
-
-                    // finalize hand
-                    hand.Players = hand._players.ToArray();
-                    hand.PlayersAfterHand = hand.Players.Where(o => o.Stack > 0).ToArray();
-
                     hands.Add(hand);
                 }
-                catch
+                else
                 {
                     importErrors++;
                 }
             }
-
             return hands;
         }
 
-        public override string ToString()
+        private static void GetHandHistoriesTournamentSummaries(string text, out string[] handHistories, out string[] tournamentSummaries)
         {
-            return string.Format("Hand: {0}, [{1}], Players: {2}", HandNumber, Timestamp, Players.Length);
-        }
-
-        //
-
-        public static Regex RegexHeader = new Regex(@"\APokerStars Hand #(?<hand_id>\d+): Tournament #(?<tournament_id>\d+),.+ Level (?<level_number>(I|V|X|L|C|D|M))+ \((?<level_sb>\d+)\/(?<level_bb>\d+)\) - (?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z");
-        public static Regex RegexSeatMaxButton = new Regex(@"\ATable '\d+ \d+' (?<table_size>\d+)-max Seat #(?<button_seat>\d+) is the button");
-        public static Regex RegexSeat = new Regex(@"Seat \d{1,2}: (?<name>.+) \((?<stack>\d+) in chips\)");
-        public static Regex RegexAnte = new Regex(@"(?<name>.+): posts the ante (?<amount>\d+)");
-        public static Regex RegexSmallBlind = new Regex(@"(?<name>.+): posts small blind (?<amount>\d+)");
-        public static Regex RegexBigBlind = new Regex(@"(?<name>.+): posts big blind (?<amount>\d+)");
-        public static Regex RegexFlop = new Regex(@"\*\*\* FLOP \*\*\*");
-        public static Regex RegexTurn = new Regex(@"\*\*\* TURN \*\*\*");
-        public static Regex RegexRiver = new Regex(@"\*\*\* RIVER \*\*\*");
-        public static Regex RegexBets = new Regex(@"(?<name>.+): bets (?<amount>\d+)");
-        public static Regex RegexCalls = new Regex(@"(?<name>.+): calls (?<amount>\d+)");
-        public static Regex RegexRaises = new Regex(@"(?<name>.+): raises (?<amount>\d+) to (?<amount_total>\d+)");
-        public static Regex RegexUncalledAmount = new Regex(@"Uncalled bet \((?<amount>\d+)\) returned to (?<name>.+)");
-        public static Regex RegexCollectedFromPot = new Regex(@"(?<name>.+) collected (?<amount>\d+) from.+pot");
-
-        private static void AnalyzeLine(string line, ref Hand hand)
-        {
-            Match match;
-
-            match = RegexHeader.Match(line);
-            if (match.Success)
+            var lines = text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            while (lines.Any() && !lines[0].StartsWith("PokerStars Hand #") && !lines[0].StartsWith("PokerStars Zoom Hand #") && !lines[0].StartsWith("PokerStars Tournament #"))
             {
-                hand.HandNumber = long.Parse(match.Groups["hand_id"].Value);
-                hand.TournamentNumber = long.Parse(match.Groups["tournament_id"].Value);
-                int year = int.Parse(match.Groups["year_et"].Value);
-                int month = int.Parse(match.Groups["month_et"].Value);
-                int day = int.Parse(match.Groups["day_et"].Value);
-                int hour = int.Parse(match.Groups["hour_et"].Value);
-                int minute = int.Parse(match.Groups["minute_et"].Value);
-                int second = int.Parse(match.Groups["second_et"].Value);
-                hand.TimeZone = TimeZones.AllTimeZones.First(o => o.Code.Equals(match.Groups["timezone_et"].Value));
-                hand.Timestamp = new DateTime(year, month, day, hour, minute, second);
-                hand.TimestampUtc = hand.Timestamp - hand.TimeZone.TimeDifference;
-                hand.Level = new Level
+                lines.RemoveAt(0);
+            }
+
+            List<string> hhs = new List<string>();
+            List<string> tss = new List<string>();
+            StringBuilder sb = new StringBuilder();
+            bool isPokerHand = false, isTournamentSummary = false;
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("PokerStars Hand #") || line.StartsWith("PokerStars Zoom Hand #"))
                 {
-                    SmallBlind = int.Parse(match.Groups["level_sb"].Value),
-                    BigBlind = int.Parse(match.Groups["level_bb"].Value),
-                    IsAnteDefined = false,
-                };
-                return;
-            }
+                    if (sb.Length > 0)
+                    {
+                        if (isPokerHand) hhs.Add(sb.ToString());
+                        if (isTournamentSummary) tss.Add(sb.ToString());
+                    }
+                    sb.Clear();
 
-            match = RegexSeatMaxButton.Match(line);
-            if (match.Success)
+                    isPokerHand = true;
+                    isTournamentSummary = false;
+                }
+                else if (line.StartsWith("PokerStars Tournament #"))
+                {
+                    if (sb.Length > 0)
+                    {
+                        if (isPokerHand) hhs.Add(sb.ToString());
+                        if (isTournamentSummary) tss.Add(sb.ToString());
+                    }
+                    sb.Clear();
+
+                    isPokerHand = false;
+                    isTournamentSummary = true;
+                }
+
+                sb.AppendLine(line);
+            }
+            if (sb.Length > 0)
             {
-                hand.TableSize = (TableSize)int.Parse(match.Groups["table_size"].Value);
-                hand.ButtonSeat = short.Parse(match.Groups["button_seat"].Value);
-                return;
+                if (isPokerHand) hhs.Add(sb.ToString());
+                if (isTournamentSummary) tss.Add(sb.ToString());
             }
 
-            match = RegexSeat.Match(line);
-            if (match.Success)
-            {
-                hand._players.Add(new Player { Name = match.Groups["name"].Value, Stack = decimal.Parse(match.Groups["stack"].Value) });
-                return;
-            }
-
-            match = RegexAnte.Match(line);
-            if (match.Success)
-            {
-                Player player = hand._players.First(p => p.Name.Equals(match.Groups["name"].Value));
-                decimal amount = decimal.Parse(match.Groups["amount"].Value);
-                player.Stack -= amount;
-                player.Bet += amount;
-                return;
-            }
-
-            match = RegexSmallBlind.Match(line);
-            if (match.Success)
-            {
-                hand.CollectBets();
-                hand._smallBlindCollectPots = true;
-                Player player = hand._players.First(p => p.Name.Equals(match.Groups["name"].Value));
-                decimal amount = decimal.Parse(match.Groups["amount"].Value);
-                player.Stack -= amount;
-                player.Bet += amount;
-                return;
-            }
-
-            match = RegexBigBlind.Match(line);
-            if (match.Success)
-            {
-                if (!hand._smallBlindCollectPots) hand.CollectBets();
-                Player player = hand._players.First(p => p.Name.Equals(match.Groups["name"].Value));
-                decimal amount = decimal.Parse(match.Groups["amount"].Value);
-                player.Stack -= amount;
-                player.Bet += amount;
-                return;
-            }
-
-            match = RegexFlop.Match(line);
-            if (match.Success)
-            {
-                hand.CollectBets();
-                return;
-            }
-
-            match = RegexTurn.Match(line);
-            if (match.Success)
-            {
-                hand.CollectBets();
-                return;
-            }
-
-            match = RegexRiver.Match(line);
-            if (match.Success)
-            {
-                hand.CollectBets();
-                return;
-            }
-
-            match = RegexBets.Match(line);
-            if (match.Success)
-            {
-                Player player = hand._players.First(p => p.Name.Equals(match.Groups["name"].Value));
-                decimal amount = decimal.Parse(match.Groups["amount"].Value);
-                player.Stack -= amount;
-                player.Bet += amount;
-                return;
-            }
-
-            match = RegexCalls.Match(line);
-            if (match.Success)
-            {
-                Player player = hand._players.First(p => p.Name.Equals(match.Groups["name"].Value));
-                decimal amount = decimal.Parse(match.Groups["amount"].Value);
-                player.Stack -= amount;
-                player.Bet += amount;
-                return;
-            }
-
-            match = RegexRaises.Match(line);
-            if (match.Success)
-            {
-                Player player = hand._players.First(p => p.Name.Equals(match.Groups["name"].Value));
-                //decimal amount = decimal.Parse(match.Groups["amount"].Value);
-                decimal amountTotal = decimal.Parse(match.Groups["amount_total"].Value);
-
-                decimal amountReal = amountTotal - player.Bet;
-                player.Bet += amountReal;
-                player.Stack -= amountReal;
-                return;
-            }
-
-
-            match = RegexUncalledAmount.Match(line);
-            if (match.Success)
-            {
-                Player player = hand._players.First(p => p.Name.Equals(match.Groups["name"].Value));
-                decimal amount = decimal.Parse(match.Groups["amount"].Value);
-                player.Stack += amount;
-                player.Bet -= amount;
-                return;
-            }
-
-            match = RegexCollectedFromPot.Match(line);
-            if (match.Success)
-            {
-                Player player = hand._players.First(p => p.Name.Equals(match.Groups["name"].Value));
-                decimal amount = decimal.Parse(match.Groups["amount"].Value);
-                player.Stack += amount;
-                return;
-            }
+            handHistories = hhs.ToArray();
+            tournamentSummaries = tss.ToArray();
         }
 
-        public void CollectBets()
-        {
-            foreach (var player in _players)
-                player.Bet = 0;
-        }
     }
 }

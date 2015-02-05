@@ -24,6 +24,7 @@ namespace PsHandler.PokerMath
 {
     public class PokerEnums
     {
+        public enum TableSize { Default, Max1, Max2, Max3, Max4, Max5, Max6, Max7, Max8, Max9, Max10, }
         public enum PokerSite { Unknown, PokerStars_unknown, PokerStars_com, PokerStars_eu, PokerStars_fr, FullTiltPoker_unknown, FullTiltPoker_com, FullTiltPoker_eu, FullTiltPoker_fr, };
         public enum Currency { Unknown, PlayMoney, Freeroll, FPP, USD, EUR, GBP, };
         public enum Position { EP, MP, CO, BU, SB, BB, };
@@ -96,7 +97,7 @@ namespace PsHandler.PokerMath
 
             foreach (var hh in hhs)
             {
-                var pokerHand = PokerHand.FromHandHistory(hh);
+                var pokerHand = PokerHand.Parse(hh);
                 if (pokerHand != null)
                 {
                     pokerData.PokerHands.Add(pokerHand);
@@ -421,7 +422,8 @@ namespace PsHandler.PokerMath
         public decimal LevelAnte;
         public DateTime TimeStampET;
         public DateTime TimeStampLocal;
-        public string LocalTimeZone;
+        public string LocalTimeZoneStr;
+        public TimeZone LocalTimeZone;
 
         public bool IsTournament;
         public long TournamentNumber;
@@ -435,7 +437,7 @@ namespace PsHandler.PokerMath
         public string LevelNumber;
 
         public string TableName;
-        public int TableSize;
+        public PokerEnums.TableSize TableSize;
         public int ButtonSeat;
         public int ButtonSeatHandHistory;
 
@@ -445,27 +447,26 @@ namespace PsHandler.PokerMath
         public object Ev;
         public bool Showdown;
 
-        public static PokerHand FromHandHistory(string handHistoryText)
+        public PokerHand(string handHistoryText)
         {
-            PokerHand pokerHand = new PokerHand();
             foreach (var line in handHistoryText.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
             {
-                AnalyzeLine(line.TrimEnd(' '), pokerHand);
+                AnalyzeLine(line.TrimEnd(' '), this);
             }
-            pokerHand.HandHistory = handHistoryText;
-            var postAntes = pokerHand.PokerCommands.OfType<PokerCommands.PostAnte>().ToArray();
+            HandHistory = handHistoryText;
+            var postAntes = PokerCommands.OfType<PokerCommands.PostAnte>().ToArray();
             if (postAntes.Any())
             {
                 // set ante
-                pokerHand.LevelAnte = postAntes.Max(o => o.Amount);
+                LevelAnte = postAntes.Max(o => o.Amount);
                 // set collect bets after antes are placed
-                pokerHand.PokerCommands.Insert(pokerHand.PokerCommands.FindLastIndex(o => o is PokerCommands.PostAnte) + 1, new PokerCommands.CollectPots(Street.Preflop));
+                PokerCommands.Insert(PokerCommands.FindLastIndex(o => o is PokerCommands.PostAnte) + 1, new PokerCommands.CollectPots(Street.Preflop));
             }
 
             #region Set Position
 
-            var players = pokerHand.Seats.Where(a => a != null).ToList();
-            while (players[0].SeatNumberHandHistory != pokerHand.ButtonSeatHandHistory)
+            var players = Seats.Where(a => a != null).ToList();
+            while (players[0].SeatNumberHandHistory != ButtonSeatHandHistory)
             {
                 players.Add(players[0]);
                 players.RemoveAt(0);
@@ -577,8 +578,6 @@ namespace PsHandler.PokerMath
             }
 
             #endregion
-
-            return pokerHand;
         }
 
         #region Regex
@@ -769,7 +768,8 @@ namespace PsHandler.PokerMath
                     pokerHand.LevelBigBlind = decimal.Parse(match.Groups["level_bb"].Value);
 
                     pokerHand.TimeStampLocal = new DateTime(int.Parse(match.Groups["year"].Value), int.Parse(match.Groups["month"].Value), int.Parse(match.Groups["day"].Value), int.Parse(match.Groups["hour"].Value), int.Parse(match.Groups["minute"].Value), int.Parse(match.Groups["second"].Value));
-                    pokerHand.LocalTimeZone = match.Groups["timezone"].Value;
+                    pokerHand.LocalTimeZoneStr = match.Groups["timezone"].Value;
+                    pokerHand.LocalTimeZone = TimeZone.Parse(pokerHand.LocalTimeZoneStr);
                     pokerHand.TimeStampET = new DateTime(int.Parse(match.Groups["year_et"].Value), int.Parse(match.Groups["month_et"].Value), int.Parse(match.Groups["day_et"].Value), int.Parse(match.Groups["hour_et"].Value), int.Parse(match.Groups["minute_et"].Value), int.Parse(match.Groups["second_et"].Value));
 
 
@@ -831,7 +831,8 @@ namespace PsHandler.PokerMath
                     }
 
                     pokerHand.TimeStampLocal = new DateTime(int.Parse(match.Groups["year"].Value), int.Parse(match.Groups["month"].Value), int.Parse(match.Groups["day"].Value), int.Parse(match.Groups["hour"].Value), int.Parse(match.Groups["minute"].Value), int.Parse(match.Groups["second"].Value));
-                    pokerHand.LocalTimeZone = match.Groups["timezone"].Value;
+                    pokerHand.LocalTimeZoneStr = match.Groups["timezone"].Value;
+                    pokerHand.LocalTimeZone = TimeZone.Parse(pokerHand.LocalTimeZoneStr);
                     pokerHand.TimeStampET = new DateTime(int.Parse(match.Groups["year_et"].Value), int.Parse(match.Groups["month_et"].Value), int.Parse(match.Groups["day_et"].Value), int.Parse(match.Groups["hour_et"].Value), int.Parse(match.Groups["minute_et"].Value), int.Parse(match.Groups["second_et"].Value));
 
                     return true;
@@ -846,11 +847,11 @@ namespace PsHandler.PokerMath
             if (match.Success)
             {
                 pokerHand.TableName = match.Groups["table_name"].Value;
-                pokerHand.TableSize = int.Parse(match.Groups["table_size"].Value);
+                pokerHand.TableSize = (PokerEnums.TableSize)int.Parse(match.Groups["table_size"].Value);
                 pokerHand.ButtonSeatHandHistory = int.Parse(match.Groups["button_seat"].Value);
                 pokerHand.ButtonSeat = pokerHand.ButtonSeatHandHistory - 1;
 
-                pokerHand.Seats = new Player[pokerHand.TableSize];
+                pokerHand.Seats = new Player[(int)pokerHand.TableSize];
 
                 return true;
             }
@@ -1192,6 +1193,12 @@ namespace PsHandler.PokerMath
 
             return false;
         }
+
+        public static PokerHand Parse(string handHistoryText)
+        {
+            try { return new PokerHand(handHistoryText); }
+            catch { return null; }
+        }
     }
 
     public class Table
@@ -1201,7 +1208,7 @@ namespace PsHandler.PokerMath
         public List<Pot> Pots = new List<Pot>();
         public List<Pot> PotsStreetByStreet = new List<Pot>();
         public Player[] Seats = null;
-        public int TableSize = -1;
+        public PokerEnums.TableSize TableSize = PokerEnums.TableSize.Default;
         public Player[] Players = new Player[0];
         public int PlayerCount { get { return Players.Length; } }
         public int ButtonSeatNumber = -1;
@@ -1932,6 +1939,255 @@ namespace PsHandler.PokerMath
             {
                 base.Undo(table);
                 Player.CollectChipsFromPot(-Amount);
+            }
+        }
+
+        #endregion
+    }
+
+    public class TimeZone
+    {
+        public string Code;
+        public string Name;
+        public TimeSpan TimeDifference;
+
+        public bool IsEqual(TimeZone o)
+        {
+            return Code.Equals(o.Code);
+        }
+
+        public static TimeZone Parse(string timeZoneStr)
+        {
+            return TimeZones.AllTimeZones.FirstOrDefault(timeZone => timeZone.Name.Equals(timeZoneStr));
+        }
+    }
+
+    public static class TimeZones
+    {
+        public static TimeZone[] AllTimeZones =
+        {
+            new UTC(),
+            new HST(),
+            new AKT(),
+            new PT(),
+            new MT(),
+            new CT(),
+            new ET(),
+            new AT(),
+            new NT(),
+            new ART(),
+            new BRT(),
+            new WET(),
+            new CET(),
+            new EET(),
+            new MSK(),
+            new IST(),
+            new CCT(),
+            new JST(),
+            new AWST(),
+            new ACST(),
+            new AEST(),
+            new NZT(),
+        };
+
+        #region TimeZone
+
+        public class UTC : TimeZone
+        {
+            public UTC()
+            {
+                Code = "UTC";
+                Name = "Coordinated Universal Time";
+                TimeDifference = new TimeSpan(0, 0, 0);
+            }
+        }
+        public class HST : TimeZone
+        {
+            public HST()
+            {
+                Code = "HST";
+                Name = "Hawaii Standard Time";
+                TimeDifference = new TimeSpan(-10, 0, 0);
+            }
+        }
+        public class AKT : TimeZone
+        {
+            public AKT()
+            {
+                Code = "AKT";
+                Name = "Alaska Time";
+                TimeDifference = new TimeSpan(-8, 0, 0);
+            }
+        }
+        public class PT : TimeZone
+        {
+            public PT()
+            {
+                Code = "PT";
+                Name = "Pacific Time";
+                TimeDifference = new TimeSpan(-7, 0, 0);
+            }
+        }
+        public class MT : TimeZone
+        {
+            public MT()
+            {
+                Code = "MT";
+                Name = "Mountain Time";
+                TimeDifference = new TimeSpan(-6, 0, 0);
+            }
+        }
+        public class CT : TimeZone
+        {
+            public CT()
+            {
+                Code = "CT";
+                Name = "Central Time";
+                TimeDifference = new TimeSpan(-5, 0, 0);
+            }
+        }
+        public class ET : TimeZone
+        {
+            public ET()
+            {
+                Code = "ET";
+                Name = "Eastern Time";
+                TimeDifference = new TimeSpan(-4, 0, 0);
+            }
+        }
+        public class AT : TimeZone
+        {
+            public AT()
+            {
+                Code = "AT";
+                Name = "Atlantic Time";
+                TimeDifference = new TimeSpan(-3, 0, 0);
+            }
+        }
+        public class NT : TimeZone
+        {
+            public NT()
+            {
+                Code = "NT";
+                Name = "Newfoundland Time";
+                TimeDifference = new TimeSpan(-2, -30, 0);
+            }
+        }
+        public class ART : TimeZone
+        {
+            public ART()
+            {
+                Code = "ART";
+                Name = "Argentina Time";
+                TimeDifference = new TimeSpan(-3, 0, 0);
+            }
+        }
+        public class BRT : TimeZone
+        {
+            public BRT()
+            {
+                Code = "BRT";
+                Name = "Brasilia Time";
+                TimeDifference = new TimeSpan(-3, 0, 0);
+            }
+        }
+        public class WET : TimeZone
+        {
+            public WET()
+            {
+                Code = "WET";
+                Name = "Western European Time";
+                TimeDifference = new TimeSpan(1, 0, 0);
+            }
+        }
+        public class CET : TimeZone
+        {
+            public CET()
+            {
+                Code = "CET";
+                Name = "Central European Time";
+                TimeDifference = new TimeSpan(2, 0, 0);
+            }
+        }
+        public class EET : TimeZone
+        {
+            public EET()
+            {
+                Code = "EET";
+                Name = "Eastern European Time";
+                TimeDifference = new TimeSpan(3, 0, 0);
+            }
+        }
+        public class MSK : TimeZone
+        {
+            public MSK()
+            {
+                Code = "MSK";
+                Name = "Moscow Standard Time";
+                TimeDifference = new TimeSpan(4, 0, 0);
+            }
+        }
+        public class IST : TimeZone
+        {
+            public IST()
+            {
+                Code = "IST";
+                Name = "India Standard Time";
+                TimeDifference = new TimeSpan(5, 30, 0);
+            }
+        }
+        public class CCT : TimeZone
+        {
+            public CCT()
+            {
+                Code = "CCT";
+                Name = "China Coast Time";
+                TimeDifference = new TimeSpan(8, 0, 0);
+            }
+        }
+        public class JST : TimeZone
+        {
+            public JST()
+            {
+                Code = "JST";
+                Name = "Japan Standard Time";
+                TimeDifference = new TimeSpan(9, 0, 0);
+            }
+        }
+        public class AWST : TimeZone
+        {
+            public AWST()
+            {
+                Code = "AWST";
+                Name = "Australian Western Standard Time";
+                TimeDifference = new TimeSpan(8, 0, 0);
+            }
+        }
+        public class ACST : TimeZone
+        {
+            public ACST()
+            {
+                Code = "ACST";
+                Name = "Australian Central Standard Time";
+                TimeDifference = new TimeSpan(10, 30, 0);
+            }
+        }
+        public class AEST : TimeZone
+        {
+            public AEST()
+            {
+                Code = "AEST";
+                Name = "Australian Eastern Standard Time";
+                TimeDifference = new TimeSpan(11, 0, 0);
+            }
+        }
+        public class NZT : TimeZone
+        {
+            public NZT()
+            {
+                Code = "NZT";
+                Name = "New Zealand Time";
+                TimeDifference = new TimeSpan(13, 0, 0);
             }
         }
 

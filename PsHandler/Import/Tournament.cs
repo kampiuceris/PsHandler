@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using PsHandler.PokerMath;
 
 namespace PsHandler.Import
 {
@@ -32,35 +33,11 @@ namespace PsHandler.Import
         public List<Hand> Hands = new List<Hand>();
         private readonly object _lock = new object();
 
-        public DateTime GetFirstHandTimestampUtc()
+        public DateTime GetFirstHandTimestampET()
         {
             lock (_lock)
             {
-                return Hands[0].TimestampUtc;
-            }
-        }
-
-        public DateTime GetFirstHandTimestamp()
-        {
-            lock (_lock)
-            {
-                return Hands[0].Timestamp;
-            }
-        }
-
-        public TimeZone GetFirstHandTimeZone()
-        {
-            lock (_lock)
-            {
-                return Hands[0].TimeZone;
-            }
-        }
-
-        public DateTime GetLastHandTimestamp()
-        {
-            lock (_lock)
-            {
-                return Hands[Hands.Count - 1].Timestamp;
+                return Hands[0].TimeStampET;
             }
         }
 
@@ -70,20 +47,17 @@ namespace PsHandler.Import
 
             lock (_lock)
             {
-                Player firstOrDefault = Hands[Hands.Count - 1].Players.FirstOrDefault(o => o.Name.Equals(name));
-                if (firstOrDefault != null)
-                {
-                    return firstOrDefault.Stack;
-                }
-                return decimal.MinValue;
+                int index = Array.IndexOf(Hands.Last().PlayerNames, name);
+                if (index < 0) return decimal.MinValue;
+                return Hands.Last().StacksAfterHand[index];
             }
         }
 
-        public TableSize GetLastHandTableSize()
+        public PokerEnums.TableSize GetLastHandTableSize()
         {
             lock (_lock)
             {
-                return !Hands.Any() ? TableSize.Default : Hands.Last().TableSize;
+                return !Hands.Any() ? PokerEnums.TableSize.Default : Hands.Last().TableSize;
             }
         }
 
@@ -91,7 +65,7 @@ namespace PsHandler.Import
         {
             lock (_lock)
             {
-                return !Hands.Any() ? 0 : Hands.Last().Players.Length;
+                return !Hands.Any() ? 0 : Hands.Last().StacksAfterHand.Length;
             }
         }
 
@@ -99,7 +73,7 @@ namespace PsHandler.Import
         {
             lock (_lock)
             {
-                return !Hands.Any() ? 0 : Hands.Last().PlayersAfterHand.Length;
+                return !Hands.Any() ? 0 : Hands.Last().StacksAfterHand.Count(a => a > 0);
             }
         }
 
@@ -110,7 +84,7 @@ namespace PsHandler.Import
             lock (_lock)
             {
                 Hands.AddRange(hands);
-                Hands.Sort((o1, o2) => DateTime.Compare(o1.Timestamp, o2.Timestamp));
+                Hands.Sort((o1, o2) => DateTime.Compare(o1.TimeStampET, o2.TimeStampET));
             }
         }
 

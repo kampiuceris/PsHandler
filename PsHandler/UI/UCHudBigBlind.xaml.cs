@@ -14,23 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using PsHandler.Hud;
-using PsHandler.Import;
+using PsHandler.PokerMath;
 
 namespace PsHandler.UI
 {
@@ -86,8 +75,8 @@ namespace PsHandler.UI
             TextBox_BigBlindPostfix.Text = Config.BigBlindPostfix;
             for (int i = 0; i < TextBoxesLocationX.Length; i++)
             {
-                TextBoxesLocationX[i].Text = TableManager.GetHudBigBlindLocationX((TableSize)i, TextBoxesLocationX[i]).ToString(CultureInfo.InvariantCulture);
-                TextBoxesLocationY[i].Text = TableManager.GetHudBigBlindLocationY((TableSize)i, TextBoxesLocationY[i]).ToString(CultureInfo.InvariantCulture);
+                TextBoxesLocationX[i].Text = TableManager.GetHudBigBlindLocationX((PokerEnums.TableSize)i, TextBoxesLocationX[i]).ToString(CultureInfo.InvariantCulture);
+                TextBoxesLocationY[i].Text = TableManager.GetHudBigBlindLocationY((PokerEnums.TableSize)i, TextBoxesLocationY[i]).ToString(CultureInfo.InvariantCulture);
             }
 
             // Hook values
@@ -155,7 +144,7 @@ namespace PsHandler.UI
                     float f;
                     if (float.TryParse(TextBoxesLocationX[i1].Text, out f))
                     {
-                        TableManager.SetHudBigBlindLocationX((TableSize)i1, f, TextBoxesLocationX[i1]);
+                        TableManager.SetHudBigBlindLocationX((PokerEnums.TableSize)i1, f, TextBoxesLocationX[i1]);
                     }
                 };
                 TextBoxesLocationY[i].TextChanged += (sender, args) =>
@@ -163,7 +152,7 @@ namespace PsHandler.UI
                     float f;
                     if (float.TryParse(TextBoxesLocationY[i1].Text, out f))
                     {
-                        TableManager.SetHudBigBlindLocationY((TableSize)i1, f, TextBoxesLocationY[i1]);
+                        TableManager.SetHudBigBlindLocationY((PokerEnums.TableSize)i1, f, TextBoxesLocationY[i1]);
                     }
                 };
             }

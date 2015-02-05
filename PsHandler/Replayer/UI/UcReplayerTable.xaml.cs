@@ -32,7 +32,7 @@ namespace PsHandler.Replayer.UI
         private readonly UcReplayerPlayer[] _ucReplayerPlayers = new UcReplayerPlayer[10];
         private readonly IReplayerBet[] _ucReplayerPlayerBets = new IReplayerBet[10];
         private readonly Image[] _imageCommunityCards = new Image[10];
-        public PokerHand PokerHand = new PokerHand();
+        public PokerHand PokerHand;
         public PokerMath.Table Table = new PokerMath.Table();
         public int PreferredSeat = 4; // TODO
 
