@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using PsHandler.PokerMath;
 
@@ -199,6 +200,7 @@ namespace PsHandler.Replayer.UI
             if (PokerHand != null)
             {
                 Table.LoadHand(PokerHand);
+                UndoCommandAll();
                 GoToPreflop();
             }
         }
@@ -309,7 +311,8 @@ namespace PsHandler.Replayer.UI
                 var pokerCommand = Table.UnDo.FirstOrDefault(a => !(a is PokerCommands.CollectPots) && !(a is PokerCommands.FinalizePots));
                 if (pokerCommand != null)
                 {
-                    App.WindowReplayer.TextBlock_Chat.Text = string.Format("[Do] {0}", pokerCommand.CommandText);
+                    App.WindowReplayer.TextBlock_Chat.Text = pokerCommand.CommandText;
+                    App.WindowReplayer.TextBlock_Chat.Foreground = Brushes.Honeydew;
                 }
             }
         }
@@ -329,7 +332,8 @@ namespace PsHandler.Replayer.UI
                 var pokerCommand = Table.ToDo.FirstOrDefault(a => !(a is PokerCommands.CollectPots) && !(a is PokerCommands.FinalizePots));
                 if (pokerCommand != null)
                 {
-                    App.WindowReplayer.TextBlock_Chat.Text = string.Format("[Undo] {0}", pokerCommand.CommandText);
+                    App.WindowReplayer.TextBlock_Chat.Text = pokerCommand.CommandText;
+                    App.WindowReplayer.TextBlock_Chat.Foreground = Brushes.MistyRose;
                 }
             }
         }

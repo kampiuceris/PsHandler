@@ -49,7 +49,6 @@ namespace PsHandler
         {
             WindowReplayer = new WindowReplayer();
             WindowReplayer.Show();
-            WindowReplayer.UcReplayerTable_Main.ReplayHand(PokerData.FromText(File.ReadAllText(@"C:\Users\WinWork\Desktop\test.txt")).PokerHands[0]);
 
             return;
 

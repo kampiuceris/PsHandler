@@ -629,9 +629,9 @@ namespace PsHandler.PokerMath
 
             for (int i = 0; i < PlayerNames.Length; i++)
             {
-                string pocketStr = ""; if (PocketCards[i] != null) pocketStr = PocketCards[i].Where(o => o != null).Aggregate(pocketStr, (current, pocketCard) => current + (pocketCard + " ")); pocketStr = pocketStr.TrimEnd(' ');
+                string pocketStr = ""; if (PocketCards[i] != null) pocketStr = PocketCards[i].Where(o => o != null).Aggregate(pocketStr, (a, b) => a + b);
 
-                sb.AppendLine(string.Format("{0,-15} {3,-6} {4,-7} {1}{2:0.00} {5}",
+                sb.AppendLine(string.Format("{0,-15} {3,-5} {4,-7} {1}{2:0.00} {5}",
                     PlayerNames[i],
                     EvRegular.IcmsDiffEv[i] > 0 ? "+" : "",
                     ev.IcmsDiffEv[i] * (double)PrizePool,
@@ -650,9 +650,9 @@ namespace PsHandler.PokerMath
 
             for (int i = 0; i < PlayerNames.Length; i++)
             {
-                string pocketStr = ""; if (PocketCards[i] != null) pocketStr = PocketCards[i].Where(o => o != null).Aggregate(pocketStr, (current, pocketCard) => current + (pocketCard + " ")); pocketStr = pocketStr.TrimEnd(' ');
+                string pocketStr = ""; if (PocketCards[i] != null) pocketStr = PocketCards[i].Where(o => o != null).Aggregate(pocketStr, (a, b) => a + b);
 
-                sb.AppendLine(string.Format("{0,-15} {3,-6} {4,-7} {1}{2:0.00} {5}",
+                sb.AppendLine(string.Format("{0,-15} {3,-5} {4,-7} {1}{2:0.00} {5}",
                     PlayerNames[i],
                     EvStreetByStreet.IcmsDiffEv[i] > 0 ? "+" : "",
                     evsbs.IcmsDiffEv[i] * (double)PrizePool,

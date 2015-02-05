@@ -7,7 +7,7 @@
         <Grid x:Name="Grid_Main">
             <local:UcReplayerTable x:Name="UcReplayerTable_Main" />
 
-            <Label HorizontalAlignment="Right" Margin="0,19,124,0" Padding="0" VerticalContentAlignment="Center" Foreground="LightGray" Content="Payouts" VerticalAlignment="Top" Height="20" RenderTransformOrigin="0.5,0.5">
+            <Label HorizontalAlignment="Right" Margin="0,20,132,0" Padding="0" VerticalContentAlignment="Center" Foreground="LightGray" Content="Payouts" VerticalAlignment="Top" Height="20" RenderTransformOrigin="0.5,0.5">
                 <Label.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -18,29 +18,29 @@
                 </Label.RenderTransform>
             </Label>
 
-            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="22" Margin="5,32,0,0" HorizontalContentAlignment="Left" Background="#77FFFFFF" x:Name="Button_HandHistory" Click="Button_HandHistory_Click" >
+            <Button HorizontalAlignment="Center" VerticalAlignment="Top" Width="110" Height="22" Margin="0,5,0,0" HorizontalContentAlignment="Center" Background="#77FFFFFF" x:Name="Button_HandHistory" Click="Button_HandHistory_Click" >
                 <StackPanel Orientation="Horizontal">
                     <Image VerticalAlignment="Center" Height="16" Width="16" Source="../../Images/Resources/Size16x16/page.png" Margin="5,0,0,0" />
-                    <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Hand History" Margin="5,0,0,0" />
+                    <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Hand History" Margin="5,0,5,0" />
                 </StackPanel>
             </Button>
-            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="22" HorizontalContentAlignment="Left" Background="#77FFFFFF" x:Name="Button_PasteFromClipboard" Click="Button_PasteFromClipboard_Click" Margin="5,5,0,0" >
+            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="22" HorizontalContentAlignment="Center" Background="#77FFFFFF" x:Name="Button_PasteFromClipboard" Click="Button_PasteFromClipboard_Click" Margin="5,5,0,0" >
                 <StackPanel Orientation="Horizontal">
                     <Image VerticalAlignment="Center" Height="16" Width="16" Source="/PsHandler;component/Images/Resources/Size16x16/clipboard_invoice.png" Margin="5,0,0,0" />
-                    <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Paste from Clipboard" Margin="5,0,0,0" />
+                    <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Paste from Clipboard" Margin="5,0,5,0" />
                 </StackPanel>
             </Button>
 
-            <ComboBox HorizontalAlignment="Right" VerticalAlignment="Top" Width="130" Height="22" Margin="0,5,5,0" x:Name="ComboBox_Payouts" />
-            <TextBox HorizontalAlignment="Right" VerticalAlignment="Top" Width="130" Height="22" Margin="0,32,5,0" TextWrapping="NoWrap" AcceptsReturn="False" VerticalContentAlignment="Center" Background="#77FFFFFF" Text="60 10 10 10 10" x:Name="TextBox_Payouts"/>
+            <ComboBox HorizontalAlignment="Right" VerticalAlignment="Top" Width="19" Height="22" Margin="0,5,5,0" x:Name="ComboBox_Payouts" />
+            <TextBox HorizontalAlignment="Right" VerticalAlignment="Top" Width="118" Height="22" Margin="0,5,25,0" TextWrapping="NoWrap" AcceptsReturn="False" VerticalContentAlignment="Center" Background="#77FFFFFF" x:Name="TextBox_Payouts"/>
 
-            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Width="130" Height="22" Margin="657,59,0,0" HorizontalContentAlignment="Left" Background="#77FFFFFF" x:Name="Button_CalculateEv" Click="Button_CalculateEv_Click" >
+            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Width="110" Height="22" Margin="677,32,0,0" HorizontalContentAlignment="Center" Background="#77FFFFFF" x:Name="Button_CalculateEv" Click="Button_CalculateEv_Click" >
                 <StackPanel Orientation="Horizontal">
                     <Image VerticalAlignment="Center" Height="16" Width="16" Source="../../Images/Resources/Size16x16/calculator.png" Margin="5,0,0,0" />
-                    <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Calculate Ev" Margin="5,0,0,0" />
+                    <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Calculate Ev" Margin="5,0,5,0" />
                 </StackPanel>
             </Button>
-            <Border BorderThickness="1" BorderBrush="DimGray" CornerRadius="1" Margin="5,0,0,5" Background="#22FFFFFF" Height="36" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="200">
+            <Border BorderThickness="1" BorderBrush="DimGray" CornerRadius="1" Margin="5,0,0,5" Background="#22FFFFFF" Height="40" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="200">
                 <TextBlock TextWrapping="Wrap" Foreground="LightGray" FontSize="10" Text="" x:Name="TextBlock_Chat" />
             </Border>
 
