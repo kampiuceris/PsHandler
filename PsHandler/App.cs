@@ -146,6 +146,7 @@ namespace PsHandler
                 new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/update.png", UriKind.Absolute)),
                 new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/cancel.png", UriKind.Absolute)),
                 new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/update.png", UriKind.Absolute))
+                );
 #endif
         }
 
