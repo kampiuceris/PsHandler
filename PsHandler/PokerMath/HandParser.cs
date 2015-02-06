@@ -40,7 +40,7 @@ namespace PsHandler.PokerMath
         private static void GetHandHistoriesTournamentSummaries(string text, out string[] handHistories, out string[] tournamentSummaries)
         {
             var lines = text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            while (lines.Any() && !lines[0].StartsWith("PokerStars Hand #") && !lines[0].StartsWith("PokerStars Zoom Hand #") && !lines[0].StartsWith("PokerStars Tournament #"))
+            while (lines.Any() && !lines[0].StartsWith("PokerStars Hand #") && !lines[0].StartsWith("PokerStars Zoom Hand #") && !lines[0].StartsWith("PokerStars Tournament #") && !lines[0].StartsWith("PokerStars Home Game Hand #"))
             {
                 lines.RemoveAt(0);
             }
@@ -51,7 +51,7 @@ namespace PsHandler.PokerMath
             bool isPokerHand = false, isTournamentSummary = false;
             foreach (var line in lines)
             {
-                if (line.StartsWith("PokerStars Hand #") || line.StartsWith("PokerStars Zoom Hand #"))
+                if (line.StartsWith("PokerStars Hand #") || line.StartsWith("PokerStars Zoom Hand #") || line.StartsWith("PokerStars Home Game Hand #"))
                 {
                     if (sb.Length > 0)
                     {
@@ -658,7 +658,7 @@ namespace PsHandler.PokerMath
         // second_et	                    13
         // timezone_et	                    ET
 
-        private static readonly Regex RegexHeaderTournament = new Regex(@"\APokerStars Hand #(?<hand_id>\d+): +(?<zoom>Zoom )?Tournament #(?<tournament_id>\d+), +((?<buyin_fpp>\d+)FPP|(?<freeroll>Freeroll)|(\$|€|£)?(?<buyin>(\d|\.)+)(\+(\$|€|£)?(?<bounty>(\d|\.)+))?\+(\$|€|£)?(?<rake>(\d|\.)+)) *(?<currency>(USD|EUR|GBP)?) +(?<game_type>.+) +- +(?<additional_info>.+)?Level (?<level_number>(I|V|X|L|C|D|M))+ \((?<level_sb>\d+)\/(?<level_bb>\d+)\) +- +(?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z");
+        private static readonly Regex RegexHeaderTournament = new Regex(@"\APokerStars (?<home_game>Home Game )?Hand #(?<hand_id>\d+): +(?<home_game_info>.+)?(?<zoom>Zoom )?Tournament #(?<tournament_id>\d+), +((?<buyin_fpp>\d+)FPP|(?<freeroll>Freeroll)|(\$|€|£)?(?<buyin>(\d|\.)+)(\+(\$|€|£)?(?<bounty>(\d|\.)+))?\+(\$|€|£)?(?<rake>(\d|\.)+)) *(?<currency>(USD|EUR|GBP)?) +(?<game_type>.+) +- +(?<additional_info>.+)?Level (?<level_number>(I|V|X|L|C|D|M))+ \((?<level_sb>\d+)\/(?<level_bb>\d+)\) +- +(?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z");
         private static readonly Regex RegexHeaderCash = new Regex(@"\APokerStars (?<zoom>Zoom )?Hand #(?<hand_id>\d+): +(?<game_type>.+) \((?<level_sb_currency_symbol>(\$|€|£)?)(?<level_sb>(\d|\.)+)\/(?<level_bb_currency_symbol>(\$|€|£)?)(?<level_bb>(\d|\.)+) *(?<currency>(USD|EUR|GBP)?)\) +- +(?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z");
         public static Regex RegexSeatMaxButton = new Regex(@"\ATable '(?<table_name>.+)' (?<table_size>\d+)-max Seat #(?<button_seat>\d+) is the button\z");
         public static Regex RegexPlayer = new Regex(@"\ASeat (?<seat_number>\d{1,2}): (?<player_name>.+) \((\$|€|£)?(?<stack>(\d|\.)+) in chips\)( is sitting out| out of hand \(moved from another table into small blind\))?\z");

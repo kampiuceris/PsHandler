@@ -16,11 +16,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using PsHandler.PokerMath;
 
 namespace PsHandler.Import
@@ -37,7 +34,7 @@ namespace PsHandler.Import
         {
             lock (_lock)
             {
-                return Hands[0].TimeStampET;
+                return !Hands.Any() ? DateTime.MinValue : Hands.First().TimeStampET;
             }
         }
 
@@ -47,6 +44,7 @@ namespace PsHandler.Import
 
             lock (_lock)
             {
+                if (!Hands.Any()) return decimal.MinValue;
                 int index = Array.IndexOf(Hands.Last().PlayerNames, name);
                 if (index < 0) return decimal.MinValue;
                 return Hands.Last().StacksAfterHand[index];
