@@ -14,29 +14,181 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Diagnostics;
-using System.Drawing;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Hardcodet.Wpf.TaskbarNotification;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Xml.Linq;
-using Hardcodet.Wpf.TaskbarNotification;
-using System.Windows.Controls;
-using Color = System.Windows.Media.Color;
-using Image = System.Windows.Controls.Image;
 
 namespace PsHandler
 {
-    public class Autoupdate
+    public class AutoUpdater
     {
-        private static Thread _threadUpdate;
+        private static readonly DirectoryInfo _DirectoryInfoLocal = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+        private static readonly DirectoryInfo _DirectoryInfoTemp = new DirectoryInfo(Path.GetTempPath());
+        private static Thread _thread;
+
+        public static void CheckForUpdate(string hrefXml, string applicationName, string exeName, Window owner, Action actionQuit, BitmapSource iconWindow, BitmapSource iconButtonCancel, BitmapSource iconButtonUpdate)
+        {
+            _thread = new Thread(() =>
+            {
+                try
+                {
+                    bool trayBalloonTipClickedRoutedEventHandlerAdded = false;
+                    while (true)
+                    {
+                        string version, nameUpdateFile, hrefUpdateFile, updateInfo;
+
+                        bool updateRequired = CheckIfUpdateIsRequired(hrefXml, out version, out nameUpdateFile, out hrefUpdateFile, out updateInfo);
+                        if (updateRequired)
+                        {
+                            if (!trayBalloonTipClickedRoutedEventHandlerAdded)
+                            {
+                                App.TaskbarIcon.TrayBalloonTipClicked += (sender, args) =>
+                                {
+                                    ShowUpdateDialog(hrefXml, applicationName, exeName, owner, actionQuit, hrefUpdateFile, _DirectoryInfoTemp.FullName + nameUpdateFile, updateInfo, iconWindow, iconButtonCancel, iconButtonUpdate);
+                                };
+                                trayBalloonTipClickedRoutedEventHandlerAdded = true;
+                            }
+
+                            App.TaskbarIcon.ShowBalloonTip(string.Format("{0} Update", applicationName), string.Format("Latest {0} version is available. Click here to update.", version), BalloonIcon.Info);
+                        }
+
+                        Thread.Sleep(7200000); // 7200000 = 2 hours
+                    }
+                }
+                catch
+                {
+                }
+            });
+            _thread.Start();
+        }
+
+        public static void Quit()
+        {
+            if (_thread != null)
+            {
+                _thread.Abort();
+            }
+        }
+
+        private static bool CheckIfUpdateIsRequired(string hrefXml, out string version, out string nameUpdateFile, out string hrefUpdateFile, out string updateInfo)
+        {
+            string xml;
+            using (WebClient webClient = new WebClient { Proxy = null })
+            {
+                xml = webClient.DownloadString(hrefXml);
+            }
+
+            IEnumerable<string> fileNamesToDelete;
+            string[][] fileNamesAndMd5;
+
+            bool successXmlRead = GetInfoFromXml(xml, out version, out fileNamesToDelete, out nameUpdateFile, out hrefUpdateFile, out fileNamesAndMd5, out updateInfo);
+            if (successXmlRead)
+            {
+                DeleteUpdateFile(nameUpdateFile);
+                DeleteFiles(fileNamesToDelete);
+
+                bool successFileCheck = CheckRequiredFiles(fileNamesAndMd5);
+                if (!successFileCheck)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool GetInfoFromXml(string xml, out string version, out IEnumerable<string> fileNamesToDelete, out string nameUpdateFile, out string hrefUpdateFile, out string[][] fileNamesAndMd5, out string updateInfo)
+        {
+            try
+            {
+                // read xml
+                XElement root = XDocument.Parse(xml).Root;
+
+                // version
+                version = root.Attribute("version").Value;
+
+                // files to delete
+                fileNamesToDelete = root.Elements().Where(e => e.Name.LocalName.Equals("delete")).Select(xElement => xElement.Attribute("name").Value);
+
+                // update file name
+                nameUpdateFile = root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("name").Value;
+
+                // update file href
+                hrefUpdateFile = root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("href").Value;
+
+                // files to check and their md5
+                fileNamesAndMd5 = root.Elements().Where(e => e.Name.LocalName.Equals("file")).Select(e => new[] { e.Attribute("name").Value, e.Attribute("md5").Value }).ToArray();
+
+                // release notes 
+                updateInfo = root.Elements().First(e => e.Name.LocalName.Equals("updateinfo")).Value;
+
+                return true;
+            }
+            catch
+            {
+                version = null;
+                fileNamesToDelete = null;
+                nameUpdateFile = null;
+                hrefUpdateFile = null;
+                fileNamesAndMd5 = null;
+                updateInfo = null;
+                return false;
+            }
+        }
+
+        private static void DeleteUpdateFile(string updateFileName)
+        {
+            FileInfo fileInfoUpdate;
+
+            // from local dir
+            fileInfoUpdate = _DirectoryInfoLocal.GetFiles().FirstOrDefault(o => o.Name.Equals(updateFileName));
+            if (fileInfoUpdate != null && fileInfoUpdate.Exists)
+            {
+                File.Delete(fileInfoUpdate.FullName);
+            }
+
+            // from temp dir
+            fileInfoUpdate = _DirectoryInfoTemp.GetFiles().FirstOrDefault(o => o.Name.Equals(updateFileName));
+            if (fileInfoUpdate != null && fileInfoUpdate.Exists)
+            {
+                File.Delete(fileInfoUpdate.FullName);
+            }
+        }
+
+        private static void DeleteFiles(IEnumerable<string> fileNamesToDelete)
+        {
+            foreach (var fileName in fileNamesToDelete)
+            {
+                if (_DirectoryInfoLocal.GetFiles().Any(o => o.Name.Equals(fileName)))
+                {
+                    File.Delete(fileName);
+                }
+            }
+        }
+
+        private static bool CheckRequiredFiles(string[][] fileNamesAndMd5)
+        {
+            foreach (string[] fileNameAndMd5 in fileNamesAndMd5)
+            {
+                FileInfo fileInfo = _DirectoryInfoLocal.GetFiles().FirstOrDefault(o => o.Name.Equals(fileNameAndMd5[0]));
+                if (fileInfo == null || !fileInfo.Exists) return false;
+                string md5 = GetMd5(fileInfo.FullName);
+                if (!md5.Equals(fileNameAndMd5[1])) return false;
+            }
+            return true;
+        }
 
         private static string GetMd5(string path, bool upperCaseHex = false)
         {
@@ -46,108 +198,15 @@ namespace PsHandler
                 {
                     byte[] bytes = md5.ComputeHash(fileStream); // get bytes
                     StringBuilder result = new StringBuilder(bytes.Length * 2); // to hex string
-                    for (int i = 0; i < bytes.Length; i++) result.Append(bytes[i].ToString(upperCaseHex ? "X2" : "x2"));
+                    for (int i = 0; i < bytes.Length; i++) { result.Append(bytes[i].ToString(upperCaseHex ? "X2" : "x2")); }
                     return result.ToString();
                 }
             }
         }
 
-        public static void CheckForUpdates(string hrefPhp, string hrefXml, string applicationName, string exeName, string exeDir, Window owner, Action quitAction, BitmapSource iconWindow, BitmapSource iconButtonCancel, BitmapSource iconButtonUpdate)
-        {
-            _threadUpdate = new Thread(() =>
-            {
-                try
-                {
-                    bool trayBalloonTipClickedRoutedEventHandlerAdded = false;
-                    while (true)
-                    {
-                        string updateFileHref, updateFileNameFullPath, version, releaseNotes;
-                        if (CheckForUpdatesAndDeleteFiles(hrefPhp, out updateFileHref, out updateFileNameFullPath, out version, out releaseNotes))
-                        {
-                            // needs update
-                            App.TaskbarIcon.ShowBalloonTip(string.Format("{0} Update", applicationName), string.Format("Latest {0} version is available. Click here to update.", version), BalloonIcon.Info);
-                            if (!trayBalloonTipClickedRoutedEventHandlerAdded)
-                            {
-                                App.TaskbarIcon.TrayBalloonTipClicked += (sender, args) => ShowWindowUpdateDialog(hrefXml, applicationName, exeName, exeDir,
-                                    owner, quitAction, updateFileHref, updateFileNameFullPath, version, releaseNotes, iconWindow, iconButtonCancel, iconButtonUpdate);
-                                trayBalloonTipClickedRoutedEventHandlerAdded = true;
-                            }
-                        }
-                        Thread.Sleep(7200000); // 2 hours
-                    }
-                }
-                catch
-                {
-                }
-            });
-            _threadUpdate.Start();
-        }
-
-        private static bool CheckForUpdatesAndDeleteFiles(string href, out string autoupdateHref, out string autoupdateFileNameFullPath, out string version, out string releaseNotes)
-        {
-            using (WebClient webClient = new WebClient { Proxy = null })
-            {
-                // download xml file
-                string xml = webClient.DownloadString(href);
-
-                // read and create XElement from xml text
-                XElement root = XDocument.Parse(xml).Root;
-                if (root == null) throw new Exception(string.Format("Invalid '{0}' xml file.", href));
-
-                var exeDir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
-                var tempDir = new DirectoryInfo(Path.GetTempPath());
-
-                // delete files
-                foreach (var file in root.Elements().Where(e => e.Name.LocalName.Equals("delete")).Select(xElement => xElement.Attribute("name").Value))
-                {
-                    if (exeDir.GetFiles().Any(o => o.Name.Equals(file)))
-                    {
-                        File.Delete(file);
-                    }
-                }
-
-                // version
-                version = root.Attribute("version").Value;
-
-                // update file
-                autoupdateHref = root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("href").Value;
-                autoupdateFileNameFullPath = tempDir.FullName + root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("name").Value;
-                string autoupdateFileName = root.Elements().First(e => e.Name.LocalName.Equals("update")).Attribute("name").Value;
-
-                // release notes
-                releaseNotes = "";
-                try
-                {
-                    releaseNotes = root.Elements().First(e => e.Name.LocalName.Equals("updateinfo")).Value;
-                }
-                catch
-                {
-                }
-
-                // delete update file
-                var exeDirUpdateFile = exeDir.GetFiles().FirstOrDefault(o => o.Name.Equals(autoupdateFileName));
-                if (exeDirUpdateFile != null) exeDirUpdateFile.Delete();
-                var tempDirUpdateFile = tempDir.GetFiles().FirstOrDefault(o => o.Name.Equals(autoupdateFileName));
-                if (tempDirUpdateFile != null) tempDirUpdateFile.Delete();
-
-                // check files
-                string[][] files = root.Elements().Where(e => e.Name.LocalName.Equals("file")).Select(e => new[] { e.Attribute("name").Value, e.Attribute("md5").Value }).ToArray();
-
-                foreach (string[] f in files)
-                {
-                    string fileName = f[0];
-                    string md5 = f[1];
-
-                    if (!File.Exists(fileName)) return true;
-                    if (!GetMd5(fileName).Equals(md5)) return true;
-                }
-
-                return false;
-            }
-        }
-
-        private static void ShowWindowUpdateDialog(string hrefXml, string applicationName, string exeName, string exeDir, Window owner, Action quitAction,
-            string updateFileHref, string updateFileNameFullPath, string version, string releaseNotes, BitmapSource iconWindow, BitmapSource iconButtonCancel, BitmapSource iconButtonUpdate)
+        private static void ShowUpdateDialog(string hrefXml, string applicationName, string exeName,
+            Window owner, Action quitAction, string hrefUpdateFile, string pathUpdateFile, string updateInfo,
+            BitmapSource iconWindow, BitmapSource iconButtonCancel, BitmapSource iconButtonUpdate)
         {
             // Window
 
@@ -207,7 +266,7 @@ namespace PsHandler
                 TextWrapping = TextWrapping.Wrap,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
-                Text = releaseNotes,
+                Text = updateInfo,
                 Padding = new Thickness(5)
             };
             Grid.SetRow(textBox, 1);
@@ -295,12 +354,12 @@ namespace PsHandler
             buttonUpdate.Click += (sender, args) =>
             {
                 // get update
-                using (WebClient Client = new WebClient { Proxy = null })
+                using (WebClient client = new WebClient { Proxy = null })
                 {
-                    Client.DownloadFile(updateFileHref, updateFileNameFullPath);
+                    client.DownloadFile(hrefUpdateFile, pathUpdateFile);
                 }
-                string arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"", applicationName, hrefXml, exeName, exeDir.Replace(@"\", "/"));
-                Process.Start(updateFileNameFullPath, arguments);
+                string arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"", applicationName, hrefXml, exeName, _DirectoryInfoLocal.FullName.Replace(@"\", "/"));
+                Process.Start(pathUpdateFile, arguments);
                 new Thread(quitAction.Invoke).Start();
                 // close
                 window.Close();
@@ -309,14 +368,6 @@ namespace PsHandler
             //
 
             window.ShowDialog();
-        }
-
-        public static void Quit()
-        {
-            if (_threadUpdate != null)
-            {
-                _threadUpdate.Abort();
-            }
         }
     }
 }

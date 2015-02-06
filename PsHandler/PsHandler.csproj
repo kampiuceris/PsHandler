@@ -83,7 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
-    <Compile Include="Autoupdate.cs" />
+    <Compile Include="AutoUpdater.cs" />
     <Compile Include="ExceptionPsHandler.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Custom\Bmp.cs" />
