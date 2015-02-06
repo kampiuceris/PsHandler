@@ -182,11 +182,11 @@ namespace PsHandler.Replayer.UI
         {
             if (cardStr == null)
             {
-                return new BitmapImage(new Uri(string.Format(@"/PsHandler;component/Images/Resources/Replayer/Cards/back.png"), UriKind.Relative));
+                return new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Replayer/Cards/back.png"), UriKind.Absolute));
             }
             else
             {
-                return new BitmapImage(new Uri(string.Format(@"/PsHandler;component/Images/Resources/Replayer/Cards/{0}.png", cardStr), UriKind.Relative));
+                return new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Replayer/Cards/{0}.png", cardStr, UriKind.Absolute)));
             }
         }
 

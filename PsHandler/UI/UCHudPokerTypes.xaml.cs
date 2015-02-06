@@ -160,7 +160,7 @@ namespace PsHandler.UI
 
             Image image = new Image
             {
-                Source = new BitmapImage(new Uri(string.Format(@"/PsHandler;component/Images/Resources/Size16x16/tag_blue.png"), UriKind.Relative)),
+                Source = new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/tag_blue.png"), UriKind.Absolute)),
                 Width = 16,
                 Height = 16,
                 Margin = new Thickness(0, 0, 0, 0)

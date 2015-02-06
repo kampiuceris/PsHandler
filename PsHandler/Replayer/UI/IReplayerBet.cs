@@ -57,11 +57,9 @@ namespace PsHandler.Replayer.UI
             else if (value == 25000000000) { valueStr = "chip25000000000"; }
             else { valueStr = "chipone"; }
 
-            string uri = string.Format(@"/PsHandler;component/Images/Resources/Replayer/Chips/{0}.png", valueStr);
-
             return new Image
             {
-                Source = new BitmapImage(new Uri(uri, UriKind.Relative)),
+                Source = new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Replayer/Chips/{0}.png", valueStr), UriKind.Absolute)),
                 Width = 22,
                 Height = 20
             };

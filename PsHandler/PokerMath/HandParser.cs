@@ -1196,8 +1196,14 @@ namespace PsHandler.PokerMath
 
         public static PokerHand Parse(string handHistoryText)
         {
-            try { return new PokerHand(handHistoryText); }
-            catch { return null; }
+            try
+            {
+                return new PokerHand(handHistoryText);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 

@@ -135,17 +135,17 @@ namespace PsHandler
 #if DEBUG
             //Autoupdate.CheckForUpdates(Config.UPDATE_HREF + "?v=" + Config.VERSION + "&id=" + (string.IsNullOrEmpty(Config.MACHINE_GUID) ? "" : Config.MACHINE_GUID),
             //    Config.UPDATE_HREF, "PsHandler", "PsHandler.exe", AppDomain.CurrentDomain.BaseDirectory, WindowMain, Quit,
-            //    new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/update.png", UriKind.Absolute)),
-            //    new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/cancel.png", UriKind.Absolute)),
-            //    new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/update.png", UriKind.Absolute))
+            //    new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/update.png"), UriKind.Absolute)),
+            //    new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/cancel.png"), UriKind.Absolute)),
+            //    new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/update.png"), UriKind.Absolute))
             //    );
 
 #else
             Autoupdate.CheckForUpdates(Config.UPDATE_HREF + "?v=" + Config.VERSION + "&id=" + (string.IsNullOrEmpty(Config.MACHINE_GUID) ? "" : Config.MACHINE_GUID),
                 Config.UPDATE_HREF, "PsHandler", "PsHandler.exe", AppDomain.CurrentDomain.BaseDirectory, WindowMain, Quit,
-                new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/update.png", UriKind.Absolute)),
-                new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/cancel.png", UriKind.Absolute)),
-                new BitmapImage(new Uri(@"pack://application:,,,/Images/Resources/Size16x16/update.png", UriKind.Absolute))
+                new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/update.png"), UriKind.Absolute)),
+                new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/cancel.png"), UriKind.Absolute)),
+                new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/update.png"), UriKind.Absolute))
                 );
 #endif
         }

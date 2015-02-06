@@ -60,82 +60,14 @@ namespace PsHandler.Import
 
         public new static Hand Parse(string handHistoryText)
         {
-            try { return new Hand(handHistoryText); }
-            catch { return null; }
+            try
+            {
+                return new Hand(handHistoryText);
+            }
+            catch
+            {
+                return null;
+            }
         }
-
-        public static List<Hand> ___Parse(string text, out int importErrors)
-        {
-            importErrors = 0;
-            var hands = new List<Hand>();
-
-            string[] handHistories, tournamentSummaries;
-            GetHandHistoriesTournamentSummaries(text, out handHistories, out tournamentSummaries);
-            foreach (var handHistory in handHistories)
-            {
-                var hand = Parse(handHistory);
-                if (hand != null)
-                {
-                    hands.Add(hand);
-                }
-                else
-                {
-                    importErrors++;
-                }
-            }
-            return hands;
-        }
-
-        private static void GetHandHistoriesTournamentSummaries(string text, out string[] handHistories, out string[] tournamentSummaries)
-        {
-            var lines = text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            while (lines.Any() && !lines[0].StartsWith("PokerStars Hand #") && !lines[0].StartsWith("PokerStars Zoom Hand #") && !lines[0].StartsWith("PokerStars Tournament #"))
-            {
-                lines.RemoveAt(0);
-            }
-
-            List<string> hhs = new List<string>();
-            List<string> tss = new List<string>();
-            StringBuilder sb = new StringBuilder();
-            bool isPokerHand = false, isTournamentSummary = false;
-            foreach (var line in lines)
-            {
-                if (line.StartsWith("PokerStars Hand #") || line.StartsWith("PokerStars Zoom Hand #"))
-                {
-                    if (sb.Length > 0)
-                    {
-                        if (isPokerHand) hhs.Add(sb.ToString());
-                        if (isTournamentSummary) tss.Add(sb.ToString());
-                    }
-                    sb.Clear();
-
-                    isPokerHand = true;
-                    isTournamentSummary = false;
-                }
-                else if (line.StartsWith("PokerStars Tournament #"))
-                {
-                    if (sb.Length > 0)
-                    {
-                        if (isPokerHand) hhs.Add(sb.ToString());
-                        if (isTournamentSummary) tss.Add(sb.ToString());
-                    }
-                    sb.Clear();
-
-                    isPokerHand = false;
-                    isTournamentSummary = true;
-                }
-
-                sb.AppendLine(line);
-            }
-            if (sb.Length > 0)
-            {
-                if (isPokerHand) hhs.Add(sb.ToString());
-                if (isTournamentSummary) tss.Add(sb.ToString());
-            }
-
-            handHistories = hhs.ToArray();
-            tournamentSummaries = tss.ToArray();
-        }
-
     }
 }

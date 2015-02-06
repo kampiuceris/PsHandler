@@ -92,7 +92,7 @@ namespace PsHandler.UI
             miExit.Click += (sender, args) => Close();
             miExit.Icon = new Image
             {
-                Source = new BitmapImage(new Uri(string.Format(@"/PsHandler;component/Images/Resources/Size16x16/door_out.png"), UriKind.Relative)),
+                Source = new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/door_out.png"), UriKind.Absolute)),
                 Width = 16,
                 Height = 16,
                 Margin = new Thickness(5, 0, 0, 0)
