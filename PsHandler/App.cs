@@ -27,6 +27,7 @@ using PsHandler.PokerMath;
 using PsHandler.PokerTypes;
 using PsHandler.Randomizer;
 using PsHandler.Replayer.UI;
+using PsHandler.SngRegistrator;
 using PsHandler.TableTiler;
 using PsHandler.UI;
 using System.Windows;
@@ -48,6 +49,10 @@ namespace PsHandler
 
         public App()
         {
+            //var x = new SngRegistratorManager();
+            //x.Start();
+            //return;
+
             //WindowReplayer = new WindowReplayer();
             //WindowReplayer.Show();
             //return;

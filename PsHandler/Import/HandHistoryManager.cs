@@ -103,7 +103,6 @@ namespace PsHandler.Import
         {
             UpdateFileList();
             ReadFiles();
-            UpdateUI();
         }
 
         private void UpdateFileList()
@@ -155,6 +154,8 @@ namespace PsHandler.Import
                     toUpdate.Add(fi.FullName, fi.Length);
                     _importErrors += pokerData.ErrorHandHistories.Count;
                 }
+
+                UpdateUI();
             }
 
             // remove non-existing files
