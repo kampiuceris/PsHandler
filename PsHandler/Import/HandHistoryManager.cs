@@ -35,9 +35,11 @@ namespace PsHandler.Import
 
     public class HandHistoryManager
     {
-        private readonly Regex _RegexFileName = new Regex(@"HH\d{8} T(?<tn>\d{9,10})");
+        private readonly Regex _RegexFileName = new Regex(@"\AHH\d{8}.*No Limit Hold'em.*\.txt\z");
         private readonly object _lock = new object();
-        private readonly List<Tournament> _tournaments = new List<Tournament>();
+        private readonly Dictionary<string, long> _fileNameBytesRead = new Dictionary<string, long>();       
+        private readonly Dictionary<long, Hand> _dictionaryCashHands = new Dictionary<long, Hand>();
+        private readonly Dictionary<long, Tournament> _dictionaryTournaments = new Dictionary<long, Tournament>();
         private int _importErrors;
         private Thread _thread;
         public IObserverHandHistoryManager Observer;
@@ -58,7 +60,7 @@ namespace PsHandler.Import
                     try
                     {
                         Thread.Sleep(3000);
-                        UpdateTournaments();
+                        Import();
                     }
                     catch (Exception e)
                     {
@@ -77,69 +79,8 @@ namespace PsHandler.Import
             if (_thread != null)
             {
                 _thread.Interrupt();
-                _tournaments.Clear();
-            }
-        }
-
-        private void UpdateTournaments()
-        {
-            string[] importFolderPaths = Config.ImportFolders.ToArray();
-
-            foreach (string importFolderPath in importFolderPaths)
-            {
-                if (String.IsNullOrEmpty(importFolderPath)) continue;
-
-                DirectoryInfo dir = new DirectoryInfo(importFolderPath);
-
-                if (!dir.Exists) continue;
-
-                foreach (FileInfo fi in dir.GetFiles().Where(o => o.Name.EndsWith(".txt")))
-                {
-                    Match matchFileName = _RegexFileName.Match(fi.Name);
-                    if (matchFileName.Success)
-                    {
-                        long tournamentNumber = long.Parse(matchFileName.Groups["tn"].Value);
-
-                        Tournament tournament;
-                        lock (_lock)
-                        {
-                            tournament = _tournaments.FirstOrDefault(o => o.TournamentNumber.Equals(tournamentNumber));
-                        }
-                        if (tournament == null)
-                        {
-                            lock (_lock)
-                            {
-                                PokerData pokerData = PokerData.FromText(File.ReadAllText(fi.FullName));
-                                List<Hand> hands = pokerData.PokerHands.Select(pokerHand => Hand.Parse(pokerHand.HandHistory)).Where(hand => hand != null).ToList();
-                                _importErrors += pokerData.ErrorHandHistories.Count;
-                                _tournaments.Add(new Tournament { TournamentNumber = tournamentNumber, FileInfo = fi, Hands = hands, LastLength = fi.Length });
-                            }
-                        }
-                        else
-                        {
-                            UpdateHands(tournament);
-                        }
-                    }
-                    if (Observer != null)
-                    {
-                        Observer.SetImportedTournaments(_tournaments.Count);
-                        Observer.SetImportedHands(_tournaments.Sum(o => o.Hands.Count));
-                        Observer.SetImportedErrors(_importErrors);
-                    }
-                }
-            }
-        }
-
-        private void UpdateHands(Tournament tournament)
-        {
-            tournament.FileInfo = new FileInfo(tournament.FileInfo.FullName);
-            if (tournament.FileInfo.Length > tournament.LastLength)
-            {
-                PokerData pokerData = PokerData.FromText(Methods.ReadSeek(tournament.FileInfo.FullName, tournament.LastLength));
-                List<Hand> hands = pokerData.PokerHands.Select(pokerHand => Hand.Parse(pokerHand.HandHistory)).Where(hand => hand != null).ToList();
-                _importErrors += pokerData.ErrorHandHistories.Count;
-                tournament.LastLength = tournament.FileInfo.Length;
-                tournament.AddHands(hands);
+                _dictionaryCashHands.Clear();
+                _dictionaryTournaments.Clear();
             }
         }
 
@@ -147,7 +88,122 @@ namespace PsHandler.Import
         {
             lock (_lock)
             {
-                return _tournaments.FirstOrDefault(ti => ti.TournamentNumber == tournamentNumber);
+                if (_dictionaryTournaments.ContainsKey(tournamentNumber))
+                {
+                    return _dictionaryTournaments[tournamentNumber];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        private void Import()
+        {
+            UpdateFileList();
+            ReadFiles();
+            UpdateUI();
+        }
+
+        private void UpdateFileList()
+        {
+            foreach (string importFolderPath in Config.ImportFolders.ToArray().Where(a => !String.IsNullOrEmpty(a)))
+            {
+                DirectoryInfo di = new DirectoryInfo(importFolderPath);
+                if (!di.Exists) continue;
+
+                foreach (FileInfo fi in di.GetFiles())
+                {
+                    Match matchFileName = _RegexFileName.Match(fi.Name);
+                    if (matchFileName.Success)
+                    {
+                        if (!_fileNameBytesRead.ContainsKey(fi.FullName))
+                        {
+                            _fileNameBytesRead.Add(fi.FullName, 0);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ReadFiles()
+        {
+            var toRemove = new List<string>();
+            var toUpdate = new Dictionary<string, long>();
+
+            foreach (var fileNameBytesRead in _fileNameBytesRead)
+            {
+                var fi = new FileInfo(fileNameBytesRead.Key);
+                if (!fi.Exists)
+                {
+                    // add ro remove list
+                    toRemove.Add(fileNameBytesRead.Key);
+                }
+                else if (fi.Length > fileNameBytesRead.Value)
+                {
+                    if (fi.FullName.Contains("Frisia"))
+                    {
+                        int stop = 0;
+                    }
+
+                    // needs to read
+                    var pokerData = PokerData.FromText(Methods.ReadSeek(fi.FullName, fileNameBytesRead.Value));
+                    var hands = pokerData.PokerHands.Select(pokerHand => Hand.Parse(pokerHand.HandHistory)).Where(hand => hand != null).ToList();
+                    AddHands(hands);
+
+                    toUpdate.Add(fi.FullName, fi.Length);
+                    _importErrors += pokerData.ErrorHandHistories.Count;
+                }
+            }
+
+            // remove non-existing files
+            foreach (var fileName in toRemove)
+            {
+                _fileNameBytesRead.Remove(fileName);
+            }
+
+            // update existing
+            foreach (var pair in toUpdate)
+            {
+                _fileNameBytesRead[pair.Key] = pair.Value;
+            }
+        }
+
+        private void AddHands(IEnumerable<Hand> hands)
+        {
+            foreach (var hand in hands)
+            {
+                lock (_lock)
+                {
+                    if (!hand.IsTournament)
+                    {
+                        // cash hand
+                        if (!_dictionaryCashHands.ContainsKey(hand.HandNumber))
+                        {
+                            _dictionaryCashHands.Add(hand.HandNumber, hand);
+                        }
+                    }
+                    else
+                    {
+                        // tournament hand
+                        if (!_dictionaryTournaments.ContainsKey(hand.TournamentNumber))
+                        {
+                            _dictionaryTournaments.Add(hand.TournamentNumber, new Tournament { TournamentNumber = hand.TournamentNumber });
+                        }
+                        _dictionaryTournaments[hand.TournamentNumber].AddHand(hand);
+                    }
+                }
+            }
+        }
+
+        private void UpdateUI()
+        {
+            if (Observer != null)
+            {
+                Observer.SetImportedTournaments(_dictionaryTournaments.Count);
+                Observer.SetImportedHands(_dictionaryTournaments.Sum(a => a.Value.Hands.Count) + _dictionaryCashHands.Count);
+                Observer.SetImportedErrors(_importErrors);
             }
         }
     }

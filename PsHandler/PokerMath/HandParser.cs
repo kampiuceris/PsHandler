@@ -39,7 +39,9 @@ namespace PsHandler.PokerMath
 
         private static void GetHandHistoriesTournamentSummaries(string text, out string[] handHistories, out string[] tournamentSummaries)
         {
-            var lines = text.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            // TrimStart((char)65279) http://en.wikipedia.org/wiki/Byte_order_mark
+
+            var lines = text.TrimStart((char)65279).Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
             while (lines.Any() && !lines[0].StartsWith("PokerStars Hand #") && !lines[0].StartsWith("PokerStars Zoom Hand #") && !lines[0].StartsWith("PokerStars Tournament #") && !lines[0].StartsWith("PokerStars Home Game Hand #"))
             {
                 lines.RemoveAt(0);

@@ -52,7 +52,7 @@ namespace PsHandler
             //WindowReplayer.Show();
             //return;
 
-            //RegisterHook();
+            RegisterHook();
 
             TableTileManager = new TableTileManager();
             PokerTypeManager = new PokerTypeManager();
@@ -144,9 +144,9 @@ namespace PsHandler
             //    );
 #else
             AutoUpdater.CheckForUpdate(Config.UPDATE_HREF + "?v=" + Config.VERSION + "&id=" + (string.IsNullOrEmpty(Config.MACHINE_GUID) ? "" : Config.MACHINE_GUID),
-                "PsHandler", 
-                "PsHandler.exe", 
-                WindowMain, 
+                "PsHandler",
+                "PsHandler.exe",
+                WindowMain,
                 Quit,
                 new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/update.png"), UriKind.Absolute)),
                 new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/cancel.png"), UriKind.Absolute)),

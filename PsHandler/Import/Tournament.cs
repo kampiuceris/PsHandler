@@ -25,8 +25,6 @@ namespace PsHandler.Import
     public class Tournament
     {
         public long TournamentNumber;
-        public FileInfo FileInfo;
-        public long LastLength;
         public List<Hand> Hands = new List<Hand>();
         private readonly object _lock = new object();
 
@@ -59,14 +57,6 @@ namespace PsHandler.Import
             }
         }
 
-        public int GetLastHandPlayerCount()
-        {
-            lock (_lock)
-            {
-                return !Hands.Any() ? 0 : Hands.Last().StacksAfterHand.Length;
-            }
-        }
-
         public int GetLastHandPlayerCountAfterHand()
         {
             lock (_lock)
@@ -75,7 +65,14 @@ namespace PsHandler.Import
             }
         }
 
-        //
+        public void AddHand(Hand hand)
+        {
+            lock (_lock)
+            {
+                Hands.Add(hand);
+                Hands.Sort((o1, o2) => DateTime.Compare(o1.TimeStampET, o2.TimeStampET));
+            }
+        }
 
         public void AddHands(IEnumerable<Hand> hands)
         {
