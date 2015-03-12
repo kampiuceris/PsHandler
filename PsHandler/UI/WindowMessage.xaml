@@ -14,9 +14,10 @@
             </Grid>
 
             <Grid x:Name="Grid_Message" Margin="5">
-                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="" x:Name="TextBlock_Message" />
                 </ScrollViewer>
+                <TextBox VerticalAlignment="Center" TextWrapping="Wrap" Text="" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" x:Name="TextBox_Message"/>
             </Grid>
         </StackPanel>
 

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="clr-namespace:PsHandler.UI"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" UseLayoutRounding="True"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" x:Name="CheckBox_EnableHud">

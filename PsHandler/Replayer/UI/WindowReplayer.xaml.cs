@@ -32,6 +32,8 @@ namespace PsHandler.Replayer.UI
     /// </summary>
     public partial class WindowReplayer : Window
     {
+        public bool IsClosing;
+
         public WindowReplayer()
         {
             InitializeComponent();
@@ -96,7 +98,14 @@ namespace PsHandler.Replayer.UI
                 }
             };
 
-            UcReplayerTable_Main.ReplayHand(PokerData.FromText(File.ReadAllText(@"C:\Users\WinWork\Desktop\test.txt")).PokerHands[0]); //TODO
+            Closing += (sender, args) =>
+            {
+                if (!IsClosing)
+                {
+                    Visibility = Visibility.Hidden;
+                    args.Cancel = true;
+                }
+            };
         }
 
         private void InitPayouts()
@@ -139,7 +148,7 @@ namespace PsHandler.Replayer.UI
             var pokerHand = UcReplayerTable_Main.PokerHand;
             if (pokerHand != null)
             {
-                WindowMessage.Show(pokerHand.HandHistory, "Hand History", WindowMessageButtons.OK, WindowMessageImage.None, this, WindowStartupLocation.CenterOwner);
+                WindowMessage.Show(pokerHand.HandHistory, "Hand History", WindowMessageButtons.OK, WindowMessageImage.None, this, WindowStartupLocation.CenterOwner, WindowMessageTextType.TextBox);
             }
         }
 
@@ -169,7 +178,7 @@ namespace PsHandler.Replayer.UI
             {
                 var tempPokerHand = PokerHand.Parse(pokerHand.HandHistory);
                 var tempEv = new Ev(tempPokerHand, payouts, tempPokerHand.BuyIn * (int)tempPokerHand.TableSize, tempPokerHand.Currency, PokerMath.Evaluator.Hand.Evaluate);
-                WindowMessage.Show(tempEv.ToString(), "Expected Value Analysis", WindowMessageButtons.OK, WindowMessageImage.None, this, WindowStartupLocation.CenterOwner, new FontFamily("Consolas"));
+                WindowMessage.Show(tempEv.ToString(), "Expected Value Analysis", WindowMessageButtons.OK, WindowMessageImage.None, this, WindowStartupLocation.CenterOwner, WindowMessageTextType.TextBox, new FontFamily("Consolas"));
             }
         }
 
@@ -239,6 +248,20 @@ namespace PsHandler.Replayer.UI
             {
                 return PayoutsName;
             }
+        }
+
+        public void ReplayHand(string HandHistoryStr)
+        {
+            Visibility = Visibility.Visible;
+
+            var pokerData = PokerData.FromText(HandHistoryStr);
+            if (pokerData.PokerHands.Any())
+            {
+                UcReplayerTable_Main.ReplayHand(pokerData.PokerHands.First());
+            }
+
+            Topmost = true;
+            Topmost = false;
         }
     }
 }

@@ -101,5 +101,10 @@ namespace PsHandler.UI
             Label_QuickPreviewHotkey.ToolTip = new UCToolTipControllerQuickPreview();
             ToolTipService.SetShowDuration(Label_QuickPreviewHotkey, 60000);
         }
+
+        private void Button_OpenHandReplayer_Click(object sender, RoutedEventArgs e)
+        {
+            App.WindowReplayer.Visibility = Visibility.Visible;
+        }
     }
 }

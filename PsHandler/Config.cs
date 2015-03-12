@@ -30,6 +30,7 @@ using System.Windows;
 using System.Threading;
 using PsHandler.Custom;
 using PsHandler.Hud;
+using PsHandler.PokerMath;
 using PsHandler.PokerTypes;
 using PsHandler.Randomizer;
 using PsHandler.TableTiler;
@@ -82,21 +83,434 @@ namespace PsHandler
 
         // HUD
 
-        public static bool EnableHud = false;
-        public static int TimerDiff = 0;
-        public static bool TimerShowHandCount = false;
-        public static string TimerHHNotFound = "HH not found";
-        public static string TimerPokerTypeNotFound = "Poker Type not found";
-        public static string TimerMultiplePokerTypes = "Multiple Poker Types";
-        public static int BigBlindDecimals = 0;
-        public static string BigBlindHHNotFound = "X";
-        public static string BigBlindPrefix = "";
-        public static string BigBlindPostfix = "";
-        public static bool BigBlindShowTournamentM = false;
-        public static bool BigBlindMByPlayerCount = true;
-        public static bool BigBlindMByTableSize = false;
+        public static int[] PreferredSeat = new int[11]
+        {
+            0, // Default
+            0, // 1-max
+            0, // 2-max
+            1, // 3-max
+            1, // 4-max
+            2, // 5-max
+            2, // 6-max
+            3, // 7-max
+            3, // 8-max
+            4, // 9-max
+            4, // 10-max
+        };
 
-        // HUD design
+        public static bool HudEnable = false;
+
+        public static bool HudTimerEnable = false;
+        public static bool HudTimerLocationLocked = false;
+        public static bool HudTimerShowTimer = true;
+        public static bool HudTimerShowHandCount = false;
+        public static int HudTimerDiff = 0;
+        public static string HudTimerHHNotFound = "HH not found";
+        public static string HudTimerPokerTypeNotFound = "Poker Type not found";
+        public static string HudTimerMultiplePokerTypes = "Multiple Poker Types";
+
+        public static bool HudBigBlindEnable = false;
+        public static bool HudBigBlindLocationLocked = false;
+        public static bool HudBigBlindShowBB = false;
+        public static bool HudBigBlindShowAdjustedBB = false;
+        public static bool HudBigBlindShowTournamentM = false;
+        public static bool HudBigBlindMByPlayerCount = true;
+        public static bool HudBigBlindMByTableSize = false;
+        public static bool HudBigBlindShowForOpponents = true;
+        public static bool HudBigBlindShowForHero = true;
+        public static int HudBigBlindDecimals = 0;
+        public static string HudBigBlindHHNotFound = "X";
+        public static string HudBigBlindPrefix = "";
+        public static string HudBigBlindPostfix = "";
+
+        // HUD Locations
+
+        public static double[] DefaultHudTimerLocationsX = new double[11] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
+        public static double[] DefaultHudTimerLocationsY = new double[11] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
+        public static double[] HudTimerLocationsX = new double[11] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
+        public static double[] HudTimerLocationsY = new double[11] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
+        #region DEFAULT HudBigBlindLocations X,Y Default = HudBigBlindLocationsX/Y[TableSize][IndexOfSeat]
+
+        #region DEFAULT HudBigBlindLocationsX
+
+        public static double[][] DefaultHudBigBlindLocationsX = new double[11][]
+        {
+            // Default
+            new double[10]
+            {
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            },
+
+            // 1-max
+            new double[10]
+            {
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            },
+
+            // 2-max
+            new double[10]
+            {
+                640 / 792.0,
+                11 / 792.0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            },
+ 
+            // 3-max
+            new double[10]
+            {
+                648 / 792.0,
+                326 / 792.0,
+                4 / 792.0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            },
+
+            // 4-max
+            new double[10]
+            {
+                495 / 792.0,
+                495 / 792.0,
+                157 / 792.0,
+                157 / 792.0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            },
+
+            // 5-max
+            new double[10]
+            {
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            },
+
+            // 6-max
+            new double[10]
+            {
+                495 / 792.0,
+                640 / 792.0,
+                495 / 792.0,
+                157 / 792.0,
+                10 / 792.0,
+                157 / 792.0,
+                0,
+                0,
+                0,
+                0,
+            },
+
+            // 7-max
+            new double[10]
+            {
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            },
+            
+            // 8-max
+            new double[10]
+            {
+                484 / 792.0, 
+                642 / 792.0, 
+                642 / 792.0, 
+                424 / 792.0, 
+                226 / 792.0, 
+                9 / 792.0, 
+                9 / 792.0, 
+                166 / 792.0, 
+                0,
+                0,
+            },
+
+            // 9-max
+            new double[10]
+            {
+                497 / 792.0, 
+                648 / 792.0, 
+                649/ 792.0,
+                522 / 792.0,
+                326 / 792.0,
+                131 / 792.0,
+                4 / 792.0,
+                4 / 792.0,
+                156 / 792.0,
+                0,
+            },
+
+            // 10-max
+            new double[10]
+            {
+                485 / 792.0, 
+                634 / 792.0, 
+                644 / 792.0,
+                634 / 792.0,
+                434 / 792.0,
+                217 / 792.0,
+                16 / 792.0,
+                6 / 792.0,
+                16 / 792.0,
+                166 / 792.0,
+            }, 
+        };
+
+        #endregion
+
+        #region DEFAULT HudBigBlindLocationsY
+
+        public static double[][] DefaultHudBigBlindLocationsY = new double[11][]
+        {
+            // Default
+            new double[10]
+            {
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            },
+
+            // 1-max
+            new double[10]
+            {
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            },
+
+            // 2-max
+            new double[10]
+            {
+                194 / 546.0,
+                194 / 546.0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            },
+
+            // 3-max
+            new double[10]
+            {
+                129 / 546.0,
+                361 / 546.0,
+                129 / 546.0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            },
+
+            // 4-max
+            new double[10]
+            {
+                33 / 546.0,
+                355 / 546.0,
+                355 / 546.0,
+                33 / 546.0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            },
+
+            // 5-max
+            new double[10]
+            {
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            },
+
+            // 6-max
+            new double[10]
+            {
+                33 / 546.0, 
+                194 / 546.0, 
+                355 / 546.0, 
+                355 / 546.0, 
+                194 / 546.0, 
+                33 / 546.0, 
+                0,
+                0,
+                0,
+                0,
+            },
+
+            // 7-max
+            new double[10]
+            {
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            },
+
+            // 8-max
+            new double[10]
+            {
+                35 / 546.0,
+                150 / 546.0,
+                265 / 546.0,
+                368 / 546.0,
+                368 / 546.0,
+                265 / 546.0,
+                150 / 546.0,
+                35 / 546.0,
+                0,
+                0,
+            }, 
+
+            // 9-max
+            new double[10]
+            {
+                35 / 546.0, 
+                128 / 546.0, 
+                243 / 546.0,
+                350 / 546.0,
+                361 / 546.0,
+                350 / 546.0,
+                243 / 546.0,
+                129 / 546.0,
+                35 / 546.0,
+                0,
+            },
+
+            // 10-max
+            new double[10]
+            {
+                36 / 546.0,
+                117 / 546.0,
+                211 / 546.0,
+                299 / 546.0,
+                360 / 546.0,
+                360 / 546.0,
+                299 / 546.0,
+                211 / 546.0,
+                117 / 546.0,
+                36 / 546.0,
+            },
+        };
+
+        #endregion
+
+        #endregion
+        #region HudBigBlindLocations X,Y Default = HudBigBlindLocationsX/Y[TableSize][IndexOfSeat]
+
+        public static double[][] HudBigBlindLocationsX = new double[11][]
+        {
+            new double[10], // Default
+            new double[10], // 1-max
+            new double[10], // 2-max
+            new double[10], // 3-max
+            new double[10], // 4-max
+            new double[10], // 5-max
+            new double[10], // 6-max
+            new double[10], // 7-max
+            new double[10], // 8-max
+            new double[10], // 9-max    
+            new double[10], // 10-max
+        };
+
+        public static double[][] HudBigBlindLocationsY = new double[11][]
+        {
+            new double[10], // Default
+            new double[10], // 1-max
+            new double[10], // 2-max
+            new double[10], // 3-max
+            new double[10], // 4-max
+            new double[10], // 5-max
+            new double[10], // 6-max
+            new double[10], // 7-max
+            new double[10], // 8-max
+            new double[10], // 9-max    
+            new double[10], // 10-max
+        };
+
+        #endregion
+
+        // HUD Design
 
         public static Color HudTimerBackground = Colors.Black;
         public static Color HudTimerForeground = Colors.White;
@@ -106,14 +520,24 @@ namespace PsHandler
         public static double HudTimerFontSize = 15;
         public static Thickness HudTimerMargin = new Thickness(2, 2, 2, 2);
 
-        public static Color HudBigBlindBackground = Colors.Transparent;
-        public static Color HudBigBlindForeground = Colors.RoyalBlue;
-        public static FontFamily HudBigBlindFontFamily = new FontFamily("Consolas");
-        public static FontWeight HudBigBlindFontWeight = FontWeights.Bold;
-        public static FontStyle HudBigBlindFontStyle = FontStyles.Normal;
-        public static double HudBigBlindFontSize = 25;
-        public static Thickness HudBigBlindMargin = new Thickness(2, 2, 2, 2);
-        public static List<ColorByValue> HudBigBlindColorsByValue = new List<ColorByValue>();
+        public static Color HudBigBlindOpponentsBackground = Colors.Transparent;
+        public static Color HudBigBlindOpponentsForeground = Colors.RoyalBlue;
+        public static FontFamily HudBigBlindOpponentsFontFamily = new FontFamily("Consolas");
+        public static FontWeight HudBigBlindOpponentsFontWeight = FontWeights.Bold;
+        public static FontStyle HudBigBlindOpponentsFontStyle = FontStyles.Normal;
+        public static double HudBigBlindOpponentsFontSize = 25;
+        public static Thickness HudBigBlindOpponentsMargin = new Thickness(2, 2, 2, 2);
+
+        public static Color HudBigBlindHeroBackground = Colors.Transparent;
+        public static Color HudBigBlindHeroForeground = Colors.RoyalBlue;
+        public static FontFamily HudBigBlindHeroFontFamily = new FontFamily("Consolas");
+        public static FontWeight HudBigBlindHeroFontWeight = FontWeights.Bold;
+        public static FontStyle HudBigBlindHeroFontStyle = FontStyles.Normal;
+        public static double HudBigBlindHeroFontSize = 25;
+        public static Thickness HudBigBlindHeroMargin = new Thickness(2, 2, 2, 2);
+
+        public static List<ColorByValue> HudBigBlindOpponentsColorsByValue = new List<ColorByValue>();
+        public static List<ColorByValue> HudBigBlindHeroColorsByValue = new List<ColorByValue>();
 
         // Table Tiler
 
@@ -225,11 +649,24 @@ namespace PsHandler
             }
         }
 
-        private static float GetFloat(XElement xElement, string name, ref List<ExceptionPsHandler> exceptions, string exceptionHeader, float defaultValue = default(float))
+        private static float ___GetFloat(XElement xElement, string name, ref List<ExceptionPsHandler> exceptions, string exceptionHeader, float defaultValue = default(float))
         {
             try
             {
                 return float.Parse(xElement.Element(name).Value);
+            }
+            catch (Exception e)
+            {
+                exceptions.Add(new ExceptionPsHandler(e, exceptionHeader));
+                return defaultValue;
+            }
+        }
+
+        private static double GetDouble(XElement xElement, string name, ref List<ExceptionPsHandler> exceptions, string exceptionHeader, double defaultValue = default(double))
+        {
+            try
+            {
+                return double.Parse(xElement.Element(name).Value);
             }
             catch (Exception e)
             {
@@ -386,23 +823,31 @@ namespace PsHandler
 
                 #region Hud
 
-                EnableHud = GetBool(root, "EnableHud", ref exceptions, "LoadXml() EnableHud", false);
+                HudEnable = GetBool(root, "HudEnable", ref exceptions, "LoadXml() HudEnable", false);
 
-                TableManager.EnableHudTimer = GetBool(root, "EnableHudTimer", ref exceptions, "LoadXml() EnableHudTimer", false);
-                TimerDiff = GetInt(root, "TimerDiff", ref exceptions, "LoadXml() TimerDiff", 0);
-                TimerShowHandCount = GetBool(root, "TimerShowHandCount", ref exceptions, "LoadXml() TimerShowHandCount", false);
-                TimerHHNotFound = GetString(root, "TimerHHNotFound", ref exceptions, "LoadXml() TimerHHNotFound", "HH not found");
-                TimerPokerTypeNotFound = GetString(root, "TimerPokerTypeNotFound", ref exceptions, "LoadXml() TimerPokerTypeNotFound", "Poker Type not found");
-                TimerMultiplePokerTypes = GetString(root, "TimerMultiplePokerTypes", ref exceptions, "LoadXml() TimerMultiplePokerTypes", "Multiple Poker Types");
+                HudTimerEnable = GetBool(root, "HudTimerEnable", ref exceptions, "LoadXml() HudTimerEnable", false);
 
-                TableManager.EnableHudBigBlind = GetBool(root, "EnableHudBigBlind", ref exceptions, "LoadXml() EnableHudBigBlind", false);
-                BigBlindShowTournamentM = GetBool(root, "BigBlindShowTournamentM", ref exceptions, "LoadXml() BigBlindShowTournamentM", false);
-                BigBlindMByPlayerCount = GetBool(root, "BigBlindMByPlayerCount", ref exceptions, "LoadXml() BigBlindMByPlayerCount", true);
-                BigBlindMByTableSize = GetBool(root, "BigBlindMByTableSize", ref exceptions, "LoadXml() BigBlindMByTableSize", false);
-                BigBlindDecimals = GetInt(root, "BigBlindDecimals", ref exceptions, "LoadXml() BigBlindDecimals", 0);
-                BigBlindHHNotFound = GetString(root, "BigBlindHHNotFound", ref exceptions, "LoadXml() BigBlindHHNotFound", "X");
-                BigBlindPrefix = GetString(root, "BigBlindPrefix", ref exceptions, "LoadXml() BigBlindPrefix", "");
-                BigBlindPostfix = GetString(root, "BigBlindPostfix", ref exceptions, "LoadXml() BigBlindPostfix", "");
+                HudTimerShowTimer = GetBool(root, "HudTimerShowTimer", ref exceptions, "LoadXml() HudTimerShowTimer", false);
+                HudTimerLocationLocked = GetBool(root, "HudTimerLocationLocked", ref exceptions, "LoadXml() HudTimerLocationLocked", false);
+                HudTimerShowHandCount = GetBool(root, "HudTimerShowHandCount", ref exceptions, "LoadXml() HudTimerShowHandCount", false);
+                HudTimerDiff = GetInt(root, "HudTimerDiff", ref exceptions, "LoadXml() HudTimerDiff", 0);
+                HudTimerHHNotFound = GetString(root, "HudTimerHHNotFound", ref exceptions, "LoadXml() HudTimerHHNotFound", "HH not found");
+                HudTimerPokerTypeNotFound = GetString(root, "HudTimerPokerTypeNotFound", ref exceptions, "LoadXml() HudTimerPokerTypeNotFound", "Poker Type not found");
+                HudTimerMultiplePokerTypes = GetString(root, "HudTimerMultiplePokerTypes", ref exceptions, "LoadXml() HudTimerMultiplePokerTypes", "Multiple Poker Types");
+
+                HudBigBlindEnable = GetBool(root, "HudBigBlindEnable", ref exceptions, "LoadXml() HudBigBlindEnable", false);
+                HudBigBlindLocationLocked = GetBool(root, "HudBigBlindLocationLocked", ref exceptions, "LoadXml() HudBigBlindLocationLocked", false);
+                HudBigBlindShowBB = GetBool(root, "HudBigBlindShowBB", ref exceptions, "LoadXml() HudBigBlindShowBB", false);
+                HudBigBlindShowAdjustedBB = GetBool(root, "HudBigBlindShowAdjustedBB", ref exceptions, "LoadXml() HudBigBlindShowAdjustedBB", false);
+                HudBigBlindShowTournamentM = GetBool(root, "HudBigBlindShowTournamentM", ref exceptions, "LoadXml() HudBigBlindShowTournamentM", false);
+                HudBigBlindMByPlayerCount = GetBool(root, "HudBigBlindMByPlayerCount", ref exceptions, "LoadXml() HudBigBlindMByPlayerCount", true);
+                HudBigBlindMByTableSize = GetBool(root, "HudBigBlindMByTableSize", ref exceptions, "LoadXml() HudBigBlindMByTableSize", false);
+                HudBigBlindShowForOpponents = GetBool(root, "HudBigBlindShowForOpponents", ref exceptions, "LoadXml() HudBigBlindShowForOpponents", true);
+                HudBigBlindShowForHero = GetBool(root, "HudBigBlindShowForHero", ref exceptions, "LoadXml() HudBigBlindShowForHero", true);
+                HudBigBlindDecimals = GetInt(root, "HudBigBlindDecimals", ref exceptions, "LoadXml() HudBigBlindDecimals", 0);
+                HudBigBlindHHNotFound = GetString(root, "HudBigBlindHHNotFound", ref exceptions, "LoadXml() HudBigBlindHHNotFound", "X");
+                HudBigBlindPrefix = GetString(root, "HudBigBlindPrefix", ref exceptions, "LoadXml() HudBigBlindPrefix", "");
+                HudBigBlindPostfix = GetString(root, "HudBigBlindPostfix", ref exceptions, "LoadXml() HudBigBlindPostfix", "");
 
                 #endregion
 
@@ -413,34 +858,86 @@ namespace PsHandler
                 HudTimerFontFamily = GetFontFamily(root, "HudTimerFontFamily", ref exceptions, "LoadXml() HudTimerFontFamily", new FontFamily("Consolas"));
                 HudTimerFontWeight = GetFontWeight(root, "HudTimerFontWeight", ref exceptions, "LoadXml() HudTimerFontWeight", FontWeights.Normal);
                 HudTimerFontStyle = GetFontStyle(root, "HudTimerFontStyle", ref exceptions, "LoadXml() HudTimerFontStyle", FontStyles.Normal);
-                HudTimerFontSize = GetFloat(root, "HudTimerFontSize", ref exceptions, "LoadXml() HudTimerFontSize", 15);
+                HudTimerFontSize = GetDouble(root, "HudTimerFontSize", ref exceptions, "LoadXml() HudTimerFontSize", 15);
                 HudTimerMargin = GetThickness(root, "HudTimerMargin", ref exceptions, "LoadXml() HudTimerMargin", new Thickness(2, 2, 2, 2));
 
-                HudBigBlindBackground = GetColor(root, "HudBigBlindBackground", ref exceptions, "LoadXml() HudBigBlindBackground", Colors.Black);
-                HudBigBlindForeground = GetColor(root, "HudBigBlindForeground", ref exceptions, "LoadXml() HudBigBlindForeground", Colors.White);
-                HudBigBlindFontFamily = GetFontFamily(root, "HudBigBlindFontFamily", ref exceptions, "LoadXml() HudBigBlindFontFamily", new FontFamily("Consolas"));
-                HudBigBlindFontWeight = GetFontWeight(root, "HudBigBlindFontWeight", ref exceptions, "LoadXml() HudBigBlindFontWeight", FontWeights.Normal);
-                HudBigBlindFontStyle = GetFontStyle(root, "HudBigBlindFontStyle", ref exceptions, "LoadXml() HudBigBlindFontStyle", FontStyles.Normal);
-                HudBigBlindFontSize = GetFloat(root, "HudBigBlindFontSize", ref exceptions, "LoadXml() HudBigBlindFontSize", 25);
-                HudBigBlindMargin = GetThickness(root, "HudBigBlindMargin", ref exceptions, "LoadXml() HudBigBlindMargin", new Thickness(2, 2, 2, 2));
-                foreach (XElement element in GetXElement(root, "HudBigBlindColorsByValue", ref exceptions, "LoadXml() HudBigBlindMargin", new XElement("HudBigBlindColorsByValue")).Elements("ColorByValue"))
+                HudBigBlindOpponentsBackground = GetColor(root, "HudBigBlindOpponentsBackground", ref exceptions, "LoadXml() HudBigBlindOpponentsBackground", Colors.Black);
+                HudBigBlindOpponentsForeground = GetColor(root, "HudBigBlindOpponentsForeground", ref exceptions, "LoadXml() HudBigBlindOpponentsForeground", Colors.White);
+                HudBigBlindOpponentsFontFamily = GetFontFamily(root, "HudBigBlindOpponentsFontFamily", ref exceptions, "LoadXml() HudBigBlindOpponentsFontFamily", new FontFamily("Consolas"));
+                HudBigBlindOpponentsFontWeight = GetFontWeight(root, "HudBigBlindOpponentsFontWeight", ref exceptions, "LoadXml() HudBigBlindOpponentsFontWeight", FontWeights.Normal);
+                HudBigBlindOpponentsFontStyle = GetFontStyle(root, "HudBigBlindOpponentsFontStyle", ref exceptions, "LoadXml() HudBigBlindOpponentsFontStyle", FontStyles.Normal);
+                HudBigBlindOpponentsFontSize = GetDouble(root, "HudBigBlindOpponentsFontSize", ref exceptions, "LoadXml() HudBigBlindOpponentsFontSize", 25);
+                HudBigBlindOpponentsMargin = GetThickness(root, "HudBigBlindOpponentsMargin", ref exceptions, "LoadXml() HudBigBlindOpponentsMargin", new Thickness(2, 2, 2, 2));
+
+                HudBigBlindHeroBackground = GetColor(root, "HudBigBlindHeroBackground", ref exceptions, "LoadXml() HudBigBlindHeroBackground", Colors.Black);
+                HudBigBlindHeroForeground = GetColor(root, "HudBigBlindHeroForeground", ref exceptions, "LoadXml() HudBigBlindHeroForeground", Colors.White);
+                HudBigBlindHeroFontFamily = GetFontFamily(root, "HudBigBlindHeroFontFamily", ref exceptions, "LoadXml() HudBigBlindHeroFontFamily", new FontFamily("Consolas"));
+                HudBigBlindHeroFontWeight = GetFontWeight(root, "HudBigBlindHeroFontWeight", ref exceptions, "LoadXml() HudBigBlindHeroFontWeight", FontWeights.Normal);
+                HudBigBlindHeroFontStyle = GetFontStyle(root, "HudBigBlindHeroFontStyle", ref exceptions, "LoadXml() HudBigBlindHeroFontStyle", FontStyles.Normal);
+                HudBigBlindHeroFontSize = GetDouble(root, "HudBigBlindHeroFontSize", ref exceptions, "LoadXml() HudBigBlindHeroFontSize", 25);
+                HudBigBlindHeroMargin = GetThickness(root, "HudBigBlindHeroMargin", ref exceptions, "LoadXml() HudBigBlindHeroMargin", new Thickness(2, 2, 2, 2));
+
+                foreach (XElement element in GetXElement(root, "HudBigBlindOpponentsColorsByValue", ref exceptions, "LoadXml() HudBigBlindOpponentsColorsByValue", new XElement("HudBigBlindOpponentsColorsByValue")).Elements("ColorByValue"))
                 {
                     ColorByValue colorByValue = ColorByValue.FromXElement(element, ref exceptions, "LoadXml() ColorByValue");
                     if (colorByValue != null)
                     {
-                        HudBigBlindColorsByValue.Add(colorByValue);
+                        HudBigBlindOpponentsColorsByValue.Add(colorByValue);
+                    }
+                }
+                foreach (XElement element in GetXElement(root, "HudBigBlindHeroColorsByValue", ref exceptions, "LoadXml() HudBigBlindHeroColorsByValue", new XElement("HudBigBlindHeroColorsByValue")).Elements("ColorByValue"))
+                {
+                    ColorByValue colorByValue = ColorByValue.FromXElement(element, ref exceptions, "LoadXml() ColorByValue");
+                    if (colorByValue != null)
+                    {
+                        HudBigBlindHeroColorsByValue.Add(colorByValue);
                     }
                 }
 
-
                 #endregion
 
-                TableManager.HudTimerLocationLocked = GetBool(root, "HudTimerLocationLocked", ref exceptions, "LoadXml() HudTimerLocationLocked", false);
-                TableManager.FromXElementHudTimerLocations(root.Element("HudTimerLocations"), ref exceptions, "LoadXml()");
-                TableManager.HudBigBlindLocationLocked = GetBool(root, "HudBigBlindLocationLocked", ref exceptions, "LoadXml() HudBigBlindLocationLocked", false);
-                TableManager.FromXElementHudBigBlindLocations(root.Element("HudBigBlindLocations"), ref exceptions, "LoadXml()");
                 EnableTableTiler = GetBool(root, "EnableTableTiler", ref exceptions, "LoadXml() EnableTableTiler", false);
                 AutoTileCheckingTimeMs = GetInt(root, "AutoTileCheckingTimeMs", ref exceptions, "LoadXml() AutoTileCheckingTimeMs", 3000);
+
+                //
+
+                for (int tableSize = 0; tableSize < 11; tableSize++)
+                {
+                    PreferredSeat[tableSize] = GetInt(root, string.Format("PreferredSeat_{0}", tableSize), ref exceptions, string.Format("LoadXml() PreferredSeat_{0}", tableSize), PreferredSeat[tableSize]);
+                }
+
+                for (int tableSize = 0; tableSize < 11; tableSize++)
+                {
+                    var xy = GetString(root, string.Format("HudTimerLocationsXY_{0}", tableSize), ref exceptions, string.Format("LoadXml() HudTimerLocationsXY_{0}", tableSize), string.Format("{0} {1}", DefaultHudTimerLocationsX[tableSize], DefaultHudTimerLocationsY[tableSize])).Split(' ');
+                    try
+                    {
+                        HudTimerLocationsX[tableSize] = double.Parse(xy[0]);
+                        HudTimerLocationsY[tableSize] = double.Parse(xy[1]);
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                for (int tableSize = 0; tableSize < 11; tableSize++)
+                {
+                    for (int position = 0; position < 10; position++)
+                    {
+                        var xy = GetString(root, string.Format("HudBigBlindLocationsXY_{0}_{1}", tableSize, position), ref exceptions, string.Format("LoadXml() HudBigBlindLocationsXY_{0}_{1}", tableSize, position),
+                            string.Format("{0} {1}", DefaultHudBigBlindLocationsX[tableSize][position], DefaultHudBigBlindLocationsX[tableSize][position])).Split(' ');
+                        try
+                        {
+                            HudBigBlindLocationsX[tableSize][position] = double.Parse(xy[0]);
+                            HudBigBlindLocationsY[tableSize][position] = double.Parse(xy[1]);
+                        }
+                        catch
+                        {
+                        }
+                    }
+                }
+
+                //
+
                 App.TableTileManager.FromXElement(root.Element("TableTiles"), ref exceptions, "LoadXml()");
                 App.PokerTypeManager.FromXElement(root.Element("PokerTypes"), ref exceptions, "LoadXml()");
             }
@@ -527,23 +1024,30 @@ namespace PsHandler
 
                 #region Hud
 
-                Set(root, "EnableHud", EnableHud, ref exceptions, "SaveXml() EnableHud");
+                Set(root, "HudEnable", HudEnable, ref exceptions, "SaveXml() HudEnable");
 
-                Set(root, "EnableHudTimer", TableManager.EnableHudTimer, ref exceptions, "SaveXml() EnableHudTimer");
-                Set(root, "TimerDiff", TimerDiff, ref exceptions, "SaveXml() TimerDiff");
-                Set(root, "TimerShowHandCount", TimerShowHandCount, ref exceptions, "SaveXml() TimerShowHandCount");
-                Set(root, "TimerHHNotFound", TimerHHNotFound, ref exceptions, "SaveXml() TimerHHNotFound");
-                Set(root, "TimerPokerTypeNotFound", TimerPokerTypeNotFound, ref exceptions, "SaveXml() TimerPokerTypeNotFound");
-                Set(root, "TimerMultiplePokerTypes", TimerMultiplePokerTypes, ref exceptions, "SaveXml() TimerMultiplePokerTypes");
+                Set(root, "HudTimerEnable", HudTimerEnable, ref exceptions, "SaveXml() HudTimerEnable");
+                Set(root, "HudTimerLocationLocked", HudTimerLocationLocked, ref exceptions, "SaveXml() HudTimerLocationLocked");
+                Set(root, "HudTimerShowTimer", HudTimerShowTimer, ref exceptions, "SaveXml() HudTimerShowTimer");
+                Set(root, "HudTimerShowHandCount", HudTimerShowHandCount, ref exceptions, "SaveXml() HudTimerShowHandCount");
+                Set(root, "HudTimerDiff", HudTimerDiff, ref exceptions, "SaveXml() HudTimerDiff");
+                Set(root, "HudTimerHHNotFound", HudTimerHHNotFound, ref exceptions, "SaveXml() HudTimerHHNotFound");
+                Set(root, "HudTimerPokerTypeNotFound", HudTimerPokerTypeNotFound, ref exceptions, "SaveXml() HudTimerPokerTypeNotFound");
+                Set(root, "HudTimerMultiplePokerTypes", HudTimerMultiplePokerTypes, ref exceptions, "SaveXml() HudTimerMultiplePokerTypes");
 
-                Set(root, "EnableHudBigBlind", TableManager.EnableHudBigBlind, ref exceptions, "SaveXml() EnableHudBigBlind");
-                Set(root, "BigBlindShowTournamentM", BigBlindShowTournamentM, ref exceptions, "SaveXml() BigBlindShowTournamentM");
-                Set(root, "BigBlindMByPlayerCount", BigBlindMByPlayerCount, ref exceptions, "SaveXml() BigBlindMByPlayerCount");
-                Set(root, "BigBlindMByTableSize", BigBlindMByTableSize, ref exceptions, "SaveXml() BigBlindMByTableSize");
-                Set(root, "BigBlindDecimals", BigBlindDecimals, ref exceptions, "SaveXml() BigBlindDecimals");
-                Set(root, "BigBlindHHNotFound", BigBlindHHNotFound, ref exceptions, "SaveXml() BigBlindHHNotFound");
-                Set(root, "BigBlindPrefix", BigBlindPrefix, ref exceptions, "SaveXml() BigBlindPrefix");
-                Set(root, "BigBlindPostfix", BigBlindPostfix, ref exceptions, "SaveXml() BigBlindPostfix");
+                Set(root, "HudBigBlindEnable", HudBigBlindEnable, ref exceptions, "SaveXml() HudBigBlindEnable");
+                Set(root, "HudBigBlindLocationLocked", HudBigBlindLocationLocked, ref exceptions, "SaveXml() HudBigBlindLocationLocked");
+                Set(root, "HudBigBlindShowBB", HudBigBlindShowBB, ref exceptions, "SaveXml() HudBigBlindShowBB");
+                Set(root, "HudBigBlindShowAdjustedBB", HudBigBlindShowAdjustedBB, ref exceptions, "SaveXml() HudBigBlindShowAdjustedBB");
+                Set(root, "HudBigBlindShowTournamentM", HudBigBlindShowTournamentM, ref exceptions, "SaveXml() HudBigBlindShowTournamentM");
+                Set(root, "HudBigBlindMByPlayerCount", HudBigBlindMByPlayerCount, ref exceptions, "SaveXml() HudBigBlindMByPlayerCount");
+                Set(root, "HudBigBlindMByTableSize", HudBigBlindMByTableSize, ref exceptions, "SaveXml() HudBigBlindMByTableSize");
+                Set(root, "HudBigBlindShowForOpponents", HudBigBlindShowForOpponents, ref exceptions, "SaveXml() HudBigBlindShowForOpponents");
+                Set(root, "HudBigBlindShowForHero", HudBigBlindShowForHero, ref exceptions, "SaveXml() HudBigBlindShowForHero");
+                Set(root, "HudBigBlindDecimals", HudBigBlindDecimals, ref exceptions, "SaveXml() HudBigBlindDecimals");
+                Set(root, "HudBigBlindHHNotFound", HudBigBlindHHNotFound, ref exceptions, "SaveXml() HudBigBlindHHNotFound");
+                Set(root, "HudBigBlindPrefix", HudBigBlindPrefix, ref exceptions, "SaveXml() HudBigBlindPrefix");
+                Set(root, "HudBigBlindPostfix", HudBigBlindPostfix, ref exceptions, "SaveXml() HudBigBlindPostfix");
 
                 #endregion
 
@@ -557,28 +1061,63 @@ namespace PsHandler
                 Set(root, "HudTimerFontSize", HudTimerFontSize, ref exceptions, "SaveXml() HudTimerFontSize");
                 Set(root, "HudTimerMargin", HudTimerMargin, ref exceptions, "SaveXml() HudTimerMargin");
 
-                Set(root, "HudBigBlindBackground", HudBigBlindBackground, ref exceptions, "SaveXml() HudBigBlindBackground");
-                Set(root, "HudBigBlindForeground", HudBigBlindForeground, ref exceptions, "SaveXml() HudBigBlindForeground");
-                Set(root, "HudBigBlindFontFamily", HudBigBlindFontFamily, ref exceptions, "SaveXml() HudBigBlindFontFamily");
-                Set(root, "HudBigBlindFontWeight", HudBigBlindFontWeight, ref exceptions, "SaveXml() HudBigBlindFontWeight");
-                Set(root, "HudBigBlindFontStyle", HudBigBlindFontStyle, ref exceptions, "SaveXml() HudBigBlindFontStyle");
-                Set(root, "HudBigBlindFontSize", HudBigBlindFontSize, ref exceptions, "SaveXml() HudBigBlindFontSize");
-                Set(root, "HudBigBlindMargin", HudBigBlindMargin, ref exceptions, "SaveXml() HudBigBlindMargin");
-                XElement xBigBlindColorsByValue = new XElement("HudBigBlindColorsByValue");
-                root.Add(xBigBlindColorsByValue);
-                foreach (var item in HudBigBlindColorsByValue)
+                Set(root, "HudBigBlindOpponentsBackground", HudBigBlindOpponentsBackground, ref exceptions, "SaveXml() HudBigBlindOpponentsBackground");
+                Set(root, "HudBigBlindOpponentsForeground", HudBigBlindOpponentsForeground, ref exceptions, "SaveXml() HudBigBlindOpponentsForeground");
+                Set(root, "HudBigBlindOpponentsFontFamily", HudBigBlindOpponentsFontFamily, ref exceptions, "SaveXml() HudBigBlindOpponentsFontFamily");
+                Set(root, "HudBigBlindOpponentsFontWeight", HudBigBlindOpponentsFontWeight, ref exceptions, "SaveXml() HudBigBlindOpponentsFontWeight");
+                Set(root, "HudBigBlindOpponentsFontStyle", HudBigBlindOpponentsFontStyle, ref exceptions, "SaveXml() HudBigBlindOpponentsFontStyle");
+                Set(root, "HudBigBlindOpponentsFontSize", HudBigBlindOpponentsFontSize, ref exceptions, "SaveXml() HudBigBlindOpponentsFontSize");
+                Set(root, "HudBigBlindOpponentsMargin", HudBigBlindOpponentsMargin, ref exceptions, "SaveXml() HudBigBlindOpponentsMargin");
+
+                Set(root, "HudBigBlindHeroBackground", HudBigBlindHeroBackground, ref exceptions, "SaveXml() HudBigBlindHeroBackground");
+                Set(root, "HudBigBlindHeroForeground", HudBigBlindHeroForeground, ref exceptions, "SaveXml() HudBigBlindHeroForeground");
+                Set(root, "HudBigBlindHeroFontFamily", HudBigBlindHeroFontFamily, ref exceptions, "SaveXml() HudBigBlindHeroFontFamily");
+                Set(root, "HudBigBlindHeroFontWeight", HudBigBlindHeroFontWeight, ref exceptions, "SaveXml() HudBigBlindHeroFontWeight");
+                Set(root, "HudBigBlindHeroFontStyle", HudBigBlindHeroFontStyle, ref exceptions, "SaveXml() HudBigBlindHeroFontStyle");
+                Set(root, "HudBigBlindHeroFontSize", HudBigBlindHeroFontSize, ref exceptions, "SaveXml() HudBigBlindHeroFontSize");
+                Set(root, "HudBigBlindHeroMargin", HudBigBlindHeroMargin, ref exceptions, "SaveXml() HudBigBlindHeroMargin");
+
+                XElement xBigBlindOpponentsColorsByValue = new XElement("HudBigBlindOpponentsColorsByValue");
+                root.Add(xBigBlindOpponentsColorsByValue);
+                foreach (var item in HudBigBlindOpponentsColorsByValue)
                 {
-                    xBigBlindColorsByValue.Add(item.ToXElement());
+                    xBigBlindOpponentsColorsByValue.Add(item.ToXElement());
+                }
+
+                XElement xBigBlindHeroColorsByValue = new XElement("HudBigBlindHeroColorsByValue");
+                root.Add(xBigBlindHeroColorsByValue);
+                foreach (var item in HudBigBlindHeroColorsByValue)
+                {
+                    xBigBlindHeroColorsByValue.Add(item.ToXElement());
                 }
 
                 #endregion
 
-                Set(root, "HudTimerLocationLocked", TableManager.HudTimerLocationLocked, ref exceptions, "SaveXml() HudTimerLocationLocked");
-                root.Add(TableManager.ToXElementHudTimerLocations());
-                Set(root, "HudBigBlindLocationLocked", TableManager.HudBigBlindLocationLocked, ref exceptions, "SaveXml() HudBigBlindLocationLocked");
-                root.Add(TableManager.ToXElementHudBigBlindLocations());
+                //
+
                 Set(root, "EnableTableTiler", EnableTableTiler, ref exceptions, "SaveXml() EnableTableTiler");
                 Set(root, "AutoTileCheckingTimeMs", AutoTileCheckingTimeMs, ref exceptions, "SaveXml() AutoTileCheckingTimeMs");
+
+                for (int tableSize = 0; tableSize < 11; tableSize++)
+                {
+                    Set(root, string.Format("PreferredSeat_{0}", tableSize), string.Format("{0}", PreferredSeat[tableSize]), ref exceptions, string.Format("SaveXml() PreferredSeat_{0}", tableSize));
+                }
+
+                for (int tableSize = 0; tableSize < 11; tableSize++)
+                {
+                    Set(root, string.Format("HudTimerLocationsXY_{0}", tableSize), string.Format("{0} {1}", HudTimerLocationsX[tableSize], HudTimerLocationsY[tableSize]), ref exceptions, string.Format("SaveXml() HudTimerLocationsXY_{0}", tableSize));
+                }
+
+                for (int tableSize = 0; tableSize < 11; tableSize++)
+                {
+                    for (int position = 0; position < 10; position++)
+                    {
+                        Set(root, string.Format("HudBigBlindLocationsXY_{0}_{1}", tableSize, position), string.Format("{0} {1}", HudBigBlindLocationsX[tableSize][position], HudBigBlindLocationsY[tableSize][position]), ref exceptions, string.Format("SaveXml() HudBigBlindLocationsXY_{0}_{1}", tableSize, position));
+                    }
+                }
+
+                //
+
                 root.Add(App.TableTileManager.ToXElement());
                 root.Add(App.PokerTypeManager.ToXElement());
 
@@ -633,10 +1172,10 @@ namespace PsHandler
         {
             try
             {
-                if (version < 23)
+                if (version < 27)
                 {
                     // poker types delaut override:
-                    List<PokerType> defaultPokerTypes = PokerType.GetDefaultValues().ToList();
+                    var defaultPokerTypes = PokerType.GetDefaultValues().ToList();
                     foreach (PokerType pokerType in App.PokerTypeManager.GetPokerTypesCopy())
                     {
                         if (!defaultPokerTypes.Any(a => a.Name.Equals(pokerType.Name)))

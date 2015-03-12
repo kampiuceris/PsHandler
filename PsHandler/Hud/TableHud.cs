@@ -17,7 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.Pipes;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -33,16 +35,15 @@ namespace PsHandler.Hud
 {
     public class TableHud : IDisposable
     {
+        public enum OwnerState { Unknown, Unattached, Attached }
+
         private readonly Thread _thread;
         public PokerEnums.TableSize TableSize = PokerEnums.TableSize.Default;
-        public long TournamentNumber = -1;
-        public long LastHandNumber = -1;
-        public decimal Sb, Bb, Ante;
-        private PokerType _pokerType;
+        public PokerType PokerType;
         //
         public Table Table;
         public WindowTimer WindowTimer;
-        public WindowBigBlind WindowBigBlind;
+        public WindowBigBlind[] WindowsBigBlind = new WindowBigBlind[10];
         //
         private static readonly Regex _regexTitle = new Regex(@".+Blinds (\$|€|£)?(?<sb>[\d\.]+)\/(\$|€|£)?(?<bb>[\d\.]+)( Ante (\$|€|£)?(?<ante>[\d\.]+))? - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
 
@@ -52,9 +53,14 @@ namespace PsHandler.Hud
             {
                 Table = table;
                 WindowTimer = new WindowTimer(Table);
+                WindowTimer.Opacity = 0;
                 WindowTimer.Show();
-                WindowBigBlind = new WindowBigBlind(Table);
-                WindowBigBlind.Show();
+                for (int i = 0; i < 10; i++)
+                {
+                    WindowsBigBlind[i] = new WindowBigBlind(Table, i);
+                    WindowsBigBlind[i].Opacity = 0;
+                    WindowsBigBlind[i].Show();
+                }
             });
 
             _thread = new Thread(() =>
@@ -63,159 +69,46 @@ namespace PsHandler.Hud
                 {
                     while (true)
                     {
-                        string title = Table.Title, className = Table.ClassName, textboxBigBlindContent = Config.BigBlindHHNotFound, textboxTimerContent = Config.TimerHHNotFound, hero = "";
-                        decimal sb = decimal.MinValue, bb = decimal.MinValue, ante = 0, bigBlindMValue = 0;
-                        bool bigBlindMIsSet = false;
-                        Match match = _regexTitle.Match(title);
-                        if (match.Success)
-                        {
-                            sb = decimal.Parse(match.Groups["sb"].Value);
-                            bb = decimal.Parse(match.Groups["bb"].Value);
-                            var groupAnte = match.Groups["ante"];
-                            if (groupAnte.Success)
-                            {
-                                ante = decimal.Parse(groupAnte.Value);
-                            }
-                            long toutnamentNumber = long.Parse(match.Groups["tournament_number"].Value);
-                            hero = match.Groups["hero"].Value;
+                        string title = Table.Title, className = Table.ClassName;
+                        long tournamentNumber;
+                        decimal sb, bb, ante;
 
-                            Tournament tournament = App.HandHistoryManager.GetTournament(toutnamentNumber);
+                        string timerValue = null;
+                        bool timerVisibility = false;
+                        decimal[] bbValue = new decimal[10];
+                        bool[] bbVisibility = new bool[10];
+                        bool[] bbIsHero = new bool[10];
+                        string[] bbTooltip = new string[10];
+
+                        var success = GetInfo(title, out sb, out bb, out ante, out tournamentNumber);
+                        if (success)
+                        {
+                            var tournament = App.HandHistoryManager.GetTournament(tournamentNumber);
                             if (tournament != null)
                             {
                                 TableSize = tournament.GetLastHandTableSize();
-
-                                #region BigBlind
-
-                                var tableSize = tournament.GetLastHandTableSize();
-                                decimal latestStack = tournament.GetLatestStack(hero);
-                                if (latestStack != decimal.MinValue)
-                                {
-                                    if (bb != 0)
-                                    {
-                                        if (!Config.BigBlindShowTournamentM)
-                                        {
-                                            bigBlindMIsSet = true;
-                                            bigBlindMValue = Math.Round(latestStack / bb, Config.BigBlindDecimals);
-                                        }
-                                        else
-                                        {
-                                            if (Config.BigBlindMByPlayerCount)
-                                            {
-                                                bigBlindMIsSet = true;
-                                                bigBlindMValue = Math.Round(latestStack / (sb + bb + ante * tournament.GetLastHandPlayerCountAfterHand()), Config.BigBlindDecimals);
-                                            }
-                                            else if (Config.BigBlindMByTableSize)
-                                            {
-                                                bigBlindMIsSet = true;
-                                                bigBlindMValue = Math.Round(latestStack / (sb + bb + ante * (decimal)tableSize), Config.BigBlindDecimals);
-                                            }
-                                        }
-                                        string decimalFormat = "0:0.";
-                                        for (int i = 0; i < Config.BigBlindDecimals; i++) decimalFormat += "0";
-                                        textboxBigBlindContent = Config.BigBlindPrefix + string.Format("{" + decimalFormat + "}", bigBlindMValue) + Config.BigBlindPostfix;
-                                    }
-                                    else
-                                    {
-                                        textboxBigBlindContent = "Error calculating BB";
-                                    }
-                                }
-
-                                #endregion
-
-                                #region Timer
-
-                                if (!Config.TimerShowHandCount)
-                                {
-                                    int pokerTypeErrors = -1;
-                                    if (_pokerType == null)
-                                    {
-                                        _pokerType = App.PokerTypeManager.GetPokerType(title, className, out pokerTypeErrors);
-                                        if (pokerTypeErrors != 0)
-                                        {
-                                            _pokerType = null;
-                                        }
-                                    }
-                                    if (_pokerType != null)
-                                    {
-                                        DateTime dateTimeUtcNow = DateTime.UtcNow.AddSeconds(-Config.TimerDiff);
-                                        DateTime dateTimeUtcNextLevel = tournament.GetFirstHandTimestampET();
-                                        while (dateTimeUtcNextLevel < dateTimeUtcNow)
-                                        {
-                                            dateTimeUtcNextLevel = dateTimeUtcNextLevel + _pokerType.LevelLength;
-                                        }
-                                        TimeSpan timeSpan = dateTimeUtcNextLevel - dateTimeUtcNow;
-                                        textboxTimerContent = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
-                                        Methods.UiInvoke(() =>
-                                        {
-                                            WindowTimer.UCLabel_Main.SetToolTip(_pokerType.Name);
-                                        });
-                                    }
-                                    else
-                                    {
-                                        if (pokerTypeErrors == 1)
-                                        {
-                                            textboxTimerContent = Config.TimerPokerTypeNotFound;
-                                        }
-                                        else if (pokerTypeErrors == 2)
-                                        {
-                                            textboxTimerContent = Config.TimerMultiplePokerTypes;
-                                        }
-                                        else
-                                        {
-                                            textboxTimerContent = string.Format("Unknown Error");
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    textboxTimerContent = string.Format("{0}", tournament.CountLevelHands(sb, bb) + 1);
-                                }
-
-                                #endregion
+                                GetContentTimer(title, className, tournament, sb, bb, out timerValue, out timerVisibility);
+                                GetContentBigBlind(tournament, sb, bb, ante, out bbValue, out bbVisibility, out bbIsHero, out bbTooltip);
                             }
                         }
 
-                        #region GUI Update
-
                         Methods.UiInvoke(() =>
                         {
-                            // default client size: 792 x 546
+                            // Update View
+                            WindowTimer.UpdateView(timerValue, PokerType != null ? PokerType.Name : "Unknown");
+                            for (int i = 0; i < 10; i++)
+                            {
+                                WindowsBigBlind[i].UpdateView(i, bbValue[i], bbTooltip[i], bbIsHero[i]);
+                            }
 
-                            WindowTimer.UCLabel_Main.SetText(textboxTimerContent);
-                            WindowTimer.Left = Table.RectangleClient.X + (double)Table.RectangleClient.Width * TableManager.GetHudTimerLocationX(TableSize, this);
-                            WindowTimer.Top = Table.RectangleClient.Y + (double)Table.RectangleClient.Height * TableManager.GetHudTimerLocationY(TableSize, this);
-                            WindowTimer.UCLabel_Main.SetBackground(Config.HudTimerBackground);
-                            WindowTimer.UCLabel_Main.SetForeground(Config.HudTimerForeground);
-                            WindowTimer.UCLabel_Main.SetFontFamily(Config.HudTimerFontFamily);
-                            WindowTimer.UCLabel_Main.SetFontWeight(Config.HudTimerFontWeight);
-                            WindowTimer.UCLabel_Main.SetFontStyle(Config.HudTimerFontStyle);
-                            WindowTimer.UCLabel_Main.SetFontSize(Config.HudTimerFontSize, Table.RectangleClient.Height / 546.0);
-                            WindowTimer.UCLabel_Main.SetMargin(Config.HudTimerMargin, Table.RectangleClient.Height / 546.0);
-                            WindowTimer.Opacity = TableManager.EnableHudTimer ? 1 : 0;
-
-                            WindowBigBlind.UCLabel_Main.SetText(textboxBigBlindContent);
-                            WindowBigBlind.Left = Table.RectangleClient.X + (double)Table.RectangleClient.Width * TableManager.GetHudBigBlindLocationX(TableSize, this);
-                            WindowBigBlind.Top = Table.RectangleClient.Y + (double)Table.RectangleClient.Height * TableManager.GetHudBigBlindLocationY(TableSize, this);
-                            WindowBigBlind.UCLabel_Main.SetBackground(Config.HudBigBlindBackground);
-                            WindowBigBlind.UCLabel_Main.SetForeground(ColorByValue.GetColorByValue(Config.HudBigBlindForeground, bigBlindMValue, bigBlindMIsSet ? Config.HudBigBlindColorsByValue : new List<ColorByValue>()));
-                            WindowBigBlind.UCLabel_Main.SetFontFamily(Config.HudBigBlindFontFamily);
-                            WindowBigBlind.UCLabel_Main.SetFontWeight(Config.HudBigBlindFontWeight);
-                            WindowBigBlind.UCLabel_Main.SetFontStyle(Config.HudBigBlindFontStyle);
-                            WindowBigBlind.UCLabel_Main.SetFontSize(Config.HudBigBlindFontSize, Table.RectangleClient.Height / 546.0);
-                            WindowBigBlind.UCLabel_Main.SetMargin(Config.HudBigBlindMargin, Table.RectangleClient.Height / 546.0);
-                            WindowBigBlind.Opacity = TableManager.EnableHudBigBlind ? 1 : 0;
+                            // Ensure visibility
+                            WindowTimer.EnsureVisibility(timerVisibility);
+                            for (int i = 0; i < 10; i++)
+                            {
+                                WindowsBigBlind[i].EnsureVisibility(bbVisibility[i] && ((!bbIsHero[i] && Config.HudBigBlindShowForOpponents) || (bbIsHero[i] && Config.HudBigBlindShowForHero)));
+                            }
                         });
-
-                        #endregion
-
                         Thread.Sleep(250);
-
-                        // Ensure visibility
-                        Methods.UiInvoke(() =>
-                        {
-                            WindowTimer.Visibility = TableManager.EnableHudTimer ? Visibility.Visible : Visibility.Collapsed;
-                            WindowBigBlind.Visibility = TableManager.EnableHudBigBlind ? Visibility.Visible : Visibility.Collapsed;
-                        });
                     }
                 }
 #if (DEBUG)
@@ -236,7 +129,10 @@ namespace PsHandler.Hud
                     Methods.UiInvoke(() =>
                     {
                         WindowTimer.Close();
-                        WindowBigBlind.Close();
+                        for (int i = 0; i < 10; i++)
+                        {
+                            WindowsBigBlind[i].Close();
+                        }
                     });
                 }
             });
@@ -249,6 +145,129 @@ namespace PsHandler.Hud
             {
                 _thread.Interrupt();
             }
+        }
+
+        private static bool GetInfo(string title, out decimal sb, out decimal bb, out decimal ante, out long toutnamentNumber)
+        {
+            sb = -1;
+            bb = -1;
+            ante = -1;
+            toutnamentNumber = -1;
+
+            Match match = _regexTitle.Match(title);
+            if (match.Success)
+            {
+                sb = decimal.Parse(match.Groups["sb"].Value);
+                bb = decimal.Parse(match.Groups["bb"].Value);
+                var groupAnte = match.Groups["ante"];
+                if (groupAnte.Success)
+                {
+                    ante = decimal.Parse(groupAnte.Value);
+                }
+                toutnamentNumber = long.Parse(match.Groups["tournament_number"].Value);
+                //heroName = match.Groups["hero"].Value;
+                return true;
+            }
+            return false;
+        }
+
+        private void GetContentTimer(string title, string className, Tournament tournament, decimal sb, decimal bb, out string value, out bool visibility)
+        {
+            if (!Config.HudTimerShowHandCount)
+            {
+                int pokerTypeErrors = -1;
+                if (PokerType == null)
+                {
+                    PokerType = App.PokerTypeManager.GetPokerType(title, className, out pokerTypeErrors);
+                    if (pokerTypeErrors != 0)
+                    {
+                        PokerType = null;
+                    }
+                }
+                if (PokerType != null)
+                {
+                    DateTime dateTimeUtcNow = DateTime.UtcNow.AddSeconds(-Config.HudTimerDiff);
+                    DateTime dateTimeUtcNextLevel = tournament.GetFirstHandTimestampET();
+                    while (dateTimeUtcNextLevel < dateTimeUtcNow)
+                    {
+                        dateTimeUtcNextLevel = dateTimeUtcNextLevel + PokerType.LevelLength;
+                    }
+                    TimeSpan timeSpan = dateTimeUtcNextLevel - dateTimeUtcNow;
+                    value = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
+                }
+                else
+                {
+                    if (pokerTypeErrors == 1)
+                    {
+                        value = Config.HudTimerPokerTypeNotFound;
+                    }
+                    else if (pokerTypeErrors == 2)
+                    {
+                        value = Config.HudTimerMultiplePokerTypes;
+                    }
+                    else
+                    {
+                        value = string.Format("Unknown Error");
+                    }
+                }
+            }
+            else
+            {
+                value = string.Format("{0}", tournament.CountLevelHands(sb, bb) + 1);
+            }
+
+            visibility = true;
+        }
+
+        private void GetContentBigBlind(Tournament tournament, decimal sb, decimal bb, decimal ante, out decimal[] value, out bool[] visibility, out bool[] isHero, out string[] tooltip)
+        {
+            value = new decimal[10];
+            visibility = new bool[10];
+            isHero = new bool[10];
+            tooltip = new string[10];
+
+            var playerNames = tournament.GetLastHandHudPlayerNames();
+            var stacks = tournament.GetLastHandHudPlayerStacks();
+            var heroSeat = tournament.GetLastHandHudHeroSeat();
+
+            var tableSize = tournament.GetLastHandTableSize();
+            var playersAlive = stacks.Count(a => a > 0);
+            int playerCount = playersAlive;
+            if (Config.HudBigBlindMByPlayerCount) playerCount = playersAlive;
+            if (Config.HudBigBlindMByTableSize) playerCount = (int)tableSize;
+
+            for (int i = 0; i < stacks.Length; i++)
+            {
+                var mappedSeat = MapToPreferredSeat(TableSize, heroSeat, i);
+
+                visibility[mappedSeat] = stacks[i] > 0;
+                isHero[mappedSeat] = i == heroSeat;
+                tooltip[mappedSeat] = playerNames[i];
+
+                if (Config.HudBigBlindShowBB)
+                {
+                    value[mappedSeat] = stacks[i] / bb;
+                    tooltip[mappedSeat] = string.Format("{0}\r\n{1:0.0} = {2} / {3}", playerNames[i], value[mappedSeat], stacks[i], bb);
+                }
+                else if (Config.HudBigBlindShowAdjustedBB)
+                {
+                    // Adjusted BB = stack / (2/3 * (SB + BB + (Ante * number of players)))
+                    value[mappedSeat] = stacks[i] / ((decimal)(2.0 / 3.0) * (sb + bb + (ante * playerCount)));
+                    tooltip[mappedSeat] = string.Format("{0}\r\n{1:0.0} = {2} / ((2 / 3) * ({3} + {4} + ({5} * {6})))", playerNames[i], value[mappedSeat], stacks[i], sb, bb, ante, playerCount);
+                }
+                else if (Config.HudBigBlindShowTournamentM)
+                {
+                    // Tournament M = stack / (SB + BB + (Ante * number of players))
+                    value[mappedSeat] = stacks[i] / (sb + bb + (ante * playerCount));
+                    tooltip[mappedSeat] = string.Format("{0}\r\n{1:0.0} = {2} / ({3} + {4} + ({5} * {6}))", playerNames[i], value[mappedSeat], stacks[i], sb, bb, ante, playerCount);
+                }
+            }
+        }
+
+        private int MapToPreferredSeat(PokerEnums.TableSize tableSize, int heroSeat, int seat)
+        {
+            var neededOffset = Config.PreferredSeat[(int)tableSize] + (int)tableSize - heroSeat;
+            return (seat + neededOffset) % (int)tableSize;
         }
     }
 }

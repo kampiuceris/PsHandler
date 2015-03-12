@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
@@ -28,180 +29,131 @@ namespace PsHandler.UI
     /// </summary>
     public partial class UCHudBigBlind : UserControl
     {
-        public TextBox[] TextBoxesLocationX;
-        public TextBox[] TextBoxesLocationY;
-
         public UCHudBigBlind()
         {
             InitializeComponent();
 
-            TextBoxesLocationX = new List<TextBox>
-            {
-                TextBox_HudBigBlindLocationX_Default,
-                TextBox_HudBigBlindLocationX_Max1,
-                TextBox_HudBigBlindLocationX_Max2,
-                TextBox_HudBigBlindLocationX_Max3,
-                TextBox_HudBigBlindLocationX_Max4,
-                TextBox_HudBigBlindLocationX_Max5,
-                TextBox_HudBigBlindLocationX_Max6,
-                TextBox_HudBigBlindLocationX_Max7,
-                TextBox_HudBigBlindLocationX_Max8,
-                TextBox_HudBigBlindLocationX_Max9,
-                TextBox_HudBigBlindLocationX_Max10
-            }.ToArray();
-            TextBoxesLocationY = new List<TextBox>
-            {
-                TextBox_HudBigBlindLocationY_Default,
-                TextBox_HudBigBlindLocationY_Max1,
-                TextBox_HudBigBlindLocationY_Max2,
-                TextBox_HudBigBlindLocationY_Max3,
-                TextBox_HudBigBlindLocationY_Max4,
-                TextBox_HudBigBlindLocationY_Max5,
-                TextBox_HudBigBlindLocationY_Max6,
-                TextBox_HudBigBlindLocationY_Max7,
-                TextBox_HudBigBlindLocationY_Max8,
-                TextBox_HudBigBlindLocationY_Max9,
-                TextBox_HudBigBlindLocationY_Max10
-            }.ToArray();
-
             // Init values
 
-            CheckBox_EnableHudBigBlind.IsChecked = TableManager.EnableHudBigBlind;
-            RadioButton_MByPlayerCount.IsChecked = Config.BigBlindMByPlayerCount;
-            RadioButton_MByTableSize.IsChecked = Config.BigBlindMByTableSize;
-            TextBox_Decimals.Text = Config.BigBlindDecimals.ToString(CultureInfo.InvariantCulture);
-            TextBox_BigBlindHHNotFound.Text = Config.BigBlindHHNotFound;
-            TextBox_BigBlindPrefix.Text = Config.BigBlindPrefix;
-            TextBox_BigBlindPostfix.Text = Config.BigBlindPostfix;
-            for (int i = 0; i < TextBoxesLocationX.Length; i++)
-            {
-                TextBoxesLocationX[i].Text = TableManager.GetHudBigBlindLocationX((PokerEnums.TableSize)i, TextBoxesLocationX[i]).ToString(CultureInfo.InvariantCulture);
-                TextBoxesLocationY[i].Text = TableManager.GetHudBigBlindLocationY((PokerEnums.TableSize)i, TextBoxesLocationY[i]).ToString(CultureInfo.InvariantCulture);
-            }
+            CheckBox_EnableHudBigBlind.IsChecked = Config.HudBigBlindEnable;
+            RadioButton_MByPlayerCount.IsChecked = Config.HudBigBlindMByPlayerCount;
+            RadioButton_MByTableSize.IsChecked = Config.HudBigBlindMByTableSize;
+            TextBox_Decimals.Text = Config.HudBigBlindDecimals.ToString(CultureInfo.InvariantCulture);
+            TextBox_BigBlindHHNotFound.Text = Config.HudBigBlindHHNotFound;
+            TextBox_BigBlindPrefix.Text = Config.HudBigBlindPrefix;
+            TextBox_BigBlindPostfix.Text = Config.HudBigBlindPostfix;
+            CheckBox_LockHudBigBlindLocation.IsChecked = Config.HudBigBlindLocationLocked;
+            CheckBox_ShowForOpponents.IsChecked = Config.HudBigBlindShowForOpponents;
+            CheckBox_ShowForHero.IsChecked = Config.HudBigBlindShowForHero;
 
             // Hook values
 
-            CheckBox_EnableHudBigBlind.Checked += (sender, args) => { TableManager.EnableHudBigBlind = true; };
-            CheckBox_EnableHudBigBlind.Unchecked += (sender, args) => { TableManager.EnableHudBigBlind = false; };
-            CheckBox_ShowTournamentM.Checked += (sender, args) =>
+            CheckBox_EnableHudBigBlind.Checked += (sender, args) => { Config.HudBigBlindEnable = true; };
+            CheckBox_EnableHudBigBlind.Unchecked += (sender, args) => { Config.HudBigBlindEnable = false; };
+
+            CheckBox_LockHudBigBlindLocation.Checked += (sender, args) => { Config.HudBigBlindLocationLocked = true; };
+            CheckBox_LockHudBigBlindLocation.Unchecked += (sender, args) => { Config.HudBigBlindLocationLocked = false; };
+
+            RadioButton_ShowBB.Checked += (sender, args) =>
             {
-                Config.BigBlindShowTournamentM = true;
-                RadioButton_MByPlayerCount.IsEnabled = true;
-                RadioButton_MByTableSize.IsEnabled = true;
-            };
-            CheckBox_ShowTournamentM.Unchecked += (sender, args) =>
-            {
-                Config.BigBlindShowTournamentM = false;
+                Config.HudBigBlindShowBB = true;
+                Config.HudBigBlindShowAdjustedBB = false;
+                Config.HudBigBlindShowTournamentM = false;
                 RadioButton_MByPlayerCount.IsEnabled = false;
                 RadioButton_MByTableSize.IsEnabled = false;
             };
-            RadioButton_MByPlayerCount.Checked += (sender, args) => { Config.BigBlindMByPlayerCount = true; };
-            RadioButton_MByPlayerCount.Unchecked += (sender, args) => { Config.BigBlindMByPlayerCount = false; };
-            RadioButton_MByTableSize.Checked += (sender, args) => { Config.BigBlindMByTableSize = true; };
-            RadioButton_MByTableSize.Unchecked += (sender, args) => { Config.BigBlindMByTableSize = false; };
+            RadioButton_ShowAdjustedBB.Checked += (sender, args) =>
+            {
+                Config.HudBigBlindShowBB = false;
+                Config.HudBigBlindShowAdjustedBB = true;
+                Config.HudBigBlindShowTournamentM = false;
+                RadioButton_MByPlayerCount.IsEnabled = true;
+                RadioButton_MByTableSize.IsEnabled = true;
+            };
+            RadioButton_ShowTournamentM.Checked += (sender, args) =>
+            {
+                Config.HudBigBlindShowBB = false;
+                Config.HudBigBlindShowAdjustedBB = false;
+                Config.HudBigBlindShowTournamentM = true;
+                RadioButton_MByPlayerCount.IsEnabled = true;
+                RadioButton_MByTableSize.IsEnabled = true;
+            };
+
+            RadioButton_MByPlayerCount.Checked += (sender, args) => { Config.HudBigBlindMByPlayerCount = true; };
+            RadioButton_MByPlayerCount.Unchecked += (sender, args) => { Config.HudBigBlindMByPlayerCount = false; };
+            RadioButton_MByTableSize.Checked += (sender, args) => { Config.HudBigBlindMByTableSize = true; };
+            RadioButton_MByTableSize.Unchecked += (sender, args) => { Config.HudBigBlindMByTableSize = false; };
+
+            CheckBox_ShowForOpponents.Checked += (sender, args) => { Config.HudBigBlindShowForOpponents = true; };
+            CheckBox_ShowForOpponents.Unchecked += (sender, args) => { Config.HudBigBlindShowForOpponents = false; };
+            CheckBox_ShowForHero.Checked += (sender, args) => { Config.HudBigBlindShowForHero = true; };
+            CheckBox_ShowForHero.Unchecked += (sender, args) => { Config.HudBigBlindShowForHero = false; };
 
             TextBox_Decimals.TextChanged += (sender, args) =>
             {
                 try
                 {
-                    Config.BigBlindDecimals = int.Parse(TextBox_Decimals.Text);
-                    if (Config.BigBlindDecimals > 4) Config.BigBlindDecimals = 4;
-                    if (Config.BigBlindDecimals < 0) Config.BigBlindDecimals = 0;
+                    Config.HudBigBlindDecimals = int.Parse(TextBox_Decimals.Text);
+                    if (Config.HudBigBlindDecimals > 4) Config.HudBigBlindDecimals = 4;
+                    if (Config.HudBigBlindDecimals < 0) Config.HudBigBlindDecimals = 0;
                 }
                 catch
                 {
                 }
             };
 
-            TextBox_BigBlindHHNotFound.TextChanged += (sender, args) => { Config.BigBlindHHNotFound = TextBox_BigBlindHHNotFound.Text; };
-            TextBox_BigBlindPrefix.TextChanged += (sender, args) => { Config.BigBlindPrefix = TextBox_BigBlindPrefix.Text; };
-            TextBox_BigBlindPostfix.TextChanged += (sender, args) => { Config.BigBlindPostfix = TextBox_BigBlindPostfix.Text; };
+            TextBox_BigBlindHHNotFound.TextChanged += (sender, args) => { Config.HudBigBlindHHNotFound = TextBox_BigBlindHHNotFound.Text; };
+            TextBox_BigBlindPrefix.TextChanged += (sender, args) => { Config.HudBigBlindPrefix = TextBox_BigBlindPrefix.Text; };
+            TextBox_BigBlindPostfix.TextChanged += (sender, args) => { Config.HudBigBlindPostfix = TextBox_BigBlindPostfix.Text; };
 
-            CheckBox_LockHudBigBlindLocation.Checked += (sender, args) =>
-            {
-                TableManager.HudBigBlindLocationLocked = true;
-                for (int i = 0; i < TextBoxesLocationX.Length; i++)
-                {
-                    TextBoxesLocationX[i].IsEnabled = false;
-                    TextBoxesLocationY[i].IsEnabled = false;
-                }
-            };
-            CheckBox_LockHudBigBlindLocation.Unchecked += (sender, args) =>
-            {
-                TableManager.HudBigBlindLocationLocked = false;
-                for (int i = 0; i < TextBoxesLocationX.Length; i++)
-                {
-                    TextBoxesLocationX[i].IsEnabled = true;
-                    TextBoxesLocationY[i].IsEnabled = true;
-                }
-            };
+            // Hook needed init values
 
-            for (int i = 0; i < TextBoxesLocationX.Length; i++)
-            {
-                int i1 = i;
-                TextBoxesLocationX[i].TextChanged += (sender, args) =>
-                {
-                    float f;
-                    if (float.TryParse(TextBoxesLocationX[i1].Text, out f))
-                    {
-                        TableManager.SetHudBigBlindLocationX((PokerEnums.TableSize)i1, f, TextBoxesLocationX[i1]);
-                    }
-                };
-                TextBoxesLocationY[i].TextChanged += (sender, args) =>
-                {
-                    float f;
-                    if (float.TryParse(TextBoxesLocationY[i1].Text, out f))
-                    {
-                        TableManager.SetHudBigBlindLocationY((PokerEnums.TableSize)i1, f, TextBoxesLocationY[i1]);
-                    }
-                };
-            }
-
-            // hook needed init values
-
-            CheckBox_LockHudBigBlindLocation.IsChecked = TableManager.HudBigBlindLocationLocked;
-            CheckBox_ShowTournamentM.IsChecked = Config.BigBlindShowTournamentM;
+            RadioButton_ShowBB.IsChecked = Config.HudBigBlindShowBB;
+            RadioButton_ShowAdjustedBB.IsChecked = Config.HudBigBlindShowAdjustedBB;
+            RadioButton_ShowTournamentM.IsChecked = Config.HudBigBlindShowTournamentM;
 
             // ToolTips
         }
 
-        private void Button_Customize_Click(object sender, RoutedEventArgs e)
+        private void Button_CustomizeOpponents_Click(object sender, RoutedEventArgs e)
         {
-            string decimalsFormal = "";
-            for (int i = 0; i < Config.BigBlindDecimals; i++) decimalsFormal += "0";
-            if (decimalsFormal.Length > 0) decimalsFormal = "." + decimalsFormal;
-            string x = string.Format("{0:0" + decimalsFormal + "}", 12.3456); // 12.3456 test data
-
-            var dialog = new WindowHudDesign(
-                App.WindowMain,
-                Config.HudBigBlindBackground,
-                Config.HudBigBlindForeground,
-                Config.HudBigBlindFontFamily,
-                Config.HudBigBlindFontWeight,
-                Config.HudBigBlindFontStyle,
-                Config.HudBigBlindFontSize,
-                Config.HudBigBlindMargin,
-                x);
-            dialog.ShowDialog();
-            if (dialog.Saved)
-            {
-                Config.HudBigBlindBackground = dialog.HudBackground;
-                Config.HudBigBlindForeground = dialog.HudForeground;
-                Config.HudBigBlindFontFamily = dialog.HudFontFamily;
-                Config.HudBigBlindFontWeight = dialog.HudFontWeight;
-                Config.HudBigBlindFontStyle = dialog.HudFontStyle;
-                Config.HudBigBlindFontSize = dialog.HudFontSize;
-                Config.HudBigBlindMargin = dialog.HudMargin;
-            }
+            new WindowHudDesign(App.WindowMain, HudCustomizeParams.HudCustomizeType.HudBigBlindOpponents).ShowDialog();
         }
 
-        private void Button_CustomizeColorsByValue_Click(object sender, RoutedEventArgs e)
+        private void Button_CustomizeHero_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new WindowCustomizeColorsByValue(App.WindowMain, Config.HudBigBlindForeground, Config.HudBigBlindColorsByValue);
-            dialog.ShowDialog();
-            if (dialog.Saved)
+            new WindowHudDesign(App.WindowMain, HudCustomizeParams.HudCustomizeType.HudBigBlindHero).ShowDialog();
+        }
+
+        private void Button_ColorsByValueOpponents_Click(object sender, RoutedEventArgs e)
+        {
+            new WindowCustomizeColorsByValue(App.WindowMain, Config.HudBigBlindOpponentsForeground, HudColorsByValueParams.HudColorsByValueType.HudColorsByValueOpponents).ShowDialog();
+        }
+
+        private void Button_ColorsByValueHero_Click(object sender, RoutedEventArgs e)
+        {
+            new WindowCustomizeColorsByValue(App.WindowMain, Config.HudBigBlindHeroForeground, HudColorsByValueParams.HudColorsByValueType.HudColorsByValueHero).ShowDialog();
+        }
+
+        private void Button_RestoreDefaultLocations_Click(object sender, RoutedEventArgs e)
+        {
+            WindowMessageResult windowMessageResult = WindowMessage.ShowDialog(
+                "Do you want to restore default locations?",
+                "Restore Default Locations",
+                WindowMessageButtons.YesNoCancel,
+                WindowMessageImage.Warning,
+                App.WindowMain);
+
+            if (windowMessageResult == WindowMessageResult.Yes)
             {
-                Config.HudBigBlindColorsByValue = dialog.ColorsByValue;
+                for (int tableSize = 0; tableSize < 11; tableSize++)
+                {
+                    for (int position = 0; position < 10; position++)
+                    {
+                        Config.HudBigBlindLocationsX[tableSize][position] = Config.DefaultHudBigBlindLocationsX[tableSize][position];
+                        Config.HudBigBlindLocationsY[tableSize][position] = Config.DefaultHudBigBlindLocationsY[tableSize][position];
+                    }
+                }
             }
         }
     }

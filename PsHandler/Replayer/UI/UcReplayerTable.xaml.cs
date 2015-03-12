@@ -34,7 +34,6 @@ namespace PsHandler.Replayer.UI
         private readonly Image[] _imageCommunityCards = new Image[10];
         public PokerHand PokerHand;
         public PokerMath.Table Table = new PokerMath.Table();
-        public int PreferredSeat = 4; // TODO
 
         public UcReplayerTable()
         {
@@ -97,7 +96,7 @@ namespace PsHandler.Replayer.UI
                 return seat;
             }
             var hero = dealtTo.ElementAt(0).Player;
-            var neededOffset = PreferredSeat + 10 - hero.SeatNumber;
+            var neededOffset = Config.PreferredSeat[(int)PokerEnums.TableSize.Max10] + 10 - hero.SeatNumber;
             return (seat + neededOffset) % 10;
         }
 
@@ -207,6 +206,8 @@ namespace PsHandler.Replayer.UI
 
         private void VisualizeHandState()
         {
+            if (PokerHand == null) return;
+
             // players
             for (int i = 0; i < PokerHand.Seats.Length; i++)
             {
@@ -279,6 +280,8 @@ namespace PsHandler.Replayer.UI
 
         private void PostCommandVisualFixes(PokerCommand pokerCommand)
         {
+            if (PokerHand == null) return;
+
             if (pokerCommand == null)
             {
                 return;

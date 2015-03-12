@@ -113,6 +113,8 @@ namespace PsHandler.Replayer.UI
             }
 
             label.Content = AmountToString(totalAmount);
+            grid.ToolTip = label.Content;
+            label.ToolTip = label.Content;
         }
 
         public static string AmountToString(decimal amount)

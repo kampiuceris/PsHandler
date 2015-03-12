@@ -231,6 +231,9 @@
     <Compile Include="TableTiler\UCScreenPreview.xaml.cs">
       <DependentUpon>UCScreenPreview.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\UCHands.xaml.cs">
+      <DependentUpon>UCHands.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\UCHud.xaml.cs">
       <DependentUpon>UCHud.xaml</DependentUpon>
     </Compile>
@@ -269,6 +272,9 @@
     </Compile>
     <Compile Include="UI\WindowManageImportFolders.xaml.cs">
       <DependentUpon>WindowManageImportFolders.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\WindowManagePreferredSeats.xaml.cs">
+      <DependentUpon>WindowManagePreferredSeats.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\WindowMessage.xaml.cs">
       <DependentUpon>WindowMessage.xaml</DependentUpon>
@@ -407,6 +413,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\UCHands.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\UCHud.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -456,6 +466,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\WindowManageImportFolders.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\WindowManagePreferredSeats.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -785,6 +799,86 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Resources\Size16x16\clipboard_invoice.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\playing_cards.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Replayer\CardsSmall\2c.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\2d.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\2h.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\2s.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\3c.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\3d.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\3h.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\3s.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\4c.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\4d.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\4h.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\4s.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\5c.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\5d.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\5h.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\5s.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\6c.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\6d.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\6h.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\6s.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\7c.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\7d.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\7h.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\7s.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\8c.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\8d.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\8h.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\8s.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\9c.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\9d.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\9h.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\9s.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Ac.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Ad.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Ah.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\As.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Jc.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Jd.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Jh.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Js.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Kc.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Kd.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Kh.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Ks.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Qc.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Qd.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Qh.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Qs.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Tc.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Td.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Th.png" />
+    <Resource Include="Images\Resources\Replayer\CardsSmall\Ts.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Replayer\CardsSmall\blank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Replayer\CardsSmall\empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\default_value.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\PreferredSeat\preferredseat10.png" />
+    <Resource Include="Images\Resources\PreferredSeat\preferredseat2.png" />
+    <Resource Include="Images\Resources\PreferredSeat\preferredseat3.png" />
+    <Resource Include="Images\Resources\PreferredSeat\preferredseat4.png" />
+    <Resource Include="Images\Resources\PreferredSeat\preferredseat5.png" />
+    <Resource Include="Images\Resources\PreferredSeat\preferredseat6.png" />
+    <Resource Include="Images\Resources\PreferredSeat\preferredseat7.png" />
+    <Resource Include="Images\Resources\PreferredSeat\preferredseat8.png" />
+    <Resource Include="Images\Resources\PreferredSeat\preferredseat9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\chair.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

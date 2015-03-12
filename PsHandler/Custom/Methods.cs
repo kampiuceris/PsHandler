@@ -26,6 +26,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using PsHandler.PokerMath;
 using PsHandler.UI;
 
 namespace PsHandler.Custom
@@ -38,7 +39,15 @@ namespace PsHandler.Custom
 
         public static void UiInvoke(Action action)
         {
-            Application.Current.Dispatcher.Invoke(action.Invoke);
+            var application = Application.Current;
+            if (application != null)
+            {
+                var dispatcher = application.Dispatcher;
+                if (dispatcher != null)
+                {
+                    dispatcher.Invoke(action.Invoke);
+                }
+            }
         }
 
         public static Bitmap GetEmbeddedResourceBitmap(string path)
@@ -351,6 +360,18 @@ namespace PsHandler.Custom
         public static bool IsValid(this System.Drawing.Point point)
         {
             return point.X != int.MinValue && point.Y != int.MinValue;
+        }
+
+        public static void SetOwner(this Window window, IntPtr owner)
+        {
+            WinApi.SetWindowLong(window.GetHandle(), -8, owner.ToInt32()); //const int GWL_HWNDPARENT = -8;
+        }
+
+        public static void SetWindowStylesForHud(this Window window)
+        {
+            WinApi.EnsureWindowGwlStyleGwlExStyle(window.GetHandle(),
+                WinApi.WindowStyles.WS_POPUP | WinApi.WindowStyles.WS_VISIBLE | WinApi.WindowStyles.WS_CLIPSIBLINGS,
+                WinApi.WindowStyles.WS_EX_LEFT | WinApi.WindowStyles.WS_EX_LTRREADING | WinApi.WindowStyles.WS_EX_RIGHTSCROLLBAR | WinApi.WindowStyles.WS_EX_LAYERED);
         }
     }
 }

@@ -23,6 +23,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using PsHandler.Custom;
 using PsHandler.PokerMath;
+using PsHandler.UI;
 
 namespace PsHandler.Import
 {
@@ -33,16 +34,22 @@ namespace PsHandler.Import
         void SetImportedErrors(int value);
     }
 
+    public interface IObservableCollectionHand
+    {
+        void AddHand(Hand hand);
+    }
+
     public class HandHistoryManager
     {
         private readonly Regex _RegexFileName = new Regex(@"\AHH\d{8}.*No Limit Hold'em.*\.txt\z");
         private readonly object _lock = new object();
-        private readonly Dictionary<string, long> _fileNameBytesRead = new Dictionary<string, long>();       
+        private readonly Dictionary<string, long> _fileNameBytesRead = new Dictionary<string, long>();
         private readonly Dictionary<long, Hand> _dictionaryCashHands = new Dictionary<long, Hand>();
         private readonly Dictionary<long, Tournament> _dictionaryTournaments = new Dictionary<long, Tournament>();
         private int _importErrors;
         private Thread _thread;
-        public IObserverHandHistoryManager Observer;
+        public IObserverHandHistoryManager ObserverStatus;
+        public IObservableCollectionHand ObserverHands;
 
         public HandHistoryManager()
         {
@@ -59,8 +66,8 @@ namespace PsHandler.Import
                 {
                     try
                     {
-                        Thread.Sleep(3000);
                         Import();
+                        Thread.Sleep(3000);
                     }
                     catch (Exception e)
                     {
@@ -141,11 +148,6 @@ namespace PsHandler.Import
                 }
                 else if (fi.Length > fileNameBytesRead.Value)
                 {
-                    if (fi.FullName.Contains("Frisia"))
-                    {
-                        int stop = 0;
-                    }
-
                     // needs to read
                     var pokerData = PokerData.FromText(Methods.ReadSeek(fi.FullName, fileNameBytesRead.Value));
                     var hands = pokerData.PokerHands.Select(pokerHand => Hand.Parse(pokerHand.HandHistory)).Where(hand => hand != null).ToList();
@@ -195,16 +197,21 @@ namespace PsHandler.Import
                         _dictionaryTournaments[hand.TournamentNumber].AddHand(hand);
                     }
                 }
+
+                if (ObserverHands != null)
+                {
+                    ObserverHands.AddHand(hand);
+                }
             }
         }
 
         private void UpdateUI()
         {
-            if (Observer != null)
+            if (ObserverStatus != null)
             {
-                Observer.SetImportedTournaments(_dictionaryTournaments.Count);
-                Observer.SetImportedHands(_dictionaryTournaments.Sum(a => a.Value.Hands.Count) + _dictionaryCashHands.Count);
-                Observer.SetImportedErrors(_importErrors);
+                ObserverStatus.SetImportedTournaments(_dictionaryTournaments.Count);
+                ObserverStatus.SetImportedHands(_dictionaryTournaments.Sum(a => a.Value.Hands.Count) + _dictionaryCashHands.Count);
+                ObserverStatus.SetImportedErrors(_importErrors);
             }
         }
     }

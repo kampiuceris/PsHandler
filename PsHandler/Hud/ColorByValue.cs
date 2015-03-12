@@ -70,6 +70,16 @@ namespace PsHandler.Hud
             return color;
         }
 
+        public ColorByValue Clone()
+        {
+            return new ColorByValue
+            {
+                GreaterOrEqual = GreaterOrEqual,
+                Less = Less,
+                Color = Color,
+            };
+        }
+
         public XElement ToXElement()
         {
             return new XElement("ColorByValue",

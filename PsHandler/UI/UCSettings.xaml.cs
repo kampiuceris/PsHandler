@@ -106,5 +106,10 @@ namespace PsHandler.UI
             WindowManageImportFolders dialog = new WindowManageImportFolders(App.WindowMain);
             dialog.ShowDialog();
         }
+
+        private void Button_ManagePreferredSeats_Click(object sender, RoutedEventArgs e)
+        {
+            new WindowManagePreferredSeats(App.WindowMain).ShowDialog();
+        }
     }
 }

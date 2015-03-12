@@ -25,9 +25,7 @@
                         <TextBlock Text="Tables" Margin="5,0,0,0" VerticalAlignment="Center" />
                     </StackPanel>
                 </TabItem.Header>
-                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <ui:UCTables Margin="0" x:Name="UCTables" />
-                </ScrollViewer>
+                <ui:UCTables Margin="10" x:Name="UCTables" />
             </TabItem>
             <TabItem>
                 <TabItem.Header>
@@ -82,7 +80,15 @@
                     <ui:UCRandomizer Margin="10" x:Name="UCRandomizer" />
                 </ScrollViewer>
             </TabItem>
-
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/playing_cards.png" />
+                        <TextBlock Text="Hands" Margin="5,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </TabItem.Header>
+                <ui:UCHands Margin="10" x:Name="UCHands" />
+            </TabItem>
         </TabControl>
         <Separator Margin="0,0,0,26" Height="1" VerticalAlignment="Bottom"/>
         <ui:UCStatusBar VerticalAlignment="Bottom" x:Name="UcStatusBar" />

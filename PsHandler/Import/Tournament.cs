@@ -57,13 +57,39 @@ namespace PsHandler.Import
             }
         }
 
-        public int GetLastHandPlayerCountAfterHand()
+        public int CountLevelHands(decimal smallBlind, decimal bigBlind)
         {
             lock (_lock)
             {
-                return !Hands.Any() ? 0 : Hands.Last().StacksAfterHand.Count(a => a > 0);
+                return Hands.Count(o => o.Level.SmallBlind == smallBlind && o.Level.BigBlind == bigBlind);
             }
         }
+
+        public string[] GetLastHandHudPlayerNames()
+        {
+            lock (_lock)
+            {
+                return !Hands.Any() ? null : Hands.Last().HudPlayerNames;
+            }
+        }
+
+        public decimal[] GetLastHandHudPlayerStacks()
+        {
+            lock (_lock)
+            {
+                return !Hands.Any() ? null : Hands.Last().HudPlayerStacks;
+            }
+        }
+
+        public int GetLastHandHudHeroSeat()
+        {
+            lock (_lock)
+            {
+                return !Hands.Any() ? 0 : Hands.Last().HudHeroSeat;
+            }
+        }
+
+        //
 
         public void AddHand(Hand hand)
         {
@@ -83,13 +109,7 @@ namespace PsHandler.Import
             }
         }
 
-        public int CountLevelHands(decimal smallBlind, decimal bigBlind)
-        {
-            lock (_lock)
-            {
-                return Hands.Count(o => o.Level.SmallBlind == smallBlind && o.Level.BigBlind == bigBlind);
-            }
-        }
+        //
 
         public override string ToString()
         {

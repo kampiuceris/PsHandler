@@ -52,7 +52,7 @@ namespace PsHandler.PokerMath
         private string[] _communityCardsFlop;
         private string _communityCardsTurn;
         private string _communityCardsRiver;
-
+        
         public Ev(PokerHand pokerHand, decimal[] icmPayouts, decimal prizePool, PokerEnums.Currency currency, Evaluate evaluate)
         {
             _pokerHand = pokerHand;

@@ -45,16 +45,25 @@ namespace PsHandler
         public static Handler Handler;
         public static RandomizerManager RandomizerManager;
         public static TableManager TableManager;
-        public static WindowReplayer WindowReplayer;
+
+        private static WindowReplayer _windowReplayer;
+        public static WindowReplayer WindowReplayer
+        {
+            get
+            {
+                if (_windowReplayer == null)
+                {
+                    _windowReplayer = new WindowReplayer();
+                    _windowReplayer.Show();
+                }
+                return _windowReplayer;
+            }
+        }
 
         public App()
         {
             //var x = new SngRegistratorManager();
             //x.Start();
-            //return;
-
-            //WindowReplayer = new WindowReplayer();
-            //WindowReplayer.Show();
             //return;
 
             RegisterHook();
@@ -72,7 +81,8 @@ namespace PsHandler
 
             if (!CheckGnuGplV3Agreement()) return;
 
-            HandHistoryManager.Observer = WindowMain.UcStatusBar;
+            HandHistoryManager.ObserverStatus = WindowMain.UcStatusBar;
+            HandHistoryManager.ObserverHands = WindowMain.UCHands;
             TableManager.ObserverTableManagerTableList = WindowMain.UCTables;
             TableManager.ObserverTableManagerTableCount = WindowMain.UcStatusBar;
 
@@ -85,6 +95,12 @@ namespace PsHandler
 
             Methods.UiInvoke(() =>
             {
+                if (_windowReplayer != null)
+                {
+                    WindowReplayer.IsClosing = true;
+                    WindowReplayer.Close();
+                }
+
                 Config.GuiLocationX = (int)WindowMain.Left;
                 Config.GuiLocationY = (int)WindowMain.Top;
                 Config.GuiWidth = (int)WindowMain.Width;

@@ -32,36 +32,115 @@ using System.Windows.Shapes;
 
 namespace PsHandler.Hud
 {
+    public class HudCustomizeParams
+    {
+        public enum HudCustomizeType { HudTimer, HudBigBlindOpponents, HudBigBlindHero }
+
+        private readonly HudCustomizeType _hudCustomizeType;
+        public string PreviewText;
+        public Color Background;
+        public Color Foreground;
+        public FontFamily FontFamily;
+        public FontWeight FontWeight;
+        public FontStyle FontStyle;
+        public double FontSize;
+        public Thickness Margin;
+
+        public HudCustomizeParams(HudCustomizeType hudCustomizeType)
+        {
+            _hudCustomizeType = hudCustomizeType;
+
+            string previewTextTimer = "01:23";
+
+            string decimalsFormal = "";
+            for (int i = 0; i < Config.HudBigBlindDecimals; i++) decimalsFormal += "0";
+            if (decimalsFormal.Length > 0) decimalsFormal = "." + decimalsFormal;
+            string previewTextBB = string.Format("{0:0" + decimalsFormal + "}", 12.3456); // 12.3456 test data
+
+            switch (_hudCustomizeType)
+            {
+                case HudCustomizeType.HudTimer:
+                    PreviewText = previewTextTimer;
+                    Background = Config.HudTimerBackground;
+                    Foreground = Config.HudTimerForeground;
+                    FontFamily = Config.HudTimerFontFamily;
+                    FontWeight = Config.HudTimerFontWeight;
+                    FontStyle = Config.HudTimerFontStyle;
+                    FontSize = Config.HudTimerFontSize;
+                    Margin = Config.HudTimerMargin;
+                    break;
+                case HudCustomizeType.HudBigBlindOpponents:
+                    PreviewText = previewTextBB;
+                    Background = Config.HudBigBlindOpponentsBackground;
+                    Foreground = Config.HudBigBlindOpponentsForeground;
+                    FontFamily = Config.HudBigBlindOpponentsFontFamily;
+                    FontWeight = Config.HudBigBlindOpponentsFontWeight;
+                    FontStyle = Config.HudBigBlindOpponentsFontStyle;
+                    FontSize = Config.HudBigBlindOpponentsFontSize;
+                    Margin = Config.HudBigBlindOpponentsMargin;
+                    break;
+                case HudCustomizeType.HudBigBlindHero:
+                    PreviewText = previewTextBB;
+                    Background = Config.HudBigBlindHeroBackground;
+                    Foreground = Config.HudBigBlindHeroForeground;
+                    FontFamily = Config.HudBigBlindHeroFontFamily;
+                    FontWeight = Config.HudBigBlindHeroFontWeight;
+                    FontStyle = Config.HudBigBlindHeroFontStyle;
+                    FontSize = Config.HudBigBlindHeroFontSize;
+                    Margin = Config.HudBigBlindHeroMargin;
+                    break;
+            }
+        }
+
+        public void Save()
+        {
+            switch (_hudCustomizeType)
+            {
+                case HudCustomizeType.HudTimer:
+                    Config.HudTimerBackground = Background;
+                    Config.HudTimerForeground = Foreground;
+                    Config.HudTimerFontFamily = FontFamily;
+                    Config.HudTimerFontWeight = FontWeight;
+                    Config.HudTimerFontStyle = FontStyle;
+                    Config.HudTimerFontSize = FontSize;
+                    Config.HudTimerMargin = Margin;
+                    break;
+                case HudCustomizeType.HudBigBlindOpponents:
+                    Config.HudBigBlindOpponentsBackground = Background;
+                    Config.HudBigBlindOpponentsForeground = Foreground;
+                    Config.HudBigBlindOpponentsFontFamily = FontFamily;
+                    Config.HudBigBlindOpponentsFontWeight = FontWeight;
+                    Config.HudBigBlindOpponentsFontStyle = FontStyle;
+                    Config.HudBigBlindOpponentsFontSize = FontSize;
+                    Config.HudBigBlindOpponentsMargin = Margin;
+                    break;
+                case HudCustomizeType.HudBigBlindHero:
+                    Config.HudBigBlindHeroBackground = Background;
+                    Config.HudBigBlindHeroForeground = Foreground;
+                    Config.HudBigBlindHeroFontFamily = FontFamily;
+                    Config.HudBigBlindHeroFontWeight = FontWeight;
+                    Config.HudBigBlindHeroFontStyle = FontStyle;
+                    Config.HudBigBlindHeroFontSize = FontSize;
+                    Config.HudBigBlindHeroMargin = Margin;
+                    break;
+            }
+        }
+    }
+
     /// <summary>
     /// Interaction logic for WindowHudDesign.xaml
     /// </summary>
     public partial class WindowHudDesign : Window
     {
-        public bool Saved = false;
-        public string PreviewText = "01:23";
+        public HudCustomizeParams HudCustomizeParams;
 
-        public Color HudBackground = Colors.Black;
-        public Color HudForeground = Colors.White;
-        public FontFamily HudFontFamily = new FontFamily("Consolas");
-        public FontWeight HudFontWeight = FontWeights.Bold;
-        public FontStyle HudFontStyle = FontStyles.Normal;
-        public double HudFontSize = 10;
-        public Thickness HudMargin = new Thickness(2, 2, 2, 2);
-
-        public WindowHudDesign(Window owner, Color hudBackground, Color hudForeground, FontFamily hudFontFamily, FontWeight hudFontWeight, FontStyle hudFontStyle, double hudFontSize, Thickness hudMargin, string previewText)
+        public WindowHudDesign(Window owner, HudCustomizeParams.HudCustomizeType hudCustomizeType)
         {
             InitializeComponent();
             Owner = owner;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-            HudBackground = hudBackground;
-            HudForeground = hudForeground;
-            HudFontFamily = hudFontFamily;
-            HudFontWeight = hudFontWeight;
-            HudFontStyle = hudFontStyle;
-            HudFontSize = hudFontSize;
-            HudMargin = hudMargin;
-            PreviewText = previewText;
+            HudCustomizeParams = new HudCustomizeParams(hudCustomizeType);
 
             // init values
 
@@ -126,61 +205,61 @@ namespace PsHandler.Hud
 
         private void SeedValues()
         {
-            UCLabel_Preview.SetText(PreviewText);
+            UCLabel_Preview.SetText(HudCustomizeParams.PreviewText);
 
-            foreach (ComboBoxItemColor item in ComboBox_Background.Items.Cast<object>().OfType<ComboBoxItemColor>().Where(item => item.ColorMedia.Equals(HudBackground)))
+            foreach (ComboBoxItemColor item in ComboBox_Background.Items.Cast<object>().OfType<ComboBoxItemColor>().Where(item => item.ColorMedia.Equals(HudCustomizeParams.Background)))
             {
                 ComboBox_Background.SelectedItem = item;
                 break;
             }
 
-            foreach (ComboBoxItemColor item in ComboBox_Foreground.Items.Cast<object>().OfType<ComboBoxItemColor>().Where(item => item.ColorMedia.Equals(HudForeground)))
+            foreach (ComboBoxItemColor item in ComboBox_Foreground.Items.Cast<object>().OfType<ComboBoxItemColor>().Where(item => item.ColorMedia.Equals(HudCustomizeParams.Foreground)))
             {
                 ComboBox_Foreground.SelectedItem = item;
                 break;
             }
 
-            foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontFamily.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontFamily.Equals(HudFontFamily)))
+            foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontFamily.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontFamily.Equals(HudCustomizeParams.FontFamily)))
             {
                 ComboBox_FontFamily.SelectedItem = item;
                 break;
             }
 
-            foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontWeight.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontWeight.Equals(HudFontWeight)))
+            foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontWeight.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontWeight.Equals(HudCustomizeParams.FontWeight)))
             {
                 ComboBox_FontWeight.SelectedItem = item;
                 break;
             }
 
-            foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontStyle.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontStyle.Equals(HudFontStyle)))
+            foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontStyle.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontStyle.Equals(HudCustomizeParams.FontStyle)))
             {
                 ComboBox_FontStyle.SelectedItem = item;
                 break;
             }
 
-            TextBox_FontSize.Text = HudFontSize.ToString(CultureInfo.InvariantCulture);
+            TextBox_FontSize.Text = HudCustomizeParams.FontSize.ToString(CultureInfo.InvariantCulture);
 
-            TextBox_Margin.Text = HudMargin.Left + " " + HudMargin.Top + " " + HudMargin.Right + " " + HudMargin.Bottom;
+            TextBox_Margin.Text = HudCustomizeParams.Margin.Left + " " + HudCustomizeParams.Margin.Top + " " + HudCustomizeParams.Margin.Right + " " + HudCustomizeParams.Margin.Bottom;
         }
 
-        private void Button_SaveAndClose_Click(object sender, RoutedEventArgs e)
+        private bool CollectParams()
         {
             var ComboBox_BackgroundSelectedItem = (ComboBoxItemColor)ComboBox_Background.SelectedItem;
             if (ComboBox_BackgroundSelectedItem != null)
             {
-                HudBackground = ComboBox_BackgroundSelectedItem.ColorMedia;
+                HudCustomizeParams.Background = ComboBox_BackgroundSelectedItem.ColorMedia;
             }
 
             var ComboBox_ForegroundSelectedItem = (ComboBoxItemColor)ComboBox_Foreground.SelectedItem;
             if (ComboBox_ForegroundSelectedItem != null)
             {
-                HudForeground = ComboBox_ForegroundSelectedItem.ColorMedia;
+                HudCustomizeParams.Foreground = ComboBox_ForegroundSelectedItem.ColorMedia;
             }
 
             var ComboBox_FontFamilySelectedItem = (ComboBoxItemFontFamilyFontWeightFontStyle)ComboBox_FontFamily.SelectedItem;
             if (ComboBox_FontFamilySelectedItem != null)
             {
-                HudFontFamily = ComboBox_FontFamilySelectedItem.SystemFontFamily;
+                HudCustomizeParams.FontFamily = ComboBox_FontFamilySelectedItem.SystemFontFamily;
             }
 
             var ComboBox_FontWeightSelectedItem = (ComboBoxItemFontFamilyFontWeightFontStyle)ComboBox_FontWeight.SelectedItem;
@@ -188,7 +267,7 @@ namespace PsHandler.Hud
             {
                 if (ComboBox_FontWeightSelectedItem.SystemFontWeight != null)
                 {
-                    HudFontWeight = (FontWeight)ComboBox_FontWeightSelectedItem.SystemFontWeight;
+                    HudCustomizeParams.FontWeight = (FontWeight)ComboBox_FontWeightSelectedItem.SystemFontWeight;
                 }
             }
 
@@ -197,34 +276,49 @@ namespace PsHandler.Hud
             {
                 if (ComboBox_FontStyleSelectedItem.SystemFontStyle != null)
                 {
-                    HudFontStyle = (FontStyle)ComboBox_FontStyleSelectedItem.SystemFontStyle;
+                    HudCustomizeParams.FontStyle = (FontStyle)ComboBox_FontStyleSelectedItem.SystemFontStyle;
                 }
             }
 
             double fontSize;
             if (double.TryParse(TextBox_FontSize.Text, out fontSize))
             {
-                HudFontSize = fontSize;
+                HudCustomizeParams.FontSize = fontSize;
             }
 
             try
             {
                 string[] split = TextBox_Margin.Text.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
-                HudMargin = new Thickness(double.Parse(split[0]), double.Parse(split[1]), double.Parse(split[2]), double.Parse(split[3]));
+                HudCustomizeParams.Margin = new Thickness(double.Parse(split[0]), double.Parse(split[1]), double.Parse(split[2]), double.Parse(split[3]));
             }
             catch
             {
-                HudMargin = new Thickness(2, 2, 2, 2);
+                HudCustomizeParams.Margin = new Thickness(2, 2, 2, 2);
             }
 
-            Saved = true;
-            Close();
+            return true;
+        }
+
+        private void Button_OK_Click(object sender, RoutedEventArgs e)
+        {
+            if (CollectParams())
+            {
+                HudCustomizeParams.Save();
+                Close();
+            }
         }
 
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
-            Saved = false;
             Close();
+        }
+
+        private void Button_Apply_Click(object sender, RoutedEventArgs e)
+        {
+            if (CollectParams())
+            {
+                HudCustomizeParams.Save();
+            }
         }
     }
 

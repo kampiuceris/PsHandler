@@ -3,86 +3,87 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="600">
+             mc:Ignorable="d" UseLayoutRounding="True"
+             d:DesignHeight="400" d:DesignWidth="600">
     <Grid>
         <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,0,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_EnableHudBigBlind">
-            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Enable BigBlind/M HUD" />
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Enable BB/M HUD" />
         </CheckBox>
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,27,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_ShowTournamentM">
-            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Show Tournament M (instead of BigBlind)" />
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,27,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_LockHudBigBlindLocation">
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Lock BB/M HUD Location" />
         </CheckBox>
-        <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="30,49,0,0" VerticalContentAlignment="Center" IsEnabled="False" x:Name="RadioButton_MByPlayerCount">
-            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="M based on player count (recommended)" />
-        </RadioButton>
-        <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="30,71,0,0" VerticalContentAlignment="Center" IsEnabled="False" x:Name="RadioButton_MByTableSize">
-            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="M based on table size" />
-        </RadioButton>
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" Margin="0,98,0,0" VerticalContentAlignment="Center" Content="Decimals:" Width="140" />
-        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="150" Margin="145,98,0,0" VerticalContentAlignment="Center" x:Name="TextBox_Decimals" />
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="140" Padding="0" Margin="0,125,0,0" VerticalContentAlignment="Center" Content="Message &quot;HH not found&quot;:" />
-        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="150" Margin="145,125,0,0" VerticalContentAlignment="Center" x:Name="TextBox_BigBlindHHNotFound" Text="" />
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="140" Padding="0" Margin="0,152,0,0" VerticalContentAlignment="Center" Content="BigBlind/M prefix:" />
-        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="150" Margin="145,152,0,0" VerticalContentAlignment="Center" x:Name="TextBox_BigBlindPrefix" Text="" />
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="140" Padding="0" Margin="0,179,0,0" VerticalContentAlignment="Center" Content="BigBlind/M postfix:" />
-        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="150" Margin="145,179,0,0" VerticalContentAlignment="Center" x:Name="TextBox_BigBlindPostfix" Text="" />
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="180" Margin="164,27,0,0" HorizontalContentAlignment="Left" x:Name="Button_RestoreDefaultLocations" Click="Button_RestoreDefaultLocations_Click">
+            <StackPanel Orientation="Horizontal" Margin="10,0">
+                <Image VerticalAlignment="Center" Height="16" Width="16" Source="../Images/Resources/Size16x16/default_value.png" />
+                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Restore Default Locations" Margin="5,0,0,0" />
+            </StackPanel>
+        </Button>
+        
+        <Separator Height="1" Margin="0,54,0,0" VerticalAlignment="Top"/>
 
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="200" Margin="0,206,0,0" HorizontalContentAlignment="Left" x:Name="Button_Customize" Click="Button_Customize_Click">
+        <Grid HorizontalAlignment="Left" Height="66" Margin="0,60,0,0" VerticalAlignment="Top" Width="140">
+            <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" x:Name="RadioButton_ShowBB">
+                <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Show BB" />
+            </RadioButton>
+            <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,22,0,0" VerticalContentAlignment="Center" x:Name="RadioButton_ShowAdjustedBB">
+                <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Show Adjusted BB" />
+            </RadioButton>
+            <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,44,0,0" VerticalContentAlignment="Center" x:Name="RadioButton_ShowTournamentM">
+                <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Show Tournament M" />
+            </RadioButton>
+        </Grid>
+        <Grid HorizontalAlignment="Left" Height="44" Margin="145,82,0,0" VerticalAlignment="Top" Width="250">
+            <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,0,-139,0" VerticalContentAlignment="Center" IsEnabled="False" x:Name="RadioButton_MByPlayerCount">
+                <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="M based on player count (recommended)" />
+            </RadioButton>
+            <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,22,-34,0" VerticalContentAlignment="Center" IsEnabled="False" x:Name="RadioButton_MByTableSize">
+                <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="M based on table size" />
+            </RadioButton>
+        </Grid>
+
+        <Separator Height="1" Margin="0,131,0,0" VerticalAlignment="Top"/>
+
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,137,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_ShowForOpponents">
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Show for Opponents" />
+        </CheckBox>
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,164,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_ShowForHero">
+            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Show for Hero" />
+        </CheckBox>
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="145,137,0,0" HorizontalContentAlignment="Left" x:Name="Button_CustomizeOpponents" Click="Button_CustomizeOpponents_Click">
             <StackPanel Orientation="Horizontal" Margin="10,0">
                 <Image VerticalAlignment="Center" Height="16" Width="16" Source="../Images/Resources/Size16x16/blackboard_drawing.png" />
-                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Customize BigBlind/M HUD" Margin="5,0,0,0" />
+                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Customize" Margin="5,0,0,0" />
             </StackPanel>
         </Button>
-
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="200" Margin="0,233,0,0" HorizontalContentAlignment="Left" x:Name="Button_CustomizeColorsByValue" Click="Button_CustomizeColorsByValue_Click">
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="130" Margin="250,137,0,0" HorizontalContentAlignment="Left" x:Name="Button_ColorsByValueOpponents" Click="Button_ColorsByValueOpponents_Click">
             <StackPanel Orientation="Horizontal" Margin="10,0">
                 <Image VerticalAlignment="Center" Height="16" Width="16" Source="/PsHandler;component/Images/Resources/Size16x16/color_wheel.png" />
-                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Customize colors by value" Margin="5,0,0,0" />
+                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Colors by value" Margin="5,0,0,0" />
+            </StackPanel>
+        </Button>
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="145,164,0,0" HorizontalContentAlignment="Left" x:Name="Button_CustomizeHero" Click="Button_CustomizeHero_Click">
+            <StackPanel Orientation="Horizontal" Margin="10,0">
+                <Image VerticalAlignment="Center" Height="16" Width="16" Source="../Images/Resources/Size16x16/blackboard_drawing.png" />
+                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Customize" Margin="5,0,0,0" />
+            </StackPanel>
+        </Button>
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="130" Margin="250,164,0,0" HorizontalContentAlignment="Left" x:Name="Button_ColorsByValueHero" Click="Button_ColorsByValueHero_Click">
+            <StackPanel Orientation="Horizontal" Margin="10,0">
+                <Image VerticalAlignment="Center" Height="16" Width="16" Source="/PsHandler;component/Images/Resources/Size16x16/color_wheel.png" />
+                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Colors by value" Margin="5,0,0,0" />
             </StackPanel>
         </Button>
 
-        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,260,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_LockHudBigBlindLocation">
-            <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Lock BigBlind/M HUD location" />
-        </CheckBox>
+        <Separator Height="1" Margin="0,191,0,0" VerticalAlignment="Top"/>
 
-        <Grid Margin="1,287,0,0">
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="22" Padding="0" Margin="57,0,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Content="Location X" />
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="22" Padding="0" Margin="162,0,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Content="Location Y" />
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="52" Height="22" Padding="0,0,5,0" Margin="0,27,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Content="Default" />
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="52" Height="22" Padding="0,0,5,0" Margin="0,54,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Content="10-max" />
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="52" Height="22" Padding="0,0,5,0" Margin="0,81,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Content="9-max" />
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="52" Height="22" Padding="0,0,5,0" Margin="0,108,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Content="8-max" />
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="52" Height="22" Padding="0,0,5,0" Margin="0,135,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Content="7-max" />
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="52" Height="22" Padding="0,0,5,0" Margin="0,162,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Content="6-max" />
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="52" Height="22" Padding="0,0,5,0" Margin="0,189,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Content="5-max" />
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="52" Height="22" Padding="0,0,5,0" Margin="0,216,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Content="4-max" />
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="52" Height="22" Padding="0,0,5,0" Margin="0,243,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Content="3-max" />
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="52" Height="22" Padding="0,0,5,0" Margin="0,270,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Content="2-max" />
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="52" Height="22" Padding="0,0,5,0" Margin="0,297,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Content="1-max" />
-
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="57,27,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationX_Default" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="162,27,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationY_Default" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="57,54,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationX_Max10" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="162,54,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationY_Max10" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="57,81,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationX_Max9" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="162,81,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationY_Max9" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="57,108,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationX_Max8" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="162,108,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationY_Max8" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="57,135,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationX_Max7" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="162,135,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationY_Max7" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="57,162,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationX_Max6" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="162,162,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationY_Max6" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="57,189,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationX_Max5" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="162,189,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationY_Max5" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="57,216,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationX_Max4" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="162,216,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationY_Max4" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="57,243,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationX_Max3" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="162,243,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationY_Max3" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="57,270,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationX_Max2" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="162,270,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationY_Max2" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="57,297,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationX_Max1" />
-            <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="162,297,0,0" VerticalContentAlignment="Center" x:Name="TextBox_HudBigBlindLocationY_Max1" />
-        </Grid>
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" Margin="0,197,0,0" VerticalContentAlignment="Center" Content="Decimals:" Width="140" />
+        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="150" Margin="145,197,0,0" VerticalContentAlignment="Center" x:Name="TextBox_Decimals" />
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="140" Padding="0" Margin="0,224,0,0" VerticalContentAlignment="Center" Content="Message &quot;HH not found&quot;:" />
+        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="150" Margin="145,224,0,0" VerticalContentAlignment="Center" x:Name="TextBox_BigBlindHHNotFound" Text="" />
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="140" Padding="0" Margin="0,251,0,0" VerticalContentAlignment="Center" Content="BigBlind/M prefix:" />
+        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="150" Margin="145,251,0,0" VerticalContentAlignment="Center" x:Name="TextBox_BigBlindPrefix" Text="" />
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="140" Padding="0" Margin="0,278,0,0" VerticalContentAlignment="Center" Content="BigBlind/M postfix:" />
+        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="150" Margin="145,278,0,0" VerticalContentAlignment="Center" x:Name="TextBox_BigBlindPostfix" Text="" />
 
     </Grid>
 </UserControl>

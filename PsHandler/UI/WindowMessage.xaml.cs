@@ -56,6 +56,12 @@ namespace PsHandler.UI
         Yes
     }
 
+    public enum WindowMessageTextType
+    {
+        TextBlock,
+        TextBox,
+    }
+
     /// <summary>
     /// Interaction logic for WindowMessage.xaml
     /// </summary>
@@ -63,7 +69,7 @@ namespace PsHandler.UI
     {
         public WindowMessageResult Result = WindowMessageResult.None;
 
-        public WindowMessage(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner, WindowStartupLocation windowStartupLocation, FontFamily fontFamily = null)
+        public WindowMessage(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner, WindowStartupLocation windowStartupLocation, WindowMessageTextType windowMessageTextType, FontFamily fontFamily = null)
         {
             InitializeComponent();
 
@@ -75,6 +81,20 @@ namespace PsHandler.UI
 
             Title = title;
             TextBlock_Message.Text = message;
+            TextBox_Message.Text = message;
+
+            switch (windowMessageTextType)
+            {
+                case WindowMessageTextType.TextBlock:
+                    TextBlock_Message.Visibility = Visibility.Visible;
+                    TextBox_Message.Visibility = Visibility.Collapsed;
+                    break;
+                case WindowMessageTextType.TextBox:
+                    TextBlock_Message.Visibility = Visibility.Collapsed;
+                    TextBox_Message.Visibility = Visibility.Visible;
+                    break;
+            }
+
 
             Image_Error.Visibility = Visibility.Collapsed;
             Image_Information.Visibility = Visibility.Collapsed;
@@ -132,6 +152,7 @@ namespace PsHandler.UI
             if (fontFamily != null)
             {
                 TextBlock_Message.FontFamily = fontFamily;
+                TextBox_Message.FontFamily = fontFamily;
             }
         }
 
@@ -161,16 +182,18 @@ namespace PsHandler.UI
 
         //
 
-        public static WindowMessageResult Show(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner, WindowStartupLocation windowStartupLocation = WindowStartupLocation.CenterOwner, FontFamily fontFamily = null)
+        public static WindowMessageResult Show(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner,
+            WindowStartupLocation windowStartupLocation = WindowStartupLocation.CenterOwner, WindowMessageTextType windowMessageTextType = WindowMessageTextType.TextBlock, FontFamily fontFamily = null)
         {
-            WindowMessage windowMessage = new WindowMessage(message, title, buttons, image, owner, windowStartupLocation, fontFamily);
+            WindowMessage windowMessage = new WindowMessage(message, title, buttons, image, owner, windowStartupLocation, windowMessageTextType, fontFamily);
             ((Window)windowMessage).Show();
             return windowMessage.Result;
         }
 
-        public static WindowMessageResult ShowDialog(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner, WindowStartupLocation windowStartupLocation = WindowStartupLocation.CenterOwner, FontFamily fontFamily = null)
+        public static WindowMessageResult ShowDialog(string message, string title, WindowMessageButtons buttons, WindowMessageImage image, Window owner,
+            WindowStartupLocation windowStartupLocation = WindowStartupLocation.CenterOwner, WindowMessageTextType windowMessageTextType = WindowMessageTextType.TextBlock, FontFamily fontFamily = null)
         {
-            WindowMessage windowMessage = new WindowMessage(message, title, buttons, image, owner, windowStartupLocation, fontFamily);
+            WindowMessage windowMessage = new WindowMessage(message, title, buttons, image, owner, windowStartupLocation, windowMessageTextType, fontFamily);
             ((Window)windowMessage).ShowDialog();
             return windowMessage.Result;
         }

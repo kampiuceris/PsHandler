@@ -28,6 +28,7 @@ namespace PsHandler.PokerMath
         public enum PokerSite { Unknown, PokerStars_unknown, PokerStars_com, PokerStars_eu, PokerStars_fr, FullTiltPoker_unknown, FullTiltPoker_com, FullTiltPoker_eu, FullTiltPoker_fr, };
         public enum Currency { Unknown, PlayMoney, Freeroll, FPP, USD, EUR, GBP, };
         public enum Position { EP, MP, CO, BU, SB, BB, };
+        public static readonly string[] CurrencySigns = { "", "PM", "Freeroll", "FPP", "$", "€", "£", };
     }
 
     public class PokerData
@@ -474,80 +475,10 @@ namespace PsHandler.PokerMath
                 players.RemoveAt(0);
             }
 
-            switch (players.Count)
+            var positions = GetPositions(players.Count);
+            for (int i = 0; i < players.Count; i++)
             {
-                case 2:
-                    players[0].Position = PokerEnums.Position.BU;
-                    players[0 + 1].Position = PokerEnums.Position.SB;
-                    break;
-                case 3:
-                    players[0].Position = PokerEnums.Position.BU;
-                    players[0 + 1].Position = PokerEnums.Position.SB;
-                    players[0 + 2].Position = PokerEnums.Position.BB;
-                    break;
-                case 4:
-                    players[0].Position = PokerEnums.Position.BU;
-                    players[0 + 1].Position = PokerEnums.Position.SB;
-                    players[0 + 2].Position = PokerEnums.Position.BB;
-                    players[0 + 3].Position = PokerEnums.Position.CO;
-                    break;
-                case 5:
-                    players[0].Position = PokerEnums.Position.BU;
-                    players[0 + 1].Position = PokerEnums.Position.SB;
-                    players[0 + 2].Position = PokerEnums.Position.BB;
-                    players[0 + 3].Position = PokerEnums.Position.EP;
-                    players[0 + 4].Position = PokerEnums.Position.CO;
-                    break;
-                case 6:
-                    players[0].Position = PokerEnums.Position.BU;
-                    players[0 + 1].Position = PokerEnums.Position.SB;
-                    players[0 + 2].Position = PokerEnums.Position.BB;
-                    players[0 + 3].Position = PokerEnums.Position.EP;
-                    players[0 + 4].Position = PokerEnums.Position.MP;
-                    players[0 + 5].Position = PokerEnums.Position.CO;
-                    break;
-                case 7:
-                    players[0].Position = PokerEnums.Position.BU;
-                    players[0 + 1].Position = PokerEnums.Position.SB;
-                    players[0 + 2].Position = PokerEnums.Position.BB;
-                    players[0 + 3].Position = PokerEnums.Position.EP;
-                    players[0 + 4].Position = PokerEnums.Position.MP;
-                    players[0 + 5].Position = PokerEnums.Position.MP;
-                    players[0 + 6].Position = PokerEnums.Position.CO;
-                    break;
-                case 8:
-                    players[0].Position = PokerEnums.Position.BU;
-                    players[0 + 1].Position = PokerEnums.Position.SB;
-                    players[0 + 2].Position = PokerEnums.Position.BB;
-                    players[0 + 3].Position = PokerEnums.Position.EP;
-                    players[0 + 4].Position = PokerEnums.Position.EP;
-                    players[0 + 5].Position = PokerEnums.Position.MP;
-                    players[0 + 6].Position = PokerEnums.Position.MP;
-                    players[0 + 7].Position = PokerEnums.Position.CO;
-                    break;
-                case 9:
-                    players[0].Position = PokerEnums.Position.BU;
-                    players[0 + 1].Position = PokerEnums.Position.SB;
-                    players[0 + 2].Position = PokerEnums.Position.BB;
-                    players[0 + 3].Position = PokerEnums.Position.EP;
-                    players[0 + 4].Position = PokerEnums.Position.EP;
-                    players[0 + 5].Position = PokerEnums.Position.MP;
-                    players[0 + 6].Position = PokerEnums.Position.MP;
-                    players[0 + 7].Position = PokerEnums.Position.MP;
-                    players[0 + 8].Position = PokerEnums.Position.CO;
-                    break;
-                case 10:
-                    players[0].Position = PokerEnums.Position.BU;
-                    players[0 + 1].Position = PokerEnums.Position.SB;
-                    players[0 + 2].Position = PokerEnums.Position.BB;
-                    players[0 + 3].Position = PokerEnums.Position.EP;
-                    players[0 + 4].Position = PokerEnums.Position.EP;
-                    players[0 + 5].Position = PokerEnums.Position.EP;
-                    players[0 + 6].Position = PokerEnums.Position.MP;
-                    players[0 + 7].Position = PokerEnums.Position.MP;
-                    players[0 + 8].Position = PokerEnums.Position.MP;
-                    players[0 + 9].Position = PokerEnums.Position.CO;
-                    break;
+                players[i].Position = positions[i];
             }
 
             if (players.Count < 3)
@@ -588,14 +519,14 @@ namespace PsHandler.PokerMath
 
         // Tournament Hand
 
-        // \APokerStars Hand #(?<hand_id>\d+): +(?<zoom>Zoom |)Tournament #(?<tournament_id>\d+), +((?<buyin_fpp>\d+)FPP|(?<freeroll>Freeroll)|(\$|€|£|)(?<buyin>(\d|\.)+)(\+(\$|€|£|)(?<bounty>(\d|\.)+))?\+(\$|€|£|)(?<rake>(\d|\.)+)) *(?<currency>(USD|EUR|GBP|)) +(?<game_type>.+) +- +(?<additional_info>.*)Level (?<level_number>(I|V|X|L|C|D|M))+ \((?<level_sb>\d+)\/(?<level_bb>\d+)\) +- +(?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z
         // PokerStars Hand #126991433006: Tournament #1080084995, $7.35+$0.15 USD Hold'em No Limit - Level I (25/50) - 2014/12/17 3:42:52 EET [2014/12/16 20:42:52 ET]
         // PokerStars Hand #127729299039: Tournament #1087458547, $10.00+$2.50+$1.25 USD Hold'em No Limit - Level XXXII (8000/16000) - 2014/12/30 6:21:55 EET [2014/12/29 23:21:55 ET]
         // PokerStars Hand #127729394086: Tournament #1057766685, Freeroll  Hold'em No Limit - Level XVI (1000/2000) - 2014/12/30 6:26:15 EET [2014/12/29 23:26:15 ET]
         // PokerStars Hand #127729452661: Tournament #1087297757, 4500+500 Courchevel Pot Limit - Level III (25/50) - 2014/12/30 6:28:58 EET [2014/12/29 23:28:58 ET]
         // PokerStars Hand #127729497630: Tournament #1087266190, 140000+40000+20000 Hold'em No Limit - Level IV (50/100) - 2014/12/30 6:31:04 EET [2014/12/29 23:31:04 ET]
         // PokerStars Hand #127730077127: Tournament #1093318289, €3.29+€0.21 EUR Hold'em No Limit - Match Round I, Level IV (25/50) - 2014/12/30 7:00:15 EET [2014/12/30 0:00:15 ET]
-        // PokerStars Hand #127544216893: Zoom Tournament #1082326263, $8.00+$0.80 USD Hold'em No Limit - Level XVIII (500/1000) - 2014/12/27 6:23:19 EET [2014/12/26 23:23:19 ET]
+        // PokerStars Hand #1275442f16893: Zoom Tournament #1082326263, $8.00+$0.80 USD Hold'em No Limit - Level XVIII (500/1000) - 2014/12/27 6:23:19 EET [2014/12/26 23:23:19 ET]
+        // PokerStars Home Game Hand #131463973668: {#RunItUp} Tournament #1159304664, $1.00+$0.10 USD Hold'em No Limit - Level I (15/30) - 2015/03/04 0:02:43 EET [2015/03/03 17:02:43 ET]
 
         // hand_id	            126991433006
         // tournament_id	    1080084995
@@ -629,12 +560,12 @@ namespace PsHandler.PokerMath
 
         // Cash Hand
 
-        // \APokerStars (?<zoom>Zoom |)Hand #(?<hand_id>\d+): +(?<game_type>.+) \((?<level_sb_currency_symbol>(\$|€|£|))(?<level_sb>(\d|\.)+)\/(?<level_bb_currency_symbol>(\$|€|£|))(?<level_bb>(\d|\.)+) *(?<currency>(USD|EUR|GBP|))\) +- +(?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z
         // PokerStars Hand #127728989406:  Hold'em No Limit ($0.01/$0.02 USD) - 2014/12/30 6:08:13 EET [2014/12/29 23:08:13 ET]
         // PokerStars Hand #127728946819:  Hold'em No Limit (€0.01/€0.02 EUR) - 2014/12/30 6:06:22 EET [2014/12/29 23:06:22 ET]
         // PokerStars Hand #127728928558:  Hold'em No Limit (£0.02/£0.05 GBP) - 2014/12/30 6:05:35 EET [2014/12/29 23:05:35 ET]
         // PokerStars Zoom Hand #127671329615:  Hold'em No Limit ($2.50/$5.00) - 2014/12/29 7:24:59 EET [2014/12/29 0:24:59 ET]
         // PokerStars Hand #127729737119:  Hold'em No Limit (25/50) - 2014/12/30 6:42:32 EET [2014/12/29 23:42:32 ET]
+        // PokerStars Home Game Hand #131584105720: {#RunItUp}  Hold'em No Limit ($0.05/$0.10 USD) - 2015/03/06 4:25:47 EET [2015/03/05 21:25:47 ET]
 
         // (?)zoom	 
         // hand_id	                        127728989406
@@ -660,29 +591,30 @@ namespace PsHandler.PokerMath
         // second_et	                    13
         // timezone_et	                    ET
 
-        private static readonly Regex RegexHeaderTournament = new Regex(@"\APokerStars (?<home_game>Home Game )?Hand #(?<hand_id>\d+): +(?<home_game_info>.+)?(?<zoom>Zoom )?Tournament #(?<tournament_id>\d+), +((?<buyin_fpp>\d+)FPP|(?<freeroll>Freeroll)|(\$|€|£)?(?<buyin>(\d|\.)+)(\+(\$|€|£)?(?<bounty>(\d|\.)+))?\+(\$|€|£)?(?<rake>(\d|\.)+)) *(?<currency>(USD|EUR|GBP)?) +(?<game_type>.+) +- +(?<additional_info>.+)?Level (?<level_number>(I|V|X|L|C|D|M))+ \((?<level_sb>\d+)\/(?<level_bb>\d+)\) +- +(?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z");
-        private static readonly Regex RegexHeaderCash = new Regex(@"\APokerStars (?<zoom>Zoom )?Hand #(?<hand_id>\d+): +(?<game_type>.+) \((?<level_sb_currency_symbol>(\$|€|£)?)(?<level_sb>(\d|\.)+)\/(?<level_bb_currency_symbol>(\$|€|£)?)(?<level_bb>(\d|\.)+) *(?<currency>(USD|EUR|GBP)?)\) +- +(?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z");
-        public static Regex RegexSeatMaxButton = new Regex(@"\ATable '(?<table_name>.+)' (?<table_size>\d+)-max Seat #(?<button_seat>\d+) is the button\z");
-        public static Regex RegexPlayer = new Regex(@"\ASeat (?<seat_number>\d{1,2}): (?<player_name>.+) \((\$|€|£)?(?<stack>(\d|\.)+) in chips\)( is sitting out| out of hand \(moved from another table into small blind\))?\z");
-        public static Regex RegexPostBlinds = new Regex(@"\A(?<player_name>.+): posts (?<type>small blind|big blind|the ante) (\$|€|£)?(?<amount>(\d|\.)+)(?<all_in> and is all-in|)\z");
-        public static Regex RegexDealtTo = new Regex(@"\ADealt to (?<player_name>.+) \[(?<card0>..) (?<card1>..)\]\z");
-        public static Regex RegexFold = new Regex(@"\A(?<player_name>.+): folds( \[(?<card0>..)( (?<card1>..))?\])?\z");
-        public static Regex RegexCheck = new Regex(@"\A(?<player_name>.+): checks\z");
-        public static Regex RegexCall = new Regex(@"\A(?<player_name>.+): calls (\$|€|£)?(?<amount>(\d|\.)+)(?<all_in> and is all-in|)\z");
-        public static Regex RegexBet = new Regex(@"\A(?<player_name>.+): bets (\$|€|£)?(?<amount>(\d|\.)+)(?<all_in> and is all-in|)\z");
-        public static Regex RegexRaise = new Regex(@"\A(?<player_name>.+): raises (\$|€|£)?(?<amount>(\d|\.)+) to (\$|€|£)?(?<amount_in_total>(\d|\.)+)(?<all_in> and is all-in|)\z");
-        public static Regex RegexUncalledBetReturn = new Regex(@"\AUncalled bet \((\$|€|£)?(?<amount>(\d|\.)+)\) returned to (?<player_name>.+)\z");
-        public static Regex RegexShows = new Regex(@"\A(?<player_name>.+): shows (\[(?<card0>..) (?<card1>..)\]|\[(?<card0one>..)\])( \((?<showdown_info>.+)\))?\z");
-        public static Regex RegexCollectFromPot = new Regex(@"\A(?<player_name>.+) collected (\$|€|£)?(?<amount>(\d|\.)+) from.+pot");
-        public static Regex RegexMuck = new Regex(@"\A(?<player_name>.+): mucks hand\z");
-        public static Regex RegexTotalPot = new Regex(@"\ATotal pot.+\| Rake (\$|€|£)?(?<rake>(\d|\.)+)\z");
-        public static Regex RegexMuckedInfo = new Regex(@"\ASeat \d{1,2}: (?<player_name>.+) mucked \[(?<card0>..) (?<card1>..)\]\z");
-        public static Regex RegexFlop = new Regex(@"\A\*\*\* FLOP \*\*\* \[(?<card0>..) (?<card1>..) (?<card2>..)\]\z");
-        public static Regex RegexTurn = new Regex(@"\A\*\*\* TURN \*\*\* \[(?<card0>..) (?<card1>..) (?<card2>..)\] \[(?<card3>..)\]\z");
-        public static Regex RegexRiver = new Regex(@"\A\*\*\* RIVER \*\*\* \[(?<card0>..) (?<card1>..) (?<card2>..) (?<card3>..)\] \[(?<card4>..)\].?\z"); // .? gale, nes kai kur budavo ne i tema "A" raide paciam gale wtf..
-        public static Regex RegexWinTournament = new Regex(@"(?<player_name>.+) wins the tournament and receives (?<winnings_currency_symbol>(\$|€|£)?)(?<winnings>(\d|\.)+) - congratulations!\z");
-        public static Regex RegexFinished = new Regex(@"(?<player_name>.+) finished the tournament in (?<place>\d+)(st|nd|rd|th) place( and received (?<winnings_currency_symbol>(\$|€|£)?)(?<winnings>(\d|\.)+).|)\z");
-        public static Regex RegexChat = new Regex("(?<player_name>.+) said, \\\"(?<text>.*)\\\"\\z");
+        private static readonly Regex Regex1stLine = new Regex(@"\APokerStars.+Hand #\d+:");
+        private static readonly Regex RegexHeaderTournament = new Regex(@"\APokerStars (?<home_game>Home Game )?Hand #(?<hand_id>\d+): +(\{(?<home_game_info>.+)\})?(?<zoom>Zoom )? *Tournament #(?<tournament_id>\d+), +((?<buyin_fpp>\d+)FPP|(?<freeroll>Freeroll)|(\$|€|£)?(?<buyin>(\d|\.)+)(\+(\$|€|£)?(?<bounty>(\d|\.)+))?\+(\$|€|£)?(?<rake>(\d|\.)+)) *(?<currency>(USD|EUR|GBP)?) +(?<game_type>.+) +- +(?<additional_info>.+)?Level (?<level_number>(I|V|X|L|C|D|M))+ \((?<level_sb>\d+)\/(?<level_bb>\d+)\) +- +(?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z");
+        private static readonly Regex RegexHeaderCash = new Regex(@"\APokerStars (?<home_game>Home Game )?(?<zoom>Zoom )?Hand #(?<hand_id>\d+): +(\{(?<home_game_info>.+)\})?(?<game_type>.+) \((?<level_sb_currency_symbol>(\$|€|£)?)(?<level_sb>(\d|\.)+)\/(?<level_bb_currency_symbol>(\$|€|£)?)(?<level_bb>(\d|\.)+) *(?<currency>(USD|EUR|GBP)?)\) +- +(?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z");
+        private static Regex RegexSeatMaxButton = new Regex(@"\ATable '(?<table_name>.+)' (?<table_size>\d+)-max Seat #(?<button_seat>\d+) is the button\z");
+        private static Regex RegexPlayer = new Regex(@"\ASeat (?<seat_number>\d{1,2}): (?<player_name>.+) \((\$|€|£)?(?<stack>(\d|\.)+) in chips\)( is sitting out| out of hand \(moved from another table into small blind\))?\z");
+        private static Regex RegexPostBlinds = new Regex(@"\A(?<player_name>.+): posts (?<type>small blind|big blind|the ante) (\$|€|£)?(?<amount>(\d|\.)+)(?<all_in> and is all-in|)\z");
+        private static Regex RegexDealtTo = new Regex(@"\ADealt to (?<player_name>.+) \[(?<card0>..) (?<card1>..)\]\z");
+        private static Regex RegexFold = new Regex(@"\A(?<player_name>.+): folds( \[(?<card0>..)( (?<card1>..))?\])?\z");
+        private static Regex RegexCheck = new Regex(@"\A(?<player_name>.+): checks\z");
+        private static Regex RegexCall = new Regex(@"\A(?<player_name>.+): calls (\$|€|£)?(?<amount>(\d|\.)+)(?<all_in> and is all-in|)\z");
+        private static Regex RegexBet = new Regex(@"\A(?<player_name>.+): bets (\$|€|£)?(?<amount>(\d|\.)+)(?<all_in> and is all-in|)\z");
+        private static Regex RegexRaise = new Regex(@"\A(?<player_name>.+): raises (\$|€|£)?(?<amount>(\d|\.)+) to (\$|€|£)?(?<amount_in_total>(\d|\.)+)(?<all_in> and is all-in|)\z");
+        private static Regex RegexUncalledBetReturn = new Regex(@"\AUncalled bet \((\$|€|£)?(?<amount>(\d|\.)+)\) returned to (?<player_name>.+)\z");
+        private static Regex RegexShows = new Regex(@"\A(?<player_name>.+): shows (\[(?<card0>..) (?<card1>..)\]|\[(?<card0one>..)\])( \((?<showdown_info>.+)\))?\z");
+        private static Regex RegexCollectFromPot = new Regex(@"\A(?<player_name>.+) collected (\$|€|£)?(?<amount>(\d|\.)+) from.+pot");
+        private static Regex RegexMuck = new Regex(@"\A(?<player_name>.+): mucks hand\z");
+        private static Regex RegexTotalPot = new Regex(@"\ATotal pot.+\| Rake (\$|€|£)?(?<rake>(\d|\.)+)\z");
+        private static Regex RegexMuckedInfo = new Regex(@"\ASeat \d{1,2}: (?<player_name>.+) mucked \[(?<card0>..) (?<card1>..)\]\z");
+        private static Regex RegexFlop = new Regex(@"\A\*\*\* FLOP \*\*\* \[(?<card0>..) (?<card1>..) (?<card2>..)\]\z");
+        private static Regex RegexTurn = new Regex(@"\A\*\*\* TURN \*\*\* \[(?<card0>..) (?<card1>..) (?<card2>..)\] \[(?<card3>..)\]\z");
+        private static Regex RegexRiver = new Regex(@"\A\*\*\* RIVER \*\*\* \[(?<card0>..) (?<card1>..) (?<card2>..) (?<card3>..)\] \[(?<card4>..)\].?\z"); // .? gale, nes kai kur budavo ne i tema "A" raide paciam gale wtf..
+        private static Regex RegexWinTournament = new Regex(@"(?<player_name>.+) wins the tournament and receives (?<winnings_currency_symbol>(\$|€|£)?)(?<winnings>(\d|\.)+) - congratulations!\z");
+        private static Regex RegexFinished = new Regex(@"(?<player_name>.+) finished the tournament in (?<place>\d+)(st|nd|rd|th) place( and received (?<winnings_currency_symbol>(\$|€|£)?)(?<winnings>(\d|\.)+).|)\z");
+        private static Regex RegexChat = new Regex("(?<player_name>.+) said, \\\"(?<text>.*)\\\"\\z");
 
 
         #endregion
@@ -717,7 +649,7 @@ namespace PsHandler.PokerMath
 
             #region 1st Line
 
-            if (text.StartsWith("PokerStars Hand #") || text.StartsWith("PokerStars Zoom Hand #"))
+            if (Regex1stLine.Match(text).Success)
             {
                 if (text.Contains("Tournament #"))
                 {
@@ -728,8 +660,6 @@ namespace PsHandler.PokerMath
                     pokerHand.HandNumber = long.Parse(match.Groups["hand_id"].Value);
                     pokerHand.TournamentNumber = long.Parse(match.Groups["tournament_id"].Value);
                     if (match.Groups["zoom"].Success) pokerHand.IsZoom = true;
-                    if (match.Groups["buyin_fpp"].Success) pokerHand.Currency = PokerEnums.Currency.FPP;
-                    if (match.Groups["freeroll"].Success) pokerHand.Currency = PokerEnums.Currency.Freeroll;
                     if (match.Groups["currency"].Success)
                     {
                         switch (match.Groups["currency"].Value)
@@ -743,25 +673,23 @@ namespace PsHandler.PokerMath
                             case "BGP":
                                 pokerHand.Currency = PokerEnums.Currency.GBP;
                                 break;
+                            case "":
+                                pokerHand.Currency = PokerEnums.Currency.PlayMoney;
+                                break;
                             default:
                                 pokerHand.Currency = PokerEnums.Currency.Unknown;
                                 break;
                         }
                     }
-                    else
-                    {
-                        if (pokerHand.Currency == PokerEnums.Currency.Unknown)
-                        {
-                            pokerHand.Currency = PokerEnums.Currency.PlayMoney;
-                        }
-                    }
-                    if (pokerHand.Currency == PokerEnums.Currency.USD || pokerHand.Currency == PokerEnums.Currency.EUR || pokerHand.Currency == PokerEnums.Currency.GBP)
-                    {
-                        pokerHand.BuyIn = decimal.Parse(match.Groups["buyin"].Value);
-                        if (match.Groups["bounty"].Success) pokerHand.Bounty = decimal.Parse(match.Groups["bounty"].Value);
-                        pokerHand.Rake = decimal.Parse(match.Groups["rake"].Value);
-                    }
+                    if (match.Groups["buyin_fpp"].Success) pokerHand.Currency = PokerEnums.Currency.FPP;
+                    if (match.Groups["freeroll"].Success) pokerHand.Currency = PokerEnums.Currency.Freeroll;
+
+                    if (match.Groups["buyin"].Success) pokerHand.BuyIn = decimal.Parse(match.Groups["buyin"].Value);
+                    if (match.Groups["bounty"].Success) pokerHand.Bounty = decimal.Parse(match.Groups["bounty"].Value);
+                    if (match.Groups["rake"].Success) pokerHand.Rake = decimal.Parse(match.Groups["rake"].Value);
+
                     if (pokerHand.Currency == PokerEnums.Currency.FPP) pokerHand.BuyIn = decimal.Parse(match.Groups["buyin_fpp"].Value);
+
                     pokerHand.GameType = match.Groups["game_type"].Value;
                     if (match.Groups["additional_info"].Success) pokerHand.AdditionalInfo = match.Groups["additional_info"].Value;
                     pokerHand.LevelNumber = match.Groups["level_number"].Value;
@@ -1194,6 +1122,89 @@ namespace PsHandler.PokerMath
             #endregion
 
             return false;
+        }
+
+        public static PokerEnums.Position[] GetPositions(int playerCount)
+        {
+            var positions = new PokerEnums.Position[playerCount];
+
+            switch (positions.Length)
+            {
+                case 2:
+                    positions[0] = PokerEnums.Position.SB;
+                    positions[0 + 1] = PokerEnums.Position.BB;
+                    break;
+                case 3:
+                    positions[0] = PokerEnums.Position.BU;
+                    positions[0 + 1] = PokerEnums.Position.SB;
+                    positions[0 + 2] = PokerEnums.Position.BB;
+                    break;
+                case 4:
+                    positions[0] = PokerEnums.Position.BU;
+                    positions[0 + 1] = PokerEnums.Position.SB;
+                    positions[0 + 2] = PokerEnums.Position.BB;
+                    positions[0 + 3] = PokerEnums.Position.CO;
+                    break;
+                case 5:
+                    positions[0] = PokerEnums.Position.BU;
+                    positions[0 + 1] = PokerEnums.Position.SB;
+                    positions[0 + 2] = PokerEnums.Position.BB;
+                    positions[0 + 3] = PokerEnums.Position.EP;
+                    positions[0 + 4] = PokerEnums.Position.CO;
+                    break;
+                case 6:
+                    positions[0] = PokerEnums.Position.BU;
+                    positions[0 + 1] = PokerEnums.Position.SB;
+                    positions[0 + 2] = PokerEnums.Position.BB;
+                    positions[0 + 3] = PokerEnums.Position.EP;
+                    positions[0 + 4] = PokerEnums.Position.MP;
+                    positions[0 + 5] = PokerEnums.Position.CO;
+                    break;
+                case 7:
+                    positions[0] = PokerEnums.Position.BU;
+                    positions[0 + 1] = PokerEnums.Position.SB;
+                    positions[0 + 2] = PokerEnums.Position.BB;
+                    positions[0 + 3] = PokerEnums.Position.EP;
+                    positions[0 + 4] = PokerEnums.Position.MP;
+                    positions[0 + 5] = PokerEnums.Position.MP;
+                    positions[0 + 6] = PokerEnums.Position.CO;
+                    break;
+                case 8:
+                    positions[0] = PokerEnums.Position.BU;
+                    positions[0 + 1] = PokerEnums.Position.SB;
+                    positions[0 + 2] = PokerEnums.Position.BB;
+                    positions[0 + 3] = PokerEnums.Position.EP;
+                    positions[0 + 4] = PokerEnums.Position.EP;
+                    positions[0 + 5] = PokerEnums.Position.MP;
+                    positions[0 + 6] = PokerEnums.Position.MP;
+                    positions[0 + 7] = PokerEnums.Position.CO;
+                    break;
+                case 9:
+                    positions[0] = PokerEnums.Position.BU;
+                    positions[0 + 1] = PokerEnums.Position.SB;
+                    positions[0 + 2] = PokerEnums.Position.BB;
+                    positions[0 + 3] = PokerEnums.Position.EP;
+                    positions[0 + 4] = PokerEnums.Position.EP;
+                    positions[0 + 5] = PokerEnums.Position.MP;
+                    positions[0 + 6] = PokerEnums.Position.MP;
+                    positions[0 + 7] = PokerEnums.Position.MP;
+                    positions[0 + 8] = PokerEnums.Position.CO;
+                    break;
+                case 10:
+                    positions[0] = PokerEnums.Position.BU;
+                    positions[0 + 1] = PokerEnums.Position.SB;
+                    positions[0 + 2] = PokerEnums.Position.BB;
+                    positions[0 + 3] = PokerEnums.Position.EP;
+                    positions[0 + 4] = PokerEnums.Position.EP;
+                    positions[0 + 5] = PokerEnums.Position.EP;
+                    positions[0 + 6] = PokerEnums.Position.MP;
+                    positions[0 + 7] = PokerEnums.Position.MP;
+                    positions[0 + 8] = PokerEnums.Position.MP;
+                    positions[0 + 9] = PokerEnums.Position.CO;
+                    break;
+            }
+
+            return positions;
         }
 
         public static PokerHand Parse(string handHistoryText)

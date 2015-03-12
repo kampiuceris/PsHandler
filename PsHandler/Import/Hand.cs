@@ -40,7 +40,14 @@ namespace PsHandler.Import
     {
         public Level Level;
         public string[] PlayerNames;
+        public decimal[] StacksBeforeHand;
         public decimal[] StacksAfterHand;
+        public int HeroId = -1;
+
+        public string[] HudPlayerNames;
+        public decimal[] HudPlayerStacks;
+        public PokerEnums.Position[] HudPlayerPositions;
+        public int HudHeroSeat;
 
         public Hand(string handHistoryText)
             : base(handHistoryText)
@@ -48,14 +55,88 @@ namespace PsHandler.Import
             Level = new Level { SmallBlind = LevelSmallBlind, BigBlind = LevelBigBlind, Ante = LevelAnte, IsAnteDefined = true };
             var table = new PokerMath.Table();
             table.LoadHand(this);
-            table.ToDoCommandsAll();
+
             PlayerNames = new string[table.PlayerCount];
+            StacksBeforeHand = new decimal[table.PlayerCount];
             StacksAfterHand = new decimal[table.PlayerCount];
             for (int i = 0; i < table.PlayerCount; i++)
             {
                 PlayerNames[i] = table.Players[i].PlayerName;
+                StacksBeforeHand[i] = table.Players[i].Stack;
+            }
+            table.ToDoCommandsAll();
+            for (int i = 0; i < table.PlayerCount; i++)
+            {
                 StacksAfterHand[i] = table.Players[i].Stack;
             }
+
+            var hero = table.Players.FirstOrDefault(a => a.IsHero);
+            if (hero != null)
+            {
+                HeroId = Array.IndexOf(PlayerNames, hero.PlayerName);
+                HudHeroSeat = hero.SeatNumber;
+            }
+
+            HudPlayerNames = new string[table.Seats.Length];
+            HudPlayerStacks = new decimal[table.Seats.Length];
+            for (int i = 0; i < table.Seats.Length; i++)
+            {
+                if (table.Seats[i] != null && table.Seats[i].Stack > 0)
+                {
+                    HudPlayerNames[i] = table.Seats[i].PlayerName;
+                    HudPlayerStacks[i] = table.Seats[i].Stack;
+                }
+                else
+                {
+                    HudPlayerNames[i] = null;
+                    HudPlayerStacks[i] = 0;
+                }
+            }
+
+            #region Get next hands Positions
+
+            // set position for next hand (cut missing players and etc)
+
+            var alivePlayers = table.Players;
+            var players = new List<Player>();
+            players.AddRange(alivePlayers);
+            players.AddRange(alivePlayers);
+
+            var playersFromButton = new List<Player>();
+            int start = players.IndexOf(players.First(p => p.SeatNumber == ButtonSeat));
+            bool buttonDropped = false;
+            for (int i = start; i < start + alivePlayers.Length; i++)
+            {
+                if (players[i].Stack > 0)
+                {
+                    playersFromButton.Add(players[i]);
+                }
+                else
+                {
+                    if (players[i].SeatNumber == ButtonSeat)
+                    {
+                        buttonDropped = true;
+                    }
+                }
+            }
+
+            var playersFromButtonLive = new List<Player>(playersFromButton);
+            if (!buttonDropped)
+            {
+                var playeUtg = playersFromButtonLive[0];
+                playersFromButtonLive.RemoveAt(0);
+                playersFromButtonLive.Add(playeUtg);
+            }
+
+            // dabar kai playersFromButtonLive yra nuo utg
+            var positions = GetPositions(playersFromButtonLive.Count);
+            HudPlayerPositions = new PokerEnums.Position[10];
+            for (int i = 0; i < playersFromButtonLive.Count; i++)
+            {
+                HudPlayerPositions[Array.IndexOf(HudPlayerNames, playersFromButtonLive[i].PlayerName)] = positions[i];
+            }
+
+            #endregion
         }
 
         public new static Hand Parse(string handHistoryText)

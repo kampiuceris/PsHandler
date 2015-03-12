@@ -1003,6 +1003,9 @@ namespace PsHandler
         public static extern int GetMenuItemCount(IntPtr hMenu);
 
         [DllImport("user32.dll")]
+        public static extern IntPtr GetParent(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
         public static extern int GetSystemMetrics(SystemMetric smIndex);
 
         [DllImport("user32.dll")]

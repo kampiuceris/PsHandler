@@ -32,19 +32,64 @@ using PsHandler.UI;
 
 namespace PsHandler.Hud
 {
+    public class HudColorsByValueParams
+    {
+        public enum HudColorsByValueType { HudColorsByValueOpponents, HudColorsByValueHero }
+
+        private readonly HudColorsByValueType _hudColorsByValueType;
+        public List<ColorByValue> ColorsByValue = new List<ColorByValue>();
+
+        public HudColorsByValueParams(HudColorsByValueType hudColorsByValueType)
+        {
+            _hudColorsByValueType = hudColorsByValueType;
+
+            var input = new List<ColorByValue>();
+            switch (_hudColorsByValueType)
+            {
+                case HudColorsByValueType.HudColorsByValueOpponents:
+                    input = Config.HudBigBlindOpponentsColorsByValue;
+                    break;
+                case HudColorsByValueType.HudColorsByValueHero:
+                    input = Config.HudBigBlindHeroColorsByValue;
+                    break;
+            }
+
+            foreach (var colorByValue in input)
+            {
+                ColorsByValue.Add(colorByValue.Clone());
+            }
+        }
+
+        public void Save()
+        {
+            var output = ColorsByValue.Select(colorByValue => colorByValue.Clone()).ToList();
+
+            switch (_hudColorsByValueType)
+            {
+                case HudColorsByValueType.HudColorsByValueOpponents:
+                    Config.HudBigBlindOpponentsColorsByValue = output;
+                    break;
+                case HudColorsByValueType.HudColorsByValueHero:
+                    Config.HudBigBlindHeroColorsByValue = output;
+                    break;
+            }
+        }
+    }
+
     /// <summary>
     /// Interaction logic for WindowCustomizeColorsByValue.xaml
     /// </summary>
     public partial class WindowCustomizeColorsByValue : Window
     {
-        public bool Saved = false;
-        public List<ColorByValue> ColorsByValue;
+        public HudColorsByValueParams HudColorsByValueParams;
 
-        public WindowCustomizeColorsByValue(Window owner, Color defaultColor, List<ColorByValue> ColorsByValue = null)
+        public WindowCustomizeColorsByValue(Window owner, Color defaultColor, HudColorsByValueParams.HudColorsByValueType hudColorsByValueType)
         {
             InitializeComponent();
             Owner = owner;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+            HudColorsByValueParams = new HudColorsByValueParams(hudColorsByValueType);
 
             Rectangle_Default.Fill = new SolidColorBrush(defaultColor);
             Label_Default.Content = defaultColor.ToString();
@@ -60,8 +105,7 @@ namespace PsHandler.Hud
                 }
             }
 
-            if (ColorsByValue == null) ColorsByValue = new List<ColorByValue>();
-            foreach (var colorByValue in ColorsByValue)
+            foreach (var colorByValue in HudColorsByValueParams.ColorsByValue)
             {
                 StackPanel_ColorsByValue.Children.Add(new UCColorByValue(StackPanel_ColorsByValue, colorByValue));
             }
@@ -72,29 +116,44 @@ namespace PsHandler.Hud
             StackPanel_ColorsByValue.Children.Add(new UCColorByValue(StackPanel_ColorsByValue));
         }
 
-        private void Button_SaveAndClose_Click(object sender, RoutedEventArgs e)
+        private bool CollectParams()
         {
-            ColorsByValue = new List<ColorByValue>();
+            HudColorsByValueParams.ColorsByValue = new List<ColorByValue>();
 
             foreach (var item in StackPanel_ColorsByValue.Children.OfType<UCColorByValue>())
             {
-                ColorByValue colorByValue = item.GetColorByValue();
+                var colorByValue = item.GetColorByValue();
                 if (colorByValue == null)
                 {
                     WindowMessage.ShowDialog(string.Format("Invalid one or more 'Color By Value' input."), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
-                    return;
+                    return false;
                 }
-                ColorsByValue.Add(colorByValue);
+                HudColorsByValueParams.ColorsByValue.Add(colorByValue);
             }
 
-            Saved = true;
-            Close();
+            return true;
+        }
+
+        private void Button_SaveAndClose_Click(object sender, RoutedEventArgs e)
+        {
+            if (CollectParams())
+            {
+                HudColorsByValueParams.Save();
+                Close();
+            }
         }
 
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
-            Saved = false;
             Close();
+        }
+
+        private void Button_Apply_Click(object sender, RoutedEventArgs e)
+        {
+            if (CollectParams())
+            {
+                HudColorsByValueParams.Save();
+            }
         }
     }
 }

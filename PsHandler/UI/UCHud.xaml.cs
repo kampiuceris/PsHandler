@@ -42,17 +42,17 @@ namespace PsHandler.UI
 
             // Seed
 
-            CheckBox_EnableHud.IsChecked = Config.EnableHud;
+            CheckBox_EnableHud.IsChecked = Config.HudEnable;
 
             // Hook
 
             CheckBox_EnableHud.Checked += (sender, args) =>
             {
-                Config.EnableHud = true;
+                Config.HudEnable = true;
             };
             CheckBox_EnableHud.Unchecked += (sender, args) =>
             {
-                Config.EnableHud = false;
+                Config.HudEnable = false;
             };
 
 

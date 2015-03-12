@@ -1,7 +1,7 @@
 ﻿<Window x:Class="PsHandler.Hud.WindowCustomizeColorsByValue"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Customize Colors By Value" Background="#FFF0F0F0" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize" Icon="../Images/PsHandler.ico">
+        Title="Customize Colors By Value" Background="#FFF0F0F0" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize" Icon="../Images/PsHandler.ico" MinWidth="275" Width="0" UseLayoutRounding="True">
     <Grid Margin="10">
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
@@ -20,16 +20,22 @@
             </Button>
             <Separator Height="8"/>
             <Grid>
-                <Button Margin="0,0,115,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="130" x:Name="Button_SaveAndClose" Click="Button_SaveAndClose_Click" >
+                <Button Margin="0,0,160,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" x:Name="Button_SaveAndClose" Click="Button_SaveAndClose_Click" >
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/accept.png" />
-                        <TextBlock Text="Save And Close" Margin="5,0,0,0" VerticalAlignment="Center" />
+                        <TextBlock Text="OK" Margin="5,0,0,0" VerticalAlignment="Center" />
                     </StackPanel>
                 </Button>
-                <Button Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" x:Name="Button_Close" Click="Button_Close_Click" >
+                <Button Margin="0,0,80,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" x:Name="Button_Close" Click="Button_Close_Click" >
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/cancel.png" />
                         <TextBlock Text="Cancel" Margin="5,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+                <Button HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" x:Name="Button_Apply" Click="Button_Apply_Click" >
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Image Height="16" Width="16" Source="/PsHandler;component/Images/Resources/Size16x16/accept.png" />
+                        <TextBlock Text="Apply" Margin="5,0,0,0" VerticalAlignment="Center" />
                     </StackPanel>
                 </Button>
             </Grid>

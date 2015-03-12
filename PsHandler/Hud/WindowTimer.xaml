@@ -6,8 +6,8 @@
         Title="" SizeToContent="WidthAndHeight"
         ShowInTaskbar="False" WindowStyle="None" 
         ResizeMode="NoResize" Focusable="False"
-        ui:GlassEffect.IsEnabled="true" Background="Transparent">
-    <Grid x:Name="StackPanelMain">
+        ui:GlassEffect.IsEnabled="true" Background="Transparent" UseLayoutRounding="True">
+    <Viewbox x:Name="Viewbox_Main">
         <hud:UCLabel x:Name="UCLabel_Main"/>
-    </Grid>
+    </Viewbox>
 </Window>
