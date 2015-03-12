@@ -748,7 +748,7 @@ namespace PsHandler
         public static IEnumerable<ExceptionPsHandler> LoadXml()
         {
             List<ExceptionPsHandler> exceptions = new List<ExceptionPsHandler>();
-            //try
+            try
             {
                 XDocument xDoc = XDocument.Load(CONFIG_FILENAME);
                 XElement root = xDoc.Element("Config");
@@ -953,9 +953,9 @@ namespace PsHandler
                 App.TableTileManager.FromXElement(root.Element("TableTiles"), ref exceptions, "LoadXml()");
                 App.PokerTypeManager.FromXElement(root.Element("PokerTypes"), ref exceptions, "LoadXml()");
             }
-            //catch (Exception e)
+            catch (Exception e)
             {
-                //exceptions.Add(new ExceptionPsHandler(e, "LoadXml() Main Exception"));
+                exceptions.Add(new ExceptionPsHandler(e, "LoadXml() Main Exception"));
             }
 
             App.PokerTypeManager.SeedDefaultValues();
