@@ -100,7 +100,7 @@ namespace PsHandler
 
         public static bool HudEnable = false;
 
-        public static bool HudTimerEnable = false;
+        public static bool HudTimerEnable = true;
         public static bool HudTimerLocationLocked = false;
         public static bool HudTimerShowTimer = true;
         public static bool HudTimerShowHandCount = false;
@@ -109,9 +109,9 @@ namespace PsHandler
         public static string HudTimerPokerTypeNotFound = "Poker Type not found";
         public static string HudTimerMultiplePokerTypes = "Multiple Poker Types";
 
-        public static bool HudBigBlindEnable = false;
+        public static bool HudBigBlindEnable = true;
         public static bool HudBigBlindLocationLocked = false;
-        public static bool HudBigBlindShowBB = false;
+        public static bool HudBigBlindShowBB = true;
         public static bool HudBigBlindShowAdjustedBB = false;
         public static bool HudBigBlindShowTournamentM = false;
         public static bool HudBigBlindMByPlayerCount = true;
@@ -764,19 +764,19 @@ namespace PsHandler
 
                 VersionControl(root, version);
 
-                GnuGplV3Agreement = GetBool(root, "GnuGplV3Agreement", ref exceptions, "LoadXml() GnuGplV3Agreement", false);
+                GnuGplV3Agreement = GetBool(root, "GnuGplV3Agreement", ref exceptions, "LoadXml() GnuGplV3Agreement", GnuGplV3Agreement);
 
                 #region Settings
 
-                MinimizeToSystemTray = GetBool(root, "MinimizeToSystemTray", ref exceptions, "LoadXml() MinimizeToSystemTray", false);
-                StartMinimized = GetBool(root, "StartMinimized", ref exceptions, "LoadXml() StartMinimized", false);
-                SaveGuiLocation = GetBool(root, "SaveGuiLocation", ref exceptions, "LoadXml() SaveGuiLocation", false);
-                GuiLocationX = GetInt(root, "GuiLocationX", ref exceptions, "LoadXml() GuiLocationX");
-                GuiLocationY = GetInt(root, "GuiLocationY", ref exceptions, "LoadXml() GuiLocationY");
-                SaveGuiSize = GetBool(root, "SaveGuiSize", ref exceptions, "LoadXml() SaveGuiSize", false);
-                GuiWidth = GetInt(root, "GuiWidth", ref exceptions, "LoadXml() GuiWidth", 600);
-                GuiHeight = GetInt(root, "GuiHeight", ref exceptions, "LoadXml() GuiHeight", 400);
-                HotkeyExit = KeyCombination.Parse(GetString(root, "HotkeyExit", ref exceptions, "LoadXml() HotkeyExit"));
+                MinimizeToSystemTray = GetBool(root, "MinimizeToSystemTray", ref exceptions, "LoadXml() MinimizeToSystemTray", MinimizeToSystemTray);
+                StartMinimized = GetBool(root, "StartMinimized", ref exceptions, "LoadXml() StartMinimized", StartMinimized);
+                SaveGuiLocation = GetBool(root, "SaveGuiLocation", ref exceptions, "LoadXml() SaveGuiLocation", SaveGuiLocation);
+                GuiLocationX = GetInt(root, "GuiLocationX", ref exceptions, "LoadXml() GuiLocationX", GuiLocationX);
+                GuiLocationY = GetInt(root, "GuiLocationY", ref exceptions, "LoadXml() GuiLocationY", GuiLocationY);
+                SaveGuiSize = GetBool(root, "SaveGuiSize", ref exceptions, "LoadXml() SaveGuiSize", SaveGuiSize);
+                GuiWidth = GetInt(root, "GuiWidth", ref exceptions, "LoadXml() GuiWidth", GuiWidth);
+                GuiHeight = GetInt(root, "GuiHeight", ref exceptions, "LoadXml() GuiHeight", GuiHeight);
+                HotkeyExit = KeyCombination.Parse(GetString(root, "HotkeyExit", ref exceptions, "LoadXml() HotkeyExit", HotkeyExit.ToString()));
                 PokerStarsThemeTable = PokerStarsThemeTable.Parse(GetString(root, "PokerStarsThemeTable", ref exceptions, "LoadXml() PokerStarsThemeTable", new PokerStarsThemesTable.Unknown().ToString()));
                 foreach (XElement xImportFolderPath in root.Elements("ImportFolderPaths").SelectMany(o => o.Elements("ImportFolderPath")))
                     if (!String.IsNullOrEmpty(xImportFolderPath.Value))
@@ -786,29 +786,29 @@ namespace PsHandler
 
                 #region Controller
 
-                AutoclickImBack = GetBool(root, "AutoclickImBack", ref exceptions, "LoadXml() AutoclickImBack", false);
-                AutoclickImBackDisableDuringBreaks = GetBool(root, "AutoclickImBackDisableDuringBreaks", ref exceptions, "LoadXml() AutoclickImBackDisableDuringBreaks", true);
-                AutoclickTimebank = GetBool(root, "AutoclickTimebank", ref exceptions, "LoadXml() AutoclickTimebank", false);
-                AutoclickYesSeatAvailable = GetBool(root, "AutoclickYesSeatAvailable", ref exceptions, "LoadXml() AutoclickYesSeatAvailable", false);
-                AutocloseTournamentRegistrationPopups = GetBool(root, "AutocloseTournamentRegistrationPopups", ref exceptions, "LoadXml() AutocloseTournamentRegistrationPopups", false);
-                AutocloseHM2ApplyToSimilarTablesPopups = GetBool(root, "AutocloseHM2ApplyToSimilarTablesPopups", ref exceptions, "LoadXml() AutocloseHM2ApplyToSimilarTablesPopups", false);
-                HotkeyHandReplay = KeyCombination.Parse(GetString(root, "HotkeyHandReplay", ref exceptions, "LoadXml() HotkeyHandReplay"));
-                HotkeyQuickPreview = KeyCombination.Parse(GetString(root, "HotkeyQuickPreview", ref exceptions, "LoadXml() HotkeyQuickPreview"));
+                AutoclickImBack = GetBool(root, "AutoclickImBack", ref exceptions, "LoadXml() AutoclickImBack", AutoclickImBack);
+                AutoclickImBackDisableDuringBreaks = GetBool(root, "AutoclickImBackDisableDuringBreaks", ref exceptions, "LoadXml() AutoclickImBackDisableDuringBreaks", AutoclickImBackDisableDuringBreaks);
+                AutoclickTimebank = GetBool(root, "AutoclickTimebank", ref exceptions, "LoadXml() AutoclickTimebank", AutoclickTimebank);
+                AutoclickYesSeatAvailable = GetBool(root, "AutoclickYesSeatAvailable", ref exceptions, "LoadXml() AutoclickYesSeatAvailable", AutoclickYesSeatAvailable);
+                AutocloseTournamentRegistrationPopups = GetBool(root, "AutocloseTournamentRegistrationPopups", ref exceptions, "LoadXml() AutocloseTournamentRegistrationPopups", AutocloseTournamentRegistrationPopups);
+                AutocloseHM2ApplyToSimilarTablesPopups = GetBool(root, "AutocloseHM2ApplyToSimilarTablesPopups", ref exceptions, "LoadXml() AutocloseHM2ApplyToSimilarTablesPopups", AutocloseHM2ApplyToSimilarTablesPopups);
+                HotkeyHandReplay = KeyCombination.Parse(GetString(root, "HotkeyHandReplay", ref exceptions, "LoadXml() HotkeyHandReplay", HotkeyHandReplay.ToString()));
+                HotkeyQuickPreview = KeyCombination.Parse(GetString(root, "HotkeyQuickPreview", ref exceptions, "LoadXml() HotkeyQuickPreview", HotkeyQuickPreview.ToString()));
 
                 #endregion
 
                 #region Randomizer
 
-                EnableRandomizer = GetBool(root, "EnableRandomizer", ref exceptions, "LoadXml() EnableRandomizer", false);
-                RandomizerChance10 = GetInt(root, "RandomizerChance10", ref exceptions, "LoadXml() RandomizerChance10", 10);
-                RandomizerChance20 = GetInt(root, "RandomizerChance20", ref exceptions, "LoadXml() RandomizerChance20", 20);
-                RandomizerChance30 = GetInt(root, "RandomizerChance30", ref exceptions, "LoadXml() RandomizerChance30", 30);
-                RandomizerChance40 = GetInt(root, "RandomizerChance40", ref exceptions, "LoadXml() RandomizerChance40", 40);
-                RandomizerChance50 = GetInt(root, "RandomizerChance50", ref exceptions, "LoadXml() RandomizerChance50", 50);
-                RandomizerChance60 = GetInt(root, "RandomizerChance60", ref exceptions, "LoadXml() RandomizerChance60", 60);
-                RandomizerChance70 = GetInt(root, "RandomizerChance70", ref exceptions, "LoadXml() RandomizerChance70", 70);
-                RandomizerChance80 = GetInt(root, "RandomizerChance80", ref exceptions, "LoadXml() RandomizerChance80", 80);
-                RandomizerChance90 = GetInt(root, "RandomizerChance90", ref exceptions, "LoadXml() RandomizerChance90", 90);
+                EnableRandomizer = GetBool(root, "EnableRandomizer", ref exceptions, "LoadXml() EnableRandomizer", EnableRandomizer);
+                RandomizerChance10 = GetInt(root, "RandomizerChance10", ref exceptions, "LoadXml() RandomizerChance10", RandomizerChance10);
+                RandomizerChance20 = GetInt(root, "RandomizerChance20", ref exceptions, "LoadXml() RandomizerChance20", RandomizerChance20);
+                RandomizerChance30 = GetInt(root, "RandomizerChance30", ref exceptions, "LoadXml() RandomizerChance30", RandomizerChance30);
+                RandomizerChance40 = GetInt(root, "RandomizerChance40", ref exceptions, "LoadXml() RandomizerChance40", RandomizerChance40);
+                RandomizerChance50 = GetInt(root, "RandomizerChance50", ref exceptions, "LoadXml() RandomizerChance50", RandomizerChance50);
+                RandomizerChance60 = GetInt(root, "RandomizerChance60", ref exceptions, "LoadXml() RandomizerChance60", RandomizerChance60);
+                RandomizerChance70 = GetInt(root, "RandomizerChance70", ref exceptions, "LoadXml() RandomizerChance70", RandomizerChance70);
+                RandomizerChance80 = GetInt(root, "RandomizerChance80", ref exceptions, "LoadXml() RandomizerChance80", RandomizerChance80);
+                RandomizerChance90 = GetInt(root, "RandomizerChance90", ref exceptions, "LoadXml() RandomizerChance90", RandomizerChance90);
                 HotkeyRandomizerChance10 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance10", ref exceptions, "LoadXml() HotkeyRandomizerChance10", new KeyCombination(Key.NumPad1, true, false, false).ToString()));
                 HotkeyRandomizerChance20 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance20", ref exceptions, "LoadXml() HotkeyRandomizerChance20", new KeyCombination(Key.NumPad2, true, false, false).ToString()));
                 HotkeyRandomizerChance30 = KeyCombination.Parse(GetString(root, "HotkeyRandomizerChance30", ref exceptions, "LoadXml() HotkeyRandomizerChance30", new KeyCombination(Key.NumPad3, true, false, false).ToString()));
@@ -823,59 +823,59 @@ namespace PsHandler
 
                 #region Hud
 
-                HudEnable = GetBool(root, "HudEnable", ref exceptions, "LoadXml() HudEnable", false);
+                HudEnable = GetBool(root, "HudEnable", ref exceptions, "LoadXml() HudEnable", HudEnable);
 
-                HudTimerEnable = GetBool(root, "HudTimerEnable", ref exceptions, "LoadXml() HudTimerEnable", false);
+                HudTimerEnable = GetBool(root, "HudTimerEnable", ref exceptions, "LoadXml() HudTimerEnable", HudTimerEnable);
 
-                HudTimerShowTimer = GetBool(root, "HudTimerShowTimer", ref exceptions, "LoadXml() HudTimerShowTimer", false);
-                HudTimerLocationLocked = GetBool(root, "HudTimerLocationLocked", ref exceptions, "LoadXml() HudTimerLocationLocked", false);
-                HudTimerShowHandCount = GetBool(root, "HudTimerShowHandCount", ref exceptions, "LoadXml() HudTimerShowHandCount", false);
-                HudTimerDiff = GetInt(root, "HudTimerDiff", ref exceptions, "LoadXml() HudTimerDiff", 0);
-                HudTimerHHNotFound = GetString(root, "HudTimerHHNotFound", ref exceptions, "LoadXml() HudTimerHHNotFound", "HH not found");
-                HudTimerPokerTypeNotFound = GetString(root, "HudTimerPokerTypeNotFound", ref exceptions, "LoadXml() HudTimerPokerTypeNotFound", "Poker Type not found");
-                HudTimerMultiplePokerTypes = GetString(root, "HudTimerMultiplePokerTypes", ref exceptions, "LoadXml() HudTimerMultiplePokerTypes", "Multiple Poker Types");
+                HudTimerShowTimer = GetBool(root, "HudTimerShowTimer", ref exceptions, "LoadXml() HudTimerShowTimer", HudTimerShowTimer);
+                HudTimerLocationLocked = GetBool(root, "HudTimerLocationLocked", ref exceptions, "LoadXml() HudTimerLocationLocked", HudTimerLocationLocked);
+                HudTimerShowHandCount = GetBool(root, "HudTimerShowHandCount", ref exceptions, "LoadXml() HudTimerShowHandCount", HudTimerShowHandCount);
+                HudTimerDiff = GetInt(root, "HudTimerDiff", ref exceptions, "LoadXml() HudTimerDiff", HudTimerDiff);
+                HudTimerHHNotFound = GetString(root, "HudTimerHHNotFound", ref exceptions, "LoadXml() HudTimerHHNotFound", HudTimerHHNotFound);
+                HudTimerPokerTypeNotFound = GetString(root, "HudTimerPokerTypeNotFound", ref exceptions, "LoadXml() HudTimerPokerTypeNotFound", HudTimerPokerTypeNotFound);
+                HudTimerMultiplePokerTypes = GetString(root, "HudTimerMultiplePokerTypes", ref exceptions, "LoadXml() HudTimerMultiplePokerTypes", HudTimerMultiplePokerTypes);
 
-                HudBigBlindEnable = GetBool(root, "HudBigBlindEnable", ref exceptions, "LoadXml() HudBigBlindEnable", false);
-                HudBigBlindLocationLocked = GetBool(root, "HudBigBlindLocationLocked", ref exceptions, "LoadXml() HudBigBlindLocationLocked", false);
-                HudBigBlindShowBB = GetBool(root, "HudBigBlindShowBB", ref exceptions, "LoadXml() HudBigBlindShowBB", false);
-                HudBigBlindShowAdjustedBB = GetBool(root, "HudBigBlindShowAdjustedBB", ref exceptions, "LoadXml() HudBigBlindShowAdjustedBB", false);
-                HudBigBlindShowTournamentM = GetBool(root, "HudBigBlindShowTournamentM", ref exceptions, "LoadXml() HudBigBlindShowTournamentM", false);
-                HudBigBlindMByPlayerCount = GetBool(root, "HudBigBlindMByPlayerCount", ref exceptions, "LoadXml() HudBigBlindMByPlayerCount", true);
-                HudBigBlindMByTableSize = GetBool(root, "HudBigBlindMByTableSize", ref exceptions, "LoadXml() HudBigBlindMByTableSize", false);
-                HudBigBlindShowForOpponents = GetBool(root, "HudBigBlindShowForOpponents", ref exceptions, "LoadXml() HudBigBlindShowForOpponents", true);
-                HudBigBlindShowForHero = GetBool(root, "HudBigBlindShowForHero", ref exceptions, "LoadXml() HudBigBlindShowForHero", true);
-                HudBigBlindDecimals = GetInt(root, "HudBigBlindDecimals", ref exceptions, "LoadXml() HudBigBlindDecimals", 0);
-                HudBigBlindHHNotFound = GetString(root, "HudBigBlindHHNotFound", ref exceptions, "LoadXml() HudBigBlindHHNotFound", "X");
-                HudBigBlindPrefix = GetString(root, "HudBigBlindPrefix", ref exceptions, "LoadXml() HudBigBlindPrefix", "");
-                HudBigBlindPostfix = GetString(root, "HudBigBlindPostfix", ref exceptions, "LoadXml() HudBigBlindPostfix", "");
+                HudBigBlindEnable = GetBool(root, "HudBigBlindEnable", ref exceptions, "LoadXml() HudBigBlindEnable", HudBigBlindEnable);
+                HudBigBlindLocationLocked = GetBool(root, "HudBigBlindLocationLocked", ref exceptions, "LoadXml() HudBigBlindLocationLocked", HudBigBlindLocationLocked);
+                HudBigBlindShowBB = GetBool(root, "HudBigBlindShowBB", ref exceptions, "LoadXml() HudBigBlindShowBB", HudBigBlindShowBB);
+                HudBigBlindShowAdjustedBB = GetBool(root, "HudBigBlindShowAdjustedBB", ref exceptions, "LoadXml() HudBigBlindShowAdjustedBB", HudBigBlindShowAdjustedBB);
+                HudBigBlindShowTournamentM = GetBool(root, "HudBigBlindShowTournamentM", ref exceptions, "LoadXml() HudBigBlindShowTournamentM", HudBigBlindShowTournamentM);
+                HudBigBlindMByPlayerCount = GetBool(root, "HudBigBlindMByPlayerCount", ref exceptions, "LoadXml() HudBigBlindMByPlayerCount", HudBigBlindMByPlayerCount);
+                HudBigBlindMByTableSize = GetBool(root, "HudBigBlindMByTableSize", ref exceptions, "LoadXml() HudBigBlindMByTableSize", HudBigBlindMByTableSize);
+                HudBigBlindShowForOpponents = GetBool(root, "HudBigBlindShowForOpponents", ref exceptions, "LoadXml() HudBigBlindShowForOpponents", HudBigBlindShowForOpponents);
+                HudBigBlindShowForHero = GetBool(root, "HudBigBlindShowForHero", ref exceptions, "LoadXml() HudBigBlindShowForHero", HudBigBlindShowForHero);
+                HudBigBlindDecimals = GetInt(root, "HudBigBlindDecimals", ref exceptions, "LoadXml() HudBigBlindDecimals", HudBigBlindDecimals);
+                HudBigBlindHHNotFound = GetString(root, "HudBigBlindHHNotFound", ref exceptions, "LoadXml() HudBigBlindHHNotFound", HudBigBlindHHNotFound);
+                HudBigBlindPrefix = GetString(root, "HudBigBlindPrefix", ref exceptions, "LoadXml() HudBigBlindPrefix", HudBigBlindPrefix);
+                HudBigBlindPostfix = GetString(root, "HudBigBlindPostfix", ref exceptions, "LoadXml() HudBigBlindPostfix", HudBigBlindPostfix);
 
                 #endregion
 
                 #region Hud Design
 
-                HudTimerBackground = GetColor(root, "HudTimerBackground", ref exceptions, "LoadXml() HudTimerBackground", Colors.Black);
-                HudTimerForeground = GetColor(root, "HudTimerForeground", ref exceptions, "LoadXml() HudTimerForeground", Colors.White);
-                HudTimerFontFamily = GetFontFamily(root, "HudTimerFontFamily", ref exceptions, "LoadXml() HudTimerFontFamily", new FontFamily("Consolas"));
-                HudTimerFontWeight = GetFontWeight(root, "HudTimerFontWeight", ref exceptions, "LoadXml() HudTimerFontWeight", FontWeights.Normal);
-                HudTimerFontStyle = GetFontStyle(root, "HudTimerFontStyle", ref exceptions, "LoadXml() HudTimerFontStyle", FontStyles.Normal);
-                HudTimerFontSize = GetDouble(root, "HudTimerFontSize", ref exceptions, "LoadXml() HudTimerFontSize", 15);
-                HudTimerMargin = GetThickness(root, "HudTimerMargin", ref exceptions, "LoadXml() HudTimerMargin", new Thickness(2, 2, 2, 2));
+                HudTimerBackground = GetColor(root, "HudTimerBackground", ref exceptions, "LoadXml() HudTimerBackground", HudTimerBackground);
+                HudTimerForeground = GetColor(root, "HudTimerForeground", ref exceptions, "LoadXml() HudTimerForeground", HudTimerForeground);
+                HudTimerFontFamily = GetFontFamily(root, "HudTimerFontFamily", ref exceptions, "LoadXml() HudTimerFontFamily", HudTimerFontFamily);
+                HudTimerFontWeight = GetFontWeight(root, "HudTimerFontWeight", ref exceptions, "LoadXml() HudTimerFontWeight", HudTimerFontWeight);
+                HudTimerFontStyle = GetFontStyle(root, "HudTimerFontStyle", ref exceptions, "LoadXml() HudTimerFontStyle", HudTimerFontStyle);
+                HudTimerFontSize = GetDouble(root, "HudTimerFontSize", ref exceptions, "LoadXml() HudTimerFontSize", HudTimerFontSize);
+                HudTimerMargin = GetThickness(root, "HudTimerMargin", ref exceptions, "LoadXml() HudTimerMargin", HudTimerMargin);
 
-                HudBigBlindOpponentsBackground = GetColor(root, "HudBigBlindOpponentsBackground", ref exceptions, "LoadXml() HudBigBlindOpponentsBackground", Colors.Black);
-                HudBigBlindOpponentsForeground = GetColor(root, "HudBigBlindOpponentsForeground", ref exceptions, "LoadXml() HudBigBlindOpponentsForeground", Colors.White);
-                HudBigBlindOpponentsFontFamily = GetFontFamily(root, "HudBigBlindOpponentsFontFamily", ref exceptions, "LoadXml() HudBigBlindOpponentsFontFamily", new FontFamily("Consolas"));
-                HudBigBlindOpponentsFontWeight = GetFontWeight(root, "HudBigBlindOpponentsFontWeight", ref exceptions, "LoadXml() HudBigBlindOpponentsFontWeight", FontWeights.Normal);
-                HudBigBlindOpponentsFontStyle = GetFontStyle(root, "HudBigBlindOpponentsFontStyle", ref exceptions, "LoadXml() HudBigBlindOpponentsFontStyle", FontStyles.Normal);
-                HudBigBlindOpponentsFontSize = GetDouble(root, "HudBigBlindOpponentsFontSize", ref exceptions, "LoadXml() HudBigBlindOpponentsFontSize", 25);
-                HudBigBlindOpponentsMargin = GetThickness(root, "HudBigBlindOpponentsMargin", ref exceptions, "LoadXml() HudBigBlindOpponentsMargin", new Thickness(2, 2, 2, 2));
+                HudBigBlindOpponentsBackground = GetColor(root, "HudBigBlindOpponentsBackground", ref exceptions, "LoadXml() HudBigBlindOpponentsBackground", HudBigBlindOpponentsBackground);
+                HudBigBlindOpponentsForeground = GetColor(root, "HudBigBlindOpponentsForeground", ref exceptions, "LoadXml() HudBigBlindOpponentsForeground", HudBigBlindOpponentsForeground);
+                HudBigBlindOpponentsFontFamily = GetFontFamily(root, "HudBigBlindOpponentsFontFamily", ref exceptions, "LoadXml() HudBigBlindOpponentsFontFamily", HudBigBlindOpponentsFontFamily);
+                HudBigBlindOpponentsFontWeight = GetFontWeight(root, "HudBigBlindOpponentsFontWeight", ref exceptions, "LoadXml() HudBigBlindOpponentsFontWeight", HudBigBlindOpponentsFontWeight);
+                HudBigBlindOpponentsFontStyle = GetFontStyle(root, "HudBigBlindOpponentsFontStyle", ref exceptions, "LoadXml() HudBigBlindOpponentsFontStyle", HudBigBlindOpponentsFontStyle);
+                HudBigBlindOpponentsFontSize = GetDouble(root, "HudBigBlindOpponentsFontSize", ref exceptions, "LoadXml() HudBigBlindOpponentsFontSize", HudBigBlindOpponentsFontSize);
+                HudBigBlindOpponentsMargin = GetThickness(root, "HudBigBlindOpponentsMargin", ref exceptions, "LoadXml() HudBigBlindOpponentsMargin", HudBigBlindOpponentsMargin);
 
-                HudBigBlindHeroBackground = GetColor(root, "HudBigBlindHeroBackground", ref exceptions, "LoadXml() HudBigBlindHeroBackground", Colors.Black);
-                HudBigBlindHeroForeground = GetColor(root, "HudBigBlindHeroForeground", ref exceptions, "LoadXml() HudBigBlindHeroForeground", Colors.White);
-                HudBigBlindHeroFontFamily = GetFontFamily(root, "HudBigBlindHeroFontFamily", ref exceptions, "LoadXml() HudBigBlindHeroFontFamily", new FontFamily("Consolas"));
-                HudBigBlindHeroFontWeight = GetFontWeight(root, "HudBigBlindHeroFontWeight", ref exceptions, "LoadXml() HudBigBlindHeroFontWeight", FontWeights.Normal);
-                HudBigBlindHeroFontStyle = GetFontStyle(root, "HudBigBlindHeroFontStyle", ref exceptions, "LoadXml() HudBigBlindHeroFontStyle", FontStyles.Normal);
-                HudBigBlindHeroFontSize = GetDouble(root, "HudBigBlindHeroFontSize", ref exceptions, "LoadXml() HudBigBlindHeroFontSize", 25);
-                HudBigBlindHeroMargin = GetThickness(root, "HudBigBlindHeroMargin", ref exceptions, "LoadXml() HudBigBlindHeroMargin", new Thickness(2, 2, 2, 2));
+                HudBigBlindHeroBackground = GetColor(root, "HudBigBlindHeroBackground", ref exceptions, "LoadXml() HudBigBlindHeroBackground", HudBigBlindHeroBackground);
+                HudBigBlindHeroForeground = GetColor(root, "HudBigBlindHeroForeground", ref exceptions, "LoadXml() HudBigBlindHeroForeground", HudBigBlindHeroForeground);
+                HudBigBlindHeroFontFamily = GetFontFamily(root, "HudBigBlindHeroFontFamily", ref exceptions, "LoadXml() HudBigBlindHeroFontFamily", HudBigBlindHeroFontFamily);
+                HudBigBlindHeroFontWeight = GetFontWeight(root, "HudBigBlindHeroFontWeight", ref exceptions, "LoadXml() HudBigBlindHeroFontWeight", HudBigBlindHeroFontWeight);
+                HudBigBlindHeroFontStyle = GetFontStyle(root, "HudBigBlindHeroFontStyle", ref exceptions, "LoadXml() HudBigBlindHeroFontStyle", HudBigBlindHeroFontStyle);
+                HudBigBlindHeroFontSize = GetDouble(root, "HudBigBlindHeroFontSize", ref exceptions, "LoadXml() HudBigBlindHeroFontSize", HudBigBlindHeroFontSize);
+                HudBigBlindHeroMargin = GetThickness(root, "HudBigBlindHeroMargin", ref exceptions, "LoadXml() HudBigBlindHeroMargin", HudBigBlindHeroMargin);
 
                 foreach (XElement element in GetXElement(root, "HudBigBlindOpponentsColorsByValue", ref exceptions, "LoadXml() HudBigBlindOpponentsColorsByValue", new XElement("HudBigBlindOpponentsColorsByValue")).Elements("ColorByValue"))
                 {
@@ -896,10 +896,10 @@ namespace PsHandler
 
                 #endregion
 
-                EnableTableTiler = GetBool(root, "EnableTableTiler", ref exceptions, "LoadXml() EnableTableTiler", false);
+                EnableTableTiler = GetBool(root, "EnableTableTiler", ref exceptions, "LoadXml() EnableTableTiler", EnableTableTiler);
                 AutoTileCheckingTimeMs = GetInt(root, "AutoTileCheckingTimeMs", ref exceptions, "LoadXml() AutoTileCheckingTimeMs", 3000);
 
-                //
+                #region Preferred Seat / Hud Timer+BigBlind LocationsXY
 
                 for (int tableSize = 0; tableSize < 11; tableSize++)
                 {
@@ -936,7 +936,7 @@ namespace PsHandler
                     }
                 }
 
-                //
+                #endregion
 
                 App.TableTileManager.FromXElement(root.Element("TableTiles"), ref exceptions, "LoadXml()");
                 App.PokerTypeManager.FromXElement(root.Element("PokerTypes"), ref exceptions, "LoadXml()");
@@ -1093,10 +1093,10 @@ namespace PsHandler
 
                 #endregion
 
-                //
-
                 Set(root, "EnableTableTiler", EnableTableTiler, ref exceptions, "SaveXml() EnableTableTiler");
                 Set(root, "AutoTileCheckingTimeMs", AutoTileCheckingTimeMs, ref exceptions, "SaveXml() AutoTileCheckingTimeMs");
+
+                #region Preferred Seat / Hud Timer+BigBlind LocationsXY
 
                 for (int tableSize = 0; tableSize < 11; tableSize++)
                 {
@@ -1116,7 +1116,7 @@ namespace PsHandler
                     }
                 }
 
-                //
+                #endregion
 
                 root.Add(App.TableTileManager.ToXElement());
                 root.Add(App.PokerTypeManager.ToXElement());
