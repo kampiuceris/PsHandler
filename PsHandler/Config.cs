@@ -748,7 +748,7 @@ namespace PsHandler
         public static IEnumerable<ExceptionPsHandler> LoadXml()
         {
             List<ExceptionPsHandler> exceptions = new List<ExceptionPsHandler>();
-            try
+            //try
             {
                 XDocument xDoc = XDocument.Load(CONFIG_FILENAME);
                 XElement root = xDoc.Element("Config");
@@ -877,21 +877,33 @@ namespace PsHandler
                 HudBigBlindHeroFontSize = GetDouble(root, "HudBigBlindHeroFontSize", ref exceptions, "LoadXml() HudBigBlindHeroFontSize", HudBigBlindHeroFontSize);
                 HudBigBlindHeroMargin = GetThickness(root, "HudBigBlindHeroMargin", ref exceptions, "LoadXml() HudBigBlindHeroMargin", HudBigBlindHeroMargin);
 
-                foreach (XElement element in GetXElement(root, "HudBigBlindOpponentsColorsByValue", ref exceptions, "LoadXml() HudBigBlindOpponentsColorsByValue", new XElement("HudBigBlindOpponentsColorsByValue")).Elements("ColorByValue"))
+                try
                 {
-                    ColorByValue colorByValue = ColorByValue.FromXElement(element, ref exceptions, "LoadXml() ColorByValue");
-                    if (colorByValue != null)
+                    foreach (XElement element in GetXElement(root, "HudBigBlindOpponentsColorsByValue", ref exceptions, "LoadXml() HudBigBlindOpponentsColorsByValue", new XElement("HudBigBlindOpponentsColorsByValue")).Elements("ColorByValue"))
                     {
-                        HudBigBlindOpponentsColorsByValue.Add(colorByValue);
+                        ColorByValue colorByValue = ColorByValue.FromXElement(element, ref exceptions, "LoadXml() ColorByValue");
+                        if (colorByValue != null)
+                        {
+                            HudBigBlindOpponentsColorsByValue.Add(colorByValue);
+                        }
                     }
                 }
-                foreach (XElement element in GetXElement(root, "HudBigBlindHeroColorsByValue", ref exceptions, "LoadXml() HudBigBlindHeroColorsByValue", new XElement("HudBigBlindHeroColorsByValue")).Elements("ColorByValue"))
+                catch
                 {
-                    ColorByValue colorByValue = ColorByValue.FromXElement(element, ref exceptions, "LoadXml() ColorByValue");
-                    if (colorByValue != null)
+                }
+                try
+                {
+                    foreach (XElement element in GetXElement(root, "HudBigBlindHeroColorsByValue", ref exceptions, "LoadXml() HudBigBlindHeroColorsByValue", new XElement("HudBigBlindHeroColorsByValue")).Elements("ColorByValue"))
                     {
-                        HudBigBlindHeroColorsByValue.Add(colorByValue);
+                        ColorByValue colorByValue = ColorByValue.FromXElement(element, ref exceptions, "LoadXml() ColorByValue");
+                        if (colorByValue != null)
+                        {
+                            HudBigBlindHeroColorsByValue.Add(colorByValue);
+                        }
                     }
+                }
+                catch (Exception)
+                {
                 }
 
                 #endregion
@@ -908,9 +920,9 @@ namespace PsHandler
 
                 for (int tableSize = 0; tableSize < 11; tableSize++)
                 {
-                    var xy = GetString(root, string.Format("HudTimerLocationsXY_{0}", tableSize), ref exceptions, string.Format("LoadXml() HudTimerLocationsXY_{0}", tableSize), string.Format("{0} {1}", DefaultHudTimerLocationsX[tableSize], DefaultHudTimerLocationsY[tableSize])).Split(' ');
                     try
                     {
+                        var xy = GetString(root, string.Format("HudTimerLocationsXY_{0}", tableSize), ref exceptions, string.Format("LoadXml() HudTimerLocationsXY_{0}", tableSize), string.Format("{0} {1}", DefaultHudTimerLocationsX[tableSize], DefaultHudTimerLocationsY[tableSize])).Split(' ');
                         HudTimerLocationsX[tableSize] = double.Parse(xy[0]);
                         HudTimerLocationsY[tableSize] = double.Parse(xy[1]);
                     }
@@ -923,10 +935,10 @@ namespace PsHandler
                 {
                     for (int position = 0; position < 10; position++)
                     {
-                        var xy = GetString(root, string.Format("HudBigBlindLocationsXY_{0}_{1}", tableSize, position), ref exceptions, string.Format("LoadXml() HudBigBlindLocationsXY_{0}_{1}", tableSize, position),
-                            string.Format("{0} {1}", DefaultHudBigBlindLocationsX[tableSize][position], DefaultHudBigBlindLocationsX[tableSize][position])).Split(' ');
                         try
                         {
+                            var xy = GetString(root, string.Format("HudBigBlindLocationsXY_{0}_{1}", tableSize, position), ref exceptions, string.Format("LoadXml() HudBigBlindLocationsXY_{0}_{1}", tableSize, position),
+                                string.Format("{0} {1}", DefaultHudBigBlindLocationsX[tableSize][position], DefaultHudBigBlindLocationsX[tableSize][position])).Split(' ');
                             HudBigBlindLocationsX[tableSize][position] = double.Parse(xy[0]);
                             HudBigBlindLocationsY[tableSize][position] = double.Parse(xy[1]);
                         }
@@ -941,9 +953,9 @@ namespace PsHandler
                 App.TableTileManager.FromXElement(root.Element("TableTiles"), ref exceptions, "LoadXml()");
                 App.PokerTypeManager.FromXElement(root.Element("PokerTypes"), ref exceptions, "LoadXml()");
             }
-            catch (Exception e)
+            //catch (Exception e)
             {
-                exceptions.Add(new ExceptionPsHandler(e, "LoadXml() Main Exception"));
+                //exceptions.Add(new ExceptionPsHandler(e, "LoadXml() Main Exception"));
             }
 
             App.PokerTypeManager.SeedDefaultValues();
