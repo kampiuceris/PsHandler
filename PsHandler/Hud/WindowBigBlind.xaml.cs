@@ -92,6 +92,9 @@ namespace PsHandler.Hud
                 UCLabel_Main.SetFontWeight(Config.HudBigBlindOpponentsFontWeight);
                 UCLabel_Main.SetFontStyle(Config.HudBigBlindOpponentsFontStyle);
                 UCLabel_Main.SetMargin(Config.HudBigBlindOpponentsMargin);
+                UCLabel_Main.SetBorderBrush(Config.HudBigBlindOpponentsBorderBrush);
+                UCLabel_Main.SetBorderThickness(Config.HudBigBlindOpponentsBorderThickness);
+                UCLabel_Main.SetCornerRadius(Config.HudBigBlindOpponentsCornerRadius);
 
                 //UCLabel_Main.SetFontSize(Config.HudBigBlindOpponentsFontSize);
                 Viewbox_Main.Height = ((Config.HudBigBlindOpponentsFontSize + Config.HudBigBlindOpponentsMargin.Top + Config.HudBigBlindOpponentsMargin.Bottom) / 546.0) * Table.RectangleClient.Height;
@@ -104,6 +107,9 @@ namespace PsHandler.Hud
                 UCLabel_Main.SetFontWeight(Config.HudBigBlindHeroFontWeight);
                 UCLabel_Main.SetFontStyle(Config.HudBigBlindHeroFontStyle);
                 UCLabel_Main.SetMargin(Config.HudBigBlindHeroMargin);
+                UCLabel_Main.SetBorderBrush(Config.HudBigBlindHeroBorderBrush);
+                UCLabel_Main.SetBorderThickness(Config.HudBigBlindHeroBorderThickness);
+                UCLabel_Main.SetCornerRadius(Config.HudBigBlindHeroCornerRadius);
 
                 //UCLabel_Main.SetFontSize(Config.HudBigBlindHeroFontSize);
                 Viewbox_Main.Height = ((Config.HudBigBlindHeroFontSize + Config.HudBigBlindHeroMargin.Top + Config.HudBigBlindHeroMargin.Bottom) / 546.0) * Table.RectangleClient.Height;

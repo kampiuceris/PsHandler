@@ -520,6 +520,9 @@ namespace PsHandler
         public static FontStyle HudTimerFontStyle = FontStyles.Normal;
         public static double HudTimerFontSize = 15;
         public static Thickness HudTimerMargin = new Thickness(2, 2, 2, 2);
+        public static Color HudTimerBorderBrush = Colors.Transparent;
+        public static Thickness HudTimerBorderThickness = new Thickness(0, 0, 0, 0);
+        public static CornerRadius HudTimerCornerRadius = new CornerRadius(0, 0, 0, 0);
 
         public static Color HudBigBlindOpponentsBackground = Colors.Transparent;
         public static Color HudBigBlindOpponentsForeground = Colors.RoyalBlue;
@@ -528,6 +531,9 @@ namespace PsHandler
         public static FontStyle HudBigBlindOpponentsFontStyle = FontStyles.Normal;
         public static double HudBigBlindOpponentsFontSize = 25;
         public static Thickness HudBigBlindOpponentsMargin = new Thickness(2, 2, 2, 2);
+        public static Color HudBigBlindOpponentsBorderBrush = Colors.Transparent;
+        public static Thickness HudBigBlindOpponentsBorderThickness = new Thickness(0, 0, 0, 0);
+        public static CornerRadius HudBigBlindOpponentsCornerRadius = new CornerRadius(0, 0, 0, 0);
 
         public static Color HudBigBlindHeroBackground = Colors.Transparent;
         public static Color HudBigBlindHeroForeground = Colors.RoyalBlue;
@@ -536,6 +542,9 @@ namespace PsHandler
         public static FontStyle HudBigBlindHeroFontStyle = FontStyles.Normal;
         public static double HudBigBlindHeroFontSize = 25;
         public static Thickness HudBigBlindHeroMargin = new Thickness(2, 2, 2, 2);
+        public static Color HudBigBlindHeroBorderBrush = Colors.Transparent;
+        public static Thickness HudBigBlindHeroBorderThickness = new Thickness(0, 0, 0, 0);
+        public static CornerRadius HudBigBlindHeroCornerRadius = new CornerRadius(0, 0, 0, 0);
 
         public static List<ColorByValue> HudBigBlindOpponentsColorsByValue = new List<ColorByValue>();
         public static List<ColorByValue> HudBigBlindHeroColorsByValue = new List<ColorByValue>();
@@ -742,6 +751,20 @@ namespace PsHandler
             }
         }
 
+        private static CornerRadius GetCornerRadius(XElement xElement, string name, ref List<ExceptionPsHandler> exceptions, string exceptionHeader, CornerRadius defaultValue = default(CornerRadius))
+        {
+            try
+            {
+                var split = xElement.Element(name).Value.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
+                return new CornerRadius(int.Parse(split[0]), int.Parse(split[1]), int.Parse(split[2]), int.Parse(split[3]));
+            }
+            catch (Exception e)
+            {
+                exceptions.Add(new ExceptionPsHandler(e, exceptionHeader));
+                return defaultValue;
+            }
+        }
+
         #endregion
 
         //
@@ -861,6 +884,9 @@ namespace PsHandler
                 HudTimerFontStyle = GetFontStyle(root, "HudTimerFontStyle", ref exceptions, "LoadXml() HudTimerFontStyle", HudTimerFontStyle);
                 HudTimerFontSize = GetDouble(root, "HudTimerFontSize", ref exceptions, "LoadXml() HudTimerFontSize", HudTimerFontSize);
                 HudTimerMargin = GetThickness(root, "HudTimerMargin", ref exceptions, "LoadXml() HudTimerMargin", HudTimerMargin);
+                HudTimerBorderBrush = GetColor(root, "HudTimerBorderBrush", ref exceptions, "LoadXml() HudTimerBorderBrush", HudTimerBorderBrush);
+                HudTimerBorderThickness = GetThickness(root, "HudTimerBorderThickness", ref exceptions, "LoadXml() HudTimerBorderThickness", HudTimerBorderThickness);
+                HudTimerCornerRadius = GetCornerRadius(root, "HudTimerCornerRadius", ref exceptions, "LoadXml() HudTimerCornerRadius", HudTimerCornerRadius);
 
                 HudBigBlindOpponentsBackground = GetColor(root, "HudBigBlindOpponentsBackground", ref exceptions, "LoadXml() HudBigBlindOpponentsBackground", HudBigBlindOpponentsBackground);
                 HudBigBlindOpponentsForeground = GetColor(root, "HudBigBlindOpponentsForeground", ref exceptions, "LoadXml() HudBigBlindOpponentsForeground", HudBigBlindOpponentsForeground);
@@ -869,6 +895,9 @@ namespace PsHandler
                 HudBigBlindOpponentsFontStyle = GetFontStyle(root, "HudBigBlindOpponentsFontStyle", ref exceptions, "LoadXml() HudBigBlindOpponentsFontStyle", HudBigBlindOpponentsFontStyle);
                 HudBigBlindOpponentsFontSize = GetDouble(root, "HudBigBlindOpponentsFontSize", ref exceptions, "LoadXml() HudBigBlindOpponentsFontSize", HudBigBlindOpponentsFontSize);
                 HudBigBlindOpponentsMargin = GetThickness(root, "HudBigBlindOpponentsMargin", ref exceptions, "LoadXml() HudBigBlindOpponentsMargin", HudBigBlindOpponentsMargin);
+                HudBigBlindOpponentsBorderBrush = GetColor(root, "HudBigBlindOpponentsBorderBrush", ref exceptions, "LoadXml() HudBigBlindOpponentsBorderBrush", HudBigBlindOpponentsBorderBrush);
+                HudBigBlindOpponentsBorderThickness = GetThickness(root, "HudBigBlindOpponentsBorderThickness", ref exceptions, "LoadXml() HudBigBlindOpponentsBorderThickness", HudBigBlindOpponentsBorderThickness);
+                HudBigBlindOpponentsCornerRadius = GetCornerRadius(root, "HudBigBlindOpponentsCornerRadius", ref exceptions, "LoadXml() HudBigBlindOpponentsCornerRadius", HudBigBlindOpponentsCornerRadius);
 
                 HudBigBlindHeroBackground = GetColor(root, "HudBigBlindHeroBackground", ref exceptions, "LoadXml() HudBigBlindHeroBackground", HudBigBlindHeroBackground);
                 HudBigBlindHeroForeground = GetColor(root, "HudBigBlindHeroForeground", ref exceptions, "LoadXml() HudBigBlindHeroForeground", HudBigBlindHeroForeground);
@@ -877,6 +906,9 @@ namespace PsHandler
                 HudBigBlindHeroFontStyle = GetFontStyle(root, "HudBigBlindHeroFontStyle", ref exceptions, "LoadXml() HudBigBlindHeroFontStyle", HudBigBlindHeroFontStyle);
                 HudBigBlindHeroFontSize = GetDouble(root, "HudBigBlindHeroFontSize", ref exceptions, "LoadXml() HudBigBlindHeroFontSize", HudBigBlindHeroFontSize);
                 HudBigBlindHeroMargin = GetThickness(root, "HudBigBlindHeroMargin", ref exceptions, "LoadXml() HudBigBlindHeroMargin", HudBigBlindHeroMargin);
+                HudBigBlindHeroBorderBrush = GetColor(root, "HudBigBlindHeroBorderBrush", ref exceptions, "LoadXml() HudBigBlindHeroBorderBrush", HudBigBlindHeroBorderBrush);
+                HudBigBlindHeroBorderThickness = GetThickness(root, "HudBigBlindHeroBorderThickness", ref exceptions, "LoadXml() HudBigBlindHeroBorderThickness", HudBigBlindHeroBorderThickness);
+                HudBigBlindHeroCornerRadius = GetCornerRadius(root, "HudBigBlindHeroCornerRadius", ref exceptions, "LoadXml() HudBigBlindHeroCornerRadius", HudBigBlindHeroCornerRadius);
 
                 try
                 {
@@ -1074,6 +1106,9 @@ namespace PsHandler
                 Set(root, "HudTimerFontStyle", HudTimerFontStyle, ref exceptions, "SaveXml() HudTimerFontStyle");
                 Set(root, "HudTimerFontSize", HudTimerFontSize, ref exceptions, "SaveXml() HudTimerFontSize");
                 Set(root, "HudTimerMargin", HudTimerMargin, ref exceptions, "SaveXml() HudTimerMargin");
+                Set(root, "HudTimerBorderBrush", HudTimerBorderBrush, ref exceptions, "SaveXml() HudTimerBorderBrush");
+                Set(root, "HudTimerBorderThickness", HudTimerBorderThickness, ref exceptions, "SaveXml() HudTimerBorderThickness");
+                Set(root, "HudTimerCornerRadius", HudTimerCornerRadius, ref exceptions, "SaveXml() HudTimerCornerRadius");
 
                 Set(root, "HudBigBlindOpponentsBackground", HudBigBlindOpponentsBackground, ref exceptions, "SaveXml() HudBigBlindOpponentsBackground");
                 Set(root, "HudBigBlindOpponentsForeground", HudBigBlindOpponentsForeground, ref exceptions, "SaveXml() HudBigBlindOpponentsForeground");
@@ -1082,6 +1117,9 @@ namespace PsHandler
                 Set(root, "HudBigBlindOpponentsFontStyle", HudBigBlindOpponentsFontStyle, ref exceptions, "SaveXml() HudBigBlindOpponentsFontStyle");
                 Set(root, "HudBigBlindOpponentsFontSize", HudBigBlindOpponentsFontSize, ref exceptions, "SaveXml() HudBigBlindOpponentsFontSize");
                 Set(root, "HudBigBlindOpponentsMargin", HudBigBlindOpponentsMargin, ref exceptions, "SaveXml() HudBigBlindOpponentsMargin");
+                Set(root, "HudBigBlindOpponentsBorderBrush", HudBigBlindOpponentsBorderBrush, ref exceptions, "SaveXml() HudBigBlindOpponentsBorderBrush");
+                Set(root, "HudBigBlindOpponentsBorderThickness", HudBigBlindOpponentsBorderThickness, ref exceptions, "SaveXml() HudBigBlindOpponentsBorderThickness");
+                Set(root, "HudBigBlindOpponentsCornerRadius", HudBigBlindOpponentsCornerRadius, ref exceptions, "SaveXml() HudBigBlindOpponentsCornerRadius");
 
                 Set(root, "HudBigBlindHeroBackground", HudBigBlindHeroBackground, ref exceptions, "SaveXml() HudBigBlindHeroBackground");
                 Set(root, "HudBigBlindHeroForeground", HudBigBlindHeroForeground, ref exceptions, "SaveXml() HudBigBlindHeroForeground");
@@ -1090,6 +1128,9 @@ namespace PsHandler
                 Set(root, "HudBigBlindHeroFontStyle", HudBigBlindHeroFontStyle, ref exceptions, "SaveXml() HudBigBlindHeroFontStyle");
                 Set(root, "HudBigBlindHeroFontSize", HudBigBlindHeroFontSize, ref exceptions, "SaveXml() HudBigBlindHeroFontSize");
                 Set(root, "HudBigBlindHeroMargin", HudBigBlindHeroMargin, ref exceptions, "SaveXml() HudBigBlindHeroMargin");
+                Set(root, "HudBigBlindHeroBorderBrush", HudBigBlindHeroBorderBrush, ref exceptions, "SaveXml() HudBigBlindHeroBorderBrush");
+                Set(root, "HudBigBlindHeroBorderThickness", HudBigBlindHeroBorderThickness, ref exceptions, "SaveXml() HudBigBlindHeroBorderThickness");
+                Set(root, "HudBigBlindHeroCornerRadius", HudBigBlindHeroCornerRadius, ref exceptions, "SaveXml() HudBigBlindHeroCornerRadius");
 
                 XElement xBigBlindOpponentsColorsByValue = new XElement("HudBigBlindOpponentsColorsByValue");
                 root.Add(xBigBlindOpponentsColorsByValue);
@@ -1181,6 +1222,8 @@ namespace PsHandler
 
             return exceptions;
         }
+
+        //
 
         private static void CollectRecentColors()
         {

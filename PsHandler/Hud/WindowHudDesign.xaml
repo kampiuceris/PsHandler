@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:PsHandler.Hud"
         xmlns:colorPicker="clr-namespace:PsHandler.ColorPicker"
         x:Class="PsHandler.Hud.WindowHudDesign"
-        Title="Customize" Icon="../Images/PsHandler.ico" Width="238" Height="475" MinWidth="275" MinHeight="350"
+        Title="Customize" Icon="../Images/PsHandler.ico" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize" MinWidth="275" MinHeight="350"
         UseLayoutRounding="True" Background="#FFF0F0F0" >
     <Grid Margin="10">
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="0,0,0,0" VerticalContentAlignment="Center" Padding="0" Content="Background:" />
@@ -13,36 +13,43 @@
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="0,81,0,0" VerticalContentAlignment="Center" Padding="0" Content="Font Weight:" />
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="0,108,0,0" VerticalContentAlignment="Center" Padding="0" Content="Font Style:" />
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="0,135,0,0" VerticalContentAlignment="Center" Padding="0" Content="Font Size:" />
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="170" Margin="0,162,0,0" VerticalContentAlignment="Center" Padding="0" Content="Margin (Left Top Right Bottom):" />
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="0,162,0,0" VerticalContentAlignment="Center" Padding="0" Content="Margin:" />
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="0,189,0,0" VerticalContentAlignment="Center" Padding="0" Content="Border Brush:" />
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="0,216,0,0" VerticalContentAlignment="Center" Padding="0" Content="Border Thickness:" />
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="0,243,0,0" VerticalContentAlignment="Center" Padding="0" Content="Corner Radius:" />
+
         <colorPicker:UcColorPreview VerticalAlignment="Top" Height="22" Margin="105,0,0,0" x:Name="UcColorPreview_Background" />
         <colorPicker:UcColorPreview VerticalAlignment="Top" Height="22" Margin="105,27,0,0" x:Name="UcColorPreview_Foreground" />
         <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Margin="105,54,0,0" VerticalContentAlignment="Center" x:Name="ComboBox_FontFamily" />
         <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Margin="105,81,0,0" VerticalContentAlignment="Center" x:Name="ComboBox_FontWeight" />
         <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Margin="105,108,0,0" VerticalContentAlignment="Center" x:Name="ComboBox_FontStyle" />
         <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Margin="105,135,0,0" VerticalContentAlignment="Center" TextWrapping="NoWrap" x:Name="TextBox_FontSize" />
-        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Margin="175,162,0,0" VerticalContentAlignment="Center" TextWrapping="NoWrap" x:Name="TextBox_Margin" Text="" />
+        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Margin="105,162,0,0" VerticalContentAlignment="Center" TextWrapping="NoWrap" x:Name="TextBox_Margin" Text="" />
+        <colorPicker:UcColorPreview VerticalAlignment="Top" Height="22" Margin="105,189,0,0" x:Name="UcColorPreview_BorderBrush" />
+        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Margin="105,216,0,0" VerticalContentAlignment="Center" TextWrapping="NoWrap" x:Name="TextBox_BorderThickness" Text="" />
+        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Margin="105,243,0,0" VerticalContentAlignment="Center" TextWrapping="NoWrap" x:Name="TextBox_CornerRadius" Text="" />
 
-        <Separator HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="8" Margin="0,189,0,0"/>
-        <Grid HorizontalAlignment="Stretch" Margin="0,202,0,42" >
+        <Separator HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="8" Margin="0,265,0,0"/>
+        <Grid HorizontalAlignment="Stretch" Margin="0,278,0,-34" Height="180" VerticalAlignment="Top" >
             <local:UCLabel HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="UCLabel_Preview" />
         </Grid>
-        <Separator HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="8" Margin="0,0,0,29"/>
+        <Separator HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="8" Margin="0,458,0,0"/>
 
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
-            <Button Margin="0,0,160,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" x:Name="Button_OK" Click="Button_OK_Click">
-                <StackPanel Orientation="Horizontal" Margin="2">
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,466,0,0">
+            <Button Margin="0,0,160,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Height="22" x:Name="Button_OK" Click="Button_OK_Click">
+                <StackPanel Orientation="Horizontal" Margin="0">
                     <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/accept.png" />
                     <TextBlock Text="OK" Margin="5,0,0,0" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" x:Name="Button_Close" Click="Button_Close_Click" Margin="0,0,80,0">
-                <StackPanel Orientation="Horizontal" Margin="2">
+            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Height="22" x:Name="Button_Close" Click="Button_Close_Click" Margin="0,0,80,0">
+                <StackPanel Orientation="Horizontal" Margin="0">
                     <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/cancel.png" />
                     <TextBlock Text="Cancel" Margin="5,0,0,0" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" x:Name="Button_Apply" Click="Button_Apply_Click">
-                <StackPanel Orientation="Horizontal" Margin="2">
+            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Height="22" x:Name="Button_Apply" Click="Button_Apply_Click">
+                <StackPanel Orientation="Horizontal" Margin="0">
                     <Image Height="16" Width="16" Source="/PsHandler;component/Images/Resources/Size16x16/accept.png" />
                     <TextBlock Text="Apply" Margin="5,0,0,0" VerticalAlignment="Center" />
                 </StackPanel>

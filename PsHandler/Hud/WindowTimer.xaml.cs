@@ -77,6 +77,9 @@ namespace PsHandler.Hud
             UCLabel_Main.SetFontWeight(Config.HudTimerFontWeight);
             UCLabel_Main.SetFontStyle(Config.HudTimerFontStyle);
             UCLabel_Main.SetMargin(Config.HudTimerMargin);
+            UCLabel_Main.SetBorderBrush(Config.HudTimerBorderBrush);
+            UCLabel_Main.SetBorderThickness(Config.HudTimerBorderThickness);
+            UCLabel_Main.SetCornerRadius(Config.HudTimerCornerRadius);
 
             //UCLabel_Main.SetFontSize(Config.HudTimerFontSize);
             Viewbox_Main.Height = ((Config.HudTimerFontSize + Config.HudTimerMargin.Top + Config.HudTimerMargin.Bottom) / 546.0) * Table.RectangleClient.Height;

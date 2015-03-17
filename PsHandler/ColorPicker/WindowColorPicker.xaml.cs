@@ -44,6 +44,8 @@ namespace PsHandler.ColorPicker
         private void Button_OK_Click(object sender, RoutedEventArgs e)
         {
             Color = UcColorPicker_Main.ColorARGBHSV.ColorMedia;
+            if (Color.A == 0) Color = Colors.Transparent;
+
             UcColorPicker.AddRecentColor(Color);
             Saved = true;
             Close();

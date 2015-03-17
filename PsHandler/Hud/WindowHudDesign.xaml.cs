@@ -45,6 +45,9 @@ namespace PsHandler.Hud
         public FontStyle FontStyle;
         public double FontSize;
         public Thickness Margin;
+        public Color BorderBrush;
+        public Thickness BorderThickness;
+        public CornerRadius CornerRadius;
 
         public HudCustomizeParams(HudCustomizeType hudCustomizeType)
         {
@@ -68,6 +71,9 @@ namespace PsHandler.Hud
                     FontStyle = Config.HudTimerFontStyle;
                     FontSize = Config.HudTimerFontSize;
                     Margin = Config.HudTimerMargin;
+                    BorderBrush = Config.HudTimerBorderBrush;
+                    BorderThickness = Config.HudTimerBorderThickness;
+                    CornerRadius = Config.HudTimerCornerRadius;
                     break;
                 case HudCustomizeType.HudBigBlindOpponents:
                     PreviewText = previewTextBB;
@@ -78,6 +84,9 @@ namespace PsHandler.Hud
                     FontStyle = Config.HudBigBlindOpponentsFontStyle;
                     FontSize = Config.HudBigBlindOpponentsFontSize;
                     Margin = Config.HudBigBlindOpponentsMargin;
+                    BorderBrush = Config.HudBigBlindOpponentsBorderBrush;
+                    BorderThickness = Config.HudBigBlindOpponentsBorderThickness;
+                    CornerRadius = Config.HudBigBlindOpponentsCornerRadius;
                     break;
                 case HudCustomizeType.HudBigBlindHero:
                     PreviewText = previewTextBB;
@@ -88,6 +97,9 @@ namespace PsHandler.Hud
                     FontStyle = Config.HudBigBlindHeroFontStyle;
                     FontSize = Config.HudBigBlindHeroFontSize;
                     Margin = Config.HudBigBlindHeroMargin;
+                    BorderBrush = Config.HudBigBlindHeroBorderBrush;
+                    BorderThickness = Config.HudBigBlindHeroBorderThickness;
+                    CornerRadius = Config.HudBigBlindHeroCornerRadius;
                     break;
             }
         }
@@ -104,6 +116,9 @@ namespace PsHandler.Hud
                     Config.HudTimerFontStyle = FontStyle;
                     Config.HudTimerFontSize = FontSize;
                     Config.HudTimerMargin = Margin;
+                    Config.HudTimerBorderBrush = BorderBrush;
+                    Config.HudTimerBorderThickness = BorderThickness;
+                    Config.HudTimerCornerRadius = CornerRadius;
                     break;
                 case HudCustomizeType.HudBigBlindOpponents:
                     Config.HudBigBlindOpponentsBackground = Background;
@@ -113,6 +128,9 @@ namespace PsHandler.Hud
                     Config.HudBigBlindOpponentsFontStyle = FontStyle;
                     Config.HudBigBlindOpponentsFontSize = FontSize;
                     Config.HudBigBlindOpponentsMargin = Margin;
+                    Config.HudBigBlindOpponentsBorderBrush = BorderBrush;
+                    Config.HudBigBlindOpponentsBorderThickness = BorderThickness;
+                    Config.HudBigBlindOpponentsCornerRadius = CornerRadius;
                     break;
                 case HudCustomizeType.HudBigBlindHero:
                     Config.HudBigBlindHeroBackground = Background;
@@ -122,6 +140,9 @@ namespace PsHandler.Hud
                     Config.HudBigBlindHeroFontStyle = FontStyle;
                     Config.HudBigBlindHeroFontSize = FontSize;
                     Config.HudBigBlindHeroMargin = Margin;
+                    Config.HudBigBlindHeroBorderBrush = BorderBrush;
+                    Config.HudBigBlindHeroBorderThickness = BorderThickness;
+                    Config.HudBigBlindHeroCornerRadius = CornerRadius;
                     break;
             }
         }
@@ -190,6 +211,33 @@ namespace PsHandler.Hud
                     TextBox_Margin.Background = Brushes.MistyRose;
                 }
             };
+            UcColorPreview_BorderBrush.ColorChanged += (sender, args) => UCLabel_Preview.SetBorderBrush(UcColorPreview_BorderBrush.Color);
+            TextBox_BorderThickness.TextChanged += (sender, args) =>
+            {
+                try
+                {
+                    string[] split = TextBox_BorderThickness.Text.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
+                    UCLabel_Preview.SetBorderThickness(new Thickness(double.Parse(split[0]), double.Parse(split[1]), double.Parse(split[2]), double.Parse(split[3])));
+                    TextBox_BorderThickness.Background = Brushes.White;
+                }
+                catch
+                {
+                    TextBox_BorderThickness.Background = Brushes.MistyRose;
+                }
+            };
+            TextBox_CornerRadius.TextChanged += (sender, args) =>
+            {
+                try
+                {
+                    string[] split = TextBox_CornerRadius.Text.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
+                    UCLabel_Preview.SetCornerRadius(new CornerRadius(double.Parse(split[0]), double.Parse(split[1]), double.Parse(split[2]), double.Parse(split[3])));
+                    TextBox_CornerRadius.Background = Brushes.White;
+                }
+                catch
+                {
+                    TextBox_CornerRadius.Background = Brushes.MistyRose;
+                }
+            };
 
             // seed values
 
@@ -199,34 +247,31 @@ namespace PsHandler.Hud
         private void SeedValues()
         {
             UCLabel_Preview.SetText(HudCustomizeParams.PreviewText);
-
             UcColorPreview_Background.Color = HudCustomizeParams.Background;
             UcColorPreview_Background.Owner = this;
-
             UcColorPreview_Foreground.Color = HudCustomizeParams.Foreground;
             UcColorPreview_Foreground.Owner = this;
-
             foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontFamily.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontFamily.Equals(HudCustomizeParams.FontFamily)))
             {
                 ComboBox_FontFamily.SelectedItem = item;
                 break;
             }
-
             foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontWeight.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontWeight.Equals(HudCustomizeParams.FontWeight)))
             {
                 ComboBox_FontWeight.SelectedItem = item;
                 break;
             }
-
             foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontStyle.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontStyle.Equals(HudCustomizeParams.FontStyle)))
             {
                 ComboBox_FontStyle.SelectedItem = item;
                 break;
             }
-
             TextBox_FontSize.Text = HudCustomizeParams.FontSize.ToString(CultureInfo.InvariantCulture);
-
             TextBox_Margin.Text = HudCustomizeParams.Margin.Left + " " + HudCustomizeParams.Margin.Top + " " + HudCustomizeParams.Margin.Right + " " + HudCustomizeParams.Margin.Bottom;
+            UcColorPreview_BorderBrush.Color = HudCustomizeParams.BorderBrush;
+            UcColorPreview_BorderBrush.Owner = this;
+            TextBox_BorderThickness.Text = HudCustomizeParams.BorderThickness.Left + " " + HudCustomizeParams.BorderThickness.Top + " " + HudCustomizeParams.BorderThickness.Right + " " + HudCustomizeParams.BorderThickness.Bottom;
+            TextBox_CornerRadius.Text = HudCustomizeParams.CornerRadius.TopLeft + " " + HudCustomizeParams.CornerRadius.TopRight + " " + HudCustomizeParams.CornerRadius.BottomRight + " " + HudCustomizeParams.CornerRadius.BottomLeft;
         }
 
         private bool CollectParams()
@@ -273,6 +318,28 @@ namespace PsHandler.Hud
             catch
             {
                 HudCustomizeParams.Margin = new Thickness(2, 2, 2, 2);
+            }
+
+            HudCustomizeParams.BorderBrush = UcColorPreview_BorderBrush.Color;
+
+            try
+            {
+                string[] split = TextBox_BorderThickness.Text.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
+                HudCustomizeParams.BorderThickness = new Thickness(double.Parse(split[0]), double.Parse(split[1]), double.Parse(split[2]), double.Parse(split[3]));
+            }
+            catch
+            {
+                HudCustomizeParams.BorderThickness = new Thickness(0, 0, 0, 0);
+            }
+
+            try
+            {
+                string[] split = TextBox_CornerRadius.Text.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
+                HudCustomizeParams.CornerRadius = new CornerRadius(double.Parse(split[0]), double.Parse(split[1]), double.Parse(split[2]), double.Parse(split[3]));
+            }
+            catch
+            {
+                HudCustomizeParams.CornerRadius = new CornerRadius(0, 0, 0, 0);
             }
 
             return true;

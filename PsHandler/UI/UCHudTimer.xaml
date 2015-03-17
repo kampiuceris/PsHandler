@@ -12,7 +12,7 @@
         <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,27,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_LockHudTimerLocation">
             <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Lock Timer HUD location" />
         </CheckBox>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="180" Margin="162,27,0,0" HorizontalContentAlignment="Left" x:Name="Button_RestoreDefaultLocations" Click="Button_RestoreDefaultLocations_Click">
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="180" Margin="164,27,0,0" HorizontalContentAlignment="Left" x:Name="Button_RestoreDefaultLocations" Click="Button_RestoreDefaultLocations_Click">
             <StackPanel Orientation="Horizontal" Margin="10,0">
                 <Image VerticalAlignment="Center" Height="16" Width="16" Source="../Images/Resources/Size16x16/default_value.png" />
                 <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Restore Default Locations" Margin="5,0,0,0" />

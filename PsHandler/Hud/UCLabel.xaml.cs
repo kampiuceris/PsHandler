@@ -55,7 +55,7 @@ namespace PsHandler.Hud
         {
             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
             {
-                Background = new SolidColorBrush(value);
+                Border_Main.Background = new SolidColorBrush(value);
             }));
         }
 
@@ -138,12 +138,65 @@ namespace PsHandler.Hud
             UpdateSize();
         }
 
+        public void SetBorderBrush(Color value)
+        {
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+            {
+                Border_Main.BorderBrush = new SolidColorBrush(value);
+            }));
+        }
+
+        public void SetBorderThickness(Thickness thickness, double scale = 1.0)
+        {
+            thickness.Left *= scale;
+            thickness.Top *= scale;
+            thickness.Right *= scale;
+            thickness.Bottom *= scale;
+
+            if (thickness.Left < 0) thickness.Left = 0;
+            if (thickness.Left > 50) thickness.Left = 50;
+            if (thickness.Top < 0) thickness.Top = 0;
+            if (thickness.Top > 50) thickness.Top = 50;
+            if (thickness.Right < 0) thickness.Right = 0;
+            if (thickness.Right > 50) thickness.Right = 50;
+            if (thickness.Bottom < 0) thickness.Bottom = 0;
+            if (thickness.Bottom > 50) thickness.Bottom = 50;
+
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+            {
+                Border_Main.BorderThickness = thickness;
+            }));
+            UpdateSize();
+        }
+
+        public void SetCornerRadius(CornerRadius cornerRadius, double scale = 1.0)
+        {
+            cornerRadius.TopLeft *= scale;
+            cornerRadius.TopRight *= scale;
+            cornerRadius.BottomRight *= scale;
+            cornerRadius.BottomLeft *= scale;
+
+            if (cornerRadius.TopLeft < 0) cornerRadius.TopLeft = 0;
+            if (cornerRadius.TopLeft > 50) cornerRadius.TopLeft = 50;
+            if (cornerRadius.TopRight < 0) cornerRadius.TopRight = 0;
+            if (cornerRadius.TopRight > 50) cornerRadius.TopRight = 50;
+            if (cornerRadius.BottomRight < 0) cornerRadius.BottomRight = 0;
+            if (cornerRadius.BottomRight > 50) cornerRadius.BottomRight = 50;
+            if (cornerRadius.BottomLeft < 0) cornerRadius.BottomLeft = 0;
+            if (cornerRadius.BottomLeft > 50) cornerRadius.BottomLeft = 50;
+
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+            {
+                Border_Main.CornerRadius = cornerRadius;
+            }));
+        }
+
         public void UpdateSize()
         {
             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
             {
-                Width = Label_Main.Width + Label_Main.Margin.Left + Label_Main.Margin.Right;
-                Height = Label_Main.Height + Label_Main.Margin.Top + Label_Main.Margin.Bottom;
+                Width = Label_Main.Width + Label_Main.Margin.Left + Label_Main.Margin.Right + Border_Main.BorderThickness.Left + Border_Main.BorderThickness.Right;
+                Height = Label_Main.Height + Label_Main.Margin.Top + Label_Main.Margin.Bottom + Border_Main.BorderThickness.Top + Border_Main.BorderThickness.Bottom;
             }));
         }
 
