@@ -37,6 +37,7 @@ namespace PsHandler.Hud
         public enum HudColorsByValueType { HudColorsByValueOpponents, HudColorsByValueHero }
 
         private readonly HudColorsByValueType _hudColorsByValueType;
+        public Color ColorDefault;
         public List<ColorByValue> ColorsByValue = new List<ColorByValue>();
 
         public HudColorsByValueParams(HudColorsByValueType hudColorsByValueType)
@@ -47,9 +48,11 @@ namespace PsHandler.Hud
             switch (_hudColorsByValueType)
             {
                 case HudColorsByValueType.HudColorsByValueOpponents:
+                    ColorDefault = Config.HudBigBlindOpponentsForeground;
                     input = Config.HudBigBlindOpponentsColorsByValue;
                     break;
                 case HudColorsByValueType.HudColorsByValueHero:
+                    ColorDefault = Config.HudBigBlindHeroForeground;
                     input = Config.HudBigBlindHeroColorsByValue;
                     break;
             }
@@ -67,9 +70,11 @@ namespace PsHandler.Hud
             switch (_hudColorsByValueType)
             {
                 case HudColorsByValueType.HudColorsByValueOpponents:
+                    Config.HudBigBlindOpponentsForeground = ColorDefault;
                     Config.HudBigBlindOpponentsColorsByValue = output;
                     break;
                 case HudColorsByValueType.HudColorsByValueHero:
+                    Config.HudBigBlindHeroForeground = ColorDefault;
                     Config.HudBigBlindHeroColorsByValue = output;
                     break;
             }
@@ -91,19 +96,9 @@ namespace PsHandler.Hud
 
             HudColorsByValueParams = new HudColorsByValueParams(hudColorsByValueType);
 
-            Rectangle_Default.Fill = new SolidColorBrush(defaultColor);
-            Label_Default.Content = defaultColor.ToString();
-            List<string> colorNames = typeof(System.Drawing.Color).GetProperties(BindingFlags.Public | BindingFlags.Static).Select(item => item.Name).ToList();
-            foreach (string colorName in colorNames)
-            {
-                System.Drawing.Color colorDrawing = System.Drawing.Color.FromName(colorName);
-                System.Windows.Media.Color colorMedia = Color.FromArgb(colorDrawing.A, colorDrawing.R, colorDrawing.G, colorDrawing.B);
-                if (defaultColor.Equals(colorMedia))
-                {
-                    Label_Default.Content = colorName;
-                    break;
-                }
-            }
+            UcColorPreview_ColorDefault.Color = defaultColor;
+            UcColorPreview_ColorDefault.Owner = owner;
+            UcColorPreview_ColorDefault.ColorChanged += (sender, args) => HudColorsByValueParams.ColorDefault = UcColorPreview_ColorDefault.Color;
 
             foreach (var colorByValue in HudColorsByValueParams.ColorsByValue)
             {

@@ -1,15 +1,13 @@
 ﻿<Window x:Class="PsHandler.Hud.WindowCustomizeColorsByValue"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:colorPicker="clr-namespace:PsHandler.ColorPicker"
         Title="Customize Colors By Value" Background="#FFF0F0F0" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize" Icon="../Images/PsHandler.ico" MinWidth="275" Width="0" UseLayoutRounding="True">
     <Grid Margin="10">
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
                 <Label Content="Default:" Padding="0" VerticalContentAlignment="Center" Height="22" Width="75"/>
-                <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="14" Height="14" VerticalAlignment="Center" Stroke="Black" StrokeThickness="1" Fill="White" x:Name="Rectangle_Default" />
-                    <Label Content="White" Padding="0" VerticalContentAlignment="Center" Height="16" Width="100" Margin="5,0,0,0" x:Name="Label_Default" />
-                </StackPanel>
+                <colorPicker:UcColorPreview Margin="2,0" VerticalAlignment="Center" Height="22" Width="90" x:Name="UcColorPreview_ColorDefault" />
             </StackPanel>
             <Separator Height="8" />
             <StackPanel Orientation="Vertical" x:Name="StackPanel_ColorsByValue" />
