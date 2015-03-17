@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Media.Imaging;
 using Hardcodet.Wpf.TaskbarNotification;
+using PsHandler.ColorPicker;
 using PsHandler.Custom;
 using PsHandler.Import;
 using PsHandler.PokerMath;

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Threading;
+using PsHandler.ColorPicker;
 using PsHandler.Custom;
 using PsHandler.Hud;
 using PsHandler.PokerMath;
@@ -43,7 +44,7 @@ namespace PsHandler
         // Constants
 
         public const string NAME = "PsHandler";
-        public const int VERSION = 27;
+        public const int VERSION = 28;
         public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
         public static string MACHINE_GUID = GetMachineGuid();
         public static string CONFIG_FILENAME = "pshandler.xml";
@@ -960,6 +961,7 @@ namespace PsHandler
 
             App.PokerTypeManager.SeedDefaultValues();
             App.TableTileManager.SeedDefaultValues();
+            CollectRecentColors();
 
             return exceptions;
         }
@@ -1178,6 +1180,24 @@ namespace PsHandler
             }
 
             return exceptions;
+        }
+
+        private static void CollectRecentColors()
+        {
+            UcColorPicker.AddRecentColor(HudTimerBackground);
+            UcColorPicker.AddRecentColor(HudTimerForeground);
+            UcColorPicker.AddRecentColor(HudBigBlindOpponentsBackground);
+            UcColorPicker.AddRecentColor(HudBigBlindOpponentsForeground);
+            UcColorPicker.AddRecentColor(HudBigBlindHeroBackground);
+            UcColorPicker.AddRecentColor(HudBigBlindHeroForeground);
+            foreach (var colorByValue in HudBigBlindOpponentsColorsByValue)
+            {
+                UcColorPicker.AddRecentColor(colorByValue.Color);
+            }
+            foreach (var colorByValue in HudBigBlindHeroColorsByValue)
+            {
+                UcColorPicker.AddRecentColor(colorByValue.Color);
+            }
         }
 
         public static void VersionControl(XElement root, int version)

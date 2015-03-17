@@ -38,17 +38,14 @@ namespace PsHandler.Hud
     /// </summary>
     public partial class UCColorByValue : UserControl
     {
-        private readonly StackPanel _owner;
+        private readonly StackPanel _stackPanel;
 
-        public UCColorByValue(StackPanel owner, ColorByValue colorByValue = null)
+        public UCColorByValue(Window owner, StackPanel stackPanel, ColorByValue colorByValue = null)
         {
-            _owner = owner;
+            _stackPanel = stackPanel;
             InitializeComponent();
 
-            foreach (var item in typeof(System.Drawing.Color).GetProperties(BindingFlags.Public | BindingFlags.Static))
-            {
-                ComboBox_Foreground.Items.Add(new ComboBoxItemColor(item.Name));
-            }
+            UcColorPreview_Foreground.Owner = owner;
 
             TextBox_GreaterOrEqual.GotFocus += (sender, args) =>
             {
@@ -86,11 +83,7 @@ namespace PsHandler.Hud
             {
                 TextBox_GreaterOrEqual.Text = colorByValue.GreaterOrEqual == decimal.MinValue ? "-inf" : colorByValue.GreaterOrEqual.ToString(CultureInfo.InvariantCulture);
                 TextBox_Less.Text = colorByValue.Less == decimal.MaxValue ? "+inf" : colorByValue.Less.ToString(CultureInfo.InvariantCulture);
-                foreach (ComboBoxItemColor item in ComboBox_Foreground.Items.Cast<object>().OfType<ComboBoxItemColor>().Where(item => item.ColorMedia.Equals(colorByValue.Color)))
-                {
-                    ComboBox_Foreground.SelectedItem = item;
-                    break;
-                }
+                UcColorPreview_Foreground.Color = colorByValue.Color;
             }
 
             Validate();
@@ -98,7 +91,7 @@ namespace PsHandler.Hud
 
         private void Button_Remove_Click(object sender, RoutedEventArgs e)
         {
-            _owner.Children.Remove(this);
+            _stackPanel.Children.Remove(this);
         }
 
         private bool Validate()
@@ -137,9 +130,7 @@ namespace PsHandler.Hud
 
         public ColorByValue GetColorByValue()
         {
-            var ComboBox_BackgroundSelectedItem = (ComboBoxItemColor)ComboBox_Foreground.SelectedItem;
-            if (ComboBox_BackgroundSelectedItem == null) return null;
-            Color color = ComboBox_BackgroundSelectedItem.ColorMedia;
+            Color color = UcColorPreview_Foreground.Color;
             decimal greaterOrEqual, less;
             return GetValues(out greaterOrEqual, out less) ? new ColorByValue { Color = color, GreaterOrEqual = greaterOrEqual, Less = less } : null;
         }

@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="PsHandler.ColorPicker.UcColorPreview"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:colorPicker="clr-namespace:PsHandler.ColorPicker"
+             mc:Ignorable="d">
+    <Grid>
+        <colorPicker:BorderColor HorizontalAlignment="Left" VerticalAlignment="Top" Width="22" Height="22" x:Name="BorderColor_Main"/>
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Margin="27,0,0,0" Height="22" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontFamily="Consolas" Content="#01234567" x:Name="Label_Main" />
+    </Grid>
+</UserControl>

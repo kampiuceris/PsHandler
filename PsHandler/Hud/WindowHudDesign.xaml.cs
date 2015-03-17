@@ -144,12 +144,6 @@ namespace PsHandler.Hud
 
             // init values
 
-            foreach (var item in typeof(System.Drawing.Color).GetProperties(BindingFlags.Public | BindingFlags.Static))
-            {
-                ComboBox_Background.Items.Add(new ComboBoxItemColor(item.Name));
-                ComboBox_Foreground.Items.Add(new ComboBoxItemColor(item.Name));
-            }
-
             foreach (var item in Fonts.SystemFontFamilies)
             {
                 ComboBox_FontFamily.Items.Add(new ComboBoxItemFontFamilyFontWeightFontStyle(item));
@@ -177,9 +171,8 @@ namespace PsHandler.Hud
             ComboBox_FontStyle.Items.Add(new ComboBoxItemFontFamilyFontWeightFontStyle(FontStyles.Oblique));
 
             // hook
-
-            ComboBox_Background.SelectionChanged += (o, args) => UCLabel_Preview.SetBackground(((ComboBoxItemColor)ComboBox_Background.SelectedItem).ColorMedia);
-            ComboBox_Foreground.SelectionChanged += (o, args) => UCLabel_Preview.SetForeground(((ComboBoxItemColor)ComboBox_Foreground.SelectedItem).ColorMedia);
+            UcColorPreview_Background.ColorChanged += (sender, args) => UCLabel_Preview.SetBackground(UcColorPreview_Background.Color);
+            UcColorPreview_Foreground.ColorChanged += (sender, args) => UCLabel_Preview.SetForeground(UcColorPreview_Foreground.Color);
             ComboBox_FontFamily.SelectionChanged += (o, args) => UCLabel_Preview.SetFontFamily(((ComboBoxItemFontFamilyFontWeightFontStyle)ComboBox_FontFamily.SelectedItem).SystemFontFamily);
             ComboBox_FontWeight.SelectionChanged += (o, args) => UCLabel_Preview.SetFontWeight(((ComboBoxItemFontFamilyFontWeightFontStyle)ComboBox_FontWeight.SelectedItem).SystemFontWeight);
             ComboBox_FontStyle.SelectionChanged += (o, args) => UCLabel_Preview.SetFontStyle(((ComboBoxItemFontFamilyFontWeightFontStyle)ComboBox_FontStyle.SelectedItem).SystemFontStyle);
@@ -207,17 +200,11 @@ namespace PsHandler.Hud
         {
             UCLabel_Preview.SetText(HudCustomizeParams.PreviewText);
 
-            foreach (ComboBoxItemColor item in ComboBox_Background.Items.Cast<object>().OfType<ComboBoxItemColor>().Where(item => item.ColorMedia.Equals(HudCustomizeParams.Background)))
-            {
-                ComboBox_Background.SelectedItem = item;
-                break;
-            }
+            UcColorPreview_Background.Color = HudCustomizeParams.Background;
+            UcColorPreview_Background.Owner = this;
 
-            foreach (ComboBoxItemColor item in ComboBox_Foreground.Items.Cast<object>().OfType<ComboBoxItemColor>().Where(item => item.ColorMedia.Equals(HudCustomizeParams.Foreground)))
-            {
-                ComboBox_Foreground.SelectedItem = item;
-                break;
-            }
+            UcColorPreview_Foreground.Color = HudCustomizeParams.Foreground;
+            UcColorPreview_Foreground.Owner = this;
 
             foreach (ComboBoxItemFontFamilyFontWeightFontStyle item in ComboBox_FontFamily.Items.Cast<object>().OfType<ComboBoxItemFontFamilyFontWeightFontStyle>().Where(item => item.SystemFontFamily.Equals(HudCustomizeParams.FontFamily)))
             {
@@ -244,17 +231,9 @@ namespace PsHandler.Hud
 
         private bool CollectParams()
         {
-            var ComboBox_BackgroundSelectedItem = (ComboBoxItemColor)ComboBox_Background.SelectedItem;
-            if (ComboBox_BackgroundSelectedItem != null)
-            {
-                HudCustomizeParams.Background = ComboBox_BackgroundSelectedItem.ColorMedia;
-            }
+            HudCustomizeParams.Background = UcColorPreview_Background.Color;
 
-            var ComboBox_ForegroundSelectedItem = (ComboBoxItemColor)ComboBox_Foreground.SelectedItem;
-            if (ComboBox_ForegroundSelectedItem != null)
-            {
-                HudCustomizeParams.Foreground = ComboBox_ForegroundSelectedItem.ColorMedia;
-            }
+            HudCustomizeParams.Foreground = UcColorPreview_Foreground.Color;
 
             var ComboBox_FontFamilySelectedItem = (ComboBoxItemFontFamilyFontWeightFontStyle)ComboBox_FontFamily.SelectedItem;
             if (ComboBox_FontFamilySelectedItem != null)

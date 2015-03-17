@@ -84,6 +84,16 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="AutoUpdater.cs" />
+    <Compile Include="ColorPicker\ColorARgbHsv.cs" />
+    <Compile Include="ColorPicker\UcColorPicker.xaml.cs">
+      <DependentUpon>UcColorPicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ColorPicker\UcColorPreview.xaml.cs">
+      <DependentUpon>UcColorPreview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ColorPicker\WindowColorPicker.xaml.cs">
+      <DependentUpon>WindowColorPicker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ExceptionPsHandler.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Custom\Bmp.cs" />
@@ -301,6 +311,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="ColorPicker\UcColorPicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ColorPicker\UcColorPreview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ColorPicker\WindowColorPicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Hud\UCColorByValue.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -879,6 +901,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Resources\Size16x16\chair.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ColorPicker\pointerbar.png" />
+    <Resource Include="ColorPicker\pointerpalette.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

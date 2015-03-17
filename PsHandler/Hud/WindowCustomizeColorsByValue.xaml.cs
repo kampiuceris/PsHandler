@@ -107,13 +107,13 @@ namespace PsHandler.Hud
 
             foreach (var colorByValue in HudColorsByValueParams.ColorsByValue)
             {
-                StackPanel_ColorsByValue.Children.Add(new UCColorByValue(StackPanel_ColorsByValue, colorByValue));
+                StackPanel_ColorsByValue.Children.Add(new UCColorByValue(this, StackPanel_ColorsByValue, colorByValue));
             }
         }
 
         private void Button_Add_Click(object sender, RoutedEventArgs e)
         {
-            StackPanel_ColorsByValue.Children.Add(new UCColorByValue(StackPanel_ColorsByValue));
+            StackPanel_ColorsByValue.Children.Add(new UCColorByValue(this, StackPanel_ColorsByValue));
         }
 
         private bool CollectParams()
