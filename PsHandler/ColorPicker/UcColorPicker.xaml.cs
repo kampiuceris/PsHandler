@@ -103,15 +103,17 @@ namespace PsHandler.ColorPicker
             };
             MouseMove += (sender, args) =>
             {
-                if (args.LeftButton == MouseButtonState.Pressed && _mouseDownOnBar)
+                if (args.LeftButton == MouseButtonState.Released)
+                {
+                    _mouseDownOnBar = false;
+                    _mouseDownOnPalette = false;
+                }
+                else if (args.LeftButton == MouseButtonState.Pressed && _mouseDownOnBar)
                 {
                     MousePickBar(args);
                     SyncState(Grid_HookBar);
                 }
-            };
-            MouseMove += (sender, args) =>
-            {
-                if (args.LeftButton == MouseButtonState.Pressed && _mouseDownOnPalette)
+                else if (args.LeftButton == MouseButtonState.Pressed && _mouseDownOnPalette)
                 {
                     MousePickPalette(args);
                     SyncState(Grid_HookPalette);
