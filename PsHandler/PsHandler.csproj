@@ -509,27 +509,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\Themes\Nova\imback.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Themes\Classic\imback.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Themes\Black\imback.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Themes\HyperSimple\imback.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Themes\Stars\imback.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Themes\Slick\imback.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Themes\Azure\imback.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Images\Themes\Azure\timebank.png" />
   </ItemGroup>
   <ItemGroup>
@@ -549,9 +528,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\Themes\Slick\timebank.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Themes\Slick\imback2.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Resources\Size16x16\folder.png" />
@@ -666,7 +642,6 @@
     <Resource Include="Images\Resources\ToolTips\window_style_nocaption.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\Themes\Mercury\imback.png" />
     <EmbeddedResource Include="Images\Themes\Mercury\timebank.png" />
   </ItemGroup>
   <ItemGroup>
