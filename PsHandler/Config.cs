@@ -75,7 +75,6 @@ namespace PsHandler
         // Controller
 
         public static bool AutoclickImBack = false;
-        public static bool AutoclickImBackDisableDuringBreaks = true;
         public static bool AutoclickTimebank = false;
         public static bool AutoclickYesSeatAvailable = false;
         public static bool AutocloseTournamentRegistrationPopups = false;
@@ -811,7 +810,6 @@ namespace PsHandler
                 #region Controller
 
                 AutoclickImBack = GetBool(root, "AutoclickImBack", ref exceptions, "LoadXml() AutoclickImBack", AutoclickImBack);
-                AutoclickImBackDisableDuringBreaks = GetBool(root, "AutoclickImBackDisableDuringBreaks", ref exceptions, "LoadXml() AutoclickImBackDisableDuringBreaks", AutoclickImBackDisableDuringBreaks);
                 AutoclickTimebank = GetBool(root, "AutoclickTimebank", ref exceptions, "LoadXml() AutoclickTimebank", AutoclickTimebank);
                 AutoclickYesSeatAvailable = GetBool(root, "AutoclickYesSeatAvailable", ref exceptions, "LoadXml() AutoclickYesSeatAvailable", AutoclickYesSeatAvailable);
                 AutocloseTournamentRegistrationPopups = GetBool(root, "AutocloseTournamentRegistrationPopups", ref exceptions, "LoadXml() AutocloseTournamentRegistrationPopups", AutocloseTournamentRegistrationPopups);
@@ -1034,7 +1032,6 @@ namespace PsHandler
                 #region Controller
 
                 Set(root, "AutoclickImBack", AutoclickImBack, ref exceptions, "SaveXml() AutoclickImBack");
-                Set(root, "AutoclickImBackDisableDuringBreaks", AutoclickImBackDisableDuringBreaks, ref exceptions, "SaveXml() AutoclickImBackDisableDuringBreaks");
                 Set(root, "AutoclickTimebank", AutoclickTimebank, ref exceptions, "SaveXml() AutoclickTimebank");
                 Set(root, "AutoclickYesSeatAvailable", AutoclickYesSeatAvailable, ref exceptions, "SaveXml() AutoclickYesSeatAvailable");
                 Set(root, "AutocloseTournamentRegistrationPopups", AutocloseTournamentRegistrationPopups, ref exceptions, "SaveXml() AutocloseTournamentRegistrationPopups");
