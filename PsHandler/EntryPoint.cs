@@ -65,16 +65,8 @@ namespace PsHandler
                 {
                     Process.Start(processInfo);
                 }
-                catch (Exception e)
+                catch
                 {
-                    if (e is Win32Exception)
-                    {
-                        WindowMessage.ShowDialog("PsHandler requires administrative privileges to run." + Environment.NewLine + "Program will quit now.", "UAC", WindowMessageButtons.OK, WindowMessageImage.Error, null, WindowStartupLocation.CenterScreen);
-                    }
-                    else
-                    {
-                        Methods.DisplayException(e, null, WindowStartupLocation.CenterScreen);
-                    }
                 }
             }
             else
