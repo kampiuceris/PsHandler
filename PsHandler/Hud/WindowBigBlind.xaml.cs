@@ -122,14 +122,14 @@ namespace PsHandler.Hud
             {
                 if (OwnerState != TableHud.OwnerState.Attached)
                 {
-                    Visibility = Visibility.Visible;
-                    this.SetOwner(Table.Handle);
-                    OwnerState = TableHud.OwnerState.Attached;
-
                     Opacity = 1;
                     // ensure correct size
                     SizeToContent = SizeToContent.Manual;
                     SizeToContent = SizeToContent.WidthAndHeight;
+
+                    Visibility = Visibility.Visible;
+                    this.SetOwner(Table.Handle);
+                    OwnerState = TableHud.OwnerState.Attached;
                 }
             }
             else
@@ -137,13 +137,13 @@ namespace PsHandler.Hud
                 if (OwnerState != TableHud.OwnerState.Unattached)
                 {
                     WinApi.SetWindowLong(this.GetHandle(), -8, 0); //const int GWL_HWNDPARENT = -8;
-                    Visibility = Visibility.Collapsed;
-                    OwnerState = TableHud.OwnerState.Unattached;
-
                     Opacity = 0;
+                    Visibility = Visibility.Collapsed;
                     // ensure correct size
                     SizeToContent = SizeToContent.Manual;
                     SizeToContent = SizeToContent.WidthAndHeight;
+
+                    OwnerState = TableHud.OwnerState.Unattached;
                 }
             }
         }

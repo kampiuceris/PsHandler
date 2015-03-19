@@ -108,7 +108,7 @@ namespace PsHandler.Hud
                                 WindowsBigBlind[i].EnsureVisibility(bbVisibility[i] && ((!bbIsHero[i] && Config.HudBigBlindShowForOpponents) || (bbIsHero[i] && Config.HudBigBlindShowForHero)));
                             }
                         });
-                        Thread.Sleep(250);
+                        Thread.Sleep(500);
                     }
                 }
 #if (DEBUG)
