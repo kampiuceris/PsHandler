@@ -13,20 +13,6 @@ using PsHandler.Custom;
 
 namespace PsHandler
 {
-    class TableSizeAverageColors
-    {
-        public Size TableSize;
-        public Rectangle ScanRectangle;
-        public double R;
-        public double G;
-        public double B;
-
-        public override string ToString()
-        {
-            return string.Format("{0} {1} {2} {3} {4}", TableSize, ScanRectangle, R, G, B);
-        }
-    }
-
     public class Test
     {
         // windows borders ~ 8 31 8 8
@@ -46,12 +32,41 @@ namespace PsHandler
 
         public static void Do()
         {
-            var readAllLines = File.ReadAllLines(@"C:\Users\WinWork\Desktop\azure.txt");
-            var slick = new TableSizeAverageColors[readAllLines.Length];
+            var readAllLines = File.ReadAllLines(@"C:\Users\WinWork\Desktop\classic.txt");
+            var array = new TableSizeAverageColors[readAllLines.Length];
             for (int i = 0; i < readAllLines.Length; i++)
             {
                 var split = readAllLines[i].Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-                slick[i] = new TableSizeAverageColors
+                array[i] = new TableSizeAverageColors
+                {
+                    TableSize = new Size(int.Parse(split[0]), int.Parse(split[1])),
+                    ScanRectangle = new Rectangle(int.Parse(split[2]), int.Parse(split[3]), int.Parse(split[4]), int.Parse(split[5])),
+                    R = double.Parse(split[6]),
+                    G = double.Parse(split[7]),
+                    B = double.Parse(split[8])
+                };
+            }
+
+
+
+            var sb = new StringBuilder();
+            foreach (var item in array)
+            {
+                sb.AppendLine(string.Format("new TableSizeAverageColors{0} TableSize = new Size({1}, {2}), ScanRectangle = new Rectangle({3},{4},{5},{6}), R = {7}, G = {8}, B = {9} {10},",
+                    "{", item.TableSize.Width, item.TableSize.Height, item.ScanRectangle.X, item.ScanRectangle.Y, item.ScanRectangle.Width, item.ScanRectangle.Height, item.R, item.G, item.B, "}"
+                    ));
+            }
+            File.WriteAllText(@"C:\Users\WinWork\Desktop\output.txt", sb.ToString());
+        }
+
+        public static void TestLive()
+        {
+            var readAllLines = File.ReadAllLines(@"C:\Users\WinWork\Desktop\azure.txt");
+            var array = new TableSizeAverageColors[readAllLines.Length];
+            for (int i = 0; i < readAllLines.Length; i++)
+            {
+                var split = readAllLines[i].Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                array[i] = new TableSizeAverageColors
                 {
                     TableSize = new Size(int.Parse(split[0]), int.Parse(split[1])),
                     ScanRectangle = new Rectangle(int.Parse(split[2]), int.Parse(split[3]), int.Parse(split[4]), int.Parse(split[5])),
@@ -72,7 +87,7 @@ namespace PsHandler
 
                 var bmp = new Bmp(ScreenCapture.GetBitmapWindowClient(handle));
 
-                var closest = slick.FirstOrDefault(a => a.TableSize.Width == cr.Width && a.TableSize.Height == cr.Height);
+                var closest = array.FirstOrDefault(a => a.TableSize.Width == cr.Width && a.TableSize.Height == cr.Height);
                 if (closest == null) continue;
 
                 var ratioWidth = (double)cr.Width / DEFAULT.Width;
@@ -95,7 +110,7 @@ namespace PsHandler
             }
         }
 
-        public static void ___Do()
+        public static void Scrape()
         {
             Thread.Sleep(3000);
 
