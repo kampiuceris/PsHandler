@@ -49,8 +49,6 @@ namespace PsHandler
             {
             }
 
-            //Test(); return;
-
             WindowsPrincipal pricipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
             bool hasAdministrativeRight = pricipal.IsInRole(WindowsBuiltInRole.Administrator);
             if (!hasAdministrativeRight)
@@ -85,10 +83,10 @@ namespace PsHandler
             }
         }
 
-        public static void Test()
-        {
-            SngRegistratorManager sngRegistratorManager = new SngRegistratorManager();
-            sngRegistratorManager.Start();
-        }
+        //public static void ___Test()
+        //{
+        //    SngRegistratorManager sngRegistratorManager = new SngRegistratorManager();
+        //    sngRegistratorManager.Start();
+        //}
     }
 }

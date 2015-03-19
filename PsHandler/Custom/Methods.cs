@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
@@ -69,13 +70,24 @@ namespace PsHandler.Custom
             {
                 if (button.ButtonSecondaryCheck != null)// secondary check for some buggy themes
                 {
-                    CheckButtonAndClick(bmp, button.ButtonSecondaryCheck, handle);
+                    //CheckButtonAndClick(bmp, button.ButtonSecondaryCheck, handle);
                 }
                 else
                 {
-                    //Debug.Write("CLICK ");
                     LeftMouseClickRelativeScaled(handle, button.ClickX, button.ClickY, true);
                 }
+            }
+        }
+
+        public static void CheckImBackButtonAndClick(Bmp bmp, PokerStarsThemeTable pokerStarsThemeTable, IntPtr handle)
+        {
+            var closest = pokerStarsThemeTable.ButtonImBackSource.FirstOrDefault(a => a.TableSize.Width == bmp.Width && a.TableSize.Height == bmp.Height);
+            if (closest == null) return;
+            double r, g, b;
+            AverageColor(bmp, closest.ScanRectangle, out r, out g, out b);
+            if (Math.Abs(Math.Abs(closest.R - Math.Round(r, 2))) < 0.001 && Math.Abs(Math.Abs(closest.G - Math.Round(g, 2))) < 0.001 && Math.Abs(Math.Abs(closest.B - Math.Round(b, 2))) < 0.001)
+            {
+                LeftMouseClick(handle, closest.ScanRectangle.X + closest.ScanRectangle.Width / 2, closest.ScanRectangle.Y + closest.ScanRectangle.Height / 2, true);
             }
         }
 
@@ -99,8 +111,9 @@ namespace PsHandler.Custom
             WinApi.PostMessage(handle, WinApi.WM_LBUTTONUP, IntPtr.Zero, lParam);
         }
 
-        public static void LeftMouseClick(IntPtr handle, int x, int y)
+        public static void LeftMouseClick(IntPtr handle, int x, int y, bool checkIfMinimized = false)
         {
+            if (checkIfMinimized && IsMinimized(handle)) WinApi.ShowWindow(handle, WinApi.SW_RESTORE); // check if window is minimized & restore it
             IntPtr lParam = WinApi.GetLParam(x, y);
             WinApi.PostMessage(handle, WinApi.WM_LBUTTONDOWN, new IntPtr(WinApi.MK_LBUTTON), lParam);
             WinApi.PostMessage(handle, WinApi.WM_LBUTTONUP, IntPtr.Zero, lParam);
