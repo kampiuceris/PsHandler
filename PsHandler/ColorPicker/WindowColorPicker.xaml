@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:PsHandler.ColorPicker" x:Class="PsHandler.ColorPicker.WindowColorPicker"
-        Title="WindowColorPicker" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize" Background="WhiteSmoke">
+        Title="Color Picker" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize" Background="WhiteSmoke" Icon="../Images/PsHandler.ico">
     <Grid>
         <local:UcColorPicker HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="UcColorPicker_Main"/>
         <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,311,0,10" Width="372">
