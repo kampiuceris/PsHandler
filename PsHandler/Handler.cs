@@ -140,8 +140,8 @@ namespace PsHandler
                         if (!(e is ThreadInterruptedException || e is ArgumentException))
                         {
                             Methods.DisplayException(e, App.WindowMain, WindowStartupLocation.CenterOwner);
-                            break;
                         }
+                        break;
                     }
 #endif
                 }
