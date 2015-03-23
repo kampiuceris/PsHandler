@@ -94,18 +94,24 @@ namespace PsHandler.Hud
 
                         Methods.UiInvoke(() =>
                         {
-                            // Update View
-                            WindowTimer.UpdateView(timerValue, PokerType != null ? PokerType.Name : "Unknown");
-                            for (int i = 0; i < 10; i++)
+                            try
                             {
-                                WindowsBigBlind[i].UpdateView(i, bbValue[i], bbTooltip[i], bbIsHero[i]);
-                            }
+                                // Update View
+                                WindowTimer.UpdateView(timerValue, PokerType != null ? PokerType.Name : "Unknown");
+                                for (int i = 0; i < 10; i++)
+                                {
+                                    WindowsBigBlind[i].UpdateView(i, bbValue[i], bbTooltip[i], bbIsHero[i]);
+                                }
 
-                            // Ensure visibility
-                            WindowTimer.EnsureVisibility(timerVisibility);
-                            for (int i = 0; i < 10; i++)
+                                // Ensure visibility
+                                WindowTimer.EnsureVisibility(timerVisibility);
+                                for (int i = 0; i < 10; i++)
+                                {
+                                    WindowsBigBlind[i].EnsureVisibility(bbVisibility[i] && ((!bbIsHero[i] && Config.HudBigBlindShowForOpponents) || (bbIsHero[i] && Config.HudBigBlindShowForHero)));
+                                }
+                            }
+                            catch
                             {
-                                WindowsBigBlind[i].EnsureVisibility(bbVisibility[i] && ((!bbIsHero[i] && Config.HudBigBlindShowForOpponents) || (bbIsHero[i] && Config.HudBigBlindShowForHero)));
                             }
                         });
                         Thread.Sleep(500);

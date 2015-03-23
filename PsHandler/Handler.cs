@@ -46,10 +46,12 @@ namespace PsHandler
         {
             _threadHandler = new Thread(() =>
             {
-                try
+                while (true)
                 {
-                    while (true)
+                    try
                     {
+                        // PokerStars
+
                         if (Config.AutocloseTournamentRegistrationPopups || Config.AutoclickYesSeatAvailable)
                         {
                             foreach (var process in Process.GetProcessesByName("PokerStars"))
@@ -106,6 +108,8 @@ namespace PsHandler
                             }
                         }
 
+                        // Hm2
+
                         if (Config.AutocloseHM2ApplyToSimilarTablesPopups)
                         {
                             foreach (var process in Process.GetProcessesByName("HoldemManager"))
@@ -121,22 +125,26 @@ namespace PsHandler
                             }
                         }
 
+                        // Delay
+
                         Thread.Sleep(DELAY_MS);
                     }
-                }
 #if (DEBUG)
-                catch (ThreadInterruptedException)
-                {
-                }
-#else
-                catch (Exception e)
-                {
-                    if (!(e is ThreadInterruptedException))
+                    catch (ThreadInterruptedException)
                     {
-                        Methods.DisplayException(e, App.WindowMain, WindowStartupLocation.CenterOwner);
+                        break;
                     }
-                }
+#else
+                    catch (Exception e)
+                    {
+                        if (!(e is ThreadInterruptedException || e is ArgumentException))
+                        {
+                            Methods.DisplayException(e, App.WindowMain, WindowStartupLocation.CenterOwner);
+                            break;
+                        }
+                    }
 #endif
+                }
             });
             _threadHandler.Start();
         }
