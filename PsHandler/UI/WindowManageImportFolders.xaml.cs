@@ -43,7 +43,7 @@ namespace PsHandler.UI
             TextBox_ImportFolders.Text = Config.ImportFolders.Aggregate("", (current, importFolder) => current + (importFolder + Environment.NewLine));
         }
 
-        private void Button_SaveAndClose_Click(object sender, RoutedEventArgs e)
+        private void Button_OK_Click(object sender, RoutedEventArgs e)
         {
             Config.ImportFolders = TextBox_ImportFolders.Text.Split(new[] { "\r", "\n", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
             Close();

@@ -1,9 +1,10 @@
 ﻿<Window x:Class="PsHandler.UI.WindowManagePreferredSeats"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:PsHandler.UI"
         Title="Manage Preferred Seats" MinWidth="400" MinHeight="200" SizeToContent="WidthAndHeight" Background="#FFF0F0F0" Icon="../Images/PsHandler.ico" UseLayoutRounding="True" ResizeMode="CanMinimize">
-    <Grid>
-        <Grid Margin="10,10,10,40">
+    <Grid Margin="10">
+        <Grid Margin="0,0,0,32">
             <Grid Width="193" Height="107" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <Image Source="/PsHandler;component/Images/Resources/PreferredSeat/preferredseat2.png"/>
                 <Label Content="2-Max" Height="22" Margin="44,37,104,48" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Foreground="White" FontWeight="Bold"/>
@@ -53,25 +54,10 @@
             </Grid>
         </Grid>
 
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0,0,10,10">
-            <Button Margin="0,0,160,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" x:Name="Button_OK" Click="Button_OK_Click">
-                <StackPanel Orientation="Horizontal" Margin="2">
-                    <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/accept.png" />
-                    <TextBlock Text="OK" Margin="5,0,0,0" VerticalAlignment="Center" />
-                </StackPanel>
-            </Button>
-            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" x:Name="Button_Close" Click="Button_Close_Click" Margin="0,0,80,0">
-                <StackPanel Orientation="Horizontal" Margin="2">
-                    <Image Height="16" Width="16" Source="../Images/Resources/Size16x16/cancel.png" />
-                    <TextBlock Text="Cancel" Margin="5,0,0,0" VerticalAlignment="Center" />
-                </StackPanel>
-            </Button>
-            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" x:Name="Button_Apply" Click="Button_Apply_Click">
-                <StackPanel Orientation="Horizontal" Margin="2">
-                    <Image Height="16" Width="16" Source="/PsHandler;component/Images/Resources/Size16x16/accept.png" />
-                    <TextBlock Text="Apply" Margin="5,0,0,0" VerticalAlignment="Center" />
-                </StackPanel>
-            </Button>
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+            <ui:ButtonImage HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,210,0" Height="22" Width="100" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/accept.png" Text="OK" HorizontalContentAlignment="Center" x:Name="Button_OK" Click="Button_OK_Click"/>
+            <ui:ButtonImage HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,105,0" Height="22" Width="100" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/cancel.png" Text="Cancel" HorizontalContentAlignment="Center" x:Name="Button_Close" Click="Button_Close_Click"/>
+            <ui:ButtonImage HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,0" Height="22" Width="100" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/accept.png" Text="Apply" HorizontalContentAlignment="Center" x:Name="Button_Apply" Click="Button_Apply_Click"/>
         </Grid>
     </Grid>
 </Window>

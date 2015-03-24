@@ -164,6 +164,9 @@
     <Compile Include="TableTiler\TableTile.cs" />
     <Compile Include="TableTiler\TableTileManager.cs" />
     <Compile Include="TimeZone.cs" />
+    <Compile Include="UI\ButtonImage.xaml.cs">
+      <DependentUpon>ButtonImage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\GlassEffect.cs" />
     <Compile Include="Custom\Methods.cs" />
     <Compile Include="NotifyIconWpf\BalloonIcon.cs" />
@@ -376,6 +379,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Replayer\UI\WindowReplayer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ButtonImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

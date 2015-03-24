@@ -129,7 +129,7 @@ namespace PsHandler.Hud
             return true;
         }
 
-        private void Button_SaveAndClose_Click(object sender, RoutedEventArgs e)
+        private void Button_OK_Click(object sender, RoutedEventArgs e)
         {
             if (CollectParams())
             {

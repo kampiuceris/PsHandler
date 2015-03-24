@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:PsHandler.UI"
              mc:Ignorable="d" UseLayoutRounding="True"
              d:DesignHeight="300" d:DesignWidth="500">
     <Grid>
@@ -12,12 +13,7 @@
         <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,27,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_LockHudTimerLocation">
             <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Lock Timer HUD location" />
         </CheckBox>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="180" Margin="164,27,0,0" HorizontalContentAlignment="Left" x:Name="Button_RestoreDefaultLocations" Click="Button_RestoreDefaultLocations_Click">
-            <StackPanel Orientation="Horizontal" Margin="10,0">
-                <Image VerticalAlignment="Center" Height="16" Width="16" Source="../Images/Resources/Size16x16/default_value.png" />
-                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Restore Default Locations" Margin="5,0,0,0" />
-            </StackPanel>
-        </Button>
+        <ui:ButtonImage HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="180" Margin="164,27,0,0" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/default_value.png" Text="Restore Default Locations" HorizontalContentAlignment="Left" x:Name="Button_RestoreDefaultLocations" Click="Button_RestoreDefaultLocations_Click"/>
 
         <Separator Height="1" Margin="0,54,0,0" VerticalAlignment="Top"/>
 
@@ -32,12 +28,7 @@
 
         <Separator Height="1" Margin="0,109,0,0" VerticalAlignment="Top"/>
 
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="0,115,0,0" x:Name="Button_Customize" HorizontalContentAlignment="Left" Click="Button_Customize_Click" >
-            <StackPanel Orientation="Horizontal" Margin="10,0">
-                <Image VerticalAlignment="Center" Height="16" Width="16" Source="../Images/Resources/Size16x16/blackboard_drawing.png" />
-                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Customize" Margin="5,0,0,0" />
-            </StackPanel>
-        </Button>
+        <ui:ButtonImage HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="0,115,0,0" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/blackboard_drawing.png" Text="Customize" HorizontalContentAlignment="Left" x:Name="Button_Customize" Click="Button_Customize_Click"/>
 
         <Separator Height="1" Margin="0,142,0,0" VerticalAlignment="Top"/>
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" Margin="0,148,0,0" VerticalContentAlignment="Center" Content="Message &quot;HH not found&quot;:" />

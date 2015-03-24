@@ -97,7 +97,7 @@ namespace PsHandler.PokerTypes
             _windowWindowsInfo.Show();
         }
 
-        private void Button_SaveAndClose_Click(object sender, RoutedEventArgs e)
+        private void Button_OK_Click(object sender, RoutedEventArgs e)
         {
             if (TextBox_Name.Text.Length == 0)
             {

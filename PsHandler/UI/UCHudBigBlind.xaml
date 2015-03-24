@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:PsHandler.UI"
              mc:Ignorable="d" UseLayoutRounding="True"
              d:DesignHeight="400" d:DesignWidth="600">
     <Grid>
@@ -12,13 +13,8 @@
         <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,27,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_LockHudBigBlindLocation">
             <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Lock BB/M HUD Location" />
         </CheckBox>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="180" Margin="164,27,0,0" HorizontalContentAlignment="Left" x:Name="Button_RestoreDefaultLocations" Click="Button_RestoreDefaultLocations_Click">
-            <StackPanel Orientation="Horizontal" Margin="10,0">
-                <Image VerticalAlignment="Center" Height="16" Width="16" Source="../Images/Resources/Size16x16/default_value.png" />
-                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Restore Default Locations" Margin="5,0,0,0" />
-            </StackPanel>
-        </Button>
-        
+        <ui:ButtonImage HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="180" Margin="164,27,0,0" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/default_value.png" Text="Restore Default Locations" HorizontalContentAlignment="Left" x:Name="Button_RestoreDefaultLocations" Click="Button_RestoreDefaultLocations_Click"/>
+
         <Separator Height="1" Margin="0,54,0,0" VerticalAlignment="Top"/>
 
         <Grid HorizontalAlignment="Left" Height="66" Margin="0,60,0,0" VerticalAlignment="Top" Width="140">
@@ -49,30 +45,11 @@
         <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="0,164,0,0" VerticalContentAlignment="Center" x:Name="CheckBox_ShowForHero">
             <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Show for Hero" />
         </CheckBox>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="145,137,0,0" HorizontalContentAlignment="Left" x:Name="Button_CustomizeOpponents" Click="Button_CustomizeOpponents_Click">
-            <StackPanel Orientation="Horizontal" Margin="10,0">
-                <Image VerticalAlignment="Center" Height="16" Width="16" Source="../Images/Resources/Size16x16/blackboard_drawing.png" />
-                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Customize" Margin="5,0,0,0" />
-            </StackPanel>
-        </Button>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="130" Margin="250,137,0,0" HorizontalContentAlignment="Left" x:Name="Button_ColorsByValueOpponents" Click="Button_ColorsByValueOpponents_Click">
-            <StackPanel Orientation="Horizontal" Margin="10,0">
-                <Image VerticalAlignment="Center" Height="16" Width="16" Source="/PsHandler;component/Images/Resources/Size16x16/color_wheel.png" />
-                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Colors by value" Margin="5,0,0,0" />
-            </StackPanel>
-        </Button>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="145,164,0,0" HorizontalContentAlignment="Left" x:Name="Button_CustomizeHero" Click="Button_CustomizeHero_Click">
-            <StackPanel Orientation="Horizontal" Margin="10,0">
-                <Image VerticalAlignment="Center" Height="16" Width="16" Source="../Images/Resources/Size16x16/blackboard_drawing.png" />
-                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Customize" Margin="5,0,0,0" />
-            </StackPanel>
-        </Button>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="130" Margin="250,164,0,0" HorizontalContentAlignment="Left" x:Name="Button_ColorsByValueHero" Click="Button_ColorsByValueHero_Click">
-            <StackPanel Orientation="Horizontal" Margin="10,0">
-                <Image VerticalAlignment="Center" Height="16" Width="16" Source="/PsHandler;component/Images/Resources/Size16x16/color_wheel.png" />
-                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Height="22" Padding="0" Content="Colors by value" Margin="5,0,0,0" />
-            </StackPanel>
-        </Button>
+
+        <ui:ButtonImage HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="145,137,0,0" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/blackboard_drawing.png" Text="Customize" HorizontalContentAlignment="Left" x:Name="Button_CustomizeOpponents" Click="Button_CustomizeOpponents_Click"/>
+        <ui:ButtonImage HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="130" Margin="250,137,0,0" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/color_wheel.png" Text="Colors by value" HorizontalContentAlignment="Left" x:Name="Button_ColorsByValueOpponents" Click="Button_ColorsByValueOpponents_Click"/>
+        <ui:ButtonImage HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="100" Margin="145,164,0,0" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/blackboard_drawing.png" Text="Customize" HorizontalContentAlignment="Left" x:Name="Button_CustomizeHero" Click="Button_CustomizeHero_Click"/>
+        <ui:ButtonImage HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="130" Margin="250,164,0,0" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/color_wheel.png" Text="Colors by value" HorizontalContentAlignment="Left" x:Name="Button_ColorsByValueHero" Click="Button_ColorsByValueHero_Click"/>
 
         <Separator Height="1" Margin="0,191,0,0" VerticalAlignment="Top"/>
 

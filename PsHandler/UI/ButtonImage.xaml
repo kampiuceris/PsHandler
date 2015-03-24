@@ -1,0 +1,11 @@
+﻿<Button x:Class="PsHandler.UI.ButtonImage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Padding="10,0">
+    <StackPanel Orientation="Horizontal">
+        <Image Height="16" Width="16" Margin="0,0,5,0" x:Name="Image_Main" Visibility="Collapsed"/>
+        <Label VerticalContentAlignment="Center" Margin="0,0,0,0" Padding="0" Content="" x:Name="Label_Main" />
+    </StackPanel>
+</Button>
