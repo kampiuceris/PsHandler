@@ -35,6 +35,7 @@ namespace PsHandler.Hud
 {
     public class TableHud : IDisposable
     {
+        private static readonly Regex _regexTitle = new Regex(@".+Blinds (\$|€|£)?(?<sb>[\d\.]+)\/(\$|€|£)?(?<bb>[\d\.]+)( Ante (\$|€|£)?(?<ante>[\d\.]+))? - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
         public enum OwnerState { Unknown, Unattached, Attached }
 
         private readonly Thread _thread;
@@ -44,11 +45,11 @@ namespace PsHandler.Hud
         public Table Table;
         public WindowTimer WindowTimer;
         public WindowBigBlind[] WindowsBigBlind = new WindowBigBlind[10];
-        //
-        private static readonly Regex _regexTitle = new Regex(@".+Blinds (\$|€|£)?(?<sb>[\d\.]+)\/(\$|€|£)?(?<bb>[\d\.]+)( Ante (\$|€|£)?(?<ante>[\d\.]+))? - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
 
         public TableHud(Table table)
         {
+            #region Init Windows
+
             Methods.UiInvoke(() =>
             {
                 Table = table;
@@ -63,12 +64,16 @@ namespace PsHandler.Hud
                 }
             });
 
+            #endregion
+
             _thread = new Thread(() =>
             {
                 try
                 {
                     while (true)
                     {
+                        #region Calculate Timer / BigBlinds
+
                         string title = Table.Title, className = Table.ClassName;
                         long tournamentNumber;
                         decimal sb, bb, ante;
@@ -92,9 +97,13 @@ namespace PsHandler.Hud
                             }
                         }
 
+                        #endregion
+
+                        #region Update Timer / BigBlinds
+
                         Methods.UiInvoke(() =>
                         {
-                            try
+                            try // to eliminate that stupid UpdateView null reference problem..
                             {
                                 // Update View
                                 WindowTimer.UpdateView(timerValue, PokerType != null ? PokerType.Name : "Unknown");
@@ -114,6 +123,9 @@ namespace PsHandler.Hud
                             {
                             }
                         });
+
+                        #endregion
+
                         Thread.Sleep(500);
                     }
                 }
@@ -132,6 +144,8 @@ namespace PsHandler.Hud
 #endif
                 finally
                 {
+                    #region Dispose Windows
+
                     Methods.UiInvoke(() =>
                     {
                         WindowTimer.Close();
@@ -140,6 +154,8 @@ namespace PsHandler.Hud
                             WindowsBigBlind[i].Close();
                         }
                     });
+
+                    #endregion
                 }
             });
             _thread.Start();

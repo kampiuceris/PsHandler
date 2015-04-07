@@ -200,9 +200,12 @@ namespace PsHandler.Hud
             }));
         }
 
-        public void SetToolTip(string text)
+        public void SetToolTip(object toolTip)
         {
-            ToolTip = text;
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(delegate
+            {
+                ToolTip = toolTip;
+            }));
         }
     }
 }
