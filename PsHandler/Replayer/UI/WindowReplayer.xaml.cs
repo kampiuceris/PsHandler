@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -176,9 +177,12 @@ namespace PsHandler.Replayer.UI
             var pokerHand = UcReplayerTable_Main.PokerHand;
             if (pokerHand != null)
             {
-                var tempPokerHand = PokerHand.Parse(pokerHand.HandHistory);
-                var tempEv = new Ev(tempPokerHand, payouts, tempPokerHand.BuyIn * (int)tempPokerHand.TableSize, tempPokerHand.Currency, PokerMath.Evaluator.Hand.Evaluate);
-                WindowMessage.Show(tempEv.ToString(), "Expected Value Analysis", WindowMessageButtons.OK, WindowMessageImage.None, this, WindowStartupLocation.CenterOwner, WindowMessageTextType.TextBox, new FontFamily("Consolas"));
+                new Thread(() =>
+                {
+                    var tempPokerHand = PokerHand.Parse(pokerHand.HandHistory);
+                    var tempEv = new Ev(tempPokerHand, payouts, tempPokerHand.BuyIn * (int)tempPokerHand.TableSize, tempPokerHand.Currency, PokerMath.Evaluator.Hand.Evaluate);
+                    Methods.UiInvoke(() => WindowMessage.Show(tempEv.ToString(), "Expected Value Analysis", WindowMessageButtons.OK, WindowMessageImage.None, this, WindowStartupLocation.CenterOwner, WindowMessageTextType.TextBox, new FontFamily("Consolas")));
+                }).Start();
             }
         }
 
