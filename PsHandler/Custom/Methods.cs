@@ -21,6 +21,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -202,8 +203,30 @@ namespace PsHandler.Custom
             UiInvoke(() =>
             {
                 string fileName = "pshandler_error_" + DateTime.Now.Ticks + ".log";
-                File.WriteAllText(fileName, e.Message + Environment.NewLine + Environment.NewLine + e.StackTrace);
-                WindowMessage.ShowDialog(e.Message + Environment.NewLine + Environment.NewLine + "Log file: " + fileName, "Error", WindowMessageButtons.OK, WindowMessageImage.Error, owner, windowStartupLocation);
+
+                StringBuilder sbFile = new StringBuilder();
+                sbFile.AppendLine("Message: " + e.Message);
+                sbFile.AppendLine("Type: " + e.GetType());
+                sbFile.AppendLine("Data: " + e.Data);
+                sbFile.AppendLine("HResult: " + e.HResult);
+                sbFile.AppendLine("HelpLink: " + e.HelpLink);
+                sbFile.AppendLine("InnerException: " + e.InnerException);
+                sbFile.AppendLine("Source: " + e.Source);
+                sbFile.AppendLine("TargetSite: " + e.TargetSite);
+                sbFile.AppendLine("StackTrace:");
+                sbFile.AppendLine();
+                sbFile.AppendLine(e.StackTrace);
+
+                File.WriteAllText(fileName, sbFile.ToString());
+
+                StringBuilder sbMessageBox = new StringBuilder();
+                sbMessageBox.AppendLine(e.Message);
+                sbMessageBox.AppendLine();
+                sbMessageBox.AppendLine(e.GetType().ToString());
+                sbMessageBox.AppendLine();
+                sbMessageBox.AppendLine("Log file: " + fileName);
+
+                WindowMessage.ShowDialog(sbMessageBox.ToString(), "Error", WindowMessageButtons.OK, WindowMessageImage.Error, owner, windowStartupLocation);
             });
         }
 
