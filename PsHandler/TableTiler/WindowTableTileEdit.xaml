@@ -5,7 +5,7 @@
         xmlns:tableTiler="clr-namespace:PsHandler.TableTiler"
         Title="Table Tile Edit" UseLayoutRounding="True" Background="#FFF0F0F0" Icon="../Images/PsHandler.ico"
         MinWidth="640" MinHeight="400" Width="640" Height="480">
-    <Grid Margin="10,10,10,10">
+    <Grid Margin="10" x:Name="Grid_Main" Focusable="True" Background="Transparent">
         <Grid Margin="0,0,0,27">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -15,7 +15,7 @@
             <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Content="Name:" Width="34" x:Name="Label_Name" />
             <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="45,0,5,0" Height="22" AcceptsReturn="False" Padding="0" x:Name="TextBox_Name" />
             <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Content="Hotkey:" Margin="0,27,0,0" Width="40" x:Name="Label_Hotkey" />
-            <ui:TextBoxHotkey Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Margin="45,27,5,0" x:Name="TextBoxHotkey_Hotkey" />
+            <ui:TextBoxHotkey Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Margin="45,27,212,0" x:Name="TextBoxHotkey_Hotkey" />
             <CheckBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Margin="0,54,0,0" x:Name="CheckBox_SortTournamentsByStartingTime">
                 <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Sort tournaments by starting time" />
             </CheckBox>
@@ -35,20 +35,23 @@
             </RadioButton>
             <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Width="127" Padding="0" Content="" Margin="39,157,0,0" x:Name="Label_DisabledToTheTop" />
             <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Width="95" Padding="0" Content="" Margin="39,179,0,0" x:Name="Label_DisabledToTheClosest" />
+            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0" Height="22" Content="≤ Table count ≤" Margin="0,27,45,0" Width="90" />
+            <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,27,135,0" Height="22" AcceptsReturn="False" x:Name="TextBox_TableCountEqualOrGreaterThan" Text="" Width="40" />
+            <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,27,5,0" Height="22" AcceptsReturn="False" x:Name="TextBox_TableCountEqualOrLessThan" Text="" Width="40" />
 
-            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Margin="0,206,0,0" Content="Preview:" />
-            <Border Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" BorderThickness="1" BorderBrush="LightGray" Padding="5" Margin="0,228,5,0" >
+            <GroupBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" BorderThickness="1" BorderBrush="LightGray" Padding="5" Margin="0,206,5,0" Header="Preview" >
                 <tableTiler:UCScreenPreview x:Name="UCScreenPreview_Main" />
-            </Border>
+            </GroupBox>
 
-            <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Content="X Y Width Height:" Width="97" x:Name="Label_XYWidthHeight" />
-            <TextBox Grid.Row="0" Grid.Column="1" Margin="0,27,0,0" VerticalScrollBarVisibility="Visible" TextWrapping="NoWrap" AcceptsReturn="True" FontFamily="Consolas" FontSize="11" x:Name="TextBox_XYWidthHeight" />
-
+            <GroupBox Grid.Row="0" Grid.Column="1" Header="X Y Width Height:" x:Name="GroupBox_XYWidthHeight">
+                <TextBox VerticalScrollBarVisibility="Visible" TextWrapping="NoWrap" AcceptsReturn="True" FontFamily="Consolas" FontSize="11" x:Name="TextBox_XYWidthHeight" />
+            </GroupBox>
         </Grid>
 
         <ui:ButtonImage HorizontalAlignment="Right" Margin="0,0,105,0" Width="100" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/accept.png" Text="OK" HorizontalContentAlignment="Center" x:Name="Button_OK" Click="Button_OK_Click" Height="22" VerticalAlignment="Bottom"/>
         <ui:ButtonImage HorizontalAlignment="Right" Margin="0,0,0,0" Width="100" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/cancel.png" Text="Cancel" HorizontalContentAlignment="Center" x:Name="Button_Close" Click="Button_Close_Click" Height="22" VerticalAlignment="Bottom"/>
         <ui:ButtonImage HorizontalAlignment="Left" Margin="0,0,0,0" Width="120" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/monitor_window_3d_search.png" Text="Windows Info" HorizontalContentAlignment="Center" x:Name="Button_WindowsInfo" Click="Button_WindowsInfo_Click" Height="22" VerticalAlignment="Bottom"/>
+        <ui:ButtonImage HorizontalAlignment="Left" Margin="125,0,0,0" Width="140" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/layouts_four_grid.png" Text="Generate Layout" HorizontalContentAlignment="Center" x:Name="Button_GenerateLayout" Click="Button_GenerateLayout_Click" Height="22" VerticalAlignment="Bottom"/>
 
     </Grid>
 </Window>

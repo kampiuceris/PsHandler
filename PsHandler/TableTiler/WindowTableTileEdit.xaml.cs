@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -36,6 +37,7 @@ namespace PsHandler.TableTiler
         public TableTile TableTile;
         public bool Saved;
         private WindowWindowsInfo _windowWindowsInfo;
+        private WindowGenerateLayout _windowGenerateLayout;
 
         public WindowTableTileEdit(Window owner, TableTile tableTile = null)
         {
@@ -46,7 +48,19 @@ namespace PsHandler.TableTiler
 
             // Hook
 
-            Closing += (sender, args) => { if (_windowWindowsInfo != null) { _windowWindowsInfo.Close(); } };
+            Grid_Main.MouseLeftButtonDown += (sender, args) => Grid_Main.Focus();
+
+            Closing += (sender, args) =>
+            {
+                if (_windowWindowsInfo != null)
+                {
+                    _windowWindowsInfo.Close();
+                }
+                if (_windowGenerateLayout != null)
+                {
+                    _windowGenerateLayout.Close();
+                }
+            };
 
             TextBox_RegexWindowTitle.TextChanged += (sender, args) => UpdateIFilter();
             TextBox_RegexWindowClass.TextChanged += (sender, args) => UpdateIFilter();
@@ -95,11 +109,13 @@ namespace PsHandler.TableTiler
                     RadioButton_ToTheClosest.IsChecked = true;
                     break;
             }
+            TextBox_TableCountEqualOrGreaterThan.Text = string.Format("{0}", TableTile.TableCountEqualOrGreaterThan);
+            TextBox_TableCountEqualOrLessThan.Text = string.Format("{0}", TableTile.TableCountEqualOrLessThan);
 
             // ToolTips
 
-            Label_XYWidthHeight.ToolTip = "Create slots (one per line): X Y Width Height";
-            ToolTipService.SetShowDuration(Label_XYWidthHeight, 60000);
+            GroupBox_XYWidthHeight.ToolTip = "Create slots (one per line): X Y Width Height";
+            ToolTipService.SetShowDuration(GroupBox_XYWidthHeight, 60000);
 
             CheckBox_SortTournamentsByStartingTime.ToolTip = "Older tournaments will target upper slots (cash tables won't be affected).";
             ToolTipService.SetShowDuration(CheckBox_SortTournamentsByStartingTime, 60000);
@@ -121,6 +137,8 @@ namespace PsHandler.TableTiler
 
             Label_DisabledToTheClosest.ToolTip = new UCToolTipTableTilerAutoTileClosest();
             ToolTipService.SetShowDuration(Label_DisabledToTheClosest, 60000);
+
+            UCScreenPreview_Main_Update();
         }
 
         private void UCScreenPreview_Main_Update()
@@ -161,6 +179,13 @@ namespace PsHandler.TableTiler
             _windowWindowsInfo.Show();
         }
 
+        private void Button_GenerateLayout_Click(object sender, RoutedEventArgs e)
+        {
+            if (_windowGenerateLayout != null) _windowGenerateLayout.Close();
+            _windowGenerateLayout = new WindowGenerateLayout();
+            _windowGenerateLayout.Show();
+        }
+
         private void Button_OK_Click(object sender, RoutedEventArgs e)
         {
             if (TextBox_Name.Text.Length == 0)
@@ -176,7 +201,7 @@ namespace PsHandler.TableTiler
             System.Drawing.Rectangle[] xywhs = GetXYWHs();
             if (xywhs == null)
             {
-                WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", Label_XYWidthHeight.Content), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
+                WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", "X Y Width Height"), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
                 return;
             }
             try
@@ -195,6 +220,38 @@ namespace PsHandler.TableTiler
             catch
             {
                 WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", Label_RegexWindowClass.Content), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
+                return;
+            }
+            try
+            {
+                if (TextBox_TableCountEqualOrGreaterThan.Text.Length > 0)
+                {
+                    TableTile.TableCountEqualOrGreaterThan = int.Parse(TextBox_TableCountEqualOrGreaterThan.Text);
+                }
+                else
+                {
+                    TableTile.TableCountEqualOrGreaterThan = 1;
+                }
+            }
+            catch
+            {
+                WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", TextBox_TableCountEqualOrGreaterThan.Text), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
+                return;
+            }
+            try
+            {
+                if (TextBox_TableCountEqualOrLessThan.Text.Length > 0)
+                {
+                    TableTile.TableCountEqualOrLessThan = int.Parse(TextBox_TableCountEqualOrLessThan.Text);
+                }
+                else
+                {
+                    TableTile.TableCountEqualOrLessThan = 100;
+                }
+            }
+            catch
+            {
+                WindowMessage.ShowDialog(string.Format("Invalid '{0}' input.", TextBox_TableCountEqualOrLessThan.Text), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
                 return;
             }
 

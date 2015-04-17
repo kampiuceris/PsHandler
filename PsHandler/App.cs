@@ -46,7 +46,6 @@ namespace PsHandler
         public static Handler Handler;
         public static RandomizerManager RandomizerManager;
         public static TableManager TableManager;
-
         private static WindowReplayer _windowReplayer;
         public static WindowReplayer WindowReplayer
         {

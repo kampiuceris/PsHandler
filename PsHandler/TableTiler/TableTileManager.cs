@@ -21,6 +21,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows.Interop;
 using System.Xml.Linq;
 using PsHandler.Custom;
 using PsHandler.Import;
@@ -111,6 +112,12 @@ namespace PsHandler.TableTiler
         }
         private readonly List<AutoTileWithTimestamp> _tablesToAutoTile = new List<AutoTileWithTimestamp>();
         private readonly object _lockAutoTile = new object();
+        private struct HandleTitleClass
+        {
+            public IntPtr Handle;
+            public string Title;
+            public string Class;
+        }
 
         public void SetKeyCombination(KeyCombination keyCombination)
         {
@@ -209,6 +216,8 @@ namespace PsHandler.TableTiler
 
         // private Tile mech
 
+
+
         private void Tile(KeyCombination kc)
         {
             // collect info
@@ -217,17 +226,30 @@ namespace PsHandler.TableTiler
 
             if (ttatis.Any())
             {
-                foreach (IntPtr hwnd in WinApi.GetWindowHWndAll().Where(o => !Methods.IsMinimized(o)))
+                // get all windows info
+                var windowsInfo = new List<HandleTitleClass>();
+                foreach (var handle in WinApi.GetWindowHWndAll().Where(o => !Methods.IsMinimized(o)))
                 {
-                    string title = WinApi.GetWindowTitle(hwnd);
-                    string windowClass = WinApi.GetClassName(hwnd);
-                    //Debug.WriteLine("Window: " + title);
-                    foreach (var ttati in ttatis)
+                    windowsInfo.Add(new HandleTitleClass
                     {
-                        if (ttati.TableTile.RegexWindowClass.IsMatch(windowClass) && ttati.TableTile.RegexWindowTitle.IsMatch(title))
+                        Handle = handle,
+                        Title = WinApi.GetWindowTitle(handle),
+                        Class = WinApi.GetClassName(handle)
+                    });
+                }
+
+                // checkif and tile
+                foreach (var ttati in ttatis)
+                {
+                    // check how many tables match regextitle/regexclass
+                    var windowsMatchRegexes = windowsInfo.Where(a => ttati.TableTile.RegexWindowClass.IsMatch(a.Class) && ttati.TableTile.RegexWindowTitle.IsMatch(a.Title)).ToArray();
+                    if (windowsMatchRegexes.Any() && ttati.TableTile.TableCountEqualOrGreaterThan <= windowsMatchRegexes.Length && windowsMatchRegexes.Length <= ttati.TableTile.TableCountEqualOrLessThan)
+                    {
+                        foreach (var windowInfo in windowsMatchRegexes)
                         {
-                            TableInfo ti = new TableInfo { Handle = hwnd, Title = title, CurrentRectangle = WinApi.GetWindowRectangle(hwnd) };
-                            Match match = _regexTournamentNumber.Match(title);
+                            // table tile config has valid targets
+                            TableInfo ti = new TableInfo { Handle = windowInfo.Handle, Title = windowInfo.Title, CurrentRectangle = WinApi.GetWindowRectangle(windowInfo.Handle) };
+                            Match match = _regexTournamentNumber.Match(windowInfo.Title);
                             if (match.Success)
                             {
                                 ti.IsTournament = long.TryParse(match.Groups["tournament_number"].Value, out ti.TournamentNumber);
@@ -250,6 +272,41 @@ namespace PsHandler.TableTiler
                         }
                     }
                 }
+
+                // obsolete
+                //foreach (IntPtr hwnd in WinApi.GetWindowHWndAll().Where(o => !Methods.IsMinimized(o)))
+                //{
+                //    string title = WinApi.GetWindowTitle(hwnd);
+                //    string windowClass = WinApi.GetClassName(hwnd);
+                //    //Debug.WriteLine("Window: " + title);
+                //    foreach (var ttati in ttatis)
+                //    {
+                //        if (ttati.TableTile.RegexWindowClass.IsMatch(windowClass) && ttati.TableTile.RegexWindowTitle.IsMatch(title))
+                //        {
+                //            TableInfo ti = new TableInfo { Handle = hwnd, Title = title, CurrentRectangle = WinApi.GetWindowRectangle(hwnd) };
+                //            Match match = _regexTournamentNumber.Match(title);
+                //            if (match.Success)
+                //            {
+                //                ti.IsTournament = long.TryParse(match.Groups["tournament_number"].Value, out ti.TournamentNumber);
+                //                Tournament tournament = App.HandHistoryManager.GetTournament(ti.TournamentNumber);
+                //                if (tournament != null)
+                //                {
+                //                    ti.FirstHandTimestamp = tournament.GetFirstHandTimestampET();
+                //                }
+                //                else
+                //                {
+                //                    ti.FirstHandTimestamp = DateTime.MaxValue;
+                //                }
+                //            }
+                //            else
+                //            {
+                //                ti.IsTournament = false;
+                //                ti.FirstHandTimestamp = DateTime.MaxValue;
+                //            }
+                //            ttati.TableInfos.Add(ti);
+                //        }
+                //    }
+                //}
 
                 // tile
 
@@ -310,7 +367,7 @@ namespace PsHandler.TableTiler
 
             // move and resize windows
             //foreach (HandleRectangleWindow info in infoForWindowsToMove) { MoveWindowBringWindowToTop(info.Handle, info.RectangleWindow); }
-            BeginDeferWindowPosDeferWindowPosEndDeferWindowPos(infoForWindowsToMove.ToArray());
+            BeginDeferWindowPosDeferWindowPosEndDeferWindowPos(infoForWindowsToMove.ToArray(), IntPtr.Zero);
         }
 
         private static IEnumerable<HandleRectangleWindow> MoveClosest(List<Rectangle> availablePositions, List<TableInfo> availableWindows)
@@ -347,12 +404,21 @@ namespace PsHandler.TableTiler
             WinApi.BringWindowToTop(handle);
         }
 
-        private static void BeginDeferWindowPosDeferWindowPosEndDeferWindowPos(HandleRectangleWindow[] infos)
+        private static void BeginDeferWindowPosDeferWindowPosEndDeferWindowPos(HandleRectangleWindow[] infos, IntPtr hWndInsertAfter)
         {
             IntPtr pointerToMultipleWindowPositionStructure = WinApi.BeginDeferWindowPos(infos.Length);
             foreach (HandleRectangleWindow info in infos)
             {
-                WinApi.DeferWindowPos(pointerToMultipleWindowPositionStructure, info.Handle, IntPtr.Zero, info.RectangleWindow.X, info.RectangleWindow.Y, info.RectangleWindow.Width, info.RectangleWindow.Height, 0);
+                WinApi.DeferWindowPos(
+                    pointerToMultipleWindowPositionStructure,
+                    info.Handle,
+                    hWndInsertAfter,
+                    info.RectangleWindow.X,
+                    info.RectangleWindow.Y,
+                    info.RectangleWindow.Width,
+                    info.RectangleWindow.Height,
+                    WinApi.DeferWindowPosCommands.SWP_NOACTIVATE | WinApi.DeferWindowPosCommands.SWP_NOZORDER
+                    );
             }
             WinApi.EndDeferWindowPos(pointerToMultipleWindowPositionStructure);
         }
@@ -374,42 +440,74 @@ namespace PsHandler.TableTiler
             // filter only enabled and autotile tabletiles
             foreach (TableTile tableTile in GetTableTilesCopy().Where(o => o.IsEnabled && o.AutoTile).Where(tableTile => tableTile.RegexWindowClass.IsMatch(newTable.ClassName) && tableTile.RegexWindowTitle.IsMatch(newTable.Title)))
             {
-                // get available slots
-                List<AutoTileSlot> availableAutoTileSlots = new List<AutoTileSlot>();
-                for (int i = 0; i < tableTile.XYWHs.Length; i++)
+                // check if matches from-to table count rule
+                var count = oldTables.Count(a => tableTile.RegexWindowClass.IsMatch(a.ClassName) && tableTile.RegexWindowTitle.IsMatch(a.Title));
+                if (tableTile.TableCountEqualOrGreaterThan <= count + 1 && count + 1 <= tableTile.TableCountEqualOrLessThan)
                 {
-                    Rectangle slot = tableTile.XYWHs[i];
-                    bool isFreeSlot = oldTables.All(o => (GetDistanceBetweenPoints(GetCenterPointOfWindow(slot), GetCenterPointOfWindow(o.RectangleWindows)) > 5));
-                    if (isFreeSlot)
+                    // get available slots
+                    var tables = oldTables.ToList();
+                    var availableAutoTileSlots = new List<AutoTileSlot>();
+                    for (int i = 0; i < tableTile.XYWHs.Length; i++)
                     {
-                        availableAutoTileSlots.Add(new AutoTileSlot { Slot = slot, Id = i, DistanceToTheAvailableSlot = GetDistanceBetweenPoints(GetCenterPointOfWindow(slot), GetCenterPointOfWindow(newTable.RectangleWindows)) });
-                    }
-                }
-                if (availableAutoTileSlots.Any())
-                {
-                    if (tableTile.AutoTileMethod == AutoTileMethod.ToTheClosestSlot)
-                    {
-                        availableAutoTileSlots.Sort((o1, o2) =>
+                        availableAutoTileSlots.Add(new AutoTileSlot
                         {
-                            double d = o1.DistanceToTheAvailableSlot - o2.DistanceToTheAvailableSlot;
-                            if (d > 0) return 1;
-                            return -1;
+                            Slot = tableTile.XYWHs[i],
+                            Id = i,
+                            DistanceToTheAvailableSlot = GetDistanceBetweenPoints(GetCenterPointOfWindow(tableTile.XYWHs[i]), GetCenterPointOfWindow(newTable.RectangleWindows))
                         });
-                        Rectangle r = availableAutoTileSlots[0].Slot;
-                        WinApi.MoveWindow(newTable.Handle, r.X, r.Y, r.Width, r.Height, true);
-                        autoTileSuccessful = true;
                     }
-                    if (tableTile.AutoTileMethod == AutoTileMethod.ToTheTopSlot)
+
+                    for (int i = 0; i < tableTile.XYWHs.Length; i++)
                     {
-                        availableAutoTileSlots.Sort((o1, o2) =>
+                        var tableTakenThisSlot = tables.FirstOrDefault(o => GetDistanceBetweenPoints(GetCenterPointOfWindow(tableTile.XYWHs[i]), GetCenterPointOfWindow(o.RectangleWindows)) < 5);
+                        if (tableTakenThisSlot != null)
                         {
-                            double d = o1.Id - o2.Id;
-                            if (d > 0) return 1;
-                            return -1;
-                        });
-                        Rectangle r = availableAutoTileSlots[0].Slot;
-                        WinApi.MoveWindow(newTable.Handle, r.X, r.Y, r.Width, r.Height, true);
-                        autoTileSuccessful = true;
+                            tables.Remove(tableTakenThisSlot);
+                            availableAutoTileSlots.Remove(availableAutoTileSlots.First(a => a.Id == i));
+                        }
+                    }
+
+                    // autotile if available slots found
+                    if (availableAutoTileSlots.Any())
+                    {
+                        Rectangle slot = new Rectangle(0, 0, 0, 0);
+                        if (tableTile.AutoTileMethod == AutoTileMethod.ToTheClosestSlot)
+                        {
+                            availableAutoTileSlots.Sort((o1, o2) =>
+                            {
+                                double d = o1.DistanceToTheAvailableSlot - o2.DistanceToTheAvailableSlot;
+                                if (d > 0) return 1;
+                                return -1;
+                            });
+
+                            slot = availableAutoTileSlots[0].Slot;
+                        }
+                        if (tableTile.AutoTileMethod == AutoTileMethod.ToTheTopSlot)
+                        {
+                            availableAutoTileSlots.Sort((o1, o2) =>
+                            {
+                                double d = o1.Id - o2.Id;
+                                if (d > 0) return 1;
+                                return -1;
+                            });
+
+                            slot = availableAutoTileSlots[0].Slot;
+                        }
+
+                        if (!slot.IsEmpty)
+                        {
+                            WinApi.SetWindowPos(newTable.Handle, (IntPtr)(1), slot.X, slot.Y, slot.Width, slot.Height, WinApi.SetWindowPosFlags.DoNotActivate);
+                            //BeginDeferWindowPosDeferWindowPosEndDeferWindowPos(new HandleRectangleWindow[1]
+                            //{
+                            //    new HandleRectangleWindow
+                            //    {
+                            //        Handle = newTable.Handle,
+                            //        RectangleWindow = slot,
+                            //    }
+                            //}, (IntPtr)(1));
+
+                            autoTileSuccessful = true;
+                        }
                     }
                 }
             }

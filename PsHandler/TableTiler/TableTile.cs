@@ -43,6 +43,8 @@ namespace PsHandler.TableTiler
         public Regex RegexWindowTitle = new Regex("");
         public Regex RegexWindowClass = new Regex("");
         public Rectangle[] XYWHs = new Rectangle[0];
+        public int TableCountEqualOrGreaterThan = 1;
+        public int TableCountEqualOrLessThan = 100;
 
         public static IEnumerable<TableTile> GetDefaultValues()
         {
@@ -122,36 +124,100 @@ namespace PsHandler.TableTiler
                                     new XElement("AutoTileMethod", AutoTileMethod.ToString()),
                                     new XElement("RegexWindowTitle", RegexWindowTitle.ToString()),
                                     new XElement("RegexWindowClass", RegexWindowClass.ToString()),
-                                    new XElement("XYWHs", XYWHs.Select(o => new XElement("XYWH", string.Format("{0} {1} {2} {3}", o.X, o.Y, o.Width, o.Height))))
+                                    new XElement("XYWHs", XYWHs.Select(o => new XElement("XYWH", string.Format("{0} {1} {2} {3}", o.X, o.Y, o.Width, o.Height)))),
+                                    new XElement("TableCountEqualOrGreaterThan", TableCountEqualOrGreaterThan),
+                                    new XElement("TableCountEqualOrLessThan", TableCountEqualOrLessThan)
                                 );
         }
 
         public static TableTile FromXElement(XElement xElement, ref List<ExceptionPsHandler> exceptions, string exceptionHeader)
         {
+            TableTile tableTile = new TableTile();
+
             try
             {
-                return new TableTile
-                {
-                    Name = xElement.Element("Name").Value,
-                    IsEnabled = bool.Parse(xElement.Element("IsEnabled").Value),
-                    KeyCombination = KeyCombination.Parse(xElement.Element("Hotkey").Value),
-                    SortByStartingHand = bool.Parse(xElement.Element("SortByStartingHand").Value),
-                    AutoTile = bool.Parse(xElement.Element("AutoTile").Value),
-                    AutoTileMethod = ParseAutoTileMethod(xElement.Element("AutoTileMethod").Value),
-                    RegexWindowTitle = new Regex(xElement.Element("RegexWindowTitle").Value),
-                    RegexWindowClass = new Regex(xElement.Element("RegexWindowClass").Value),
-                    XYWHs = xElement.Element("XYWHs") == null ? new Rectangle[0] : xElement.Element("XYWHs").Elements().Select(o =>
-                    {
-                        string[] s = o.Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-                        return new Rectangle(int.Parse(s[0]), int.Parse(s[1]), int.Parse(s[2]), int.Parse(s[3]));
-                    }).ToArray(),
-                };
+                tableTile.Name = xElement.Element("Name").Value;
             }
             catch (Exception e)
             {
                 exceptions.Add(new ExceptionPsHandler(e, exceptionHeader + " TableTile.FromXElement() xElement:" + Environment.NewLine + xElement));
                 return null;
             }
+            try
+            {
+                tableTile.IsEnabled = bool.Parse(xElement.Element("IsEnabled").Value);
+            }
+            catch
+            {
+            }
+            try
+            {
+                tableTile.KeyCombination = KeyCombination.Parse(xElement.Element("Hotkey").Value);
+            }
+            catch
+            {
+            }
+            try
+            {
+                tableTile.SortByStartingHand = bool.Parse(xElement.Element("SortByStartingHand").Value);
+            }
+            catch
+            {
+            }
+            try
+            {
+                tableTile.AutoTile = bool.Parse(xElement.Element("AutoTile").Value);
+            }
+            catch
+            {
+            }
+            try
+            {
+                tableTile.AutoTileMethod = ParseAutoTileMethod(xElement.Element("AutoTileMethod").Value);
+            }
+            catch
+            {
+            }try
+            {
+                tableTile.RegexWindowTitle = new Regex(xElement.Element("RegexWindowTitle").Value);
+            }
+            catch
+            {
+            }
+            try
+            {
+                tableTile.RegexWindowClass = new Regex(xElement.Element("RegexWindowClass").Value);
+            }
+            catch
+            {
+            }
+            try
+            {
+                tableTile.XYWHs = xElement.Element("XYWHs") == null  ? new Rectangle[0] : xElement.Element("XYWHs").Elements().Select(o =>
+                {
+                    string[] s = o.Value.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries);
+                    return new Rectangle(int.Parse(s[0]), int.Parse(s[1]), int.Parse(s[2]), int.Parse(s[3]));
+                }).ToArray();
+            }
+            catch
+            {
+            }
+            try
+            {
+                tableTile.TableCountEqualOrGreaterThan = int.Parse(xElement.Element("TableCountEqualOrGreaterThan").Value);
+            }
+            catch
+            {
+            }
+            try
+            {
+                tableTile.TableCountEqualOrLessThan = int.Parse(xElement.Element("TableCountEqualOrLessThan").Value);
+            }
+            catch
+            {
+            }
+
+            return tableTile;
         }
     }
 }

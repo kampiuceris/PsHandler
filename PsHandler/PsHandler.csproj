@@ -163,6 +163,9 @@
     <Compile Include="TableManager.cs" />
     <Compile Include="TableTiler\TableTile.cs" />
     <Compile Include="TableTiler\TableTileManager.cs" />
+    <Compile Include="TableTiler\WindowGenerateLayout.xaml.cs">
+      <DependentUpon>WindowGenerateLayout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TimeZone.cs" />
     <Compile Include="UI\ButtonImage.xaml.cs">
       <DependentUpon>ButtonImage.xaml</DependentUpon>
@@ -201,6 +204,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Custom\ScreenCapture.cs" />
+    <Compile Include="UI\RadioButtonCentered.xaml.cs">
+      <DependentUpon>RadioButtonCentered.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\TextBoxHotkey.cs" />
     <Compile Include="UI\ToolTips\UCToolTipControllerHandReplayHotkey.xaml.cs">
       <DependentUpon>UCToolTipControllerHandReplayHotkey.xaml</DependentUpon>
@@ -382,7 +388,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="TableTiler\WindowGenerateLayout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\ButtonImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\RadioButtonCentered.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -887,6 +901,9 @@
   <ItemGroup>
     <Resource Include="ColorPicker\pointerbar.png" />
     <Resource Include="ColorPicker\pointerpalette.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\layouts_four_grid.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
