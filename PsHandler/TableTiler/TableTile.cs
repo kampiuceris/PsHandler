@@ -130,9 +130,15 @@ namespace PsHandler.TableTiler
                                 );
         }
 
+        public static TableTile FromXElement(XElement xElement)
+        {
+            List<ExceptionPsHandler> exceptions = new List<ExceptionPsHandler>();
+            return FromXElement(xElement, ref exceptions, "");
+        }
+
         public static TableTile FromXElement(XElement xElement, ref List<ExceptionPsHandler> exceptions, string exceptionHeader)
         {
-            TableTile tableTile = new TableTile();
+            var tableTile = new TableTile();
 
             try
             {
@@ -177,7 +183,8 @@ namespace PsHandler.TableTiler
             }
             catch
             {
-            }try
+            }
+            try
             {
                 tableTile.RegexWindowTitle = new Regex(xElement.Element("RegexWindowTitle").Value);
             }
@@ -193,9 +200,9 @@ namespace PsHandler.TableTiler
             }
             try
             {
-                tableTile.XYWHs = xElement.Element("XYWHs") == null  ? new Rectangle[0] : xElement.Element("XYWHs").Elements().Select(o =>
+                tableTile.XYWHs = xElement.Element("XYWHs") == null ? new Rectangle[0] : xElement.Element("XYWHs").Elements().Select(o =>
                 {
-                    string[] s = o.Value.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries);
+                    string[] s = o.Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                     return new Rectangle(int.Parse(s[0]), int.Parse(s[1]), int.Parse(s[2]), int.Parse(s[3]));
                 }).ToArray();
             }

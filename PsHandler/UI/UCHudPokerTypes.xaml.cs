@@ -146,6 +146,21 @@ namespace PsHandler.UI
         {
             Button_Edit_Click(null, new RoutedEventArgs());
         }
+
+        private void Button_CloneSelected_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = ListView_PokerTypes.SelectedItem as ListViewItemPokerType;
+            if (selectedItem != null)
+            {
+                var fromXElement = PokerType.FromXElement(selectedItem.PokerType.ToXElement());
+                if (fromXElement != null)
+                {
+                    fromXElement.Name = fromXElement.Name + string.Format(" {0}", DateTime.Now.Ticks);
+                    App.PokerTypeManager.Add(fromXElement);
+                    UpdateListView();
+                }
+            }
+        }
     }
 
     public class ListViewItemPokerType : ListViewItem

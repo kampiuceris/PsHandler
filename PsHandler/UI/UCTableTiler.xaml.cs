@@ -178,6 +178,21 @@ namespace PsHandler.UI
                 UpdateListView();
             }
         }
+
+        private void Button_CloneSelected_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = ListView_TableTiles.SelectedItem as ListViewItemTableTile;
+            if (selectedItem != null)
+            {
+                var fromXElement = TableTile.FromXElement(selectedItem.TableTile.ToXElement());
+                if (fromXElement != null)
+                {
+                    fromXElement.Name = fromXElement.Name + string.Format(" {0}", DateTime.Now.Ticks);
+                    App.TableTileManager.Add(fromXElement);
+                    UpdateListView();
+                }
+            }
+        }
     }
 
     public class ListViewItemTableTile : ListViewItem

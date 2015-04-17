@@ -905,6 +905,9 @@
   <ItemGroup>
     <Resource Include="Images\Resources\Size16x16\layouts_four_grid.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Resources\Size16x16\copying_and_distribution.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

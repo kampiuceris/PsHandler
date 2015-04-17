@@ -23,6 +23,7 @@
         <ui:ButtonImage HorizontalAlignment="Right" VerticalAlignment="Top" Height="22" Width="140" Margin="0,27,0,0" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/tag_blue_edit.png" Text="Edit Selected" HorizontalContentAlignment="Left" x:Name="Button_Edit" Click="Button_Edit_Click"/>
         <ui:ButtonImage HorizontalAlignment="Right" VerticalAlignment="Top" Height="22" Width="140" Margin="0,54,0,0" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/tag_blue_delete.png" Text="Delete Selected" HorizontalContentAlignment="Left" x:Name="Button_Delete" Click="Button_Delete_Click"/>
         <ui:ButtonImage HorizontalAlignment="Right" VerticalAlignment="Top" Height="22" Width="140" Margin="0,81,0,0" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/default_value.png" Text="Restore Defaults" HorizontalContentAlignment="Left" x:Name="Button_RestoreDefaults" Click="Button_RestoreDefaults_Click"/>
+        <ui:ButtonImage HorizontalAlignment="Right" VerticalAlignment="Top" Height="22" Width="140" Margin="0,108,0,0" ImageVisible="True" ImageSource="/PsHandler;component/Images/Resources/Size16x16/copying_and_distribution.png" Text="Clone Selected" HorizontalContentAlignment="Left" x:Name="Button_CloneSelected" Click="Button_CloneSelected_Click" />
 
     </Grid>
 </UserControl>

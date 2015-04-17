@@ -157,23 +157,47 @@ namespace PsHandler.PokerTypes
                                     );
         }
 
+        public static PokerType FromXElement(XElement xElement)
+        {
+            List<ExceptionPsHandler> exceptions = new List<ExceptionPsHandler>();
+            return FromXElement(xElement, ref exceptions, "");
+        }
+
         public static PokerType FromXElement(XElement xElement, ref List<ExceptionPsHandler> exceptions, string exceptionHeader)
         {
+            var pokerType = new PokerType();
             try
             {
-                return new PokerType
-                {
-                    Name = xElement.Element("Name") == null ? "" : xElement.Element("Name").Value,
-                    LevelLength = new TimeSpan(long.Parse(xElement.Element("LevelLength").Value)),
-                    RegexWindowTitle = new Regex(xElement.Element("RegexWindowTitle").Value),
-                    RegexWindowClass = new Regex(xElement.Element("RegexWindowClass").Value),
-                };
+                pokerType.Name = xElement.Element("Name") == null ? "" : xElement.Element("Name").Value;
             }
             catch (Exception e)
             {
                 exceptions.Add(new ExceptionPsHandler(e, exceptionHeader + " PokerType.FromXElement() xElement:" + Environment.NewLine + xElement));
                 return null;
             }
+            try
+            {
+                pokerType.LevelLength = new TimeSpan(long.Parse(xElement.Element("LevelLength").Value));
+            }
+            catch
+            {
+            }
+            try
+            {
+                pokerType.RegexWindowTitle = new Regex(xElement.Element("RegexWindowTitle").Value);
+            }
+            catch
+            {
+            }
+            try
+            {
+                pokerType.RegexWindowClass = new Regex(xElement.Element("RegexWindowClass").Value);
+            }
+            catch
+            {
+            }
+
+            return pokerType;
         }
     }
 }
