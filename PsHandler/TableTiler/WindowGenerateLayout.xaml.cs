@@ -215,22 +215,27 @@ namespace PsHandler.TableTiler
             GenerateLayout();
         }
 
+        private void Button_Close_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
         private void GenerateLayout()
         {
-            var workingArea = SelectedScreen.WorkingArea;
-            var adjustByWidth = AdjustByWidth;
-            var adjustByHeight = AdjustByHeight;
-            var fixedTableSize = FixedTableSize;
-            var columns = 1;
-            var rows = 1;
-            var horizontalAlignmentLeft = HorizontalAlignmentLeft;
-            var horizontalAlignmentCenter = HorizontalAlignmentCenter;
-            var horizontalAlignmentRight = HorizontalAlignmentRight;
-            var horizontalAlignmentStretch = HorizontalAlignmentStretch;
-            var verticalAlignmentTop = VerticalAlignmentTop;
-            var verticalAlignmentCenter = VerticalAlignmentCenter;
-            var verticalAlignmentBottom = VerticalAlignmentBottom;
-            var verticalAlignmentStretch = VerticalAlignmentStretch;
+            System.Drawing.Rectangle workingArea = SelectedScreen.WorkingArea;
+            bool adjustByWidth = AdjustByWidth;
+            bool adjustByHeight = AdjustByHeight;
+            bool fixedTableSize = FixedTableSize;
+            int columns = 1;
+            int rows = 1;
+            bool horizontalAlignmentLeft = HorizontalAlignmentLeft;
+            bool horizontalAlignmentCenter = HorizontalAlignmentCenter;
+            bool horizontalAlignmentRight = HorizontalAlignmentRight;
+            bool horizontalAlignmentStretch = HorizontalAlignmentStretch;
+            bool verticalAlignmentTop = VerticalAlignmentTop;
+            bool verticalAlignmentCenter = VerticalAlignmentCenter;
+            bool verticalAlignmentBottom = VerticalAlignmentBottom;
+            bool verticalAlignmentStretch = VerticalAlignmentStretch;
 
             // parse data
 
@@ -256,11 +261,11 @@ namespace PsHandler.TableTiler
             }
             // get wanted table size
 
-            var adjustedWindowSize = new System.Drawing.Size(0, 0);
+            var adjustedWindowSize = new System.Windows.Size(0, 0);
             if (!fixedTableSize)
             {
-                var wantedWindowSize = new System.Drawing.Size(workingArea.Width / columns, workingArea.Height / rows);
-                var wantedClientSize = new System.Drawing.Size(wantedWindowSize.Width - WindowsBorderThicknessInPixelsLeft - WindowsBorderThicknessInPixelsRight, wantedWindowSize.Height - WindowsBorderThicknessInPixelsTop - WindowsBorderThicknessInPixelsBottom);
+                var wantedWindowSize = new System.Windows.Size((double)workingArea.Width / columns, (double)workingArea.Height / rows);
+                var wantedClientSize = new System.Windows.Size(wantedWindowSize.Width - WindowsBorderThicknessInPixelsLeft - WindowsBorderThicknessInPixelsRight, wantedWindowSize.Height - WindowsBorderThicknessInPixelsTop - WindowsBorderThicknessInPixelsBottom);
 
                 // validate table size
 
@@ -270,18 +275,18 @@ namespace PsHandler.TableTiler
                 if (wantedClientSize.Height > PokerStarsThemeTable.HEIGHT_MAX) wantedClientSize.Height = (int)PokerStarsThemeTable.HEIGHT_MAX;
 
                 var adjustedClientSize = new System.Drawing.Size(0, 0);
-                if (adjustByWidth) adjustedClientSize = PokerStarsThemeTable.GetClientSizeByWidth(wantedClientSize.Width);
-                if (adjustByHeight) adjustedClientSize = PokerStarsThemeTable.GetClientSizeByHeight(wantedClientSize.Height);
+                if (adjustByWidth) adjustedClientSize = PokerStarsThemeTable.GetClientSizeByWidth((int)Math.Round(wantedClientSize.Width));
+                if (adjustByHeight) adjustedClientSize = PokerStarsThemeTable.GetClientSizeByHeight((int)Math.Round(wantedClientSize.Height));
                 if (adjustedClientSize.IsEmpty) throw new NotSupportedException();
 
-                adjustedWindowSize = new System.Drawing.Size(adjustedClientSize.Width + WindowsBorderThicknessInPixelsLeft + WindowsBorderThicknessInPixelsRight, adjustedClientSize.Height + WindowsBorderThicknessInPixelsTop + WindowsBorderThicknessInPixelsBottom);
+                adjustedWindowSize = new System.Windows.Size(adjustedClientSize.Width + WindowsBorderThicknessInPixelsLeft + WindowsBorderThicknessInPixelsRight, adjustedClientSize.Height + WindowsBorderThicknessInPixelsTop + WindowsBorderThicknessInPixelsBottom);
             }
             else
             {
                 try
                 {
-                    adjustedWindowSize = new System.Drawing.Size(int.Parse(TextBox_TableWidth.Text), int.Parse(TextBox_TableHeight.Text));
-                    var adjustedClientSize = new System.Drawing.Size(adjustedWindowSize.Width - WindowsBorderThicknessInPixelsLeft - WindowsBorderThicknessInPixelsRight, adjustedWindowSize.Height - WindowsBorderThicknessInPixelsTop - WindowsBorderThicknessInPixelsBottom);
+                    adjustedWindowSize = new System.Windows.Size(int.Parse(TextBox_TableWidth.Text), int.Parse(TextBox_TableHeight.Text));
+                    var adjustedClientSize = new System.Windows.Size(adjustedWindowSize.Width - WindowsBorderThicknessInPixelsLeft - WindowsBorderThicknessInPixelsRight, adjustedWindowSize.Height - WindowsBorderThicknessInPixelsTop - WindowsBorderThicknessInPixelsBottom);
                     if (adjustedClientSize.Width < PokerStarsThemeTable.WIDTH_MIN ||
                         adjustedClientSize.Width > PokerStarsThemeTable.WIDTH_MAX ||
                         adjustedClientSize.Height < PokerStarsThemeTable.HEIGHT_MIN ||
@@ -299,10 +304,10 @@ namespace PsHandler.TableTiler
 
             // place tables
 
-            var axisHorizontalLeft = workingArea.Left + adjustedWindowSize.Width / 2;
-            var axisHorizontalRight = workingArea.Right - adjustedWindowSize.Width / 2;
-            var axisVerticalTop = workingArea.Top + adjustedWindowSize.Height / 2;
-            var axisVerticalBottom = workingArea.Bottom - adjustedWindowSize.Height / 2;
+            double axisHorizontalLeft = workingArea.Left + (double)adjustedWindowSize.Width / 2;
+            double axisHorizontalRight = workingArea.Right - (double)adjustedWindowSize.Width / 2;
+            double axisVerticalTop = workingArea.Top + (double)adjustedWindowSize.Height / 2;
+            double axisVerticalBottom = workingArea.Bottom - (double)adjustedWindowSize.Height / 2;
 
             // adjust by alignments
 
@@ -330,7 +335,7 @@ namespace PsHandler.TableTiler
 
             if (verticalAlignmentTop)
             {
-                axisVerticalTop = workingArea.Top + adjustedWindowSize.Height/2;
+                axisVerticalTop = workingArea.Top + adjustedWindowSize.Height / 2;
                 axisVerticalBottom = axisVerticalTop + adjustedWindowSize.Height * (rows - 1);
             }
 
@@ -347,17 +352,17 @@ namespace PsHandler.TableTiler
 
             // create table center points
 
-            var axisColumnWidth = 0;
-            var axisRowHeight = 0;
+            double axisColumnWidth = 0;
+            double axisRowHeight = 0;
             if (columns > 1) axisColumnWidth = (axisHorizontalRight - axisHorizontalLeft) / (columns - 1);
             if (rows > 1) axisRowHeight = (axisVerticalBottom - axisVerticalTop) / (rows - 1);
 
-            var pointsCentered = new List<System.Drawing.Point>();
+            var pointsCentered = new List<System.Windows.Point>();
             for (int row = 0; row < rows; row++)
             {
                 for (int column = 0; column < columns; column++)
                 {
-                    pointsCentered.Add(new System.Drawing.Point
+                    pointsCentered.Add(new System.Windows.Point
                     (
                         axisHorizontalLeft + axisColumnWidth * column,
                         axisVerticalTop + axisRowHeight * row
@@ -372,10 +377,10 @@ namespace PsHandler.TableTiler
             {
                 rects.Add(new System.Drawing.Rectangle
                 (
-                    pointCentered.X - adjustedWindowSize.Width / 2,
-                    pointCentered.Y - adjustedWindowSize.Height / 2,
-                    adjustedWindowSize.Width,
-                    adjustedWindowSize.Height
+                    (int)Math.Round(pointCentered.X - adjustedWindowSize.Width / 2),
+                    (int)Math.Round(pointCentered.Y - adjustedWindowSize.Height / 2),
+                    (int)Math.Round(adjustedWindowSize.Width),
+                    (int)Math.Round(adjustedWindowSize.Height)
                 ));
             }
 

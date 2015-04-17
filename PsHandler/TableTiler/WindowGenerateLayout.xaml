@@ -12,7 +12,7 @@
         </CheckBox>
         <TextBox HorizontalAlignment="Right" Width="150" Margin="0,2,0,27" TextWrapping="Wrap" Text="" FontFamily="Consolas" FontSize="11" AcceptsReturn="True" x:Name="TextBox_XYWidthHeight" />
 
-        <UI:ButtonImage HorizontalAlignment="Right" Width="100" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/cancel.png" Text="Close" HorizontalContentAlignment="Center" x:Name="Button_Close" Height="22" VerticalAlignment="Bottom"/>
+        <UI:ButtonImage HorizontalAlignment="Right" Width="100" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/cancel.png" Text="Close" HorizontalContentAlignment="Center" x:Name="Button_Close" Height="22" VerticalAlignment="Bottom" Click="Button_Close_Click"/>
         <UI:ButtonImage HorizontalAlignment="Left" Width="382" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/layouts_four_grid.png" Text="Generate Layout" HorizontalContentAlignment="Center" x:Name="Button_GenerateLayout" Height="39" VerticalAlignment="Top" Margin="0,214,0,0" Click="Button_GenerateLayout_Click"/>
 
         <GroupBox Header="Preview" Margin="0,263,155,0" >
