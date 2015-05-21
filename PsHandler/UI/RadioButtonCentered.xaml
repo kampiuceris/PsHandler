@@ -1,8 +1,8 @@
-﻿<UserControl x:Class="PsHandler.UI.RadioButtonCentered"
+﻿<RadioButton x:Class="PsHandler.UI.RadioButtonCentered"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" VerticalContentAlignment="Center">
     <Label x:Name="Label_Main" VerticalContentAlignment="Center" Padding="0" Content="" />
-</UserControl>
+</RadioButton>
