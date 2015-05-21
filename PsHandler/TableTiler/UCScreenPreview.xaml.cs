@@ -46,6 +46,11 @@ namespace PsHandler.TableTiler
 
         public void Update(System.Drawing.Rectangle[] config, bool numerate)
         {
+            Update(config, numerate, new System.Drawing.Rectangle());
+        }
+
+        public void Update(System.Drawing.Rectangle[] config, bool numerate, System.Drawing.Rectangle workingArea)
+        {
             double
                 leftScreen = double.MaxValue,
                 topScreen = double.MaxValue,
@@ -88,6 +93,11 @@ namespace PsHandler.TableTiler
                 {
                     AddTable(rScreen, ratio, diffScreenX, diffScreenY, config[i], numerate ? (i + 1).ToString(CultureInfo.InvariantCulture) : "");
                 }
+            }
+
+            if (!workingArea.IsEmpty)
+            {
+                AddRectangle(rScreen, ratio, diffScreenX, diffScreenY, workingArea, Brushes.Crimson, 1, Brushes.Transparent);
             }
         }
 

@@ -43,7 +43,7 @@
                 <tableTiler:UCScreenPreview x:Name="UCScreenPreview_Main" />
             </GroupBox>
 
-            <GroupBox Grid.Row="0" Grid.Column="1" Header="X Y Width Height:" x:Name="GroupBox_XYWidthHeight">
+            <GroupBox Grid.Row="0" Grid.Column="1" Header="X Y Width Height" x:Name="GroupBox_XYWidthHeight">
                 <TextBox VerticalScrollBarVisibility="Visible" TextWrapping="NoWrap" AcceptsReturn="True" FontFamily="Consolas" FontSize="11" x:Name="TextBox_XYWidthHeight" />
             </GroupBox>
         </Grid>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -43,8 +44,8 @@ namespace PsHandler.TableTiler
                 return _screens[0];
             }
         }
-        private bool AdjustByWidth { get { return RadioButtonCentered_AdjustByWidth.IsChecked == true; } }
-        private bool AdjustByHeight { get { return RadioButtonCentered_AdjustByHeight.IsChecked == true; } }
+        private bool FitByWidth { get { return RadioButtonCentered_FitByWidth.IsChecked == true; } }
+        private bool FitByHeight { get { return RadioButtonCentered_FitByHeight.IsChecked == true; } }
         private bool FixedTableSize { get { return CheckBox_FixedTableSize.IsChecked == true; } }
         private bool HorizontalAlignmentLeft { get { return RadioButtonCentered_HorizontalAlignmentLeft.IsChecked == true; } }
         private bool HorizontalAlignmentCenter { get { return RadioButtonCentered_HorizontalAlignmentCenter.IsChecked == true; } }
@@ -61,11 +62,13 @@ namespace PsHandler.TableTiler
 
             for (int i = 0; i < _screens.Length; i++)
             {
-                StackPanel_Screens.Children.Add(new RadioButtonCentered
+                var radioButtonCentered = new RadioButtonCentered
                 {
                     Text = string.Format("Screen #{0} ({1} x {2})", i, _screens[i].Bounds.Width, _screens[i].Bounds.Height),
                     Height = 22
-                });
+                };
+                radioButtonCentered.Checked += (sender, args) => GenerateLayout();
+                StackPanel_Screens.Children.Add(radioButtonCentered);
             }
             if (StackPanel_Screens.Children.OfType<RadioButtonCentered>().Any())
             {
@@ -80,8 +83,9 @@ namespace PsHandler.TableTiler
                 Label_TableHeight.IsEnabled = true;
                 TextBox_TableWidth.IsEnabled = true;
                 TextBox_TableHeight.IsEnabled = true;
-                RadioButtonCentered_AdjustByWidth.IsEnabled = false;
-                RadioButtonCentered_AdjustByHeight.IsEnabled = false;
+                RadioButtonCentered_FitByWidth.IsEnabled = false;
+                RadioButtonCentered_FitByHeight.IsEnabled = false;
+                GenerateLayout();
             };
             CheckBox_FixedTableSize.Unchecked += (sender, args) =>
             {
@@ -89,8 +93,25 @@ namespace PsHandler.TableTiler
                 Label_TableHeight.IsEnabled = false;
                 TextBox_TableWidth.IsEnabled = false;
                 TextBox_TableHeight.IsEnabled = false;
-                RadioButtonCentered_AdjustByWidth.IsEnabled = true;
-                RadioButtonCentered_AdjustByHeight.IsEnabled = true;
+                RadioButtonCentered_FitByWidth.IsEnabled = true;
+                RadioButtonCentered_FitByHeight.IsEnabled = true;
+                GenerateLayout();
+            };
+            TextBox_TableColumns.TextChanged += (sender, args) => GenerateLayout();
+            TextBox_TableRows.TextChanged += (sender, args) => GenerateLayout();
+            RadioButtonCentered_FitByWidth.Checked += (sender, args) => GenerateLayout();
+            RadioButtonCentered_FitByHeight.Checked += (sender, args) => GenerateLayout();
+            RadioButtonCentered_HorizontalAlignmentCenter.Checked += (sender, args) => GenerateLayout();
+            RadioButtonCentered_HorizontalAlignmentLeft.Checked += (sender, args) => GenerateLayout();
+            RadioButtonCentered_HorizontalAlignmentRight.Checked += (sender, args) => GenerateLayout();
+            RadioButtonCentered_HorizontalAlignmentStretch.Checked += (sender, args) => GenerateLayout();
+            RadioButtonCentered_VerticalAlignmentBottom.Checked += (sender, args) => GenerateLayout();
+            RadioButtonCentered_VerticalAlignmentCenter.Checked += (sender, args) => GenerateLayout();
+            RadioButtonCentered_VerticalAlignmentStretch.Checked += (sender, args) => GenerateLayout();
+            RadioButtonCentered_VerticalAlignmentTop.Checked += (sender, args) => GenerateLayout();
+            TextBox_ScreenMargin.TextChanged += (sender, args) =>
+            {
+                GenerateLayout();
             };
             TextBox_TableWidth.TextChanged += (sender, args) =>
             {
@@ -135,6 +156,7 @@ namespace PsHandler.TableTiler
                     TextBox_TableWidth.Text = string.Format("{0}", PokerStarsThemeTable.WIDTH_MIN + WindowsBorderThicknessInPixelsLeft + WindowsBorderThicknessInPixelsRight);
                     TextBox_TableHeight.Text = string.Format("{0}", PokerStarsThemeTable.HEIGHT_MIN + WindowsBorderThicknessInPixelsTop + WindowsBorderThicknessInPixelsBottom);
                 }
+                GenerateLayout();
             };
 
             TextBox_TableHeight.LostFocus += (sender, args) =>
@@ -150,10 +172,12 @@ namespace PsHandler.TableTiler
                     TextBox_TableWidth.Text = string.Format("{0}", PokerStarsThemeTable.WIDTH_MIN + WindowsBorderThicknessInPixelsLeft + WindowsBorderThicknessInPixelsRight);
                     TextBox_TableHeight.Text = string.Format("{0}", PokerStarsThemeTable.HEIGHT_MIN + WindowsBorderThicknessInPixelsTop + WindowsBorderThicknessInPixelsBottom);
                 }
+                GenerateLayout();
             };
             Grid_Main.MouseLeftButtonDown += (sender, args) =>
             {
                 Grid_Main.Focus();
+                GenerateLayout();
             };
 
             Loaded += (sender, args) =>
@@ -165,11 +189,12 @@ namespace PsHandler.TableTiler
                 WindowsBorderThicknessInPixelsTop = clientRectangle.Top - windowRectangle.Top;
                 WindowsBorderThicknessInPixelsRight = windowRectangle.Right - clientRectangle.Right;
                 WindowsBorderThicknessInPixelsBottom = windowRectangle.Bottom - clientRectangle.Bottom;
+                GenerateLayout();
             };
 
             // seed
 
-            RadioButtonCentered_AdjustByWidth.IsChecked = true;
+            RadioButtonCentered_FitByWidth.IsChecked = true;
             CheckBox_FixedTableSize.IsChecked = true;
             CheckBox_FixedTableSize.IsChecked = false;
             TextBox_TableWidth.Text = string.Format("{0}", PokerStarsThemeTable.WIDTH_DEFAULT + WindowsBorderThicknessInPixelsLeft + WindowsBorderThicknessInPixelsRight);
@@ -197,34 +222,64 @@ namespace PsHandler.TableTiler
             return config.ToArray();
         }
 
+        private System.Drawing.Rectangle GetWorkingArea()
+        {
+            try
+            {
+                System.Drawing.Rectangle workingArea = SelectedScreen.WorkingArea;
+
+                var split = TextBox_ScreenMargin.Text.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
+                var screenMarginLeft = int.Parse(split[0]);
+                var screenMarginTop = int.Parse(split[1]);
+                var screenMarginRight = int.Parse(split[2]);
+                var screenMarginBottom = int.Parse(split[3]);
+
+                if (screenMarginLeft + screenMarginRight >= workingArea.Width ||
+                    screenMarginTop + screenMarginBottom >= workingArea.Height)
+                {
+                    throw new NotSupportedException("Invalid margin.");
+                }
+
+                var left = workingArea.Left + screenMarginLeft;
+                var top = workingArea.Top + screenMarginTop;
+                var right = workingArea.Right - screenMarginRight;
+                var bottom = workingArea.Bottom - screenMarginBottom;
+
+                workingArea = new System.Drawing.Rectangle(
+                    left,
+                    top,
+                    right - left,
+                    bottom - top);
+
+                return workingArea;
+            }
+            catch (Exception)
+            {
+            }
+            return SelectedScreen.WorkingArea;
+        }
+
         private void UCScreenPreview_Main_Update()
         {
             var config = GetXYWHs();
+            var workingArea = GetWorkingArea();
             TextBox_XYWidthHeight.Background = config == null ? new SolidColorBrush(Colors.MistyRose) : new SolidColorBrush(Colors.Honeydew);
             try
             {
-                UCScreenPreview_Main.Update(config, true);
+                UCScreenPreview_Main.Update(config, true, workingArea);
             }
             catch
             {
             }
         }
 
-        private void Button_GenerateLayout_Click(object sender, RoutedEventArgs e)
-        {
-            GenerateLayout();
-        }
-
-        private void Button_Close_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
         private void GenerateLayout()
         {
-            System.Drawing.Rectangle workingArea = SelectedScreen.WorkingArea;
-            bool adjustByWidth = AdjustByWidth;
-            bool adjustByHeight = AdjustByHeight;
+            if (!IsVisible) return;
+
+            System.Drawing.Rectangle workingArea = GetWorkingArea();
+            bool fitByWidth = FitByWidth;
+            bool fitByHeight = FitByHeight;
             bool fixedTableSize = FixedTableSize;
             int columns = 1;
             int rows = 1;
@@ -246,7 +301,7 @@ namespace PsHandler.TableTiler
             }
             catch (Exception)
             {
-                WindowMessage.ShowDialog("Invalid input: columns", "Error", WindowMessageButtons.OK, WindowMessageImage.Error, this, WindowStartupLocation.CenterOwner, WindowMessageTextType.TextBlock);
+                //WindowMessage.ShowDialog("Invalid input: columns", "Error", WindowMessageButtons.OK, WindowMessageImage.Error, this, WindowStartupLocation.CenterOwner, WindowMessageTextType.TextBlock);
                 return;
             }
             try
@@ -256,7 +311,7 @@ namespace PsHandler.TableTiler
             }
             catch (Exception)
             {
-                WindowMessage.ShowDialog("Invalid input: rows", "Error", WindowMessageButtons.OK, WindowMessageImage.Error, this, WindowStartupLocation.CenterOwner, WindowMessageTextType.TextBlock);
+                //WindowMessage.ShowDialog("Invalid input: rows", "Error", WindowMessageButtons.OK, WindowMessageImage.Error, this, WindowStartupLocation.CenterOwner, WindowMessageTextType.TextBlock);
                 return;
             }
             // get wanted table size
@@ -275,8 +330,8 @@ namespace PsHandler.TableTiler
                 if (wantedClientSize.Height > PokerStarsThemeTable.HEIGHT_MAX) wantedClientSize.Height = (int)PokerStarsThemeTable.HEIGHT_MAX;
 
                 var adjustedClientSize = new System.Drawing.Size(0, 0);
-                if (adjustByWidth) adjustedClientSize = PokerStarsThemeTable.GetClientSizeByWidth((int)Math.Round(wantedClientSize.Width));
-                if (adjustByHeight) adjustedClientSize = PokerStarsThemeTable.GetClientSizeByHeight((int)Math.Round(wantedClientSize.Height));
+                if (fitByWidth) adjustedClientSize = PokerStarsThemeTable.GetClientSizeByWidth((int)Math.Round(wantedClientSize.Width));
+                if (fitByHeight) adjustedClientSize = PokerStarsThemeTable.GetClientSizeByHeight((int)Math.Round(wantedClientSize.Height));
                 if (adjustedClientSize.IsEmpty) throw new NotSupportedException();
 
                 adjustedWindowSize = new System.Windows.Size(adjustedClientSize.Width + WindowsBorderThicknessInPixelsLeft + WindowsBorderThicknessInPixelsRight, adjustedClientSize.Height + WindowsBorderThicknessInPixelsTop + WindowsBorderThicknessInPixelsBottom);
@@ -332,22 +387,24 @@ namespace PsHandler.TableTiler
                     axisHorizontalRight = (workingArea.Left + workingArea.Width / 2) + (adjustedWindowSize.Width * (columns - 1) / 2);
                 }
             }
+            if (!overlappedVertical)
+            {
+                if (verticalAlignmentTop)
+                {
+                    axisVerticalTop = workingArea.Top + adjustedWindowSize.Height / 2;
+                    axisVerticalBottom = axisVerticalTop + adjustedWindowSize.Height * (rows - 1);
+                }
 
-            if (verticalAlignmentTop)
-            {
-                axisVerticalTop = workingArea.Top + adjustedWindowSize.Height / 2;
-                axisVerticalBottom = axisVerticalTop + adjustedWindowSize.Height * (rows - 1);
-            }
-
-            if (verticalAlignmentBottom)
-            {
-                axisVerticalBottom = workingArea.Bottom - adjustedWindowSize.Height / 2;
-                axisVerticalTop = axisVerticalBottom - adjustedWindowSize.Height * (rows - 1);
-            }
-            if (verticalAlignmentCenter)
-            {
-                axisVerticalTop = (workingArea.Top + workingArea.Height / 2) - (adjustedWindowSize.Height * (rows - 1) / 2);
-                axisVerticalBottom = (workingArea.Top + workingArea.Height / 2) + (adjustedWindowSize.Height * (rows - 1) / 2);
+                if (verticalAlignmentBottom)
+                {
+                    axisVerticalBottom = workingArea.Bottom - adjustedWindowSize.Height / 2;
+                    axisVerticalTop = axisVerticalBottom - adjustedWindowSize.Height * (rows - 1);
+                }
+                if (verticalAlignmentCenter)
+                {
+                    axisVerticalTop = (workingArea.Top + workingArea.Height / 2) - (adjustedWindowSize.Height * (rows - 1) / 2);
+                    axisVerticalBottom = (workingArea.Top + workingArea.Height / 2) + (adjustedWindowSize.Height * (rows - 1) / 2);
+                }
             }
 
             // create table center points
@@ -394,6 +451,7 @@ namespace PsHandler.TableTiler
             {
                 sb.AppendLine(string.Format("{0} {1} {2} {3}", rect.Left, rect.Top, rect.Width, rect.Height));
             }
+            TextBox_XYWidthHeight.Text = "";
             TextBox_XYWidthHeight.Text = sb.ToString();
         }
     }

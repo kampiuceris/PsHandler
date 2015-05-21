@@ -4,22 +4,28 @@
         xmlns:UI="clr-namespace:PsHandler.UI"
         xmlns:tableTiler="clr-namespace:PsHandler.TableTiler"
         x:Class="PsHandler.TableTiler.WindowGenerateLayout"
-        Title="Generate Layout" UseLayoutRounding="True" Background="#FFF0F0F0" Icon="../Images/PsHandler.ico" MinWidth="720" MinHeight="400" Width="720" Height="500">
+        Title="Generate Layout" UseLayoutRounding="True" Background="#FFF0F0F0" Icon="../Images/PsHandler.ico" MinWidth="740" MinHeight="400" Width="740" Height="500">
     <Grid Margin="10" Background="Transparent" Focusable="True" x:Name="Grid_Main">
+
+        <GroupBox Header="Screen Margin" Height="66" VerticalAlignment="Top" HorizontalAlignment="Left" Width="377">
+            <Grid Margin="10">
+                <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Content="Left, Top, Right, Bottom:" Width="135" />
+                <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="205" Margin="140,0,0,0" VerticalContentAlignment="Center" Text="0 0 0 0" x:Name="TextBox_ScreenMargin" />
+            </Grid>
+        </GroupBox>
 
         <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" x:Name="CheckBox_Fixed" Width="160" Visibility="Hidden">
             <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Save GUI size" />
         </CheckBox>
-        <TextBox HorizontalAlignment="Right" Width="150" Margin="0,2,0,27" TextWrapping="Wrap" Text="" FontFamily="Consolas" FontSize="11" AcceptsReturn="True" x:Name="TextBox_XYWidthHeight" />
+        <GroupBox Header="X Y Width Height" Margin="513,0,0,0" Height="275" VerticalAlignment="Top" >
+            <TextBox VerticalScrollBarVisibility="Visible" TextWrapping="NoWrap" AcceptsReturn="True" FontFamily="Consolas" FontSize="11" x:Name="TextBox_XYWidthHeight" />
+        </GroupBox>
 
-        <UI:ButtonImage HorizontalAlignment="Right" Width="100" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/cancel.png" Text="Close" HorizontalContentAlignment="Center" x:Name="Button_Close" Height="22" VerticalAlignment="Bottom" Click="Button_Close_Click"/>
-        <UI:ButtonImage HorizontalAlignment="Left" Width="382" ImageVisible="True" ImageSource="../Images/Resources/Size16x16/layouts_four_grid.png" Text="Generate Layout" HorizontalContentAlignment="Center" x:Name="Button_GenerateLayout" Height="39" VerticalAlignment="Top" Margin="0,214,0,0" Click="Button_GenerateLayout_Click"/>
-
-        <GroupBox Header="Preview" Margin="0,263,155,0" >
+        <GroupBox Header="Preview" Margin="0,275,0,0" >
             <tableTiler:UCScreenPreview x:Name="UCScreenPreview_Main" />
         </GroupBox>
 
-        <GroupBox Header="Columns &amp; Rows" HorizontalAlignment="Left" VerticalAlignment="Top" Height="91" Width="192" >
+        <GroupBox Header="Columns &amp; Rows" HorizontalAlignment="Left" VerticalAlignment="Top" Height="91" Width="192" Margin="0,66,0,0" >
             <Grid Margin="10">
                 <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Content="Table columns:" Width="85" />
                 <Label HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Content="Table rows:" Margin="0,27,0,0" Width="85" />
@@ -27,7 +33,7 @@
                 <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="70" Margin="90,27,0,0" VerticalContentAlignment="Center" Text="1" x:Name="TextBox_TableRows" />
             </Grid>
         </GroupBox>
-        <GroupBox Header="Table Size" HorizontalAlignment="Left" VerticalAlignment="Top" Height="118" Width="192" Margin="0,96,0,0">
+        <GroupBox Header="Table Size" HorizontalAlignment="Left" VerticalAlignment="Top" Height="118" Width="192" Margin="0,157,0,0">
             <Grid Margin="10">
                 <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" VerticalContentAlignment="Center" x:Name="CheckBox_FixedTableSize">
                     <Label VerticalContentAlignment="Center" Height="22"  Padding="0" Content="Fixed table size:" />
@@ -38,20 +44,19 @@
                 <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Width="70" Margin="90,54,0,0" VerticalContentAlignment="Center" x:Name="TextBox_TableHeight" />
             </Grid>
         </GroupBox>
-        <GroupBox Header="Table Size Preference" HorizontalAlignment="Left" VerticalAlignment="Top" Height="82" Width="185" Margin="197,132,0,0" x:Name="GroupBox_TableSizePreference">
+        <GroupBox Header="Table Overlapping" HorizontalAlignment="Left" VerticalAlignment="Top" Height="82" Width="185" Margin="192,193,0,0" x:Name="GroupBox_TableOverlapping">
             <Grid Margin="10">
-                <UI:RadioButtonCentered HorizontalAlignment="Left" VerticalAlignment="Top" Width="110" Height="22" Text="Adjust by width" x:Name="RadioButtonCentered_AdjustByWidth" />
-                <UI:RadioButtonCentered HorizontalAlignment="Left" Margin="0,22,0,0" VerticalAlignment="Top" Width="110" Height="22" Text="Adjust by height" x:Name="RadioButtonCentered_AdjustByHeight" />
-
+                <UI:RadioButtonCentered HorizontalAlignment="Left" VerticalAlignment="Top" Width="110" Height="22" Text="Fit by width" x:Name="RadioButtonCentered_FitByWidth" />
+                <UI:RadioButtonCentered HorizontalAlignment="Left" Margin="0,22,0,0" VerticalAlignment="Top" Width="110" Height="22" Text="Fit by height" x:Name="RadioButtonCentered_FitByHeight" />
             </Grid>
         </GroupBox>
-        <GroupBox Header="Screens" VerticalAlignment="Top" Height="127" Margin="197,0,0,0" HorizontalAlignment="Left" Width="185" >
+        <GroupBox Header="Screens" VerticalAlignment="Top" Height="127" Margin="192,66,0,0" HorizontalAlignment="Left" Width="185" >
             <Grid Margin="10">
                 <StackPanel Orientation="Vertical" x:Name="StackPanel_Screens" />
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="Horizontal Alignment" HorizontalAlignment="Left" VerticalAlignment="Top" Height="124" Width="136" Margin="387,0,0,0" >
+        <GroupBox Header="Horizontal Alignment" HorizontalAlignment="Left" VerticalAlignment="Top" Height="124" Width="136" Margin="377,0,0,0" >
             <Grid Margin="10">
                 <UI:RadioButtonCentered HorizontalAlignment="Left" VerticalAlignment="Top" Width="110" Height="22" Text="Left" x:Name="RadioButtonCentered_HorizontalAlignmentLeft" />
                 <UI:RadioButtonCentered HorizontalAlignment="Left" VerticalAlignment="Top" Width="110" Height="22" Text="Center" x:Name="RadioButtonCentered_HorizontalAlignmentCenter" Margin="0,22,0,0" />
@@ -59,7 +64,7 @@
                 <UI:RadioButtonCentered HorizontalAlignment="Left" VerticalAlignment="Top" Width="110" Height="22" Text="Stretch" x:Name="RadioButtonCentered_HorizontalAlignmentStretch" Margin="0,65,0,0" />
             </Grid>
         </GroupBox>
-        <GroupBox Header="Vertical Alignment" HorizontalAlignment="Left" VerticalAlignment="Top" Height="124" Width="135" Margin="387,129,0,0" >
+        <GroupBox Header="Vertical Alignment" HorizontalAlignment="Left" VerticalAlignment="Top" Height="124" Width="135" Margin="377,125,0,0" >
             <Grid Margin="10">
                 <UI:RadioButtonCentered HorizontalAlignment="Left" VerticalAlignment="Top" Width="110" Height="22" Text="Top" x:Name="RadioButtonCentered_VerticalAlignmentTop" />
                 <UI:RadioButtonCentered HorizontalAlignment="Left" VerticalAlignment="Top" Width="110" Height="22" Text="Center" x:Name="RadioButtonCentered_VerticalAlignmentCenter" Margin="0,22,0,0" />
