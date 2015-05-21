@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:PsHandler.UI"
         UseLayoutRounding="True" Background="#FFF0F0F0" Icon="../Images/PsHandler.ico"
-        Title="Message" SizeToContent="WidthAndHeight" MinWidth="256" MinHeight="128">
+        Title="Message" SizeToContent="WidthAndHeight" MinWidth="256" MinHeight="128" MaxWidth="1280" MaxHeight="720">
     <Grid Margin="10">
 
         <StackPanel Orientation="Horizontal" Margin="0,0,0,29">

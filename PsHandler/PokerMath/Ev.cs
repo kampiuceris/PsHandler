@@ -52,7 +52,7 @@ namespace PsHandler.PokerMath
         private string[] _communityCardsFlop;
         private string _communityCardsTurn;
         private string _communityCardsRiver;
-        
+
         public Ev(PokerHand pokerHand, decimal[] icmPayouts, decimal prizePool, PokerEnums.Currency currency, Evaluate evaluate)
         {
             _pokerHand = pokerHand;
@@ -586,57 +586,130 @@ namespace PsHandler.PokerMath
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             sb.AppendLine("---------------------------------------------------");
             sb.AppendLine();
-            sb.AppendLine(string.Format("Total BuyIn: {0} {1:0.00}", _pokerHand.Currency, _pokerHand.TotalBuyIn));
-            sb.AppendLine(string.Format("Prize Pool: {0} {1:0.00}", _pokerHand.Currency, PrizePool));
-            StringBuilder sbPayouts = new StringBuilder(); foreach (var icmPayout in IcmPayouts) sbPayouts.Append(string.Format("{0:0.#####}, ", icmPayout)); sb.AppendLine(string.Format("Icm Payouts = {{ {0} }}", sbPayouts.ToString().TrimEnd(' ', ',')));
+            sb.AppendLine(string.Format("Hand Number: {0}", _pokerHand.HandNumber));
+            if (_pokerHand.IsTournament) sb.AppendLine(string.Format("Tournament Number: {0}", _pokerHand.TournamentNumber));
+            if (_pokerHand.IsTournament) sb.AppendLine(string.Format("Total BuyIn: {0} {1:0.00}", _pokerHand.Currency, _pokerHand.TotalBuyIn));
+            if (_pokerHand.IsTournament) sb.AppendLine(string.Format("Prize Pool: {0} {1:0.00}", _pokerHand.Currency, PrizePool));
+            if (_pokerHand.IsTournament)
+            {
+                var sbPayouts = new StringBuilder();
+                foreach (var icmPayout in IcmPayouts)
+                {
+                    sbPayouts.Append(string.Format("\t{0:0.#####}\r\n", icmPayout));
+                }
+                sb.AppendLine(string.Format("Icm Payouts =\r\n{{\r\n{0}}}", sbPayouts.ToString().TrimEnd(' ', ',')));
+            }
             sb.AppendLine();
 
             if (EvRegular != null)
             {
-                sb.AppendLine("--------- Regular Ev ---------").AppendLine();
+                sb.AppendLine("--------------------------------------------------------------------------------------------------");
+                sb.AppendLine("Regular Ev");
+                sb.AppendLine("--------------------------------------------------------------------------------------------------");
                 sb.AppendLine(ToString(EvRegular));
             }
 
             if (EvRegularFullInfo != null)
             {
-                sb.AppendLine("--------- Regular Ev (Full Info) ---------").AppendLine();
+                sb.AppendLine("--------------------------------------------------------------------------------------------------");
+                sb.AppendLine("Regular Ev (Full Info)");
+                sb.AppendLine("--------------------------------------------------------------------------------------------------");
                 sb.AppendLine(ToString(EvRegularFullInfo));
+            }
+
+            if (EvStreetByStreet != null && EvStreetByStreetFullInfo != null)
+            {
+                sb.AppendLine("----------------------------------------------");
+                foreach (ExpectedValue ev in EvStreetByStreet.Evs)
+                {
+                    var sbCommunityCards = new StringBuilder();
+                    int comunityCardsCount = 0;
+                    switch (ev.Street)
+                    {
+                        case Street.Flop:
+                            comunityCardsCount = 3;
+                            break;
+                        case Street.Turn:
+                            comunityCardsCount = 4;
+                            break;
+                        case Street.River:
+                            comunityCardsCount = 5;
+                            break;
+                    }
+                    for (int c = 0; c < comunityCardsCount; c++)
+                    {
+                        sbCommunityCards.Append(_communityCards[c]);
+                    }
+                    sb.AppendLine(string.Format("Street = [{0}], Board = [{1}]", ev.Street, sbCommunityCards.ToString()));
+                    sb.AppendLine("----------------------------------------------");
+                    for (int i = 0; i < ev.Odds.Length; i++)
+                    {
+                        string pocketStr = ""; if (PocketCards[i] != null) pocketStr = PocketCards[i].Where(o => o != null).Aggregate(pocketStr, (a, b) => a + b);
+                        if (!double.IsNaN(ev.Odds[i]))
+                        {
+                            sb.AppendLine(string.Format("{0,-15} {1,-6} {2,-7:0.##%}", PlayerNames[i], pocketStr, ev.Odds[i]));
+                        }
+                    }
+                    sb.AppendLine("----------------------------------------------");
+                }
+                sb.AppendLine();
             }
 
             if (EvStreetByStreet != null)
             {
-                sb.AppendLine("--------- Street By Street Ev ---------").AppendLine();
+                sb.AppendLine("--------------------------------------------------------------------------------------------------");
+                sb.AppendLine("Street By Street Ev");
+                sb.AppendLine("--------------------------------------------------------------------------------------------------");
                 sb.AppendLine(ToString(EvStreetByStreet));
             }
 
             if (EvStreetByStreetFullInfo != null)
             {
-                sb.AppendLine("--------- Street By Street Ev (Full Info) ---------").AppendLine();
+                sb.AppendLine("--------------------------------------------------------------------------------------------------");
+                sb.AppendLine("Street By Street Ev (Full Info)");
+                sb.AppendLine("--------------------------------------------------------------------------------------------------");
                 sb.AppendLine(ToString(EvStreetByStreetFullInfo));
             }
 
-            sb.AppendLine("---------------------------------------------------");
+            sb.AppendLine("--------------------------------------------------------------------------------------------------");
             return sb.ToString();
         }
 
         public string ToString(ExpectedValue ev)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
+
+            sb.AppendLine(string.Format("{0,-15} {1,-8} {2,-10} {3,-15} {4,-15} {5,-1}{6,-15} {7}{5}{8,-15}",
+                    "Player Name",
+                    "Pocket",
+                    "Odds",
+                    "Chips Diff",
+                    "Chips Ev Diff",
+                    "",
+                    "Icm Ev Diff",
+                    "",
+                    "Money Ev Diff"
+                    ));
+            sb.AppendLine("--------------------------------------------------------------------------------------------------");
 
             for (int i = 0; i < PlayerNames.Length; i++)
             {
                 string pocketStr = ""; if (PocketCards[i] != null) pocketStr = PocketCards[i].Where(o => o != null).Aggregate(pocketStr, (a, b) => a + b);
 
-                sb.AppendLine(string.Format("{0,-15} {3,-5} {4,-7} {1}{2:0.00} {5}",
+                sb.AppendLine(string.Format("{0,-15} {1,-8} {2,-10} {3,-15} {4,-15:0.#} {5}{6,-15:0.0000000000} {7}{5}{8,-10:0.00} {9,-10}",
                     PlayerNames[i],
-                    EvRegular.IcmsDiffEv[i] > 0 ? "+" : "",
-                    ev.IcmsDiffEv[i] * (double)PrizePool,
                     pocketStr,
                     double.IsNaN(EvRegular.Odds[i]) ? "" : string.Format("{0:0.00%}", ev.Odds[i]),
+                    StacksDiff[i],
+                    ev.ChipsEv[i] - StacksHandEnd[i],
+                    ev.IcmsDiffEv[i] > 0 ? "+" : ev.IcmsDiffEv[i] < 0 ? "-" : " ",
+                    Math.Abs(ev.IcmsDiffEv[i]),
+                    PokerEnums.CurrencySigns[(int)Currency],
+                    Math.Abs(ev.IcmsDiffEv[i] * (double)PrizePool),
                     i == HeroId ? "(Hero)" : ""
                     ));
             }
@@ -648,16 +721,32 @@ namespace PsHandler.PokerMath
         {
             StringBuilder sb = new StringBuilder();
 
+            sb.AppendLine(string.Format("{0,-15} {1,-8} {2,-10} {3,-15} {4,-15} {5,-1}{6,-15} {7}{5}{8,-15}",
+                    "Player Name",
+                    "Pocket",
+                    "Odds",
+                    "Chips Diff",
+                    "Chips Ev Diff",
+                    "",
+                    "Icm Ev Diff",
+                    "",
+                    "Money Ev Diff"
+                    ));
+            sb.AppendLine("--------------------------------------------------------------------------------------------------");
             for (int i = 0; i < PlayerNames.Length; i++)
             {
                 string pocketStr = ""; if (PocketCards[i] != null) pocketStr = PocketCards[i].Where(o => o != null).Aggregate(pocketStr, (a, b) => a + b);
 
-                sb.AppendLine(string.Format("{0,-15} {3,-5} {4,-7} {1}{2:0.00} {5}",
+                sb.AppendLine(string.Format("{0,-15} {1,-8} {2,-10} {3,-15} {4,-15:0.#} {5}{6,-15:0.0000000000} {7}{5}{8,-10:0.00} {9,-10}",
                     PlayerNames[i],
-                    EvStreetByStreet.IcmsDiffEv[i] > 0 ? "+" : "",
-                    evsbs.IcmsDiffEv[i] * (double)PrizePool,
                     pocketStr,
                     "",
+                    StacksDiff[i],
+                    evsbs.ChipsEv[i] - StacksHandEnd[i],
+                    evsbs.IcmsDiffEv[i] > 0 ? "+" : evsbs.IcmsDiffEv[i] < 0 ? "-" : " ",
+                    Math.Abs(evsbs.IcmsDiffEv[i]),
+                    PokerEnums.CurrencySigns[(int)Currency],
+                    Math.Abs(evsbs.IcmsDiffEv[i] * (double)PrizePool),
                     i == HeroId ? "(Hero)" : ""
                     ));
             }

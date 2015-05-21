@@ -155,6 +155,9 @@
     <Compile Include="Replayer\UI\UcReplayerTable.xaml.cs">
       <DependentUpon>UcReplayerTable.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Replayer\UI\WindowCalculateEv.xaml.cs">
+      <DependentUpon>WindowCalculateEv.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Replayer\UI\WindowReplayer.xaml.cs">
       <DependentUpon>WindowReplayer.xaml</DependentUpon>
     </Compile>
@@ -381,6 +384,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Replayer\UI\UcReplayerTable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Replayer\UI\WindowCalculateEv.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
