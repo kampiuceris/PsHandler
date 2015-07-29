@@ -241,6 +241,7 @@ namespace PsHandler.PokerMath
 
                 pts.BuyIn = decimal.Parse(match.Groups["buyin"].Value);
                 pts.Rake = decimal.Parse(match.Groups["rake"].Value);
+                pts.TotalBuyIn = pts.BuyIn + pts.Rake;
 
                 return true;
             }
@@ -592,7 +593,7 @@ namespace PsHandler.PokerMath
         // timezone_et	                    ET
 
         private static readonly Regex Regex1stLine = new Regex(@"\APokerStars.+Hand #\d+:");
-        private static readonly Regex RegexHeaderTournament = new Regex(@"\APokerStars (?<home_game>Home Game )?Hand #(?<hand_id>\d+): +(\{(?<home_game_info>.+)\})?(?<zoom>Zoom )? *Tournament #(?<tournament_id>\d+), +((?<buyin_fpp>\d+)FPP|(?<freeroll>Freeroll)|(\$|€|£)?(?<buyin>(\d|\.)+)(\+(\$|€|£)?(?<bounty>(\d|\.)+))?\+(\$|€|£)?(?<rake>(\d|\.)+)) *(?<currency>(USD|EUR|GBP)?) +(?<game_type>.+) +- +(?<additional_info>.+)?Level (?<level_number>(I|V|X|L|C|D|M))+ \((?<level_sb>\d+)\/(?<level_bb>\d+)\) +- +(?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z");
+        private static readonly Regex RegexHeaderTournament = new Regex(@"\APokerStars (?<home_game>Home Game )?Hand #(?<hand_id>\d+): +(\{(?<home_game_info>.+)\})?(?<zoom>Zoom )? *Tournament #(?<tournament_id>\d+), +((?<buyin_fpp>\d+)FPP|(?<freeroll>Freeroll)|(\$|€|£)?(?<buyin>(\d|\.)+)(\+(\$|€|£)?(?<bounty>(\d|\.)+))?\+(\$|€|£)?(?<rake>(\d|\.)+)) *(?<currency>(USD|EUR|GBP)?) +(?<game_type>.+) +- +(?<additional_info>.+)?Level (?<level_number>(I|V|X|L|C|D|M))+ \((?<level_sb>\d+)\/(?<level_bb>\d+)\) +- +((?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]|((?<year_et_only>\d\d\d\d).(?<month_et_only>\d\d).(?<day_et_only>\d\d) (?<hour_et_only>\d{1,2}):(?<minute_et_only>\d{1,2}):(?<second_et_only>\d{1,2}) (?<timezone_et_only>.+)))\z");
         private static readonly Regex RegexHeaderCash = new Regex(@"\APokerStars (?<home_game>Home Game )?(?<zoom>Zoom )?Hand #(?<hand_id>\d+): +(\{(?<home_game_info>.+)\})?(?<game_type>.+) \((?<level_sb_currency_symbol>(\$|€|£)?)(?<level_sb>(\d|\.)+)\/(?<level_bb_currency_symbol>(\$|€|£)?)(?<level_bb>(\d|\.)+) *(?<currency>(USD|EUR|GBP)?)\) +- +(?<year>\d\d\d\d).(?<month>\d\d).(?<day>\d\d) (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2}) (?<timezone>.+) \[(?<year_et>\d\d\d\d).(?<month_et>\d\d).(?<day_et>\d\d) (?<hour_et>\d{1,2}):(?<minute_et>\d{1,2}):(?<second_et>\d{1,2}) (?<timezone_et>.+)\]\z");
         private static Regex RegexSeatMaxButton = new Regex(@"\ATable '(?<table_name>.+)' (?<table_size>\d+)-max (\(Play Money\) )?Seat #(?<button_seat>\d+) is the button\z");
         private static Regex RegexPlayer = new Regex(@"\ASeat (?<seat_number>\d{1,2}): (?<player_name>.+) \((\$|€|£)?(?<stack>(\d|\.)+) in chips\)( is sitting out| out of hand \(moved from another table into small blind\))?\z");
@@ -697,11 +698,20 @@ namespace PsHandler.PokerMath
                     pokerHand.LevelSmallBlind = decimal.Parse(match.Groups["level_sb"].Value);
                     pokerHand.LevelBigBlind = decimal.Parse(match.Groups["level_bb"].Value);
 
-                    pokerHand.TimeStampLocal = new DateTime(int.Parse(match.Groups["year"].Value), int.Parse(match.Groups["month"].Value), int.Parse(match.Groups["day"].Value), int.Parse(match.Groups["hour"].Value), int.Parse(match.Groups["minute"].Value), int.Parse(match.Groups["second"].Value));
-                    pokerHand.LocalTimeZoneStr = match.Groups["timezone"].Value;
-                    pokerHand.LocalTimeZone = TimeZone.Parse(pokerHand.LocalTimeZoneStr);
-                    pokerHand.TimeStampET = new DateTime(int.Parse(match.Groups["year_et"].Value), int.Parse(match.Groups["month_et"].Value), int.Parse(match.Groups["day_et"].Value), int.Parse(match.Groups["hour_et"].Value), int.Parse(match.Groups["minute_et"].Value), int.Parse(match.Groups["second_et"].Value));
-
+                    if (match.Groups["timezone_et_only"].Success)
+                    {
+                        pokerHand.TimeStampLocal = new DateTime(int.Parse(match.Groups["year_et_only"].Value), int.Parse(match.Groups["month_et_only"].Value), int.Parse(match.Groups["day_et_only"].Value), int.Parse(match.Groups["hour_et_only"].Value), int.Parse(match.Groups["minute_et_only"].Value), int.Parse(match.Groups["second_et_only"].Value));
+                        pokerHand.LocalTimeZoneStr = match.Groups["timezone_et_only"].Value;
+                        pokerHand.LocalTimeZone = TimeZone.Parse(pokerHand.LocalTimeZoneStr);
+                        pokerHand.TimeStampET = pokerHand.TimeStampLocal;
+                    }
+                    else
+                    {
+                        pokerHand.TimeStampLocal = new DateTime(int.Parse(match.Groups["year"].Value), int.Parse(match.Groups["month"].Value), int.Parse(match.Groups["day"].Value), int.Parse(match.Groups["hour"].Value), int.Parse(match.Groups["minute"].Value), int.Parse(match.Groups["second"].Value));
+                        pokerHand.LocalTimeZoneStr = match.Groups["timezone"].Value;
+                        pokerHand.LocalTimeZone = TimeZone.Parse(pokerHand.LocalTimeZoneStr);
+                        pokerHand.TimeStampET = new DateTime(int.Parse(match.Groups["year_et"].Value), int.Parse(match.Groups["month_et"].Value), int.Parse(match.Groups["day_et"].Value), int.Parse(match.Groups["hour_et"].Value), int.Parse(match.Groups["minute_et"].Value), int.Parse(match.Groups["second_et"].Value));
+                    }
 
                     pokerHand.TotalBuyIn = pokerHand.BuyIn + pokerHand.Bounty + pokerHand.Rake;
                     return true;
@@ -760,11 +770,21 @@ namespace PsHandler.PokerMath
                         }
                     }
 
-                    pokerHand.TimeStampLocal = new DateTime(int.Parse(match.Groups["year"].Value), int.Parse(match.Groups["month"].Value), int.Parse(match.Groups["day"].Value), int.Parse(match.Groups["hour"].Value), int.Parse(match.Groups["minute"].Value), int.Parse(match.Groups["second"].Value));
-                    pokerHand.LocalTimeZoneStr = match.Groups["timezone"].Value;
-                    pokerHand.LocalTimeZone = TimeZone.Parse(pokerHand.LocalTimeZoneStr);
-                    pokerHand.TimeStampET = new DateTime(int.Parse(match.Groups["year_et"].Value), int.Parse(match.Groups["month_et"].Value), int.Parse(match.Groups["day_et"].Value), int.Parse(match.Groups["hour_et"].Value), int.Parse(match.Groups["minute_et"].Value), int.Parse(match.Groups["second_et"].Value));
-
+                    if (match.Groups["timezone_et_only"].Success)
+                    {
+                        pokerHand.TimeStampLocal = new DateTime(int.Parse(match.Groups["year_et_only"].Value), int.Parse(match.Groups["month_et_only"].Value), int.Parse(match.Groups["day_et_only"].Value), int.Parse(match.Groups["hour_et_only"].Value), int.Parse(match.Groups["minute_et_only"].Value), int.Parse(match.Groups["second_et_only"].Value));
+                        pokerHand.LocalTimeZoneStr = match.Groups["timezone_et_only"].Value;
+                        pokerHand.LocalTimeZone = TimeZone.Parse(pokerHand.LocalTimeZoneStr);
+                        pokerHand.TimeStampET = pokerHand.TimeStampLocal;
+                    }
+                    else
+                    {
+                        pokerHand.TimeStampLocal = new DateTime(int.Parse(match.Groups["year"].Value), int.Parse(match.Groups["month"].Value), int.Parse(match.Groups["day"].Value), int.Parse(match.Groups["hour"].Value), int.Parse(match.Groups["minute"].Value), int.Parse(match.Groups["second"].Value));
+                        pokerHand.LocalTimeZoneStr = match.Groups["timezone"].Value;
+                        pokerHand.LocalTimeZone = TimeZone.Parse(pokerHand.LocalTimeZoneStr);
+                        pokerHand.TimeStampET = new DateTime(int.Parse(match.Groups["year_et"].Value), int.Parse(match.Groups["month_et"].Value), int.Parse(match.Groups["day_et"].Value), int.Parse(match.Groups["hour_et"].Value), int.Parse(match.Groups["minute_et"].Value), int.Parse(match.Groups["second_et"].Value));
+                    }
+                    
                     return true;
                 }
             }
