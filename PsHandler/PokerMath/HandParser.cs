@@ -470,6 +470,10 @@ namespace PsHandler.PokerMath
             #region Set Position
 
             var players = Seats.Where(a => a != null).ToList();
+            if (players.All(a => a.SeatNumberHandHistory != ButtonSeatHandHistory))
+            {
+                throw new NotSupportedException("Invalid hand history text.");
+            }
             while (players[0].SeatNumberHandHistory != ButtonSeatHandHistory)
             {
                 players.Add(players[0]);
