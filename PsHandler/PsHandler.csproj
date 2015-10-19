@@ -84,6 +84,17 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="AutoUpdater.cs" />
+    <Compile Include="ChartsPreflop\ChartPreflop.cs" />
+    <Compile Include="ChartsPreflop\RangeConstructor.cs" />
+    <Compile Include="ChartsPreflop\UcPocketPreflop.xaml.cs">
+      <DependentUpon>UcPocketPreflop.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ChartsPreflop\UcRangePreflop.xaml.cs">
+      <DependentUpon>UcRangePreflop.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ChartsPreflop\WindowRangePreflop.xaml.cs">
+      <DependentUpon>WindowRangePreflop.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ColorPicker\ColorARgbHsv.cs" />
     <Compile Include="ColorPicker\UcColorPicker.xaml.cs">
       <DependentUpon>UcColorPicker.xaml</DependentUpon>
@@ -323,6 +334,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="ChartsPreflop\UcPocketPreflop.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ChartsPreflop\UcRangePreflop.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ChartsPreflop\WindowRangePreflop.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ColorPicker\UcColorPicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

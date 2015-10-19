@@ -140,7 +140,7 @@ namespace PsHandler
                 this.Y = y;
             }
 
-            public POINT(Point pt) : this(pt.X, pt.Y) { }
+            public POINT(System.Drawing.Point pt) : this(pt.X, pt.Y) { }
 
             public static implicit operator System.Drawing.Point(POINT p)
             {
@@ -1110,7 +1110,7 @@ namespace PsHandler
             ClientToScreen(hwnd, out lp);
             RECT rect;
             GetClientRect(hwnd, out rect);
-            return new Rectangle(lp.X, lp.Y, rect.Width, rect.Height);
+            return new System.Drawing.Rectangle(lp.X, lp.Y, rect.Width, rect.Height);
         }
 
         public static System.Drawing.Rectangle GetClientRectangleRelativeTo(IntPtr hwndChild, IntPtr hwndParent)

@@ -89,6 +89,19 @@ namespace PsHandler
                                                     Methods.LeftMouseClick(handleButton, r.Width / 2, r.Height / 2);
                                                 }
                                             }
+
+                                            // unregister ia Ctrl+R
+                                            if (windowTitle.Equals("PokerStars"))
+                                            {
+                                                // button "Close"
+                                                IntPtr handleButton = WinApi.FindChildWindow(handle, "PokerStarsButtonClass", "Close");
+                                                // click if possible
+                                                if (!handleButton.Equals(IntPtr.Zero))
+                                                {
+                                                    Rectangle r = WinApi.GetClientRectangle(handleButton);
+                                                    Methods.LeftMouseClick(handleButton, r.Width / 2, r.Height / 2);
+                                                }
+                                            }
                                         }
                                         if (Config.AutoclickYesSeatAvailable)
                                         {

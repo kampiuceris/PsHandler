@@ -12,34 +12,42 @@
                 <ColumnDefinition Width="175"/>
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Content="Name:" Width="34" x:Name="Label_Name" />
-            <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="45,0,5,0" Height="22" AcceptsReturn="False" Padding="0" x:Name="TextBox_Name" />
-            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Content="Hotkey:" Margin="0,27,0,0" Width="40" x:Name="Label_Hotkey" />
-            <ui:TextBoxHotkey Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Margin="45,27,212,0" x:Name="TextBoxHotkey_Hotkey" />
-            <CheckBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Margin="0,54,0,0" x:Name="CheckBox_SortTournamentsByStartingTime">
-                <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Sort tournaments by starting time" />
-            </CheckBox>
-            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Content="Regex window title:" Margin="0,81,0,0" x:Name="Label_RegexWindowTitle" />
-            <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="112,81,5,0" Height="22" AcceptsReturn="False" x:Name="TextBox_RegexWindowTitle" />
-            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Content="Regex window class:" Margin="0,108,0,0" x:Name="Label_RegexWindowClass" />
-            <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="112,108,5,0" Height="22" AcceptsReturn="False" x:Name="TextBox_RegexWindowClass" />
+            <GroupBox Header="Settings" Height="221" VerticalAlignment="Top">
+                <Grid>
+                    <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Content="Name:" Width="34" x:Name="Label_Name" />
+                    <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="45,0,5,0" Height="22" AcceptsReturn="False" Padding="0" x:Name="TextBox_Name" />
+                    <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Content="Hotkey:" Margin="0,27,0,0" Width="40" x:Name="Label_Hotkey" />
+                    <ui:TextBoxHotkey Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Margin="45,27,212,0" x:Name="TextBoxHotkey_Hotkey" />
+                    <CheckBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Margin="0,54,0,0" x:Name="CheckBox_SortTournamentsByStartingTime">
+                        <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Sort tournaments by starting time" />
+                    </CheckBox>
+                    <CheckBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Margin="250,54,-24,0" x:Name="CheckBox_BringToFront">
+                        <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Bring to front" />
+                    </CheckBox>
+                    <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Content="Regex window title:" Margin="0,81,0,0" x:Name="Label_RegexWindowTitle" />
+                    <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="112,81,5,0" Height="22" AcceptsReturn="False" x:Name="TextBox_RegexWindowTitle" />
+                    <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Padding="0" Height="22" Content="Regex window class:" Margin="0,108,0,0" x:Name="Label_RegexWindowClass" />
+                    <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="112,108,5,0" Height="22" AcceptsReturn="False" x:Name="TextBox_RegexWindowClass" />
 
-            <CheckBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Margin="0,135,0,0" x:Name="CheckBox_EnableAutoTile" >
-                <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Enable auto tile:" />
-            </CheckBox>
-            <RadioButton Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Margin="20,157,0,0" x:Name="RadioButton_ToTheTop" IsEnabled="False" >
-                <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="To the top available slot" />
-            </RadioButton>
-            <RadioButton Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Margin="20,179,0,0" x:Name="RadioButton_ToTheClosest" IsEnabled="False">
-                <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="To the closest slot" />
-            </RadioButton>
-            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Width="127" Padding="0" Content="" Margin="39,157,0,0" x:Name="Label_DisabledToTheTop" />
-            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Width="95" Padding="0" Content="" Margin="39,179,0,0" x:Name="Label_DisabledToTheClosest" />
-            <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0" Height="22" Content="≤ Table count ≤" Margin="0,27,45,0" Width="90" />
-            <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,27,135,0" Height="22" AcceptsReturn="False" x:Name="TextBox_TableCountEqualOrGreaterThan" Text="" Width="40" />
-            <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,27,5,0" Height="22" AcceptsReturn="False" x:Name="TextBox_TableCountEqualOrLessThan" Text="" Width="40" />
+                    <CheckBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Margin="0,135,0,0" x:Name="CheckBox_EnableAutoTile" >
+                        <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="Enable auto tile:" />
+                    </CheckBox>
+                    <RadioButton Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Margin="20,157,0,0" x:Name="RadioButton_ToTheTop" IsEnabled="False" >
+                        <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="To the top available slot" />
+                    </RadioButton>
+                    <RadioButton Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Margin="20,179,0,0" x:Name="RadioButton_ToTheClosest" IsEnabled="False">
+                        <Label VerticalContentAlignment="Center" Height="22" Padding="0" Content="To the closest slot" />
+                    </RadioButton>
+                    <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Width="127" Padding="0" Content="" Margin="39,157,0,0" x:Name="Label_DisabledToTheTop" />
+                    <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Height="22" Width="95" Padding="0" Content="" Margin="39,179,0,0" x:Name="Label_DisabledToTheClosest" />
+                    <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0" Height="22" Content="≤ Table count ≤" Margin="0,27,45,0" Width="90" />
+                    <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,27,135,0" Height="22" AcceptsReturn="False" x:Name="TextBox_TableCountEqualOrGreaterThan" Text="" Width="40" />
+                    <TextBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,27,5,0" Height="22" AcceptsReturn="False" x:Name="TextBox_TableCountEqualOrLessThan" Text="" Width="40" />
 
-            <GroupBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" BorderThickness="1" BorderBrush="LightGray" Padding="5" Margin="0,206,5,0" Header="Preview" >
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" BorderThickness="1" BorderBrush="LightGray" Padding="5" Margin="0,221,0,0" Header="Preview" >
                 <tableTiler:UCScreenPreview x:Name="UCScreenPreview_Main" />
             </GroupBox>
 

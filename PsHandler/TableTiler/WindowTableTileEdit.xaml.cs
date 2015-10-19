@@ -99,6 +99,7 @@ namespace PsHandler.TableTiler
             TextBox_RegexWindowClass.Text = TableTile.RegexWindowClass == null ? "" : TableTile.RegexWindowClass.ToString();
             StringBuilder sb = new StringBuilder(); foreach (var xywh in TableTile.XYWHs) sb.Append(string.Format("{0} {1} {2} {3}{4}", xywh.X, xywh.Y, xywh.Width, xywh.Height, Environment.NewLine)); TextBox_XYWidthHeight.Text = sb.ToString();
             CheckBox_SortTournamentsByStartingTime.IsChecked = TableTile.SortByStartingHand;
+            CheckBox_BringToFront.IsChecked = TableTile.BringToFront;
             CheckBox_EnableAutoTile.IsChecked = TableTile.AutoTile;
             switch (TableTile.AutoTileMethod)
             {
@@ -258,6 +259,7 @@ namespace PsHandler.TableTiler
             TableTile.Name = TextBox_Name.Text;
             TableTile.KeyCombination = TextBoxHotkey_Hotkey.KeyCombination;
             TableTile.SortByStartingHand = CheckBox_SortTournamentsByStartingTime.IsChecked == true;
+            TableTile.BringToFront = CheckBox_BringToFront.IsChecked == true;
             TableTile.RegexWindowTitle = new Regex(TextBox_RegexWindowTitle.Text);
             TableTile.RegexWindowClass = new Regex(TextBox_RegexWindowClass.Text);
             TableTile.XYWHs = xywhs;

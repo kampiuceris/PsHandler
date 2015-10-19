@@ -36,9 +36,10 @@ namespace PsHandler.TableTiler
         public bool IsEnabled;
 
         public string Name = "";
-        public KeyCombination KeyCombination;
-        public bool SortByStartingHand;
-        public bool AutoTile;
+        public KeyCombination KeyCombination = new KeyCombination(Key.None, false, false, false);
+        public bool SortByStartingHand = false;
+        public bool BringToFront = false;
+        public bool AutoTile = false;
         public AutoTileMethod AutoTileMethod = AutoTileMethod.ToTheTopSlot;
         public Regex RegexWindowTitle = new Regex("");
         public Regex RegexWindowClass = new Regex("");
@@ -120,6 +121,7 @@ namespace PsHandler.TableTiler
                                     new XElement("IsEnabled", IsEnabled.ToString()),
                                     new XElement("Hotkey", KeyCombination.ToString()),
                                     new XElement("SortByStartingHand", SortByStartingHand.ToString()),
+                                    new XElement("BringToFront", BringToFront),
                                     new XElement("AutoTile", AutoTile.ToString()),
                                     new XElement("AutoTileMethod", AutoTileMethod.ToString()),
                                     new XElement("RegexWindowTitle", RegexWindowTitle.ToString()),
@@ -166,6 +168,13 @@ namespace PsHandler.TableTiler
             try
             {
                 tableTile.SortByStartingHand = bool.Parse(xElement.Element("SortByStartingHand").Value);
+            }
+            catch
+            {
+            }
+            try
+            {
+                tableTile.BringToFront = bool.Parse(xElement.Element("BringToFront").Value);
             }
             catch
             {

@@ -216,8 +216,6 @@ namespace PsHandler.TableTiler
 
         // private Tile mech
 
-
-
         private void Tile(KeyCombination kc)
         {
             // collect info
@@ -273,43 +271,7 @@ namespace PsHandler.TableTiler
                     }
                 }
 
-                // obsolete
-                //foreach (IntPtr hwnd in WinApi.GetWindowHWndAll().Where(o => !Methods.IsMinimized(o)))
-                //{
-                //    string title = WinApi.GetWindowTitle(hwnd);
-                //    string windowClass = WinApi.GetClassName(hwnd);
-                //    //Debug.WriteLine("Window: " + title);
-                //    foreach (var ttati in ttatis)
-                //    {
-                //        if (ttati.TableTile.RegexWindowClass.IsMatch(windowClass) && ttati.TableTile.RegexWindowTitle.IsMatch(title))
-                //        {
-                //            TableInfo ti = new TableInfo { Handle = hwnd, Title = title, CurrentRectangle = WinApi.GetWindowRectangle(hwnd) };
-                //            Match match = _regexTournamentNumber.Match(title);
-                //            if (match.Success)
-                //            {
-                //                ti.IsTournament = long.TryParse(match.Groups["tournament_number"].Value, out ti.TournamentNumber);
-                //                Tournament tournament = App.HandHistoryManager.GetTournament(ti.TournamentNumber);
-                //                if (tournament != null)
-                //                {
-                //                    ti.FirstHandTimestamp = tournament.GetFirstHandTimestampET();
-                //                }
-                //                else
-                //                {
-                //                    ti.FirstHandTimestamp = DateTime.MaxValue;
-                //                }
-                //            }
-                //            else
-                //            {
-                //                ti.IsTournament = false;
-                //                ti.FirstHandTimestamp = DateTime.MaxValue;
-                //            }
-                //            ttati.TableInfos.Add(ti);
-                //        }
-                //    }
-                //}
-
                 // tile
-
                 foreach (var ttati in ttatis)
                 {
                     Tile(ttati);
@@ -366,8 +328,17 @@ namespace PsHandler.TableTiler
             }
 
             // move and resize windows
-            //foreach (HandleRectangleWindow info in infoForWindowsToMove) { MoveWindowBringWindowToTop(info.Handle, info.RectangleWindow); }
-            BeginDeferWindowPosDeferWindowPosEndDeferWindowPos(infoForWindowsToMove.ToArray(), IntPtr.Zero);
+            if (ttati.TableTile.BringToFront)
+            {
+                foreach (HandleRectangleWindow info in infoForWindowsToMove)
+                {
+                    MoveWindowBringWindowToTop(info.Handle, info.RectangleWindow);
+                }
+            }
+            else
+            {
+                BeginDeferWindowPosDeferWindowPosEndDeferWindowPos(infoForWindowsToMove.ToArray(), IntPtr.Zero);
+            }
         }
 
         private static IEnumerable<HandleRectangleWindow> MoveClosest(List<Rectangle> availablePositions, List<TableInfo> availableWindows)
@@ -497,15 +468,6 @@ namespace PsHandler.TableTiler
                         if (!slot.IsEmpty)
                         {
                             WinApi.SetWindowPos(newTable.Handle, (IntPtr)(1), slot.X, slot.Y, slot.Width, slot.Height, WinApi.SetWindowPosFlags.DoNotActivate);
-                            //BeginDeferWindowPosDeferWindowPosEndDeferWindowPos(new HandleRectangleWindow[1]
-                            //{
-                            //    new HandleRectangleWindow
-                            //    {
-                            //        Handle = newTable.Handle,
-                            //        RectangleWindow = slot,
-                            //    }
-                            //}, (IntPtr)(1));
-
                             autoTileSuccessful = true;
                         }
                     }

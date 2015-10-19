@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="PsHandler.ChartsPreflop.UcPocketPreflop"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="25" d:DesignWidth="25" Focusable="True">
+    <Grid>
+        <Rectangle Stroke="Gray" RadiusX="3" RadiusY="3" x:Name="Rectangle_Main" />
+        <Label HorizontalAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0" Content="XXx" x:Name="Label_Pocket"/>
+    </Grid>
+</UserControl>

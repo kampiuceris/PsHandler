@@ -15,20 +15,28 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Principal;
+using PsHandler.ChartsPreflop;
 using PsHandler.UI;
 
 namespace PsHandler
 {
     public class EntryPoint
     {
+        [System.Runtime.InteropServices.DllImport("DllTest.dll")]
+        public static extern int add(int left, int right);
+
         [STAThreadAttribute]
         public static void Main()
         {
+            //new WindowRangePreflop(null, RangeConstructor.GetInt("44+ Ax+ K9s+ KJo+ QJs").ToArray(), false).ShowDialog();
+            //return;
+
             System.Globalization.CultureInfo.DefaultThreadCurrentCulture = new System.Globalization.CultureInfo("en-US");
             System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = new System.Globalization.CultureInfo("en-US");
 

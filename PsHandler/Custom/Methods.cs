@@ -28,6 +28,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using PsHandler.PokerMath;
 using PsHandler.UI;
 
@@ -39,7 +40,7 @@ namespace PsHandler.Custom
         private static readonly object _syncLock = new object();
         public static int GetRandomNumber(int min, int max) { lock (_syncLock) { return _getRandom.Next(min, max); } }
 
-        public static void UiInvoke(Action action)
+        public static void UiInvoke(Action action, bool forceInvoke = false, DispatcherPriority dispatcherPriority = DispatcherPriority.Normal)
         {
             var application = Application.Current;
             if (application != null)
@@ -47,8 +48,14 @@ namespace PsHandler.Custom
                 var dispatcher = application.Dispatcher;
                 if (dispatcher != null)
                 {
-                    dispatcher.Invoke(action.Invoke);
+                    dispatcher.Invoke(dispatcherPriority, action);
+                    return;
                 }
+            }
+
+            if (forceInvoke)
+            {
+                action.Invoke();
             }
         }
 

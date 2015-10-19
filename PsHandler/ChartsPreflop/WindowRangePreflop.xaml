@@ -1,0 +1,12 @@
+﻿<Window x:Class="PsHandler.ChartsPreflop.WindowRangePreflop"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Preflop Range Select" Background="WhiteSmoke" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight" Icon="../Images/PsHandler.ico">
+    <Grid Margin="10">
+        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="413" Height="413" x:Name="Grid_UcRangePrefFlop">
+            <Rectangle StrokeThickness="1" Stroke="LightGray" RadiusX="5" RadiusY="5" />
+        </Grid>
+        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,418,0,0" TextWrapping="NoWrap" Text="Selected range contains 0/1326 hands (0.00%)." x:Name="TextBlock_RangeInfo"/>
+        <TextBox Margin="0,439,0,0" Width="413" Height="100" TextWrapping="Wrap" Text="" x:Name="TextBox_RangeExpression" HorizontalAlignment="Left" VerticalAlignment="Top" />
+    </Grid>
+</Window>
