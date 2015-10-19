@@ -913,7 +913,7 @@ namespace PsHandler
                     foreach (XElement element in GetXElement(root, "HudBigBlindOpponentsColorsByValue", ref exceptions, "LoadXml() HudBigBlindOpponentsColorsByValue", new XElement("HudBigBlindOpponentsColorsByValue")).Elements("ColorByValue"))
                     {
                         ColorByValue colorByValue = ColorByValue.FromXElement(element, ref exceptions, "LoadXml() ColorByValue");
-                        if (colorByValue != null)
+                        if (colorByValue != null && HudBigBlindOpponentsColorsByValue.Count < 3)
                         {
                             HudBigBlindOpponentsColorsByValue.Add(colorByValue);
                         }
@@ -927,7 +927,7 @@ namespace PsHandler
                     foreach (XElement element in GetXElement(root, "HudBigBlindHeroColorsByValue", ref exceptions, "LoadXml() HudBigBlindHeroColorsByValue", new XElement("HudBigBlindHeroColorsByValue")).Elements("ColorByValue"))
                     {
                         ColorByValue colorByValue = ColorByValue.FromXElement(element, ref exceptions, "LoadXml() ColorByValue");
-                        if (colorByValue != null)
+                        if (colorByValue != null && HudBigBlindHeroColorsByValue.Count < 3)
                         {
                             HudBigBlindHeroColorsByValue.Add(colorByValue);
                         }

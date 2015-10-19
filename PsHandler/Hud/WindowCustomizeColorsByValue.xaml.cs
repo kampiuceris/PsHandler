@@ -115,7 +115,14 @@ namespace PsHandler.Hud
         {
             HudColorsByValueParams.ColorsByValue = new List<ColorByValue>();
 
-            foreach (var item in StackPanel_ColorsByValue.Children.OfType<UCColorByValue>())
+            var ucColorByValues = StackPanel_ColorsByValue.Children.OfType<UCColorByValue>().ToArray();
+            if (ucColorByValues.Length > 3)
+            {
+                WindowMessage.ShowDialog(string.Format("Maximum of 3 color ranges are allowed."), "Error saving", WindowMessageButtons.OK, WindowMessageImage.Error, this);
+                return false;
+            }
+
+            foreach (var item in ucColorByValues)
             {
                 var colorByValue = item.GetColorByValue();
                 if (colorByValue == null)
