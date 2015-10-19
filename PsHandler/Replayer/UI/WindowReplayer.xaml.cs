@@ -111,11 +111,6 @@ namespace PsHandler.Replayer.UI
             }
         }
 
-        private void Button_CalculateEv_Click(object sender, RoutedEventArgs e)
-        {
-            new WindowCalculateEv(this, UcReplayerTable_Main.PokerHand.HandHistory).ShowDialog();
-        }
-
         private void Button_GoToPreflop_Click(object sender, RoutedEventArgs e)
         {
             UcReplayerTable_Main.GoToPreflop();
