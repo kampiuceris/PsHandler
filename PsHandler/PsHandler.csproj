@@ -126,7 +126,6 @@
     <Compile Include="Import\HandHistoryManager.cs" />
     <Compile Include="Import\Tournament.cs" />
     <Compile Include="KeyboardHook.cs" />
-    <Compile Include="PokerMath\Ev.cs" />
     <Compile Include="PokerMath\EvaluationAndScenarios.cs" />
     <Compile Include="PokerMath\Evaluator\HandAnalysis.cs" />
     <Compile Include="PokerMath\Evaluator\HandEvaluator.cs" />
