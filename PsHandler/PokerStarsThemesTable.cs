@@ -1883,7 +1883,7 @@ namespace PsHandler
             public Black()
             {
                 ButtonTimebank = new PokerStarsButton(new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.Themes.Black.timebank.png")), 445, 460, 387, 435, 11, 14, 14);
-                ButtonHandReplayX = 177 / WIDTH_DEFAULT;
+                ButtonHandReplayX = 144 / WIDTH_DEFAULT;
                 ButtonHandReplayY = 13 / HEIGHT_DEFAULT;
                 ButtonImBackSource = new TableSizeAverageColors[]
                 {
@@ -5343,7 +5343,7 @@ namespace PsHandler
             public Nova()
             {
                 ButtonTimebank = new PokerStarsButton(new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.Themes.Nova.timebank.png")), 733, 423, 702, 411, 15, 15, 15);
-                ButtonHandReplayX = 16 / WIDTH_DEFAULT;
+                ButtonHandReplayX = 144 / WIDTH_DEFAULT;
                 ButtonHandReplayY = 11 / HEIGHT_DEFAULT;
                 ButtonImBackSource = new TableSizeAverageColors[]
                 {
@@ -6208,7 +6208,7 @@ namespace PsHandler
             public Slick()
             {
                 ButtonTimebank = new PokerStarsButton(new Bmp(Methods.GetEmbeddedResourceBitmap("PsHandler.Images.Themes.Slick.timebank.png")), 446, 459, 386, 434, 13, 13, 13);
-                ButtonHandReplayX = 177 / WIDTH_DEFAULT;
+                ButtonHandReplayX = 144 / WIDTH_DEFAULT;
                 ButtonHandReplayY = 13 / HEIGHT_DEFAULT;
                 ButtonImBackSource = new TableSizeAverageColors[]
                 {
