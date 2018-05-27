@@ -44,7 +44,7 @@ namespace PsHandler
         // Constants
 
         public const string NAME = "PsHandler";
-        public const int VERSION = 33;
+        public const int VERSION = 34;
         public const string UPDATE_HREF = "http://pshandler.azurewebsites.net/update.php";
         public static string MACHINE_GUID = GetMachineGuid();
         public static string CONFIG_FILENAME = "pshandler.xml";
