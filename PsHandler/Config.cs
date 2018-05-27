@@ -45,7 +45,7 @@ namespace PsHandler
 
         public const string NAME = "PsHandler";
         public const int VERSION = 33;
-        public const string UPDATE_HREF = "http://chainer.projektas.in/PsHandler/update.php";
+        public const string UPDATE_HREF = "http://pshandler.azurewebsites.net/update.php";
         public static string MACHINE_GUID = GetMachineGuid();
         public static string CONFIG_FILENAME = "pshandler.xml";
         public static int WINDOWS_BORDER_THICKNESS = WinApi.GetSystemMetrics(WinApi.SystemMetric.SM_CXSIZEFRAME) * 2;
