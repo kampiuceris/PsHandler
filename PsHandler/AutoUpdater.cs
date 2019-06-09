@@ -354,15 +354,22 @@ namespace PsHandler
             buttonUpdate.Click += (sender, args) =>
             {
                 // get update
-                using (WebClient client = new WebClient { Proxy = null })
+                try
                 {
-                    client.DownloadFile(hrefUpdateFile, pathUpdateFile);
+                    using (WebClient client = new WebClient { Proxy = null })
+                    {
+                        client.DownloadFile(hrefUpdateFile, pathUpdateFile);
+                    }
+                    string arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"", applicationName, hrefXml, exeName, _DirectoryInfoLocal.FullName.Replace(@"\", "/"));
+                    Process.Start(pathUpdateFile, arguments);
+                    new Thread(quitAction.Invoke).Start();
+                    // close
+                    window.Close();
                 }
-                string arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"", applicationName, hrefXml, exeName, _DirectoryInfoLocal.FullName.Replace(@"\", "/"));
-                Process.Start(pathUpdateFile, arguments);
-                new Thread(quitAction.Invoke).Start();
-                // close
-                window.Close();
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, e.GetType().FullName, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
+                }
             };
 
             //
