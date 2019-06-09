@@ -35,7 +35,7 @@ namespace PsHandler.Hud
 {
     public class TableHud : IDisposable
     {
-        private static readonly Regex _regexTitle = new Regex(@".+Blinds (\$|€|£)?(?<sb>[\d\.]+)\/(\$|€|£)?(?<bb>[\d\.]+)( Ante (\$|€|£)?(?<ante>[\d\.]+))? - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)");
+        private static readonly Regex _regexTitle = new Regex(@"\A(?<table_name>.+) - (\$|€|£)?(?<sb>[\d\.]+)\/(\$|€|£)?(?<bb>[\d\.]+)( ante (\$|€|£)?(?<ante>[\d\.]+))? - Tournament (?<tournament_number>\d+).+Logged In as (?<hero>.+)\z");
         public enum OwnerState { Unknown, Unattached, Attached }
 
         private readonly Thread _thread;
