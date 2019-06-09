@@ -38,7 +38,7 @@ namespace PsHandler
         private static readonly DirectoryInfo _DirectoryInfoTemp = new DirectoryInfo(Path.GetTempPath());
         private static Thread _thread;
 
-        public static void CheckForUpdate(string hrefXml, string applicationName, string exeName, Window owner, Action actionQuit, BitmapSource iconWindow, BitmapSource iconButtonCancel, BitmapSource iconButtonUpdate)
+        public static void CheckForUpdate(string hrefXml, string applicationName, string exeName, Window owner, Action actionQuit, BitmapSource iconWindow, BitmapSource iconButtonCancel, BitmapSource iconButtonUpdate, BitmapSource iconButtonDownload)
         {
             _thread = new Thread(() =>
             {
@@ -56,7 +56,7 @@ namespace PsHandler
                             {
                                 App.TaskbarIcon.TrayBalloonTipClicked += (sender, args) =>
                                 {
-                                    ShowUpdateDialog(hrefXml, applicationName, exeName, owner, actionQuit, hrefUpdateFile, _DirectoryInfoTemp.FullName + nameUpdateFile, updateInfo, iconWindow, iconButtonCancel, iconButtonUpdate);
+                                    ShowUpdateDialog(hrefXml, applicationName, exeName, owner, actionQuit, hrefUpdateFile, _DirectoryInfoTemp.FullName + nameUpdateFile, updateInfo, iconWindow, iconButtonCancel, iconButtonUpdate, iconButtonDownload);
                                 };
                                 trayBalloonTipClickedRoutedEventHandlerAdded = true;
                             }
@@ -206,7 +206,7 @@ namespace PsHandler
 
         private static void ShowUpdateDialog(string hrefXml, string applicationName, string exeName,
             Window owner, Action quitAction, string hrefUpdateFile, string pathUpdateFile, string updateInfo,
-            BitmapSource iconWindow, BitmapSource iconButtonCancel, BitmapSource iconButtonUpdate)
+            BitmapSource iconWindow, BitmapSource iconButtonCancel, BitmapSource iconButtonUpdate, BitmapSource iconButtonDownload)
         {
             // Window
 
@@ -217,10 +217,10 @@ namespace PsHandler
                 UseLayoutRounding = true,
                 Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xF0, 0xF0, 0xF0)),
                 MaxWidth = 1280,
-                MaxHeight = 720,
+                MaxHeight = 1280,
                 MinWidth = 320,
                 MinHeight = 200,
-                Width = 480,
+                Width = 720,
                 Height = 360,
                 ResizeMode = ResizeMode.CanResize,
                 Icon = iconWindow,
@@ -237,6 +237,7 @@ namespace PsHandler
             };
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100, GridUnitType.Pixel) });
             grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(190, GridUnitType.Pixel) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(175, GridUnitType.Pixel) });
             grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(24, GridUnitType.Pixel) });
             grid.RowDefinitions.Add(new RowDefinition());
@@ -255,7 +256,7 @@ namespace PsHandler
             };
             Grid.SetRow(label, 0);
             Grid.SetColumn(label, 0);
-            Grid.SetColumnSpan(label, 3);
+            Grid.SetColumnSpan(label, 4);
 
             // TextBox
 
@@ -271,7 +272,7 @@ namespace PsHandler
             };
             Grid.SetRow(textBox, 1);
             Grid.SetColumn(textBox, 0);
-            Grid.SetColumnSpan(textBox, 3);
+            Grid.SetColumnSpan(textBox, 4);
 
             // Button Cancel
 
@@ -313,7 +314,7 @@ namespace PsHandler
                 HorizontalContentAlignment = HorizontalAlignment.Center
             };
             Grid.SetRow(buttonUpdate, 3);
-            Grid.SetColumn(buttonUpdate, 2);
+            Grid.SetColumn(buttonUpdate, 3);
             StackPanel stackPanelUpdate = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
@@ -336,12 +337,45 @@ namespace PsHandler
             stackPanelUpdate.Children.Add(textBlockUpdate);
             buttonUpdate.Content = stackPanelUpdate;
 
+            // Button Download
+
+            Button buttonDownload = new Button
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(5, 0, 5, 0),
+            };
+            Grid.SetRow(buttonDownload, 3);
+            Grid.SetColumn(buttonDownload, 2);
+            StackPanel stackPanelDownload = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Margin = new Thickness(10, 2, 10, 2)
+            };
+            Image imageDownload = new Image
+            {
+                Width = 16,
+                Height = 16,
+                Source = iconButtonDownload
+            };
+            TextBlock textBlockDownload = new TextBlock
+            {
+                Text = "Download from Website",
+                Margin = new Thickness(5, 0, 0, 0),
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            stackPanelDownload.Children.Add(imageDownload);
+            stackPanelDownload.Children.Add(textBlockDownload);
+            buttonDownload.Content = stackPanelDownload;
+
             //
 
             grid.Children.Add(label);
             grid.Children.Add(textBox);
             grid.Children.Add(buttonCancel);
             grid.Children.Add(buttonUpdate);
+            grid.Children.Add(buttonDownload);
             window.Content = grid;
 
             #endregion
@@ -371,6 +405,7 @@ namespace PsHandler
                     MessageBox.Show(e.Message, e.GetType().FullName, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
                 }
             };
+            buttonDownload.Click += (sender, args) => Process.Start(Config.DOWNLOAD_HREF); ;
 
             //
 

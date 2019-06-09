@@ -161,7 +161,8 @@ namespace PsHandler
             //    Quit,
             //    new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/update.png"), UriKind.Absolute)),
             //    new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/cancel.png"), UriKind.Absolute)),
-            //    new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/update.png"), UriKind.Absolute))
+            //    new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/update.png"), UriKind.Absolute)),
+            //    new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/information.png"), UriKind.Absolute))
             //    );
 #else
             AutoUpdater.CheckForUpdate(Config.UPDATE_HREF + "?v=" + Config.VERSION + "&id=" + (string.IsNullOrEmpty(Config.MACHINE_GUID) ? "" : Config.MACHINE_GUID),
@@ -171,7 +172,8 @@ namespace PsHandler
                 Quit,
                 new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/update.png"), UriKind.Absolute)),
                 new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/cancel.png"), UriKind.Absolute)),
-                new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/update.png"), UriKind.Absolute))
+                new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/update.png"), UriKind.Absolute)),
+                new BitmapImage(new Uri(string.Format(@"pack://application:,,,/Images/Resources/Size16x16/information.png"), UriKind.Absolute))
                 );
 #endif
         }
